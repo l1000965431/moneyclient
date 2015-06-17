@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.0"
 
     defaultConfig {
-        applicationId "com.dragoneye.flower"
+        applicationId "com.dragoneye.money"
         minSdkVersion 9
         targetSdkVersion 22
         versionCode 1

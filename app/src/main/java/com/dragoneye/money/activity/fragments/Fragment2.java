@@ -1,4 +1,4 @@
-package com.dragoneye.flower.activity.fragments;
+package com.dragoneye.money.activity.fragments;
 
 
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dragoneye.flower.R;
+import com.dragoneye.money.R;
 
 /**
  * A simple {@link Fragment} subclass.

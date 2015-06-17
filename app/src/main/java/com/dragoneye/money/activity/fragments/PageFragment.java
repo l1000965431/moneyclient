@@ -1,4 +1,4 @@
-package com.dragoneye.flower.activity.fragments;
+package com.dragoneye.money.activity.fragments;
 
 /**
  * Created by happysky on 15-6-16.

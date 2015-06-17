@@ -1,4 +1,4 @@
-package com.dragoneye.flower.activity;
+package com.dragoneye.money.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,9 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 
-import com.dragoneye.flower.R;
-import com.dragoneye.flower.activity.fragments.Fragment1;
-import com.dragoneye.flower.activity.fragments.Fragment2;
+import com.dragoneye.money.R;
+import com.dragoneye.money.activity.fragments.Fragment1;
+import com.dragoneye.money.activity.fragments.Fragment2;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{

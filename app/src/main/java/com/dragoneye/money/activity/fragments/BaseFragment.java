@@ -1,4 +1,4 @@
-package com.dragoneye.flower.activity.fragments;
+package com.dragoneye.money.activity.fragments;
 
 import android.support.v4.app.Fragment;
 

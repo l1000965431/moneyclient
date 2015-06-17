@@ -1,4 +1,4 @@
-package com.dragoneye.flower.activity;
+package com.dragoneye.money.activity;
 
 import android.support.v7.app.ActionBarActivity;
 
