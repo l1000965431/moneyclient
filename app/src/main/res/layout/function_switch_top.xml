@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/function_switch_bottom"
+    android:gravity="top"
+    android:background="#ff292929">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/function_switch_bottom_button_investment">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="正在收益"
+            android:id="@+id/function_switch_bottom_button_investment_textView"
+            android:layout_gravity="center"
+            android:textSize="15dp"
+            android:textColor="#fff0a219"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:id="@+id/function_switch_bottom_button_investment_imageView"
+            android:layout_gravity="center"
+            android:background="#fff0a219" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/linearLayout4" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="热门项目"
+            android:id="@+id/textView4"
+            android:layout_gravity="center"
+            android:textSize="15dp"
+            android:textColor="#ffb0b0b0"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:id="@+id/imageView4"
+            android:layout_gravity="center"
+            android:background="#fff0a219"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/linearLayout5" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="  搜索  "
+            android:id="@+id/textView5"
+            android:layout_gravity="center"
+            android:textSize="15dp"
+            android:textColor="#ffb0b0b0"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:id="@+id/imageView5"
+            android:layout_gravity="center"
+            android:background="#fff0a219"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+</LinearLayout>
