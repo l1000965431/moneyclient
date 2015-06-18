@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent" android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:id="@+id/function_switch_bottom"
+    android:id="@+id/function_switch_top"
     android:gravity="top"
     android:background="#ff292929">
 
@@ -11,14 +11,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/function_switch_bottom_button_investment">
+        android:id="@+id/function_switch_top_button_ongoing">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="正在收益"
-            android:id="@+id/function_switch_bottom_button_investment_textView"
+            android:id="@+id/function_switch_top_button_ongoing_textView"
             android:layout_gravity="center"
             android:textSize="15dp"
             android:textColor="#fff0a219"
@@ -28,7 +28,7 @@
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="2dp"
-            android:id="@+id/function_switch_bottom_button_investment_imageView"
+            android:id="@+id/function_switch_top_button_ongoing_imageView"
             android:layout_gravity="center"
             android:background="#fff0a219" />
     </LinearLayout>
@@ -38,14 +38,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/linearLayout4" >
+        android:id="@+id/function_switch_top_button_hot" >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="热门项目"
-            android:id="@+id/textView4"
+            android:id="@+id/function_switch_top_button_hot_textView"
             android:layout_gravity="center"
             android:textSize="15dp"
             android:textColor="#ffb0b0b0"
@@ -55,7 +55,7 @@
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="2dp"
-            android:id="@+id/imageView4"
+            android:id="@+id/function_switch_top_button_hot_imageView"
             android:layout_gravity="center"
             android:background="#fff0a219"
             android:visibility="invisible" />
@@ -66,14 +66,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/linearLayout5" >
+        android:id="@+id/function_switch_top_button_search" >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="  搜索  "
-            android:id="@+id/textView5"
+            android:id="@+id/function_switch_top_button_search_textView"
             android:layout_gravity="center"
             android:textSize="15dp"
             android:textColor="#ffb0b0b0"
@@ -83,7 +83,7 @@
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="2dp"
-            android:id="@+id/imageView5"
+            android:id="@+id/function_switch_top_button_search_imageView"
             android:layout_gravity="center"
             android:background="#fff0a219"
             android:visibility="invisible" />
