@@ -1,92 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent" android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:id="@+id/function_switch_bottom"
-    android:gravity="top"
-    android:background="#ff292929">
+    >
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/function_switch_bottom_button_investment">
-
-        <TextView
+        android:layout_width="match_parent"
+        android:id="@+id/function_switch_bottom"
+        android:background="#ff292929"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/home_invest_top_tab_incoming"
-            android:id="@+id/function_switch_bottom_button_investment_textView"
-            android:layout_gravity="center"
-            android:textSize="15dp"
-            android:textColor="#fff0a219"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp" />
+            android:layout_weight="1"
+            android:id="@+id/function_switch_bottom_button_investment">
 
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:id="@+id/function_switch_bottom_button_investment_imageView"
-            android:layout_gravity="center"
-            android:background="#fff0a219" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/home_invest_top_tab_incoming"
+                android:id="@+id/function_switch_bottom_button_investment_textView"
+                android:layout_gravity="center"
+                android:textSize="15dp"
+                android:textColor="@color/home_investment_top_button_selected"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/linearLayout4" >
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:id="@+id/function_switch_bottom_button_investment_imageView"
+                android:layout_gravity="center"
+                android:background="@color/home_investment_top_button_selected" />
+        </LinearLayout>
 
-        <TextView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/home_invest_top_tab_hot_project"
-            android:id="@+id/textView4"
-            android:layout_gravity="center"
-            android:textSize="15dp"
-            android:textColor="#ffb0b0b0"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp" />
+            android:layout_weight="1"
+            android:id="@+id/linearLayout4" >
 
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:id="@+id/imageView4"
-            android:layout_gravity="center"
-            android:background="#fff0a219"
-            android:visibility="invisible" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/home_invest_top_tab_hot_project"
+                android:id="@+id/textView4"
+                android:layout_gravity="center"
+                android:textSize="15dp"
+                android:textColor="@color/home_investment_top_button_unselected"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/linearLayout5" >
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:id="@+id/imageView4"
+                android:layout_gravity="center"
+                android:background="@color/home_investment_top_button_selected"
+                android:visibility="invisible" />
+        </LinearLayout>
 
-        <TextView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/home_invert_top_tab_search"
-            android:id="@+id/textView5"
-            android:layout_gravity="center"
-            android:textSize="15dp"
-            android:textColor="#ffb0b0b0"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp" />
+            android:layout_weight="1"
+            android:id="@+id/linearLayout5" >
 
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:id="@+id/imageView5"
-            android:layout_gravity="center"
-            android:background="#fff0a219"
-            android:visibility="invisible" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/home_invert_top_tab_search"
+                android:id="@+id/textView5"
+                android:layout_gravity="center"
+                android:textSize="15dp"
+                android:textColor="@color/home_investment_top_button_unselected"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:id="@+id/imageView5"
+                android:layout_gravity="center"
+                android:background="@color/home_investment_top_button_selected"
+                android:visibility="invisible" />
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/home_investment_list_view"
+        android:layout_below="@+id/function_switch_bottom"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>
