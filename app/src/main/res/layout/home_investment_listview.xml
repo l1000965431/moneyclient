@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:background="#ff1e1e1e"
+    android:orientation="vertical"
+    android:paddingTop="17dp"
+    android:paddingBottom="17dp"
+    android:paddingLeft="7dp"
+    android:paddingRight="7dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="170dp"
+        android:id="@+id/imageView"
+        android:src="@mipmap/projects_display002_1"
+        android:scaleType="fitXY" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffffffff">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="这款 WESTERN BAR 是其中一款，它是以西部牛仔为主题的射击游戏；另外还有“Great Racer”以及“Space Attacker”款式."
+            android:id="@+id/textView"
+            android:textSize="13dp"
+            android:padding="8dp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:paddingBottom="5dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="正在开奖"
+                    android:id="@+id/textView2"
+                    android:textSize="17dp"
+                    android:textColor="#ff767676"
+                    android:textIsSelectable="false"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="开奖还需："
+                        android:id="@+id/textView3"
+                        android:textSize="17dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="（尚未达成）"
+                        android:id="@+id/textView4"
+                        android:textSize="12dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="1"
+                        android:id="@+id/textView5"
+                        android:textSize="30dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="天，"
+                        android:id="@+id/textView6"
+                        android:textSize="15dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="3"
+                        android:id="@+id/textView7"
+                        android:textSize="30dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="小时，"
+                        android:id="@+id/textView8"
+                        android:textSize="15dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="45"
+                        android:id="@+id/textView9"
+                        android:textSize="30dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="分，"
+                        android:id="@+id/textView10"
+                        android:textSize="15dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="您已入资：12487￥"
+                android:id="@+id/textView11"
+                android:textSize="13dp"
+                android:textColor="#ff767676"
+                android:textIsSelectable="false"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="您尚未入资"
+                android:id="@+id/textView12"
+                android:textSize="13dp"
+                android:textColor="#ff767676"
+                android:textIsSelectable="false"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:id="@+id/imageView2"
+            android:background="#fffeb008" />
+
+    </LinearLayout>
+</LinearLayout>
