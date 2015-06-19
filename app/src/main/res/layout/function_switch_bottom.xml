@@ -18,7 +18,8 @@
             android:layout_height="27dp"
             android:id="@+id/function_switch_bottom_button_investment_imageView"
             android:src="@mipmap/button_investment"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:scaleType="fitXY" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -46,7 +47,8 @@
             android:id="@+id/function_switch_bottom_button_record_imageView"
             android:src="@mipmap/button_record"
             android:layout_gravity="center"
-            android:tint="#ff62ade6" />
+            android:tint="#ff62ade6"
+            android:scaleType="fitXY" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -74,7 +76,8 @@
             android:id="@+id/function_switch_bottom_button_news_imageView"
             android:src="@mipmap/button_news"
             android:layout_gravity="center"
-            android:tint="#ff62ade6" />
+            android:tint="#ff62ade6"
+            android:scaleType="fitXY" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -102,7 +105,8 @@
             android:id="@+id/function_switch_bottom_button_me_imageView"
             android:src="@mipmap/button_me"
             android:layout_gravity="center"
-            android:tint="#ff62ade6" />
+            android:tint="#ff62ade6"
+            android:scaleType="fitXY" />
 
         <TextView
             android:layout_width="wrap_content"
