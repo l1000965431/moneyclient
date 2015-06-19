@@ -1,5 +1,6 @@
 package com.dragoneye.money.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,24 +9,45 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RadioButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.dragoneye.money.R;
-import com.dragoneye.money.activity.fragments.Fragment1;
-import com.dragoneye.money.activity.fragments.Fragment2;
+import com.dragoneye.money.activity.fragments.HomeInformationFragment;
+import com.dragoneye.money.activity.fragments.HomeInvestmentFragment;
+import com.dragoneye.money.activity.fragments.HomeMyselfFragment;
+import com.dragoneye.money.activity.fragments.HomeRecordFragment;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{
-    public static final int TAB_HOME = 0;
-    public static final int TAH_2 = 1;
+    public static final int TAB_INVESTMENT = 0;
+    public static final int TAB_RECORD = 1;
+    public static final int TAB_INFORMATION = 2;
+    public static final int TAB_MYSELF = 3;
+
+    private class BottomButton{
+        public ImageView imageView;
+        public TextView textView;
+        public void setChecked(boolean checked){
+            if(checked){
+                imageView.setColorFilter(Color.WHITE);
+                textView.setTextColor(Color.WHITE);
+            }else {
+                imageView.setColorFilter(0xff62ade6);
+                textView.setTextColor(0xff62ade6);
+            }
+        }
+    }
 
     private ViewPager viewPager;
-    private RadioButton radioButton1, radioButton2;
+    private BottomButton investButton, recordButton, informationButton, myselfButton;
+    private BottomButton currentCheckedButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.function_switch_bottom);
         initView();
         addListener();
     }
@@ -33,11 +55,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private void initView(){
         viewPager = (ViewPager)findViewById(R.id.viewpager);
 
-        radioButton1 = (RadioButton)findViewById(R.id.radioButton);
-        radioButton2 = (RadioButton)findViewById(R.id.radioButton2);
+        investButton = new BottomButton();
+        investButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_investment_imageView);
+        investButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_investment_textView);
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_investment);
+        linearLayout.setOnClickListener(this);
 
-        radioButton1.setOnClickListener(this);
-        radioButton2.setOnClickListener(this);
+        recordButton = new BottomButton();
+        recordButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_record_imageView);
+        recordButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_record_textView);
+        linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_record);
+        linearLayout.setOnClickListener(this);
+
+        recordButton = new BottomButton();
+        recordButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_news_imageView);
+        recordButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_news_textView);
+        linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_news);
+        linearLayout.setOnClickListener(this);
+
+        recordButton = new BottomButton();
+        recordButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_me_imageView);
+        recordButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_me_textView);
+        linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_me);
+        linearLayout.setOnClickListener(this);
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
@@ -52,12 +92,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             @Override
             public void onPageSelected(int position) {
+                if(currentCheckedButton != null){
+                    currentCheckedButton.setChecked(false);
+                }
                 switch (position){
-                    case TAB_HOME:
-                        radioButton1.setChecked(true);
+                    case TAB_INVESTMENT:
+                        investButton.setChecked(true);
+                        currentCheckedButton = investButton;
                         break;
-                    case TAH_2:
-                        radioButton2.setChecked(true);
+                    case TAB_RECORD:
+                        recordButton.setChecked(true);
+                        currentCheckedButton = recordButton;
+                        break;
+                    case TAB_INFORMATION:
+                        informationButton.setChecked(true);
+                        currentCheckedButton = informationButton;
+                        break;
+                    case TAB_MYSELF:
+                        myselfButton.setChecked(true);
+                        currentCheckedButton = myselfButton;
                         break;
                 }
             }
@@ -72,11 +125,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     @Override
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.radioButton:
-                viewPager.setCurrentItem(TAB_HOME);
+            case R.id.function_switch_bottom_button_investment:
+                viewPager.setCurrentItem(TAB_INVESTMENT);
                 break;
-            case R.id.radioButton2:
-                viewPager.setCurrentItem(TAH_2);
+            case R.id.function_switch_bottom_button_record:
+                viewPager.setCurrentItem(TAB_RECORD);
+                break;
+            case R.id.function_switch_bottom_button_news:
+                viewPager.setCurrentItem(TAB_INFORMATION);
+                break;
+            case R.id.function_switch_bottom_button_me:
+                viewPager.setCurrentItem(TAB_MYSELF);
                 break;
             default:
                 break;
@@ -114,12 +173,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         @Override
         public Fragment getItem(int id) {
             switch (id) {
-                case MainActivity.TAB_HOME:
-                    Fragment1 homeFragment = new Fragment1();
-                    return homeFragment;
-                case TAH_2:
-                    Fragment2 fragment2 = new Fragment2();
-                    return fragment2;
+                case TAB_INVESTMENT:
+                    return new HomeInvestmentFragment();
+                case TAB_RECORD:
+                    return new HomeRecordFragment();
+                case TAB_INFORMATION:
+                    return new HomeInformationFragment();
+                case TAB_MYSELF:
+                    return new HomeMyselfFragment();
+
             }
             return null;
         }
