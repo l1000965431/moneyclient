@@ -6,4 +6,9 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- 主界面顶部tab标签 -->
+    <string name="home_invest_top_tab_incoming">正在收益</string>
+    <string name="home_invest_top_tab_hot_project">热门项目</string>
+    <string name="home_invert_top_tab_search">搜索</string>
 </resources>
