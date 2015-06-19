@@ -18,7 +18,8 @@
             android:layout_height="27dp"
             android:id="@+id/function_switch_bottom_button_investment_imageView"
             android:src="@mipmap/button_investment"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:scaleType="fitXY" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -38,22 +39,23 @@
         android:layout_height="wrap_content"
         android:background="#ff0681d3"
         android:layout_weight="1"
-        android:id="@+id/linearLayout" >
+        android:id="@+id/function_switch_bottom_button_record" >
 
         <ImageView
             android:layout_width="27dp"
             android:layout_height="27dp"
-            android:id="@+id/imageView"
+            android:id="@+id/function_switch_bottom_button_record_imageView"
             android:src="@mipmap/button_record"
             android:layout_gravity="center"
-            android:tint="#ff62ade6" />
+            android:tint="#ff62ade6"
+            android:scaleType="fitXY" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="记录"
-            android:id="@+id/textView"
+            android:id="@+id/function_switch_bottom_button_record_textView"
             android:layout_gravity="center"
             android:textSize="10dp"
             android:textColor="#ff62ade6"
@@ -66,22 +68,23 @@
         android:layout_height="wrap_content"
         android:background="#ff0487de"
         android:layout_weight="1"
-        android:id="@+id/linearLayout2" >
+        android:id="@+id/function_switch_bottom_button_news" >
 
         <ImageView
             android:layout_width="27dp"
             android:layout_height="27dp"
-            android:id="@+id/imageView2"
+            android:id="@+id/function_switch_bottom_button_news_imageView"
             android:src="@mipmap/button_news"
             android:layout_gravity="center"
-            android:tint="#ff62ade6" />
+            android:tint="#ff62ade6"
+            android:scaleType="fitXY" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="资讯"
-            android:id="@+id/textView2"
+            android:id="@+id/function_switch_bottom_button_news_textView"
             android:layout_gravity="center"
             android:textSize="10dp"
             android:textColor="#ff62ade6"
@@ -94,22 +97,23 @@
         android:layout_height="wrap_content"
         android:background="#ff0681d3"
         android:layout_weight="1"
-        android:id="@+id/linearLayout3" >
+        android:id="@+id/function_switch_bottom_button_me" >
 
         <ImageView
             android:layout_width="27dp"
             android:layout_height="27dp"
-            android:id="@+id/imageView3"
+            android:id="@+id/function_switch_bottom_button_me_imageView"
             android:src="@mipmap/button_me"
             android:layout_gravity="center"
-            android:tint="#ff62ade6" />
+            android:tint="#ff62ade6"
+            android:scaleType="fitXY" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="投资"
-            android:id="@+id/textView3"
+            android:id="@+id/function_switch_bottom_button_me_textView"
             android:layout_gravity="center"
             android:textSize="10dp"
             android:textColor="#ff62ade6"
