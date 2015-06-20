@@ -156,21 +156,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="您已入资：12487￥"
-                android:id="@+id/textView11"
-                android:textSize="13dp"
-                android:textColor="#ff767676"
-                android:textIsSelectable="false"
-                android:textStyle="bold"
-                android:layout_gravity="center"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="您尚未入资"
                 android:id="@+id/textView12"
                 android:textSize="13dp"

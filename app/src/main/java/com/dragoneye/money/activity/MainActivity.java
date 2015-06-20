@@ -31,11 +31,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         public TextView textView;
         public void setChecked(boolean checked){
             if(checked){
-                imageView.setColorFilter(Color.WHITE);
-                textView.setTextColor(Color.WHITE);
+                imageView.setColorFilter(getResources().getColor(R.color.home_bottom_button_selected));
+                textView.setTextColor(getResources().getColor(R.color.home_bottom_button_selected));
             }else {
-                imageView.setColorFilter(0xff62ade6);
-                textView.setTextColor(0xff62ade6);
+                imageView.setColorFilter(getResources().getColor(R.color.home_bottom_button_unselected));
+                textView.setTextColor(getResources().getColor(R.color.home_bottom_button_unselected));
             }
         }
     }
@@ -67,15 +67,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_record);
         linearLayout.setOnClickListener(this);
 
-        recordButton = new BottomButton();
-        recordButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_news_imageView);
-        recordButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_news_textView);
+        informationButton = new BottomButton();
+        informationButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_news_imageView);
+        informationButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_news_textView);
         linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_news);
         linearLayout.setOnClickListener(this);
 
-        recordButton = new BottomButton();
-        recordButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_me_imageView);
-        recordButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_me_textView);
+        myselfButton = new BottomButton();
+        myselfButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_me_imageView);
+        myselfButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_me_textView);
         linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_me);
         linearLayout.setOnClickListener(this);
 
@@ -84,7 +84,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void addListener(){
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -92,10 +92,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             @Override
             public void onPageSelected(int position) {
-                if(currentCheckedButton != null){
+                if (currentCheckedButton != null) {
                     currentCheckedButton.setChecked(false);
                 }
-                switch (position){
+                switch (position) {
                     case TAB_INVESTMENT:
                         investButton.setChecked(true);
                         currentCheckedButton = investButton;
@@ -119,7 +119,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             public void onPageScrollStateChanged(int state) {
 
             }
-        });
+        };
+        viewPager.setOnPageChangeListener(onPageChangeListener);
+        onPageChangeListener.onPageSelected(TAB_INVESTMENT);
     }
 
     @Override
@@ -165,7 +167,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private class FragmentAdapter extends FragmentPagerAdapter{
-        public final static int TAB_COUNT = 2;
+        public final static int TAB_COUNT = 4;
         public FragmentAdapter(FragmentManager fm) {
             super(fm);
         }

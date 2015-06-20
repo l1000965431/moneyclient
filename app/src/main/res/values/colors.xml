@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 主界面底部按钮选中颜色 -->
+    <color name="home_bottom_button_selected">#ffffffff</color>
+    <color name="home_bottom_button_unselected">#ff62ade6</color>
+
+    <color name="home_investment_top_button_selected">#fff0a219</color>
+    <color name="home_investment_top_button_unselected">#ffb0b0b0</color>
+</resources>
