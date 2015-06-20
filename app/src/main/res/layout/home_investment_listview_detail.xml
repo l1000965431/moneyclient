@@ -276,28 +276,15 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="1/1000"
+                            android:text="回报几率与金额："
                             android:id="@+id/textView14"
-                            android:textSize="15dp"
-                            android:textColor="#ffffffff"
+                            android:textSize="13dp"
+                            android:textColor="#fffff099"
                             android:textIsSelectable="false"
                             android:textStyle="bold"
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:gravity="center_vertical" />
-
-                        <TextView
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="20￥"
-                            android:id="@+id/textView15"
-                            android:textSize="15dp"
-                            android:textColor="#ffffffff"
-                            android:textIsSelectable="false"
-                            android:textStyle="bold"
-                            android:layout_gravity="center"
-                            android:layout_weight="1" />
 
                     </LinearLayout>
 
@@ -468,6 +455,41 @@
                             android:textAppearance="?android:attr/textAppearanceLarge"
                             android:text="20￥"
                             android:id="@+id/textView26"
+                            android:textSize="15dp"
+                            android:textColor="#ffffffff"
+                            android:textIsSelectable="false"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="70dp" >
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="1/1000"
+                            android:id="@+id/textView29"
+                            android:textSize="15dp"
+                            android:textColor="#ffffffff"
+                            android:textIsSelectable="false"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="20￥"
+                            android:id="@+id/textView30"
                             android:textSize="15dp"
                             android:textColor="#ffffffff"
                             android:textIsSelectable="false"
