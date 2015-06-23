@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#fff1f1f1"
+    android:orientation="vertical"
+    android:id="@+id/fragment_login">
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/fragment_login_Enter_account"
+        android:textColor="#ff999999"
+        android:textColorHint="#ff999999"
+        android:hint="输入账号"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_rounded10"
+        android:backgroundTint="#ffffffff"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginTop="150dp" />
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/fragment_login_Enter_password"
+        android:textColor="#ff999999"
+        android:textColorHint="#ff999999"
+        android:hint="输入登陆密码"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_rounded10"
+        android:backgroundTint="#ffffffff"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:layout_width="170dp"
+        android:layout_height="40dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="登陆"
+        android:id="@+id/fragment_login_buttonlogin"
+        android:layout_gravity="center"
+        android:textSize="15dp"
+        android:background="@drawable/bg_rounded10"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="50dp"
+        android:backgroundTint="#ff5699ff"
+        android:textColor="#ffffffff" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/fragment_login_orline">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#ffe3e3e3"
+            android:layout_weight="0.8"
+            android:layout_gravity="center"
+            android:id="@+id/fragment_login_left_line"></LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="or"
+            android:id="@+id/fragment_login_orltext"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ff8e8e8e" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#ffe3e3e3"
+            android:layout_weight="0.8"
+            android:layout_gravity="center"
+            android:id="@+id/fragment_login_right_line" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:id="@+id/fragment_login_weixin"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="5dp"
+        android:src="@mipmap/button_login_weixin"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:id="@+id/fragment_login_qq"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:src="@mipmap/button_login_qq"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:id="@+id/fragment_login_weibo"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:src="@mipmap/button_login_weibo"
+        android:scaleType="fitXY" />
+
+</LinearLayout>
