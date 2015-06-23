@@ -52,6 +52,20 @@
         android:layout_above="@+id/fragment_login_orline"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="忘记密码"
+        android:id="@+id/textView15"
+        android:layout_gravity="center"
+        android:textSize="13dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="#ff959595"
+        android:layout_alignBottom="@+id/fragment_login_buttonlogin"
+        android:layout_alignRight="@+id/fragment_login_Enter_password"
+        android:layout_alignEnd="@+id/fragment_login_Enter_password" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
