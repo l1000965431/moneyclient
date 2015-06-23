@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:id="@+id/home_self_group_instal_zixin"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="170dp"
+        android:background="#ffdfdfdf"
+        android:id="@+id/home_self_group_instal_zixin_p">
+
+        <ImageButton
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:id="@+id/home_self_group_instal_zixin_p_bgw_group"
+            android:src="@mipmap/ic_launcher"
+            android:layout_gravity="center"
+            android:background="#00ffffff"
+            android:scaleType="fitXY"
+            android:layout_marginTop="-15dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="自信 1.0"
+            android:id="@+id/home_self_group_instal_zixin_p_textViewname"
+            android:layout_gravity="center"
+            android:layout_marginTop="55dp"
+            android:textSize="20dp"
+            android:textColor="#ff332b38" />
+
+    </FrameLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_zixin_linearLayout1"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffffffff"
+        android:paddingRight="10dp"
+        android:paddingLeft="20dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="去评分"
+            android:id="@+id/home_self_group_instal_zixin_linearLayout1_linearLayout1_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_zixin_linearLayout2"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffdfdfdf"
+        android:paddingRight="10dp"
+        android:paddingLeft="20dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="欢迎页"
+            android:id="@+id/home_self_group_instal_zixin_linearLayout2_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_zixin_linearLayout3"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffffffff"
+        android:paddingRight="10dp"
+        android:paddingLeft="20dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="功能介绍"
+            android:id="@+id/home_self_group_pinfo_lineaLayout3_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_zixin_linearLayout4"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffdfdfdf"
+        android:paddingRight="10dp"
+        android:paddingLeft="20dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="系统通知"
+            android:id="@+id/home_self_group_instal_zixin_linearLayout4_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_zixin_linearLayout5"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffffffff"
+        android:paddingRight="10dp"
+        android:paddingLeft="20dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="帮助与反馈"
+            android:id="@+id/home_self_group_instal_zixin_linearLayout5_linearLayout6_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_zixin_linearLayout6"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffdfdfdf"
+        android:paddingRight="10dp"
+        android:paddingLeft="20dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="检查新版本"
+            android:id="@+id/home_self_group_instal_zixin_linearLayout6_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="使用条款和隐私政策"
+        android:id="@+id/home_self_group_instal_zixin_Provision"
+        android:textColor="#ff1a4b5f"
+        android:textSize="17dp"
+        android:paddingRight="3dp"
+        android:paddingLeft="7dp"
+        android:layout_gravity="center"
+        android:layout_weight="0.8"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="龙眼科技公司 版权所有"
+        android:id="@+id/home_self_group_instal_zixin_company"
+        android:textColor="#ff332b38"
+        android:textSize="12dp"
+        android:paddingRight="3dp"
+        android:paddingLeft="7dp"
+        android:layout_gravity="center"
+        android:layout_weight="0.8"
+        android:textStyle="bold" />
+
+</LinearLayout>
