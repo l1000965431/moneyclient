@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="忘记密码"
-        android:id="@+id/textView15"
+        android:id="@+id/fragment_login_button_ForgotPassword"
         android:layout_gravity="center"
         android:textSize="13dp"
         android:gravity="center_vertical|center_horizontal"
