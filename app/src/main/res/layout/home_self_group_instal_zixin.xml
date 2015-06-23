@@ -7,9 +7,10 @@
 
     <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="170dp"
+        android:layout_height="fill_parent"
         android:background="#ffdfdfdf"
-        android:id="@+id/home_self_group_instal_zixin_p">
+        android:id="@+id/home_self_group_instal_zixin_p"
+        android:layout_weight="0.75">
 
         <ImageButton
             android:layout_width="96dp"
@@ -36,7 +37,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="57dp"
+        android:layout_height="fill_parent"
         android:orientation="horizontal"
         android:measureWithLargestChild="false"
         android:id="@+id/home_self_group_instal_zixin_linearLayout1"
@@ -45,7 +46,8 @@
         android:touchscreenBlocksFocus="false"
         android:background="#ffffffff"
         android:paddingRight="10dp"
-        android:paddingLeft="20dp" >
+        android:paddingLeft="20dp"
+        android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,7 +65,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="57dp"
+        android:layout_height="fill_parent"
         android:orientation="horizontal"
         android:measureWithLargestChild="false"
         android:id="@+id/home_self_group_instal_zixin_linearLayout2"
@@ -72,7 +74,8 @@
         android:touchscreenBlocksFocus="false"
         android:background="#ffdfdfdf"
         android:paddingRight="10dp"
-        android:paddingLeft="20dp" >
+        android:paddingLeft="20dp"
+        android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
@@ -90,7 +93,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="57dp"
+        android:layout_height="fill_parent"
         android:orientation="horizontal"
         android:measureWithLargestChild="false"
         android:id="@+id/home_self_group_instal_zixin_linearLayout3"
@@ -99,7 +102,8 @@
         android:touchscreenBlocksFocus="false"
         android:background="#ffffffff"
         android:paddingRight="10dp"
-        android:paddingLeft="20dp" >
+        android:paddingLeft="20dp"
+        android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
@@ -117,7 +121,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="57dp"
+        android:layout_height="fill_parent"
         android:orientation="horizontal"
         android:measureWithLargestChild="false"
         android:id="@+id/home_self_group_instal_zixin_linearLayout4"
@@ -126,7 +130,8 @@
         android:touchscreenBlocksFocus="false"
         android:background="#ffdfdfdf"
         android:paddingRight="10dp"
-        android:paddingLeft="20dp" >
+        android:paddingLeft="20dp"
+        android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
@@ -144,7 +149,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="57dp"
+        android:layout_height="fill_parent"
         android:orientation="horizontal"
         android:measureWithLargestChild="false"
         android:id="@+id/home_self_group_instal_zixin_linearLayout5"
@@ -153,7 +158,8 @@
         android:touchscreenBlocksFocus="false"
         android:background="#ffffffff"
         android:paddingRight="10dp"
-        android:paddingLeft="20dp" >
+        android:paddingLeft="20dp"
+        android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
@@ -171,7 +177,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="57dp"
+        android:layout_height="fill_parent"
         android:orientation="horizontal"
         android:measureWithLargestChild="false"
         android:id="@+id/home_self_group_instal_zixin_linearLayout6"
@@ -180,7 +186,8 @@
         android:touchscreenBlocksFocus="false"
         android:background="#ffdfdfdf"
         android:paddingRight="10dp"
-        android:paddingLeft="20dp" >
+        android:paddingLeft="20dp"
+        android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
@@ -198,7 +205,7 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:text="使用条款和隐私政策"
         android:id="@+id/home_self_group_instal_zixin_Provision"
         android:textColor="#ff1a4b5f"
@@ -206,12 +213,12 @@
         android:paddingRight="3dp"
         android:paddingLeft="7dp"
         android:layout_gravity="center"
-        android:layout_weight="0.8"
+        android:layout_weight="1"
         android:layout_marginTop="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:text="龙眼科技公司 版权所有"
         android:id="@+id/home_self_group_instal_zixin_company"
         android:textColor="#ff332b38"
@@ -219,7 +226,7 @@
         android:paddingRight="3dp"
         android:paddingLeft="7dp"
         android:layout_gravity="center"
-        android:layout_weight="0.8"
+        android:layout_weight="1"
         android:textStyle="bold" />
 
 </LinearLayout>
