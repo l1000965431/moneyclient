@@ -1,11 +1,16 @@
 package com.dragoneye.money.activity.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,8 +18,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.activity.ProjectDetailActivity;
+import com.dragoneye.money.config.PullRefreshConfig;
+import com.dragoneye.money.http.HttpClient;
+import com.dragoneye.money.http.HttpParams;
+import com.dragoneye.money.protocol.ServerProtocol;
+import com.dragoneye.money.view.RefreshableView;
+import com.loopj.android.http.TextHttpResponseHandler;
 
-import org.w3c.dom.Text;
+import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +35,9 @@ import java.util.List;
  * Created by happysky on 15-6-19.
  * 主界面-投资
  */
-public class HomeInvestmentFragment extends BaseFragment implements View.OnClickListener{
+public class HomeInvestmentFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
+    private static final String TAG = HomeInvestmentFragment.class.getSimpleName();
+
     private class TopButton{
         public ImageView imageView;
         public TextView textView;
@@ -39,10 +53,11 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
     }
 
     private TopButton mIncomingButton, mHotProjectButton, mSearchButton, mCurrentSelectedButton;
+    private RefreshableView refreshableView;
     private ListView mListView;
     private ArrayList<String> mDataArrays = new ArrayList<>();
     private InvestmentListViewAdapter mAdapter;
-
+    private Handler handler = new Handler();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,18 +116,76 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         linearLayout = (LinearLayout)getActivity().findViewById(R.id.linearLayout5);
         linearLayout.setOnClickListener(tabButtonOnClickListener);
 
+        refreshableView = (RefreshableView)getActivity().findViewById(R.id.home_investment_refreshable_view);
+        refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
+            @Override
+            public void onRefresh() {
+                try{
+                    Thread.sleep(1000);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+                refreshableView.finishRefreshing();
+            }
+        }, PullRefreshConfig.FRAGMENT_HOME_INVESTMENT);
+
         mListView = (ListView)getActivity().findViewById(R.id.home_investment_list_view);
         mListView.setDividerHeight(0);
-    }
+        mListView.setOnItemClickListener(this);
 
-    private void initData(){
         mDataArrays = new ArrayList<>();
         mAdapter = new InvestmentListViewAdapter(getActivity(), mDataArrays);
         mListView.setAdapter(mAdapter);
 
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if( scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE ){
+                    if(view.getLastVisiblePosition() == view.getCount() - 1){
+                        final View footer = LayoutInflater.from(getActivity()).inflate(R.layout.loading_list_view_item, null, false);
+                        mListView.addFooterView(footer);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDataArrays.add("");
+                                mAdapter.notifyDataSetChanged();
+                                mListView.removeFooterView(footer);
+                            }
+                        }, 2000);
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
+    }
+
+    private void initData(){
+
+
         mDataArrays.add("");
         mDataArrays.add("");
         mDataArrays.add("");
+        updateInvestmentList();
+    }
+
+    private void updateInvestmentList(){
+        HttpParams params = new HttpParams();
+
+        HttpClient.post(ServerProtocol.URL_GET_PROJECT_LIST, params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                Log.d(TAG, "update project list failure-> " + s );
+            }
+
+            @Override
+            public void onSuccess(int i, Header[] headers, String s) {
+                Log.d(TAG, "update project list success-> " + s );
+            }
+        });
     }
 
     @Override
@@ -120,6 +193,12 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         switch (v.getId()){
 
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+        Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
+        startActivity(intent);
     }
 
     public class InvestmentListViewAdapter extends BaseAdapter {
@@ -169,7 +248,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                 viewHolder.tvDescription = (TextView)convertView.findViewById(R.id.textView);
                 viewHolder.tvDay = (TextView)convertView.findViewById(R.id.textView5);
                 viewHolder.tvHour = (TextView)convertView.findViewById(R.id.textView7);
-                viewHolder.tvMiniute = (TextView)convertView.findViewById(R.id.textView9);
+                viewHolder.tvMinute = (TextView)convertView.findViewById(R.id.textView9);
                 viewHolder.tvInvestInfo = (TextView)convertView.findViewById(R.id.textView12);
                 viewHolder.tvAwarding = (TextView)convertView.findViewById(R.id.textView2);
                 viewHolder.tvAwardTarget = (TextView)convertView.findViewById(R.id.textView3);
@@ -187,7 +266,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
             TextView tvDescription;
             TextView tvDay;
             TextView tvHour;
-            TextView tvMiniute;
+            TextView tvMinute;
             TextView tvInvestInfo;
             TextView tvAwarding;
             TextView tvAwardTarget;

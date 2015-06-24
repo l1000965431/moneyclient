@@ -93,10 +93,17 @@
         </LinearLayout>
     </LinearLayout>
 
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/home_investment_list_view"
+    <com.dragoneye.money.view.RefreshableView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_below="@+id/function_switch_bottom"
-        android:layout_centerHorizontal="true"/>
+        android:id="@+id/home_investment_refreshable_view"
+        >
+        <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/home_investment_list_view"
+            android:layout_centerHorizontal="true"/>
+    </com.dragoneye.money.view.RefreshableView>
+
 </RelativeLayout>

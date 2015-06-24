@@ -25,24 +25,23 @@
             <!--android:tint="#ffffffff"-->
             <!--android:layout_marginLeft="50dp" />-->
 
-        <!--<ImageButton-->
-            <!--android:layout_width="93dp"-->
-            <!--android:layout_height="93dp"-->
-            <!--android:id="@+id/home_self_group_pinfo_imageButton1_group"-->
-            <!--android:src="@mipmap/portrait_309"-->
-            <!--android:layout_gravity="left|center_vertical"-->
-            <!--android:background="#00ffffff"-->
-            <!--android:scaleType="fitXY"-->
-            <!--android:layout_marginLeft="52dp" />-->
-        <com.happysky.self.demo.view.RoundCornerImageView
+        <ImageButton
             android:layout_width="93dp"
             android:layout_height="93dp"
             android:id="@+id/home_self_group_pinfo_imageButton1_group"
-            android:layout_gravity="center"
+            android:layout_gravity="left|center_vertical"
             android:background="#00ffffff"
-            RoundCornerImageView:type="round"
-            RoundCornerImageView:borderRadius="5dp"
-            android:scaleType="fitXY" />
+            android:scaleType="fitXY"
+            android:layout_marginLeft="52dp" />
+        <!--<com.happysky.self.demo.view.RoundCornerImageView-->
+            <!--android:layout_width="93dp"-->
+            <!--android:layout_height="93dp"-->
+            <!--android:id="@+id/home_self_group_pinfo_imageButton1_group"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:background="#00ffffff"-->
+            <!--RoundCornerImageView:type="round"-->
+            <!--RoundCornerImageView:borderRadius="5dp"-->
+            <!--android:scaleType="fitXY" />-->
 
 
     </FrameLayout>
