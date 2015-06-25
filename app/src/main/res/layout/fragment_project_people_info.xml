@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#fff1f1f1"
+    android:orientation="vertical"
+    android:id="@+id/fragment_register">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView2" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:id="@+id/fragment_register_Enter"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/fragment_register_Enter_SecurityCode"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="26dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="手机号码："
+                        android:id="@+id/fragment_register_Enter_SecurityCode_button"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="13854389438"
+                        android:id="@+id/textView74"
+                        android:textSize="13dp"
+                        android:textColor="#ff999999"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:layout_gravity="center" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout2"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="7dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="用户名："
+                        android:id="@+id/textView28"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText2"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="输入6-7位数字或英文字母"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout3"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="7dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="邮箱："
+                        android:id="@+id/textView32"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText3"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="请输入电子邮箱"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+
+                </LinearLayout>
+
+                <RadioGroup
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioGroup"
+                    android:layout_below="@+id/fragment_register_Enter"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="性别："
+                        android:id="@+id/textView75"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <RadioButton
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="男"
+                        android:id="@+id/radioButton"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:layout_marginRight="10dp"
+                        android:textColor="#ff6a6a6a"
+                        android:checked="false" />
+
+                    <RadioButton
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="女"
+                        android:id="@+id/radioButton2"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="#ff6a6a6a"
+                        android:layout_marginRight="10dp" />
+
+                    <RadioButton
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="保密"
+                        android:id="@+id/radioButton3"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="#ff6a6a6a" />
+                </RadioGroup>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout16"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="7dp" >
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="所在地："
+                        android:id="@+id/textView55"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText11"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="填入开发团队办公地址"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:visibility="visible">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/fragment_login_Enter_password"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/linearLayout6"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginTop="5dp">
+
+                        <TextView
+                            android:layout_width="78dp"
+                            android:layout_height="wrap_content"
+                            android:text="擅长领域："
+                            android:id="@+id/textView34"
+                            android:textSize="15dp"
+                            android:gravity="center_vertical|right"
+                            android:textColor="#ff727272"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="6dp" />
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center">
+
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <CheckBox
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="游戏开发"
+                                        android:id="@+id/checkBox"
+                                        android:textColor="#ff999999"
+                                        android:textSize="13dp" />
+
+                                    <CheckBox
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="在线教育"
+                                        android:id="@+id/checkBox2"
+                                        android:textColor="#ff999999"
+                                        android:textSize="13dp" />
+
+                                    <CheckBox
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="移动互联网"
+                                        android:id="@+id/checkBox3"
+                                        android:textColor="#ff999999"
+                                        android:textSize="13dp" />
+
+                                    <CheckBox
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="电子商务"
+                                        android:id="@+id/checkBox4"
+                                        android:textColor="#ff999999"
+                                        android:textSize="13dp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp">
+
+                                    <CheckBox
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="创业投资"
+                                        android:id="@+id/checkBox5"
+                                        android:textColor="#ff999999"
+                                        android:textSize="13dp" />
+
+                                    <CheckBox
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="游戏发行"
+                                        android:id="@+id/checkBox6"
+                                        android:textColor="#ff999999"
+                                        android:textSize="13dp" />
+
+                                    <CheckBox
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="手机游戏"
+                                        android:id="@+id/checkBox7"
+                                        android:textColor="#ff999999"
+                                        android:textSize="13dp" />
+
+                                    <CheckBox
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="互联网金融"
+                                        android:id="@+id/checkBox8"
+                                        android:textColor="#ff999999"
+                                        android:textSize="13dp" />
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
+
+                                <EditText
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/editText12"
+                                    android:textColor="#ff999999"
+                                    android:textColorHint="#ff999999"
+                                    android:hint="自定义领域"
+                                    android:background="@drawable/bg_rounded10"
+                                    android:backgroundTint="#ffffffff"
+                                    android:gravity="center_vertical"
+                                    android:layout_above="@+id/fragment_register_Enter_password_again"
+                                    android:layout_alignLeft="@+id/fragment_login_account"
+                                    android:layout_alignStart="@+id/fragment_login_account"
+                                    android:textSize="13dp"
+                                    android:paddingLeft="10dp"
+                                    android:layout_weight="1"
+                                    android:layout_gravity="center" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="25dp"
+                                    android:text="添加"
+                                    android:id="@+id/textView78"
+                                    android:textSize="13dp"
+                                    android:background="@drawable/bg_rounded12"
+                                    android:gravity="center_vertical|center_horizontal"
+                                    android:textColor="#ffffffff"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_gravity="center"
+                                    android:paddingLeft="10dp"
+                                    android:paddingRight="10dp" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/fragment_login_Enter_password"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/linearLayout8"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="7dp">
+
+                        <TextView
+                            android:layout_width="78dp"
+                            android:layout_height="wrap_content"
+                            android:text="真实姓名："
+                            android:id="@+id/textView46"
+                            android:textSize="15dp"
+                            android:gravity="center_vertical|right"
+                            android:textColor="#ff727272"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center" />
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/editText4"
+                            android:textColor="#ff999999"
+                            android:textColorHint="#ff999999"
+                            android:hint="请输入您的真实姓名"
+                            android:background="@drawable/bg_rounded10"
+                            android:backgroundTint="#ffffffff"
+                            android:gravity="center_vertical"
+                            android:layout_above="@+id/fragment_register_Enter_password_again"
+                            android:layout_alignLeft="@+id/fragment_login_account"
+                            android:layout_alignStart="@+id/fragment_login_account"
+                            android:textSize="13dp"
+                            android:paddingLeft="10dp"
+                            android:layout_weight="1"
+                            android:layout_gravity="center" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/fragment_login_Enter_password"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/linearLayout9"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="7dp">
+
+                        <TextView
+                            android:layout_width="78dp"
+                            android:layout_height="wrap_content"
+                            android:text="身份证号："
+                            android:id="@+id/textView47"
+                            android:textSize="15dp"
+                            android:gravity="center_vertical|right"
+                            android:textColor="#ff727272"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center" />
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/editText5"
+                            android:textColor="#ff999999"
+                            android:textColorHint="#ff999999"
+                            android:hint="输入有效证件号"
+                            android:background="@drawable/bg_rounded10"
+                            android:backgroundTint="#ffffffff"
+                            android:gravity="center_vertical"
+                            android:layout_above="@+id/fragment_register_Enter_password_again"
+                            android:layout_alignLeft="@+id/fragment_login_account"
+                            android:layout_alignStart="@+id/fragment_login_account"
+                            android:textSize="13dp"
+                            android:paddingLeft="10dp"
+                            android:layout_weight="1"
+                            android:layout_gravity="center" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/fragment_login_Enter_password"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/linearLayout10"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="7dp" >
+
+                        <TextView
+                            android:layout_width="78dp"
+                            android:layout_height="wrap_content"
+                            android:text="个人介绍："
+                            android:id="@+id/textView48"
+                            android:textSize="15dp"
+                            android:gravity="center_vertical|right"
+                            android:textColor="#ff727272"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center" />
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/editText6"
+                            android:textColor="#ff999999"
+                            android:textColorHint="#ff999999"
+                            android:hint="请用一句话介绍下自己，不得超过30个字"
+                            android:background="@drawable/bg_rounded10"
+                            android:backgroundTint="#ffffffff"
+                            android:gravity="center_vertical"
+                            android:layout_above="@+id/fragment_register_Enter_password_again"
+                            android:layout_alignLeft="@+id/fragment_login_account"
+                            android:layout_alignStart="@+id/fragment_login_account"
+                            android:textSize="13dp"
+                            android:paddingLeft="10dp"
+                            android:layout_weight="1"
+                            android:layout_gravity="center" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/fragment_login_Enter_password"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/linearLayout11"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="7dp" >
+
+                        <TextView
+                            android:layout_width="78dp"
+                            android:layout_height="wrap_content"
+                            android:text="教育经历："
+                            android:id="@+id/textView49"
+                            android:textSize="15dp"
+                            android:gravity="center_vertical|right"
+                            android:textColor="#ff727272"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center" />
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/editText7"
+                            android:textColor="#ff999999"
+                            android:textColorHint="#ff999999"
+                            android:hint="请输入您最高学历的毕业院校名称"
+                            android:background="@drawable/bg_rounded10"
+                            android:backgroundTint="#ffffffff"
+                            android:gravity="center_vertical"
+                            android:layout_above="@+id/fragment_register_Enter_password_again"
+                            android:layout_alignLeft="@+id/fragment_login_account"
+                            android:layout_alignStart="@+id/fragment_login_account"
+                            android:textSize="13dp"
+                            android:paddingLeft="10dp"
+                            android:layout_weight="1"
+                            android:layout_gravity="center" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/fragment_login_Enter_password"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/linearLayout12"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="7dp" >
+
+                        <TextView
+                            android:layout_width="78dp"
+                            android:layout_height="wrap_content"
+                            android:text="事业历程："
+                            android:id="@+id/textView50"
+                            android:textSize="15dp"
+                            android:gravity="center_vertical|right"
+                            android:textColor="#ff727272"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center" />
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/editText8"
+                            android:textColor="#ff999999"
+                            android:textColorHint="#ff999999"
+                            android:hint="请简要描述您的一些个人工作情况和创业经历 "
+                            android:background="@drawable/bg_rounded10"
+                            android:backgroundTint="#ffffffff"
+                            android:gravity="center_vertical"
+                            android:layout_above="@+id/fragment_register_Enter_password_again"
+                            android:layout_alignLeft="@+id/fragment_login_account"
+                            android:layout_alignStart="@+id/fragment_login_account"
+                            android:textSize="13dp"
+                            android:paddingLeft="10dp"
+                            android:layout_weight="1"
+                            android:layout_gravity="center" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_register_Agreement"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/fragment_register_Classification"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                    android:background="#ffe3e3e3"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:id="@+id/fragment_register_Agreement_leftline" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="请您务必保证上述信息的真实性，我们会对其进行核实。《服务条款》"
+                    android:id="@+id/fragment_register_Agreement_text"
+                    android:layout_weight="0.45"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="#ff8e8e8e"
+                    android:textSize="12dp" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                    android:background="#ffe3e3e3"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:id="@+id/fragment_register_Agreement_rightline" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="40dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="保存"
+                android:id="@+id/fragment_register_buttonlogin"
+                android:layout_gravity="center"
+                android:textSize="15dp"
+                android:background="@drawable/bg_rounded10blue"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="#ffffffff"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/fragment_register_Agreement"
+                android:layout_centerHorizontal="true" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
