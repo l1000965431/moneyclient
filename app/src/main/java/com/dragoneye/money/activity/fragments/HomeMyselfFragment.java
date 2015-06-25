@@ -15,6 +15,6 @@ public class HomeMyselfFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home_myself, container, false);
+        return inflater.inflate(R.layout.home_self_group, container, false);
     }
 }

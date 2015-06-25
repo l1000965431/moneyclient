@@ -100,7 +100,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RadioGroup
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:textColor="#ff6a6a6a" />
-    </LinearLayout>
+    </RadioGroup>
 
     <LinearLayout
         android:orientation="horizontal"

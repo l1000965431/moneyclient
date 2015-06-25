@@ -7,7 +7,7 @@
     android:paddingBottom="17dp"
     android:paddingLeft="7dp"
     android:paddingRight="7dp"
-    android:id="@+id/home_investment_listview">
+    android:id="@+id/home_investment_list_view_root">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="第3期 众筹中"
+                    android:text="正在开奖"
                     android:id="@+id/textView2"
                     android:textSize="17dp"
                     android:textColor="#ff767676"
@@ -78,16 +78,15 @@
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    android:paddingTop="3dp">
+                    android:visibility="visible">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="收益时间："
+                        android:text="开奖还需："
                         android:id="@+id/textView3"
-                        android:textSize="13dp"
+                        android:textSize="17dp"
                         android:textColor="#ff767676"
                         android:textIsSelectable="false"
                         android:textStyle="bold" />
@@ -98,7 +97,7 @@
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="（尚未达成）"
                         android:id="@+id/textView4"
-                        android:textSize="13dp"
+                        android:textSize="12dp"
                         android:textColor="#ff767676"
                         android:textIsSelectable="false"
                         android:textStyle="bold" />
@@ -121,7 +120,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="月，"
+                        android:text="天，"
                         android:id="@+id/textView6"
                         android:textSize="15dp"
                         android:textColor="#ff767676"
@@ -140,7 +139,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="日，"
+                        android:text="小时，"
                         android:id="@+id/textView8"
                         android:textSize="15dp"
                         android:textColor="#ff767676"
@@ -151,10 +150,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="14:00"
+                        android:text="45"
                         android:id="@+id/textView9"
                         android:textSize="30dp" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="分，"
+                        android:id="@+id/textView10"
+                        android:textSize="15dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -163,14 +172,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="未入资"
+                android:text="您尚未入资"
                 android:id="@+id/textView12"
                 android:textSize="13dp"
                 android:textColor="#ff767676"
                 android:textIsSelectable="false"
                 android:textStyle="bold"
                 android:layout_gravity="center"
-                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
 
