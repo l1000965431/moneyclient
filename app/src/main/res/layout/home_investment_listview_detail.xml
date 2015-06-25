@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content" android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_width="wrap_content" android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:id="@+id/home_investment_listview_detail_late"
+    android:background="#ff1e1e1e">
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -22,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="170dp"
                 android:id="@+id/imageView"
-                android:src="@mipmap/projects_display002_1"
+                android:src="@mipmap/projects_display001_1"
                 android:scaleType="fitXY" />
 
             <LinearLayout
@@ -46,13 +48,14 @@
                         android:layout_gravity="center"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true">
+                        android:layout_alignParentStart="true"
+                        android:id="@+id/linearLayout15">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="正在开奖"
+                            android:text="第3期 众筹中"
                             android:id="@+id/textView2"
                             android:textSize="17dp"
                             android:textColor="#ff767676"
@@ -64,15 +67,16 @@
                             android:orientation="horizontal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:visibility="visible">
+                            android:visibility="visible"
+                            android:layout_marginTop="3dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="开奖还需："
+                                android:text="收益时间："
                                 android:id="@+id/textView3"
-                                android:textSize="17dp"
+                                android:textSize="13dp"
                                 android:textColor="#ff767676"
                                 android:textIsSelectable="false"
                                 android:textStyle="bold" />
@@ -83,7 +87,7 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:text="（尚未达成）"
                                 android:id="@+id/textView4"
-                                android:textSize="12dp"
+                                android:textSize="13dp"
                                 android:textColor="#ff767676"
                                 android:textIsSelectable="false"
                                 android:textStyle="bold" />
@@ -106,7 +110,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="天，"
+                                android:text="月，"
                                 android:id="@+id/textView6"
                                 android:textSize="15dp"
                                 android:textColor="#ff767676"
@@ -125,7 +129,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="小时，"
+                                android:text="日，"
                                 android:id="@+id/textView8"
                                 android:textSize="15dp"
                                 android:textColor="#ff767676"
@@ -136,7 +140,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="45"
+                                android:text="14:00"
                                 android:id="@+id/textView9"
                                 android:textSize="30dp" />
 
@@ -144,7 +148,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="分，"
+                                android:text="点"
                                 android:id="@+id/textView10"
                                 android:textSize="15dp"
                                 android:textColor="#ff767676"
@@ -165,22 +169,7 @@
                         android:textIsSelectable="false"
                         android:textStyle="bold"
                         android:layout_gravity="center"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="您尚未入资"
-                        android:id="@+id/textView12"
-                        android:textSize="13dp"
-                        android:textColor="#ff767676"
-                        android:textIsSelectable="false"
-                        android:textStyle="bold"
-                        android:layout_gravity="center"
-                        android:layout_centerVertical="true"
+                        android:layout_alignTop="@+id/linearLayout15"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true" />
 
@@ -227,9 +216,9 @@
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="70dp"
-                    android:paddingRight="70dp"
-                    android:layout_marginTop="20dp">
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp">
 
                     <ImageView
                         android:layout_width="20dp"
@@ -242,21 +231,24 @@
                         android:layout_marginRight="5dp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="输入入资金额："
                         android:id="@+id/textView20"
                         android:textSize="18dp"
                         android:textColor="#ffffffff"
                         android:textIsSelectable="false"
-                        android:layout_gravity="center" />
+                        android:layout_gravity="center"
+                        android:gravity="center_vertical|center_horizontal" />
 
                     <EditText
-                        android:layout_width="fill_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/editText"
-                        android:layout_gravity="center" />
+                        android:layout_gravity="center"
+                        android:text="99999"
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -517,21 +509,6 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="170dp"
-                android:id="@+id/imageView7"
-                android:scaleType="fitXY"
-                android:src="@mipmap/projects_display001_2" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="这款 WESTERN BAR 是其中一款，它是以西部牛仔为主题的射击游戏；另外还有“Great Racer”以及“Space Attacker”款式."
-                android:id="@+id/textView28"
-                android:textSize="13dp"
-                android:padding="8dp" />
         </LinearLayout>
     </ScrollView>
 

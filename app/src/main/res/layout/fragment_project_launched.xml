@@ -1,0 +1,800 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#fff1f1f1"
+    android:orientation="vertical"
+    android:id="@+id/fragment_register">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView2" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:id="@+id/fragment_register_Enter"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/fragment_register_Enter_SecurityCode"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="26dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="项目名称："
+                        android:id="@+id/fragment_register_Enter_SecurityCode_button"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fragment_register_Enter_SecurityCode_Text"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="项目名称不能不能拆过15个字"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_marginLeft="1dp"
+                        android:layout_gravity="center" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout2"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="7dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="筹资金额："
+                        android:id="@+id/textView28"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText2"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="不少于500元"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="元"
+                        android:id="@+id/textView31"
+                        android:textSize="13dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="3dp"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout3"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="7dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="募集天数："
+                        android:id="@+id/textView32"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText3"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="10~90天"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="天"
+                        android:id="@+id/textView33"
+                        android:textSize="13dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="3dp"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout16"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="7dp" >
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="团队人数："
+                        android:id="@+id/textView55"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText11"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="填入开发团队人员总数量"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="人"
+                        android:id="@+id/textView56"
+                        android:textSize="13dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="3dp"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout6"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="类别："
+                        android:id="@+id/textView34"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:text="科技"
+                                android:id="@+id/textView35"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"
+                                android:textColor="#ff727272"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginLeft="3dp"
+                                android:background="@drawable/edittext1" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:text="工艺"
+                                android:id="@+id/textView36"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"
+                                android:textColor="#ff727272"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginLeft="3dp"
+                                android:background="@drawable/edittext1" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:text="出版"
+                                android:id="@+id/textView37"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"
+                                android:textColor="#ff727272"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginLeft="3dp"
+                                android:background="@drawable/edittext1" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:text="娱乐"
+                                android:id="@+id/textView38"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"
+                                android:textColor="#ff727272"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginLeft="3dp"
+                                android:background="@drawable/edittext1" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:text="艺术"
+                                android:id="@+id/textView39"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"
+                                android:textColor="#ff727272"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginLeft="3dp"
+                                android:background="@drawable/edittext1" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:text="农业"
+                                android:id="@+id/textView40"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"
+                                android:textColor="#ff727272"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginLeft="3dp"
+                                android:background="@drawable/edittext1" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:text="商铺"
+                                android:id="@+id/textView41"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"
+                                android:textColor="#ff727272"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginLeft="3dp"
+                                android:background="@drawable/edittext1" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:text="其他"
+                                android:id="@+id/textView42"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"
+                                android:textColor="#ff727272"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginLeft="3dp"
+                                android:background="@drawable/edittext1" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout7"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="项目图片："
+                        android:id="@+id/textView43"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="上传图片"
+                        android:id="@+id/textView44"
+                        android:textSize="10dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="3dp"
+                        android:background="@drawable/edittext1"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:layout_gravity="center" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dp"
+                        android:text="支持jpg,png,jpeg每张大小不超过500K，推荐尺寸：630*260，上传的第一张会默认为封面图。最多不要超过8张"
+                        android:id="@+id/textView45"
+                        android:textSize="10dp"
+                        android:gravity="center_vertical"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="3dp"
+                        android:layout_gravity="center" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout8"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="7dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="视频："
+                        android:id="@+id/textView46"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText4"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="请输入优酷视频的播放页地址"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout9"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="7dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="项目简介："
+                        android:id="@+id/textView47"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText5"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="不能超过75个字"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout10"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="7dp" >
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="项目介绍："
+                        android:id="@+id/textView48"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText6"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="请填写用户需求、解决方案、方案优势"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout11"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="7dp" >
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="市场分析："
+                        android:id="@+id/textView49"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText7"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="请填写市场分析、发展规划"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout12"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="7dp" >
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="盈利模式："
+                        android:id="@+id/textView50"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText8"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="请填写项目的盈利模式"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout13"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="7dp" >
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="团队介绍："
+                        android:id="@+id/textView51"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText9"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="请填写团队成员介绍"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/fragment_login_Enter_password"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearLayout14"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="7dp" >
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="标签："
+                        android:id="@+id/textView52"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText10"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="请使用空格或逗号分隔不同标签"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:layout_above="@+id/fragment_register_Enter_password_again"
+                        android:layout_alignLeft="@+id/fragment_login_account"
+                        android:layout_alignStart="@+id/fragment_login_account"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_register_Agreement"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/fragment_register_Classification"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                    android:background="#ffe3e3e3"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:id="@+id/fragment_register_Agreement_leftline" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fragment_register_Agreement_checkBox"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="筹资的一定数额将归属于第三方平台，作为服务费用。《服务条款》"
+                    android:id="@+id/fragment_register_Agreement_text"
+                    android:layout_weight="0.45"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:textColor="#ff8e8e8e"
+                    android:textSize="12dp"
+                    android:layout_marginRight="10dp" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                    android:background="#ffe3e3e3"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:id="@+id/fragment_register_Agreement_rightline" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="40dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="保存"
+                android:id="@+id/fragment_register_buttonlogin"
+                android:layout_gravity="center"
+                android:textSize="15dp"
+                android:background="@drawable/bg_rounded10blue"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="#ffffffff"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/fragment_register_Agreement"
+                android:layout_centerHorizontal="true" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
