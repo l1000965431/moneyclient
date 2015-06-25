@@ -467,7 +467,7 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:paddingRight="7dp" />
+                    android:paddingTop="5dp" />
 
                 <ImageView
                     android:layout_width="fill_parent"
