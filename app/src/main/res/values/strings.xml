@@ -11,6 +11,9 @@
     <string name="home_invest_top_tab_incoming">正在收益</string>
     <string name="home_invest_top_tab_hot_project">热门项目</string>
     <string name="home_invert_top_tab_search">搜索</string>
+    <string name="home_invert_top_tab_earnings_record">收益</string>
+    <string name="home_invert_top_tab_investment_record">投资</string>
+    <string name="home_invert_top_tab_dividendt_record">分红</string>
     <string name="title_activity_project_detail">ProjectDetailActivity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
