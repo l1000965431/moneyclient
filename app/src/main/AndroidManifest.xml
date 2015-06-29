@@ -30,6 +30,14 @@
             android:name=".activity.RegisterActivity"
             android:label="@string/title_activity_register" >
         </activity>
+        <activity
+            android:name=".activity.ProjectEditActivity"
+            android:label="@string/title_activity_project_edit" >
+        </activity>
+        <activity
+            android:name=".activity.ImproveUserInfoActivity"
+            android:label="@string/title_activity_improve_user_info" >
+        </activity>
     </application>
 
 </manifest>
