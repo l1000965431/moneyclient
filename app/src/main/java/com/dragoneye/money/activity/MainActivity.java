@@ -1,5 +1,6 @@
 package com.dragoneye.money.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -160,6 +161,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, ProjectEditActivity.class);
+            startActivity(intent);
             return true;
         }
 
