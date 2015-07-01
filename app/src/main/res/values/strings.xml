@@ -28,4 +28,10 @@
     <string name="time_error">时间有问题</string>
     <string name="title_activity_project_edit">ProjectEditActivity</string>
     <string name="title_activity_improve_user_info">ImproveUserInfoActivity</string>
+
+    <!-- 上拉加载状态 -->
+    <string name="pull_to_load_loading">加载中</string>
+    <string name="pull_to_load_failure">加载失败</string>
+    <string name="pull_to_load_no_more">已无更多</string>
+    <string name="title_activity_image_explorer">ImageExplorerActivity</string>
 </resources>

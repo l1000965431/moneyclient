@@ -1,4 +1,4 @@
-package com.dragoneye.flower;
+package com.dragoneye.money;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
