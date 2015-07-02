@@ -1,20 +1,46 @@
 package com.dragoneye.money.activity;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.dao.MyDaoMaster;
+import com.dragoneye.money.dao.Project;
+import com.dragoneye.money.dao.ProjectDao;
+import com.dragoneye.money.dao.ProjectImage;
+import com.dragoneye.money.dao.ProjectImageDao;
+import com.dragoneye.money.view.DotViewPager;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 
 public class ProjectEditActivity extends ActionBarActivity {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_project_launched);
+
     }
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

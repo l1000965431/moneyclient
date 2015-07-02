@@ -34,4 +34,8 @@
     <string name="pull_to_load_failure">加载失败</string>
     <string name="pull_to_load_no_more">已无更多</string>
     <string name="title_activity_image_explorer">ImageExplorerActivity</string>
+
+    <!-- 投资界面 -->
+    <string name="invest_project_invested_price">您已入资:%.2f￥</string>
+    <string name="invest_project_no_invested_price">您尚未入资</string>
 </resources>

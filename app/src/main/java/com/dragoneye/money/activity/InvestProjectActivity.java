@@ -10,11 +10,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.dao.InvestedProject;
+import com.dragoneye.money.dao.InvestedProjectDao;
 import com.dragoneye.money.dao.MyDaoMaster;
+import com.dragoneye.money.dao.Project;
+import com.dragoneye.money.dao.ProjectDao;
 import com.dragoneye.money.dao.ProjectImage;
 import com.dragoneye.money.dao.ProjectImageDao;
 import com.dragoneye.money.view.DotViewPager;
@@ -33,6 +38,11 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
     private ArrayList<String> mImageUrl;
     ArrayList<View> viewContainer = new ArrayList<>();
     private TextView mConfirmTextView;
+    private EditText mPriceEditText;
+    private Project mProject;
+    private InvestedProject mInvestedProject;
+    private TextView mInvestPriceTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +70,11 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
 
         mConfirmTextView = (TextView)findViewById(R.id.textView27);
         mConfirmTextView.setOnClickListener(this);
+
+        mPriceEditText = (EditText)findViewById(R.id.invest_project_et_price);
+        mPriceEditText.setOnClickListener(this);
+
+        mInvestPriceTextView = (TextView)findViewById(R.id.invest_project_tv_invest_price);
     }
 
     private void initData(){
@@ -67,6 +82,14 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
 
         Intent intent = getIntent();
         long projectId = intent.getLongExtra(EXTRA_PROJECT_ID, 1);
+
+        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
+        mProject = projectDao.load(projectId);
+        if( mProject == null ){
+            finish();
+            return;
+        }
+
         ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
         QueryBuilder queryBuilder = projectImageDao.queryBuilder();
         queryBuilder.where(ProjectImageDao.Properties.ProjectId.eq(projectId));
@@ -74,6 +97,22 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
 
         for(ProjectImage projectImage : projectImages){
             mImageUrl.add(projectImage.getImageUrl());
+        }
+
+        InvestedProjectDao investedProjectDao = MyDaoMaster.getDaoSession().getInvestedProjectDao();
+        queryBuilder = investedProjectDao.queryBuilder();
+        queryBuilder.where(InvestedProjectDao.Properties.ProjectId.eq(mProject.getId()));
+        mInvestedProject = (InvestedProject)queryBuilder.unique();
+        updateInvestedPrice();
+
+    }
+
+    private void updateInvestedPrice(){
+        if( mInvestedProject == null ){
+            mInvestPriceTextView.setText(R.string.invest_project_no_invested_price);
+        }else {
+            String string = String.format(getString(R.string.invest_project_invested_price), mInvestedProject.getPrice());
+            mInvestPriceTextView.setText(string);
         }
     }
 
@@ -86,6 +125,19 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
     }
 
     private void onConfirm(){
+        String investPrice = mPriceEditText.getText().toString();
+        int price = Integer.parseInt(investPrice);
+        if( price > 0 ){
+            InvestedProjectDao dao = MyDaoMaster.getDaoSession().getInvestedProjectDao();
+            if( mInvestedProject == null ){
+                InvestedProject investedProject = new InvestedProject(null, mProject.getId(), (float)price);
+                dao.insert(investedProject);
+            }else{
+                mInvestedProject.setPrice( mInvestedProject.getPrice() + price );
+                dao.update(mInvestedProject);
+            }
+            finish();
+        }
     }
 
     private class ImageViewPagerAdapter extends PagerAdapter{
@@ -150,6 +202,7 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_invest_project_detail) {
             Intent intent = new Intent(this, ProjectDetailActivity.class);
+            intent.putExtra(EXTRA_PROJECT_ID, mProject.getId());
             startActivity(intent);
             return true;
         }
