@@ -20,7 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
-import com.dragoneye.money.activity.ProjectDetailActivity;
+import com.dragoneye.money.activity.InvestProjectActivity;
 import com.dragoneye.money.config.PullRefreshConfig;
 import com.dragoneye.money.dao.MyDaoMaster;
 import com.dragoneye.money.dao.Project;
@@ -31,6 +31,7 @@ import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.protocol.ServerProtocol;
 import com.dragoneye.money.view.RefreshableView;
+import com.dragoneye.money.view.TopTabButton;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -48,21 +49,8 @@ import de.greenrobot.dao.query.QueryBuilder;
 public class HomeInvestmentFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
     private static final String TAG = HomeInvestmentFragment.class.getSimpleName();
 
-    private class TopButton{
-        public ImageView imageView;
-        public TextView textView;
-        public void setChecked(boolean checked){
-            if(checked){
-                imageView.setVisibility(View.VISIBLE);
-                textView.setTextColor(getResources().getColor(R.color.home_investment_top_button_selected));
-            }else {
-                imageView.setVisibility(View.INVISIBLE);
-                textView.setTextColor(getResources().getColor(R.color.home_investment_top_button_unselected));
-            }
-        }
-    }
 
-    private TopButton mIncomingButton, mHotProjectButton, mSearchButton, mCurrentSelectedButton;
+    private TopTabButton mIncomingButton, mHotProjectButton, mSearchButton, mCurrentSelectedButton;
     private RefreshableView refreshableView;
     private ListView mListView;
     private ArrayList<Project> mDataArrays = new ArrayList<>();
@@ -109,20 +97,20 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
             }
         };
 
-        mIncomingButton = new TopButton();
+        mIncomingButton = new TopTabButton(getActivity());
         mIncomingButton.imageView = (ImageView)getActivity().findViewById(R.id.function_switch_bottom_button_investment_imageView);
         mIncomingButton.textView = (TextView)getActivity().findViewById(R.id.function_switch_bottom_button_investment_textView);
         LinearLayout linearLayout = (LinearLayout)getActivity().findViewById(R.id.function_switch_bottom_button_investment);
         linearLayout.setOnClickListener(tabButtonOnClickListener);
         tabButtonOnClickListener.onClick(linearLayout);
 
-        mHotProjectButton = new TopButton();
+        mHotProjectButton = new TopTabButton(getActivity());
         mHotProjectButton.imageView = (ImageView)getActivity().findViewById(R.id.imageView4);
         mHotProjectButton.textView = (TextView)getActivity().findViewById(R.id.textView4);
         linearLayout = (LinearLayout)getActivity().findViewById(R.id.linearLayout4);
         linearLayout.setOnClickListener(tabButtonOnClickListener);
 
-        mSearchButton = new TopButton();
+        mSearchButton = new TopTabButton(getActivity());
         mSearchButton.imageView = (ImageView)getActivity().findViewById(R.id.imageView5);
         mSearchButton.textView = (TextView)getActivity().findViewById(R.id.textView5);
         linearLayout = (LinearLayout)getActivity().findViewById(R.id.linearLayout5);
@@ -216,8 +204,8 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
         Project project = (Project)mListView.getItemAtPosition(position);
-        Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
-        intent.putExtra(ProjectDetailActivity.EXTRA_PROJECT_ID, project.getId());
+        Intent intent = new Intent(getActivity(), InvestProjectActivity.class);
+        intent.putExtra(InvestProjectActivity.EXTRA_PROJECT_ID, project.getId());
         startActivity(intent);
     }
 
