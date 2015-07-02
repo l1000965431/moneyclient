@@ -10,8 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
@@ -38,10 +40,14 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
     private ArrayList<String> mImageUrl;
     ArrayList<View> viewContainer = new ArrayList<>();
     private TextView mConfirmTextView;
-    private EditText mPriceEditText;
     private Project mProject;
     private InvestedProject mInvestedProject;
     private TextView mInvestPriceTextView;
+    private Spinner mPriceSelectedSpinner;
+    private final int mPriceArr[] = {
+            2, 4, 10, 20, 100, 200, 500, 1000, 5000, 10000
+    };
+    private int mSelectedPrice;
 
 
     @Override
@@ -50,19 +56,8 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
         setContentView(R.layout.home_investment_listview_detail);
         initView();
         initData();
-
-        for(String url : mImageUrl){
-            ImageView imageView = new ImageView(this);
-            try{
-                imageView.setImageBitmap( MediaStore.Images.Media.getBitmap(getContentResolver(),
-                        Uri.parse(url) ) );
-                viewContainer.add(imageView);
-            }catch (IOException e){
-
-            }
-        }
-
-        mDotViewPager.setAdapter(new ImageViewPagerAdapter());
+        initViewPagerImages();
+        initSpinnerItems();
     }
 
     private void initView(){
@@ -71,10 +66,9 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
         mConfirmTextView = (TextView)findViewById(R.id.textView27);
         mConfirmTextView.setOnClickListener(this);
 
-        mPriceEditText = (EditText)findViewById(R.id.invest_project_et_price);
-        mPriceEditText.setOnClickListener(this);
-
         mInvestPriceTextView = (TextView)findViewById(R.id.invest_project_tv_invest_price);
+
+        mPriceSelectedSpinner = (Spinner)findViewById(R.id.invest_project_spinner);
     }
 
     private void initData(){
@@ -124,16 +118,51 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
         }
     }
 
+    private void initViewPagerImages(){
+        for(String url : mImageUrl){
+            ImageView imageView = new ImageView(this);
+            try{
+                imageView.setImageBitmap( MediaStore.Images.Media.getBitmap(getContentResolver(),
+                        Uri.parse(url) ) );
+                viewContainer.add(imageView);
+            }catch (IOException e){
+
+            }
+        }
+        mDotViewPager.setAdapter(new ImageViewPagerAdapter());
+    }
+
+    private void initSpinnerItems(){
+
+        ArrayList<String> spinnerItemStrings = new ArrayList<>();
+        for( int price : mPriceArr){
+            spinnerItemStrings.add( String.valueOf(price) + getString(R.string.monetary_unit_rmb));
+        }
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.invest_project_spinner_popup_item, spinnerItemStrings);
+        mPriceSelectedSpinner.setAdapter(arrayAdapter);
+
+        mPriceSelectedSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mSelectedPrice = mPriceArr[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
     private void onConfirm(){
-        String investPrice = mPriceEditText.getText().toString();
-        int price = Integer.parseInt(investPrice);
-        if( price > 0 ){
+        if( mSelectedPrice > 0 ){
             InvestedProjectDao dao = MyDaoMaster.getDaoSession().getInvestedProjectDao();
             if( mInvestedProject == null ){
-                InvestedProject investedProject = new InvestedProject(null, mProject.getId(), (float)price);
+                InvestedProject investedProject = new InvestedProject(null, mProject.getId(), (float)mSelectedPrice);
                 dao.insert(investedProject);
             }else{
-                mInvestedProject.setPrice( mInvestedProject.getPrice() + price );
+                mInvestedProject.setPrice( mInvestedProject.getPrice() + mSelectedPrice );
                 dao.update(mInvestedProject);
             }
             finish();

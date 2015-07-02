@@ -232,7 +232,7 @@
                         android:layout_width="130dp"
                         android:layout_height="30dp"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="输入入资金额："
+                        android:text="@string/invest_project_select_invest_price"
                         android:id="@+id/textView20"
                         android:textSize="18dp"
                         android:textColor="#ffffffff"
@@ -240,13 +240,12 @@
                         android:layout_gravity="center"
                         android:gravity="center_vertical|center_horizontal" />
 
-                    <EditText
+                    <Spinner
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/invest_project_et_price"
-                        android:layout_gravity="center"
+                        android:id="@+id/invest_project_spinner"
                         android:layout_weight="1"
-                        android:inputType="number"/>
+                        android:spinnerMode="dialog"/>
                 </LinearLayout>
 
                 <LinearLayout

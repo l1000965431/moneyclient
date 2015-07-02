@@ -38,4 +38,8 @@
     <!-- 投资界面 -->
     <string name="invest_project_invested_price">您已入资:%.2f￥</string>
     <string name="invest_project_no_invested_price">您尚未入资</string>
+    <string name="invest_project_select_invest_price">选择入资金额:</string>
+    
+    <!-- 货币单位 -->
+    <string name="monetary_unit_rmb">元</string>
 </resources>
