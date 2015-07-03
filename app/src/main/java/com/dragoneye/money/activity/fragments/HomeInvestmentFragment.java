@@ -2,8 +2,10 @@ package com.dragoneye.money.activity.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,18 +20,27 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
-import com.dragoneye.money.activity.ProjectDetailActivity;
+import com.dragoneye.money.activity.InvestProjectActivity;
 import com.dragoneye.money.config.PullRefreshConfig;
+import com.dragoneye.money.dao.MyDaoMaster;
+import com.dragoneye.money.dao.Project;
+import com.dragoneye.money.dao.ProjectDao;
+import com.dragoneye.money.dao.ProjectImage;
+import com.dragoneye.money.dao.ProjectImageDao;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.protocol.ServerProtocol;
 import com.dragoneye.money.view.RefreshableView;
+import com.dragoneye.money.view.TopTabButton;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * Created by happysky on 15-6-19.
@@ -38,26 +49,15 @@ import java.util.List;
 public class HomeInvestmentFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
     private static final String TAG = HomeInvestmentFragment.class.getSimpleName();
 
-    private class TopButton{
-        public ImageView imageView;
-        public TextView textView;
-        public void setChecked(boolean checked){
-            if(checked){
-                imageView.setVisibility(View.VISIBLE);
-                textView.setTextColor(getResources().getColor(R.color.home_investment_top_button_selected));
-            }else {
-                imageView.setVisibility(View.INVISIBLE);
-                textView.setTextColor(getResources().getColor(R.color.home_investment_top_button_unselected));
-            }
-        }
-    }
 
-    private TopButton mIncomingButton, mHotProjectButton, mSearchButton, mCurrentSelectedButton;
+    private TopTabButton mIncomingButton, mHotProjectButton, mSearchButton, mCurrentSelectedButton;
     private RefreshableView refreshableView;
     private ListView mListView;
-    private ArrayList<String> mDataArrays = new ArrayList<>();
+    private ArrayList<Project> mDataArrays = new ArrayList<>();
     private InvestmentListViewAdapter mAdapter;
     private Handler handler = new Handler();
+    private View mListViewFooter;
+    private Boolean mIsLoadingMore;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,20 +97,20 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
             }
         };
 
-        mIncomingButton = new TopButton();
+        mIncomingButton = new TopTabButton(getActivity());
         mIncomingButton.imageView = (ImageView)getActivity().findViewById(R.id.function_switch_bottom_button_investment_imageView);
         mIncomingButton.textView = (TextView)getActivity().findViewById(R.id.function_switch_bottom_button_investment_textView);
         LinearLayout linearLayout = (LinearLayout)getActivity().findViewById(R.id.function_switch_bottom_button_investment);
         linearLayout.setOnClickListener(tabButtonOnClickListener);
         tabButtonOnClickListener.onClick(linearLayout);
 
-        mHotProjectButton = new TopButton();
+        mHotProjectButton = new TopTabButton(getActivity());
         mHotProjectButton.imageView = (ImageView)getActivity().findViewById(R.id.imageView4);
         mHotProjectButton.textView = (TextView)getActivity().findViewById(R.id.textView4);
         linearLayout = (LinearLayout)getActivity().findViewById(R.id.linearLayout4);
         linearLayout.setOnClickListener(tabButtonOnClickListener);
 
-        mSearchButton = new TopButton();
+        mSearchButton = new TopTabButton(getActivity());
         mSearchButton.imageView = (ImageView)getActivity().findViewById(R.id.imageView5);
         mSearchButton.textView = (TextView)getActivity().findViewById(R.id.textView5);
         linearLayout = (LinearLayout)getActivity().findViewById(R.id.linearLayout5);
@@ -137,19 +137,22 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         mAdapter = new InvestmentListViewAdapter(getActivity(), mDataArrays);
         mListView.setAdapter(mAdapter);
 
+        mListViewFooter = LayoutInflater.from(getActivity()).inflate(R.layout.loading_list_view_item, null, false);
+        mIsLoadingMore = false;
+
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 if( scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE ){
-                    if(view.getLastVisiblePosition() == view.getCount() - 1){
-                        final View footer = LayoutInflater.from(getActivity()).inflate(R.layout.loading_list_view_item, null, false);
-                        mListView.addFooterView(footer);
+                    if( !mIsLoadingMore && view.getLastVisiblePosition() == view.getCount() - 1){
+                        mIsLoadingMore = true;
+                        mListView.addFooterView(mListViewFooter);
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mDataArrays.add("");
                                 mAdapter.notifyDataSetChanged();
-                                mListView.removeFooterView(footer);
+                                mListView.removeFooterView(mListViewFooter);
+                                mIsLoadingMore = false;
                             }
                         }, 2000);
                     }
@@ -166,9 +169,12 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
     private void initData(){
 
 
-        mDataArrays.add("");
-        mDataArrays.add("");
-        mDataArrays.add("");
+        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
+        QueryBuilder queryBuilder = projectDao.queryBuilder();
+        queryBuilder.limit(7);
+        List<Project> list = queryBuilder.list();
+        mDataArrays.addAll(list);
+
         updateInvestmentList();
     }
 
@@ -197,16 +203,18 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-        Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
+        Project project = (Project)mListView.getItemAtPosition(position);
+        Intent intent = new Intent(getActivity(), InvestProjectActivity.class);
+        intent.putExtra(InvestProjectActivity.EXTRA_PROJECT_ID, project.getId());
         startActivity(intent);
     }
 
     public class InvestmentListViewAdapter extends BaseAdapter {
-        private List<String> data;
+        private List<Project> data;
         private Context context;
         private LayoutInflater mInflater;
 
-        public InvestmentListViewAdapter(Context context, List<String> data){
+        public InvestmentListViewAdapter(Context context, List<Project> data){
             this.context = context;
             this.data = data;
             mInflater = LayoutInflater.from(context);
@@ -239,6 +247,8 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
+            Project project = (Project)getItem(position);
+
             ViewHolder viewHolder;
             if(convertView == null){
                 viewHolder = new ViewHolder();
@@ -256,6 +266,19 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                 convertView.setTag(viewHolder);
             }else{
                 viewHolder = (ViewHolder)convertView.getTag();
+            }
+
+            ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
+            QueryBuilder queryBuilder = projectImageDao.queryBuilder();
+            queryBuilder.where(ProjectImageDao.Properties.ProjectId.eq(project.getId()));
+            ProjectImage projectImage = (ProjectImage)queryBuilder.build().list().get(0);
+            if(projectImage != null){
+                try{
+                    viewHolder.ivLogo.setImageBitmap( MediaStore.Images.Media.getBitmap(context.getContentResolver(),
+                            Uri.parse(projectImage.getImageUrl())));
+                }catch (IOException e){
+
+                }
             }
 
             return convertView;

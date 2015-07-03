@@ -20,12 +20,10 @@
             android:paddingBottom="17dp"
             android:background="#ff1e1e1e">
 
-            <ImageView
-                android:layout_width="wrap_content"
+            <com.dragoneye.money.view.DotViewPager
+                android:layout_width="fill_parent"
                 android:layout_height="170dp"
-                android:id="@+id/imageView"
-                android:src="@mipmap/projects_display001_1"
-                android:scaleType="fitXY" />
+                android:id="@+id/investment_project_detail_dot_viewpager"/>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -163,7 +161,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="您已入资：12487￥"
-                        android:id="@+id/textView11"
+                        android:id="@+id/invest_project_tv_invest_price"
                         android:textSize="13dp"
                         android:textColor="#ff767676"
                         android:textIsSelectable="false"
@@ -234,7 +232,7 @@
                         android:layout_width="130dp"
                         android:layout_height="30dp"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="输入入资金额："
+                        android:text="@string/invest_project_select_invest_price"
                         android:id="@+id/textView20"
                         android:textSize="18dp"
                         android:textColor="#ffffffff"
@@ -242,13 +240,12 @@
                         android:layout_gravity="center"
                         android:gravity="center_vertical|center_horizontal" />
 
-                    <EditText
+                    <Spinner
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText"
-                        android:layout_gravity="center"
-                        android:text="99999"
-                        android:layout_weight="1" />
+                        android:id="@+id/invest_project_spinner"
+                        android:layout_weight="1"
+                        android:spinnerMode="dialog"/>
                 </LinearLayout>
 
                 <LinearLayout

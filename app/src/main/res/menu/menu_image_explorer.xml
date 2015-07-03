@@ -1,9 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
-      tools:context="com.dragoneye.money.activity.ProjectDetailActivity">
-    <item android:id="@+id/menu_project_detail_cheat"
-          android:title="立刻结束"
+      tools:context="com.dragoneye.money.activity.ImageExplorerActivity">
+    <item android:id="@+id/action_settings"
+          android:title="@string/action_settings"
           android:orderInCategory="100"
-          app:showAsAction="ifRoom"/>
+          app:showAsAction="never"/>
 </menu>

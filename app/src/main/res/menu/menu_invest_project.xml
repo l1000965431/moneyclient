@@ -2,8 +2,8 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.dragoneye.money.activity.ProjectDetailActivity">
-    <item android:id="@+id/menu_project_detail_cheat"
-          android:title="立刻结束"
+    <item android:id="@+id/menu_invest_project_detail"
+          android:title="详情"
           android:orderInCategory="100"
           app:showAsAction="ifRoom"/>
 </menu>

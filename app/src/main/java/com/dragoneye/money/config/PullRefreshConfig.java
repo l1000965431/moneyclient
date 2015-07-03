@@ -5,4 +5,5 @@ package com.dragoneye.money.config;
  */
 public interface PullRefreshConfig {
     int FRAGMENT_HOME_INVESTMENT = 1;
+    int FRAGMENT_HOME_RECORD = 2;
 }
