@@ -459,6 +459,22 @@
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="37dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="投资该项目"
+                android:id="@+id/textView79"
+                android:layout_gravity="center"
+                android:textSize="17dp"
+                android:background="@drawable/bg_rounded10blue"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="20dp"
+                android:textColor="#ff97e3ff"
+                android:layout_marginBottom="5dp"
+                android:textIsSelectable="false"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
