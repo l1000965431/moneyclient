@@ -6,7 +6,4 @@
 
        <bean id="ServiceFactory" class="Service.ServiceFactory" ></bean>
 
-
-       <bean id="UnilTestService" class="Service.Test.UnilTestService" ></bean>
-
 </beans>

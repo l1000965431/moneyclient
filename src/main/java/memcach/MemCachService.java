@@ -20,6 +20,7 @@ public class MemCachService {
 
     public void setShardedPool(ShardedJedisPool shardedPool) {
         this.shardedPool = shardedPool;
+        int a = 0;
     }
 
     private ShardedJedisPool shardedPool = null;

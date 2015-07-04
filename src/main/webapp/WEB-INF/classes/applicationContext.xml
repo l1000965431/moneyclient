@@ -15,8 +15,16 @@
               </mvc:message-converters>
        </mvc:annotation-driven>
 
-       <context:property-placeholder location="WEB-INF/classes/conf/redis.properties" />
-       <context:property-placeholder location="WEB-INF/classes/conf/mycat.properties" />
+
+       <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+              <property name="locations">
+                     <list>
+                            <value>WEB-INF/classes/conf/redis.properties</value>
+                            <value>WEB-INF/classes/conf/mycat.properties</value>
+                     </list>
+              </property>
+       </bean>
+
 
        <import resource="xml/Spring-*.xml"/>
 </beans>
