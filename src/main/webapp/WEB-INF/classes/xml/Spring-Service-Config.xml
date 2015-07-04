@@ -6,10 +6,6 @@
 
        <bean id="ServiceFactory" class="Service.ServiceFactory" ></bean>
 
-       <bean id="TestService" class="Service.TestService" scope="prototype">
-              <p:ServiceName  value="TestService"/>
-       </bean>
-
 
        <bean id="UnilTestService" class="Service.Test.UnilTestService" ></bean>
 
