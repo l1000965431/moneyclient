@@ -6,4 +6,6 @@
 
        <bean id="ServiceFactory" class="Service.ServiceFactory" ></bean>
 
+       <!-- 声明自定义服务  注意一定要声明scope="prototype" -->
+
 </beans>
