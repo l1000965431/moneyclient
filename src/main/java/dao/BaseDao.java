@@ -104,6 +104,7 @@ public class BaseDao<T,PK extends Serializable> implements IBaseDao<T,PK> {
 
         hedao.evict(entity);
     }
+
     /**
      * 执行本地sql语句获得标量数值列表
      */

@@ -65,7 +65,7 @@ public class HibernateEntityDao<T,PK extends Serializable> extends HibernateDaoS
      */
     @SuppressWarnings("unchecked")
     public List<T> getAll() {
-        return (List<T>)(getHibernateTemplate().loadAll(getEntityClass()));
+        return (getHibernateTemplate().loadAll(getEntityClass()));
     }
 
     /**
@@ -130,6 +130,7 @@ public class HibernateEntityDao<T,PK extends Serializable> extends HibernateDaoS
         }
         return criteria;
     }
+
     /**
      * 创建Criteria对象，带排序字段与升降序字段.
      */

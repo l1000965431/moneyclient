@@ -11,9 +11,6 @@
         xmlns:aop="http://www.springframework.org/schema/aop"
         xmlns:tx="http://www.springframework.org/schema/tx">
 
-
-
-
     <!-- 获取数据源/使用数据源连接池 -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 
@@ -42,61 +39,15 @@
         </property>
     </bean>
 
-    <!-- 用XML的方式声明Hibernate的Session工厂 -->
-    <!-- LIST value为对应实体的映射文件 -->
-    <!--  <bean id="sessionFactory"
-            class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-
-      <property name="dataSource" ref="dataSource"/>
-
-        <property name="MappingResources">
-               <list>
-                      <value>ws1.hbm.xml</value>
-               </list>
-        </property>
-        <property name="hibernateProperties">
-        <props>
-               <prop key="dialect">org.hibernate.dialect.MySQLDialect</prop>
-        </props>
-        </property>
-        </bean> -->
-    <!-- 1111111111111111111111111111111111111111111声明Hibernate的Session工厂 111111111111111111111111111111111111111111111111111111111111111111-->
-
-
-    <!-- 11111111111111111111111111111111111111111111事务管理器11111111111111111111111111111111111111111111111111111111111111111-->
-    <!--通过JDBC实现持久化的事务管理配置-->
-    <!-- DataSourceTransactionManager通过调用java.sql.Connection来管理事务 commit()方法提交事务 rollback()方法回滚-->
-    <!-- <bean id="transactionManager"
-           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-         <property name="dataSource" ref="dataSource"/>
-     </bean> -->
-
-    <!--通过Hibernate实现持久化的事务管理配置-->
-    <!--HibernateTransactionManager将事务管理委托给org.hibernate.Transaction对象（org.hibernate.Transaction对象从Session中获取）-->
-    <!-- <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-         <property name="sessionFactory" ref="sessionFactory"/>
-     </bean> -->
-
-    <!--计划采用JPA时，用Spring中的JpaTransactionManager管理事务-->
-    <!-- <bean id="transactionManager"
-           class="org.springframework.orm.jpa.JpaTransactionManager">
-         <property name="entityManagerFactory" ref="entityManagerFactory"/>
-     </bean>-->
 
     <!--JpaTransactionManager支持将事务应用于简单的JDBC中，二者使用的DataSource必须相同
        JpaDialect实现必须同时支持JPA JDBC访问-->
     <bean id="jpaDialect"
           class="org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect"/>
-    <!-- 将jpaDialect装配到JpaTransactionManager中-->
-    <!-- <bean id="transactionManager"
-           class="org.springframework.orm.jpa.JpaTransactionManager">
-         <property name="entityManagerFactory" ref="entityManagerFactory"/>
-         <property name="jpaDialect" ref="jpaDialect"/>
-     </bean> -->
+
 
     <!--使用注解配置事务管理器-->
-  <!--  <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>-->
-    <!--entityManagerFactory配置(spring为容器，完全掌管JPA时的配置)-->
+
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
@@ -111,17 +62,6 @@
                   value="java:/TransactionManager"/>
     </bean>
 
-    <!-- 将TransactionTemplate注入到HibernateSpitterDao中-->
-    <bean id="spitterService"
-          class="dao.HibernateSpitterDao">
-        <property name="transactionTemplate">
-            <bean class="org.springframework.transaction.support.TransactionTemplate">
-                <property name="transactionManager"
-                          ref="transactionManager"/>
-            </bean>
-        </property>
-
-    </bean>
 
 
     <!-- 声明事务性策略 transaction-manager指定事务管理器的ID-->
@@ -141,8 +81,34 @@
     </aop:config>
     <!-- 使用annotation-driven定义注解驱动的事务 -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
-
-
     <!-- 11111111111111111111111111111111111111111111事务管理器11111111111111111111111111111111111111111111111111111111111111111-->
+
+    <bean id="hedao"
+          class="until.Hibernate.HibernateEntityDao" scope="prototype">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory" />
+        </property>
+    </bean>
+    <!--这个和具体实体无关,所有dao共享-->
+    <bean id="hgdao"
+          class="until.Hibernate.HibernateGenericDao">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory" />
+        </property>
+    </bean>
+
+    <!--使用泛型DAO作为抽象基类-->
+    <bean id="baseDao" class="dao.BaseDao"
+          abstract="true" depends-on="hedao,hgdao">
+        <property name="hedao">
+            <ref bean="hedao" />
+        </property>
+        <property name="hgdao">
+            <ref bean="hgdao" />
+        </property>
+    </bean>
+
+
+
 
 </beans>

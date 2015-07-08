@@ -1,8 +1,5 @@
 package dao;
 
-/**
- * Created by liumin on 15/7/8.
- */
 import java.io.Serializable;
 import java.util.List;
 import org.hibernate.Criteria;
