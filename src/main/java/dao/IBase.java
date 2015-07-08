@@ -14,7 +14,9 @@ import until.Hibernate.Page;
 /**
  * 提供hibernate dao的所有操作,<br>
  * 实现类由spring注入HibernateEntityDao和HibernateGenericDao来实现
- *
+ * <p>User: seele
+ * <p>Date: 15-7-8 下午5:55
+ * <p>Version: 1.0
  */
 interface IBaseDao<T,PK extends Serializable> {
 

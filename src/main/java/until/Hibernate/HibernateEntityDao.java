@@ -22,14 +22,15 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
-
 /**
  * 负责为单个Entity对象提供CRUD操作的Hibernate DAO基类. <p/>
  * 子类只要在类定义时指定所管理Entity的Class,
  * 即拥有对单个Entity对象的CRUD操作.
- *
- * @see HibernateDaoSupport
+ * <p>User: seele
+ * <p>Date: 15-7-8 下午5:55
+ * <p>Version: 1.0
  */
+
 public class HibernateEntityDao<T,PK extends Serializable> extends HibernateDaoSupport implements IEntityDao<T, PK> {
     protected Class<T> entityClass;// DAO所管理的Entity类型.
     public void setEntityClass(Class<T> type){

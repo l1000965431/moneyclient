@@ -2,7 +2,9 @@ package until.Hibernate;
 
 /**
  * 装载Entity信息的内部类.
- * Created by liumin on 15/7/8.
+ * <p>User: seele
+ * <p>Date: 15-7-8 下午5:55
+ * <p>Version: 1.0
  */
 
 class EntityInfo {

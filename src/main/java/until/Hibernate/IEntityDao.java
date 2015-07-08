@@ -5,8 +5,12 @@ package until.Hibernate;
  */
 import java.io.Serializable;
 import java.util.List;
+
 /**
  * 针对单个Entity对象的CRUD操作定义.
+ * <p>User: seele
+ * <p>Date: 15-7-8 下午5:55
+ * <p>Version: 1.0
  */
 public interface IEntityDao<T,PK extends Serializable> {
     T get(PK id);

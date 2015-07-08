@@ -9,11 +9,16 @@ import java.util.regex.Pattern;
 import org.hibernate.Query;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.util.Assert;
+
 /**
  * 继承自spring的HibernateDaoSupport<br>
  * 提供了和具体实体类无关的数据库操作,如分页函数和若干便捷查询方法
  * @see    HibernateDaoSupport
+ * <p>User: seele
+ * <p>Date: 15-7-8 下午5:55
+ * <p>Version: 1.0
  */
+
 public class HibernateGenericDao extends HibernateDaoSupport {
     /**
      * 分页查询函数，使用hql.
