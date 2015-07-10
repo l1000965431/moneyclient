@@ -15,9 +15,9 @@ public class ServiceFactory extends ApplicationObjectSupport {
         //context = new ClassPathXmlApplicationContext("xml/Spring-Service-Config.xml");
     }
 
-    static public ServiceBase getService( String name ){
+    static public <T> T getService( String name ){
         try {
-            return (ServiceBase) servicefactory.getApplicationContext().getBean(name);
+            return (T) servicefactory.getApplicationContext().getBean(name);
         }catch ( Exception e ){
             return null;
         }
