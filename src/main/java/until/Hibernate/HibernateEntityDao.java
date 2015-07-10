@@ -18,7 +18,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.internal.CriteriaImpl;
 import org.hibernate.metadata.ClassMetadata;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
@@ -124,7 +124,7 @@ public class HibernateEntityDao<T,PK extends Serializable> extends HibernateDaoS
      * @param criterions 可变的Restrictions条件列表
      */
     public  Criteria createCriteria(Criterion... criterions) {
-        Criteria criteria = getSession().createCriteria(getEntityClass());
+        Criteria criteria = getSessionFactory().openSession().createCriteria(getEntityClass());
         for (Criterion c : criterions) {
             criteria.add(c);
         }

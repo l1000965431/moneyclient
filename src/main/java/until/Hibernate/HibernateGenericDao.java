@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.hibernate.Query;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+//import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 import org.springframework.util.Assert;
 
 /**
@@ -83,7 +84,7 @@ public class HibernateGenericDao extends HibernateDaoSupport {
      */
     public Query createQuery(String hql, Object... values) {
         Assert.hasText(hql);
-        Query query = getSession().createQuery(hql);
+        Query query = getSessionFactory().openSession().createQuery(hql);
         for (int i = 0; i < values.length; i++) {
             query.setParameter(i, values[i]);
         }
@@ -120,7 +121,7 @@ public class HibernateGenericDao extends HibernateDaoSupport {
      */
     @SuppressWarnings("unchecked")
     public List executeNativeSql(String sql){
-        return getSession().createSQLQuery(sql).list();
+        return getSessionFactory().openSession().createSQLQuery(sql).list();
     }
     /**
      * 去除hql的select 子句，未考虑union的情况,用于pagedQuery.
