@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:tx="http://www.springframework.org/schema/tx">
+
+    <!-- 获取数据源/使用数据源连接池 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+
+        <property value="com.mysql.jdbc.Driver" name="driverClassName"/><!--driverClassName指定了JDBC驱动类的全限定类名 -->
+
+        <property value="jdbc:mysql://115.29.111.0:3306/moneyserver" name="url"/><!-- 数据库所在IP地址和数据库名-->
+
+        <property value="root" name="username"/>
+
+        <property value="123456" name="password"/>
+
+    </bean>
+
+    <!-- 1111111111111111111111111111111111111111111声明Hibernate的Session工厂 111111111111111111111111111111111111111111111111111111111111111111-->
+    <!-- 用注解的方式定义持久化，声明Hibernate的Session工厂 -->
+    <!-- 声明了sessionFactory后，在DAO中可以使用@Autowired和@Qualifier注入属性访问sessionFactory -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="model"/> <!-- 使用应用程序管理类型的JPA  值为包路径-->
+        <property name="hibernateProperties">
+            <props>
+                <prop key="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="txManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="get*" read-only="false" propagation="NOT_SUPPORTED"/>
+            <tx:method name="find*" read-only="false" propagation="NOT_SUPPORTED"/>
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="bussinessService"
+                      expression="execution(* com..service.base.*.*(..))" />
+        <aop:advisor pointcut-ref="bussinessService"
+                     advice-ref="txAdvice" />
+    </aop:config>
+
+
+
+
+    <!--JpaTransactionManager支持将事务应用于简单的JDBC中，二者使用的DataSource必须相同
+       JpaDialect实现必须同时支持JPA JDBC访问-->
+    <!--<bean id="jpaDialect"-->
+          <!--class="org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect"/>-->
+
+
+    <!--&lt;!&ndash;使用注解配置事务管理器&ndash;&gt;-->
+
+    <!--<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">-->
+        <!--&lt;!&ndash;<property name="dataSource" ref="dataSource"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="packagesToScan" value="model"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="loadTimeWeaver">&ndash;&gt;-->
+            <!--&lt;!&ndash;<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;</property>&ndash;&gt;-->
+        <!--<property name="packagesToScan" value="java" />-->
+        <!--<property name="dataSource" ref="dataSource" />-->
+        <!--<property name="jpaVendorAdapter">-->
+            <!--<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"-->
+                    <!--/>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!--&lt;!&ndash; 若事务需要跨多个数据库&ndash;&gt;-->
+    <!--<bean id="transactionManager"-->
+          <!--class="org.springframework.transaction.jta.JtaTransactionManager">-->
+        <!--<property name="transactionManager"-->
+                  <!--value="java:/TransactionManager"/>-->
+    <!--</bean>-->
+
+
+
+     <!--声明事务性策略 transaction-manager指定事务管理器的ID-->
+    <!--<tx:advice id="txAdvice"-->
+               <!--transaction-manager="transactionManager">-->
+        <!--<tx:attributes>-->
+            <!--<tx:method name="save*" propagation="REQUIRED"/>-->
+            <!--<tx:method name="*" propagation="SUPPORTS"-->
+                       <!--read-only="true"/>-->
+        <!--</tx:attributes>-->
+    <!--</tx:advice>-->
+    <!--&lt;!&ndash; 定义通知器（为定义事务性切面）&ndash;&gt;-->
+    <!--<aop:config>-->
+        <!--<aop:advisor-->
+                <!--pointcut="execution(* *..SpitterService.*(..))"-->
+                <!--advice-ref="txAdvice"/>-->
+    <!--</aop:config>-->
+    <!--&lt;!&ndash; 使用annotation-driven定义注解驱动的事务 &ndash;&gt;-->
+    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
+    <!-- 11111111111111111111111111111111111111111111事务管理器11111111111111111111111111111111111111111111111111111111111111111-->
+
+    <bean id="DaoFactory" class="dao.DaoFactory" ></bean>
+
+    <bean id="hedao"
+          class="until.Hibernate.HibernateEntityDao" scope="prototype">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory" />
+        </property>
+    </bean>
+    <!--这个和具体实体无关,所有dao共享-->
+    <bean id="hgdao"
+          class="until.Hibernate.HibernateGenericDao">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory" />
+        </property>
+    </bean>
+
+    <!--使用泛型DAO作为抽象基类-->
+    <bean id="baseDao" class="dao.BaseDao"
+          abstract="true" depends-on="hedao,hgdao">
+        <property name="hedao">
+            <ref bean="hedao" />
+        </property>
+        <property name="hgdao">
+            <ref bean="hgdao" />
+        </property>
+    </bean>
+
+    <bean id="activityDetailDao" parent="baseDao">
+        <constructor-arg>
+            <value>model.ActivityModel</value>
+        </constructor-arg>
+    </bean>
+
+
+
+
+</beans>
