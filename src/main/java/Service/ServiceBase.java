@@ -16,10 +16,7 @@ public class ServiceBase implements ServiceInterface{
 
     public void setServiceName(String serviceName) {
 
-        int max=20;
-        int min=10;
-        Random random = new Random();
-        ServiceName = serviceName+Integer.toString(random.nextInt(max)%(max-min+1) + min);
+        ServiceName = serviceName;
     }
 
     private String ServiceName;
