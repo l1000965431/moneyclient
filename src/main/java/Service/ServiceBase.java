@@ -9,7 +9,7 @@ import java.util.Random;
  * <p>Date: 15-7-7 下午5:43
  * <p>Version: 1.0
  */
-public class ServiceBase implements ServiceInterface{
+public class ServiceBase {
     public String getServiceName() {
         return ServiceName;
     }
@@ -23,7 +23,7 @@ public class ServiceBase implements ServiceInterface{
 
     public ServiceBase(){
 
-    };
+    }
 
 
     public String Excute() {

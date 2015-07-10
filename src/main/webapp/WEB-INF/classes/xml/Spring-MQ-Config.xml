@@ -3,9 +3,15 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+
+       <bean id="InsertOrderListener" class="MoneyServerMQ.MQListener.InsertOrderListener">
+       <property name="messageTopic" value="MoneyServer_Order_Insert"/>
+       </bean>
+
        <bean id="MoneySeverMQManager" class="MoneyServerMQ.MoneyServerMQManager" >
               <constructor-arg>
                      <list>
+                            <ref bean="InsertOrderListener" />
                      </list>
               </constructor-arg>
 
