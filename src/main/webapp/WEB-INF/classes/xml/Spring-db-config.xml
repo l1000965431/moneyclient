@@ -35,6 +35,7 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
             </props>
         </property>
     </bean>
@@ -56,63 +57,10 @@
 
     <aop:config>
         <aop:pointcut id="bussinessService"
-                      expression="execution(* com..service.base.*.*(..))" />
+                      expression="execution(* Service.*.*(..))" />
         <aop:advisor pointcut-ref="bussinessService"
                      advice-ref="txAdvice" />
     </aop:config>
-
-
-
-
-    <!--JpaTransactionManager支持将事务应用于简单的JDBC中，二者使用的DataSource必须相同
-       JpaDialect实现必须同时支持JPA JDBC访问-->
-    <!--<bean id="jpaDialect"-->
-          <!--class="org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect"/>-->
-
-
-    <!--&lt;!&ndash;使用注解配置事务管理器&ndash;&gt;-->
-
-    <!--<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">-->
-        <!--&lt;!&ndash;<property name="dataSource" ref="dataSource"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;<property name="packagesToScan" value="model"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;&lt;!&ndash;<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />&ndash;&gt;&ndash;&gt;-->
-        <!--&lt;!&ndash;<property name="loadTimeWeaver">&ndash;&gt;-->
-            <!--&lt;!&ndash;<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;</property>&ndash;&gt;-->
-        <!--<property name="packagesToScan" value="java" />-->
-        <!--<property name="dataSource" ref="dataSource" />-->
-        <!--<property name="jpaVendorAdapter">-->
-            <!--<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"-->
-                    <!--/>-->
-        <!--</property>-->
-    <!--</bean>-->
-    <!--&lt;!&ndash; 若事务需要跨多个数据库&ndash;&gt;-->
-    <!--<bean id="transactionManager"-->
-          <!--class="org.springframework.transaction.jta.JtaTransactionManager">-->
-        <!--<property name="transactionManager"-->
-                  <!--value="java:/TransactionManager"/>-->
-    <!--</bean>-->
-
-
-
-     <!--声明事务性策略 transaction-manager指定事务管理器的ID-->
-    <!--<tx:advice id="txAdvice"-->
-               <!--transaction-manager="transactionManager">-->
-        <!--<tx:attributes>-->
-            <!--<tx:method name="save*" propagation="REQUIRED"/>-->
-            <!--<tx:method name="*" propagation="SUPPORTS"-->
-                       <!--read-only="true"/>-->
-        <!--</tx:attributes>-->
-    <!--</tx:advice>-->
-    <!--&lt;!&ndash; 定义通知器（为定义事务性切面）&ndash;&gt;-->
-    <!--<aop:config>-->
-        <!--<aop:advisor-->
-                <!--pointcut="execution(* *..SpitterService.*(..))"-->
-                <!--advice-ref="txAdvice"/>-->
-    <!--</aop:config>-->
-    <!--&lt;!&ndash; 使用annotation-driven定义注解驱动的事务 &ndash;&gt;-->
-    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
-    <!-- 11111111111111111111111111111111111111111111事务管理器11111111111111111111111111111111111111111111111111111111111111111-->
 
     <bean id="DaoFactory" class="dao.DaoFactory" ></bean>
 
@@ -141,12 +89,8 @@
         </property>
     </bean>
 
-    <bean id="activityDetailDao" parent="baseDao">
-        <constructor-arg>
-            <value>model.ActivityModel</value>
-        </constructor-arg>
+    <bean id="testBaseDao" class="dao.TestBaseDao">
     </bean>
-
 
 
 

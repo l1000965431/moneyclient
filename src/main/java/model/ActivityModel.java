@@ -2,6 +2,7 @@ package model;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 项目提交
@@ -11,7 +12,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "activitydetails")
-public class ActivityModel {
+public class ActivityModel implements Serializable {
     /**
      * 项目ID
      */
@@ -72,7 +73,7 @@ public class ActivityModel {
     /**
      * 筹资金额
      */
-    int targetPrice;
+    int targetFund;
 
     /**
      * 筹资天数
@@ -172,12 +173,12 @@ public class ActivityModel {
         this.tags = tags;
     }
 
-    public int getTargetPrice() {
-        return targetPrice;
+    public int getTargetFund() {
+        return targetFund;
     }
 
-    public void setTargetPrice(int targetPrice) {
-        this.targetPrice = targetPrice;
+    public void setTargetFund(int targetFund) {
+        this.targetFund = targetFund;
     }
 
     public int getRaiseDay() {

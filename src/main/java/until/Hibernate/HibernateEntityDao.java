@@ -102,7 +102,8 @@ public class HibernateEntityDao<T,PK extends Serializable> extends HibernateDaoS
      * 否则调用update()重新关联托管对象
      */
     public void save(T entity) {
-        getHibernateTemplate().saveOrUpdate(entity);
+        getSessionFactory().getCurrentSession().saveOrUpdate(entity);
+        //getHibernateTemplate().saveOrUpdate(entity);
     }
     /**
      * 在不同的session中关联修改过的托管对象
