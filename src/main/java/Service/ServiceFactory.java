@@ -1,8 +1,6 @@
 package Service;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ApplicationObjectSupport;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Created by liumin on 15/7/3.

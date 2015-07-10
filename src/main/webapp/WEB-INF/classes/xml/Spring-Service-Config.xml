@@ -9,6 +9,7 @@
        <!-- 声明自定义服务  注意一定要声明scope="prototype" -->
        <bean id="ServiceSubmitActivity"
              class="Service.ServiceSubmitActivity">
+              <property name="serviceName" value="ServiceSubmitActivity" />
        </bean>
 
 </beans>

@@ -1,7 +1,5 @@
 package Service;
 
-import java.util.Random;
-
 /**
  * 服务基类
  * 服务类必须是无状态的,状态有外部参数控制  服务只负责实现过程

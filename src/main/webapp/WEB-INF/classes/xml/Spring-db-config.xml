@@ -55,41 +55,41 @@
         </tx:attributes>
     </tx:advice>
 
-    <aop:config>
-        <aop:pointcut id="bussinessService"
-                      expression="execution(* Service.*.*(..))" />
-        <aop:advisor pointcut-ref="bussinessService"
-                     advice-ref="txAdvice" />
-    </aop:config>
+    <!--<aop:config>-->
+        <!--<aop:pointcut id="bussinessService"-->
+                      <!--expression="execution(* Service.test.*.*(..))" />-->
+        <!--<aop:advisor pointcut-ref="bussinessService"-->
+                     <!--advice-ref="txAdvice" />-->
+    <!--</aop:config>-->
 
     <bean id="DaoFactory" class="dao.DaoFactory" ></bean>
 
-    <bean id="hedao"
-          class="until.Hibernate.HibernateEntityDao" scope="prototype">
-        <property name="sessionFactory">
-            <ref bean="sessionFactory" />
-        </property>
-    </bean>
-    <!--这个和具体实体无关,所有dao共享-->
-    <bean id="hgdao"
-          class="until.Hibernate.HibernateGenericDao">
-        <property name="sessionFactory">
-            <ref bean="sessionFactory" />
-        </property>
-    </bean>
+    <!--<bean id="hedao"-->
+          <!--class="until.Hibernate.HibernateEntityDao" scope="prototype">-->
+        <!--<property name="sessionFactory">-->
+            <!--<ref bean="sessionFactory" />-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!--&lt;!&ndash;这个和具体实体无关,所有dao共享&ndash;&gt;-->
+    <!--<bean id="hgdao"-->
+          <!--class="until.Hibernate.HibernateGenericDao">-->
+        <!--<property name="sessionFactory">-->
+            <!--<ref bean="sessionFactory" />-->
+        <!--</property>-->
+    <!--</bean>-->
 
-    <!--使用泛型DAO作为抽象基类-->
-    <bean id="baseDao" class="dao.BaseDao"
-          abstract="true" depends-on="hedao,hgdao">
-        <property name="hedao">
-            <ref bean="hedao" />
-        </property>
-        <property name="hgdao">
-            <ref bean="hgdao" />
-        </property>
-    </bean>
+    <!--&lt;!&ndash;使用泛型DAO作为抽象基类&ndash;&gt;-->
+    <!--<bean id="baseDao" class="dao.BaseDao"-->
+          <!--abstract="true" depends-on="hedao,hgdao">-->
+        <!--<property name="hedao">-->
+            <!--<ref bean="hedao" />-->
+        <!--</property>-->
+        <!--<property name="hgdao">-->
+            <!--<ref bean="hgdao" />-->
+        <!--</property>-->
+    <!--</bean>-->
 
-    <bean id="testBaseDao" class="dao.TestBaseDao">
+    <bean id="BaseDao" class="dao.BaseDao">
     </bean>
 
 

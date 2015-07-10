@@ -1,7 +1,7 @@
 package Controller;
 
+import Service.ServiceFactory;
 import Service.ServiceSubmitActivity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,12 +18,14 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping("/SubmitActivity")
 public class SubmitActivityController extends ControllerBase implements IController {
-    @Autowired
-    private ServiceSubmitActivity serviceSubmitActivity;
+//    @Autowired
+//    private ServiceSubmitActivity serviceSubmitActivity;
 
     @RequestMapping("submitActivity")
     @ResponseBody
     public String commitProject( HttpServletRequest request, HttpServletResponse response){
+        ServiceSubmitActivity serviceSubmitActivity = (ServiceSubmitActivity)ServiceFactory.getService("ServiceSubmitActivity");
+
         return serviceSubmitActivity.submitActivity(request, response);
     }
 }
