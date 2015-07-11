@@ -1,77 +1,83 @@
 package model;
 
+import javax.persistence.*;
+
 /**
  * Created by liumin on 15/7/6.
  */
+
+@Entity
+@Table(name = "order")
 public class OrderModel {
 
-    public long getOrderID() {
+    @Id
+    private Long orderID;
+
+    private int activityID;
+
+    private int userID;
+
+    private String orderdate;
+
+    private int orderlines;
+
+    private int activitygroupID;
+
+    public Long getOrderID() {
         return orderID;
     }
 
-    public void setOrderID(long orderID) {
+    public void setOrderID(Long orderID) {
         this.orderID = orderID;
     }
 
     public int getActivityID() {
-        return ActivityID;
+        return activityID;
     }
 
     public void setActivityID(int activityID) {
-        ActivityID = activityID;
+        this.activityID = activityID;
     }
 
     public int getUserID() {
-        return UserID;
+        return userID;
     }
 
     public void setUserID(int userID) {
-        UserID = userID;
+        this.userID = userID;
     }
 
-    public String getOrderDate() {
-        return OrderDate;
+    public String getOrderdate() {
+        return orderdate;
     }
 
-    public void setOrderDate(String orderDate) {
-        OrderDate = orderDate;
+    public void setOrderdate(String orderdate) {
+        this.orderdate = orderdate;
     }
 
-    public int getLines() {
-        return Lines;
+    public int getOrderlines() {
+        return orderlines;
     }
 
-    public void setLines(int lines) {
-        Lines = lines;
+    public void setOrderlines(int orderlines) {
+        this.orderlines = orderlines;
     }
 
-    public int getActivityGroupID() {
-        return ActivityGroupID;
+    public int getActivitygroupID() {
+        return activitygroupID;
     }
 
-    public void setActivityGroupID(int activityGroupID) {
-        ActivityGroupID = activityGroupID;
+    public void setActivitygroupID(int activitygroupID) {
+        this.activitygroupID = activitygroupID;
     }
 
-    private long orderID;
-
-    private int ActivityID;
-
-    private int UserID;
-
-    private String OrderDate;
-
-    private int Lines;
-
-    private int ActivityGroupID;
-
-    public int getOrderState() {
-        return orderState;
+    public int getOrderstate() {
+        return orderstate;
     }
 
-    public void setOrderState(int orderState) {
-        this.orderState = orderState;
+    public void setOrderstate(int orderstate) {
+        this.orderstate = orderstate;
     }
 
-    private int orderState;
+    private int orderstate;
 }
