@@ -1,6 +1,7 @@
 package until;
 
 import com.google.gson.Gson;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.List;
 /**
  * Created by liumin on 15/7/5.
  */
+
+@Component
 public class GsonUntil {
 
     public static Gson getGson() {
@@ -67,7 +70,7 @@ public class GsonUntil {
     }
 
 
-    public static <T> String JavaClassToJson( Class<T> c ){
+    public static <T> String JavaClassToJson( T c ){
         String json = gson.toJson( c );
         return json;
     }

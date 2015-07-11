@@ -57,7 +57,7 @@ public class HibernateEntityDao<T,PK extends Serializable> extends HibernateDaoS
     @SuppressWarnings("unchecked")
     public T get(PK id) {
 
-        return (T) getHibernateTemplate().load(getEntityClass(), id);
+        return getHibernateTemplate().load(getEntityClass(), id);
     }
 
     /**
@@ -210,7 +210,7 @@ public class HibernateEntityDao<T,PK extends Serializable> extends HibernateDaoS
         // 返回分页对象
         if (totalCount < 1)
             return new Page();
-        int startIndex = Page.getStartOfPage(pageNo, pageSize);;
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List list = criteria.setFirstResult(startIndex).setMaxResults(pageSize).list();
         return new Page(startIndex, totalCount, pageSize, list);
     }

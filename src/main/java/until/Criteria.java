@@ -6,37 +6,37 @@ import java.util.List;
  * 条件查询类
  */
 public interface Criteria {
-    public List<String> getFields();
+    List<String> getFields();
 
-    public void setFields(List<String> fields);
+    void setFields(List<String> fields);
 
-    public List<Object> getCondition();
+    List<Object> getCondition();
 
-    public void setCondition(List<Object> condition);
+    void setCondition(List<Object> condition);
 
-    public int getStart();
+    int getStart();
 
-    public void setStart(int start);
+    void setStart(int start);
 
-    public int getFetchSize();
+    int getFetchSize();
 
-    public void setFetchSize(int fetchSize);
+    void setFetchSize(int fetchSize);
 
-    public List<String> getOrder();
+    List<String> getOrder();
 
-    public void setOrder(List<String> order);
+    void setOrder(List<String> order);
 
-    public int getPageNo();
+    int getPageNo();
 
-    public void setPageNo(int pageNo);
+    void setPageNo(int pageNo);
 
-    public String toString();
+    String toString();
 
-    public String getFieldClause();
+    String getFieldClause();
 
-    public String getOrderClause();
+    String getOrderClause();
 
-    public String getWhereClause();
+    String getWhereClause();
 
     /**
      * 添加条件
@@ -44,7 +44,7 @@ public interface Criteria {
      * @param position  添加的位置
      * @param condition
      */
-    public void addCondition(int position, Condition condition);
+    void addCondition(int position, Condition condition);
 
-    public void addOrder(int index, String order);
+    void addOrder(int index, String order);
 }
