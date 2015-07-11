@@ -11,5 +11,8 @@
              class="Service.ServiceSubmitActivity">
               <property name="serviceName" value="ServiceSubmitActivity" />
        </bean>
-
+       <bean id="OrderService"
+             class="Service.order.OrderService">
+              <property name="serviceName" value="OrderService" />
+       </bean>
 </beans>

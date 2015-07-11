@@ -28,4 +28,10 @@ public class MoneyServerListener implements MessageListener {
     public Action consume(Message message, ConsumeContext consumeContext) {
         return null;
     }
+
+    public String BodyToString( byte[] body ) throws Exception{
+        String stringbody = new String(body,"UTF-8");
+        return stringbody;
+    }
+
 }

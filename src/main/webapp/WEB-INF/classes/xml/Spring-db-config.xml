@@ -4,11 +4,8 @@
 
         xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop.xsd
         http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx.xsd"
-        xmlns:aop="http://www.springframework.org/schema/aop"
         xmlns:tx="http://www.springframework.org/schema/tx">
 
     <!-- 获取数据源/使用数据源连接池 -->
@@ -34,7 +31,7 @@
         <property name="packagesToScan" value="model"/> <!-- 使用应用程序管理类型的JPA  值为包路径-->
         <property name="hibernateProperties">
             <props>
-                <prop key="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+                <prop key="dialect">org.hibernate.dialect.MySQL5Dialect</prop>
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
             </props>
         </property>
@@ -56,37 +53,37 @@
     </tx:advice>
 
     <!--<aop:config>-->
-        <!--<aop:pointcut id="bussinessService"-->
-                      <!--expression="execution(* Service.test.*.*(..))" />-->
-        <!--<aop:advisor pointcut-ref="bussinessService"-->
-                     <!--advice-ref="txAdvice" />-->
+    <!--<aop:pointcut id="bussinessService"-->
+    <!--expression="execution(* Service.test.*.*(..))" />-->
+    <!--<aop:advisor pointcut-ref="bussinessService"-->
+    <!--advice-ref="txAdvice" />-->
     <!--</aop:config>-->
 
     <bean id="DaoFactory" class="dao.DaoFactory" ></bean>
 
     <!--<bean id="hedao"-->
-          <!--class="until.Hibernate.HibernateEntityDao" scope="prototype">-->
-        <!--<property name="sessionFactory">-->
-            <!--<ref bean="sessionFactory" />-->
-        <!--</property>-->
+    <!--class="until.Hibernate.HibernateEntityDao" scope="prototype">-->
+    <!--<property name="sessionFactory">-->
+    <!--<ref bean="sessionFactory" />-->
+    <!--</property>-->
     <!--</bean>-->
     <!--&lt;!&ndash;这个和具体实体无关,所有dao共享&ndash;&gt;-->
     <!--<bean id="hgdao"-->
-          <!--class="until.Hibernate.HibernateGenericDao">-->
-        <!--<property name="sessionFactory">-->
-            <!--<ref bean="sessionFactory" />-->
-        <!--</property>-->
+    <!--class="until.Hibernate.HibernateGenericDao">-->
+    <!--<property name="sessionFactory">-->
+    <!--<ref bean="sessionFactory" />-->
+    <!--</property>-->
     <!--</bean>-->
 
     <!--&lt;!&ndash;使用泛型DAO作为抽象基类&ndash;&gt;-->
     <!--<bean id="baseDao" class="dao.BaseDao"-->
-          <!--abstract="true" depends-on="hedao,hgdao">-->
-        <!--<property name="hedao">-->
-            <!--<ref bean="hedao" />-->
-        <!--</property>-->
-        <!--<property name="hgdao">-->
-            <!--<ref bean="hgdao" />-->
-        <!--</property>-->
+    <!--abstract="true" depends-on="hedao,hgdao">-->
+    <!--<property name="hedao">-->
+    <!--<ref bean="hedao" />-->
+    <!--</property>-->
+    <!--<property name="hgdao">-->
+    <!--<ref bean="hgdao" />-->
+    <!--</property>-->
     <!--</bean>-->
 
     <bean id="BaseDao" class="dao.BaseDao">

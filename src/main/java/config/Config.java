@@ -9,6 +9,10 @@ public class Config {
 
     public static final String MESSAGE_SEND_FAILED = "FAILED";
 
+    public static final String SERVICE_SUCCESS = "SUCCESS";
+
+    public static final String SERVICE_FAILED = "FAILED";
+
     public static final String MESSAFE_PRODUCERID = "PID_MoneySever_1";
 
     public static final String MESSAFE_CONSUMERID = "CID_MoneySever_1";
