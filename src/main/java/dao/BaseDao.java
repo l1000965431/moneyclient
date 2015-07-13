@@ -2,6 +2,7 @@ package dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -170,6 +171,93 @@ public class BaseDao {
             if (obj != null) {
                 getSession().delete(obj);
             }
+        }
+    }
+
+
+    /**
+     * 原生SQL语句查询  跨表查询的时候 只能跨两张表进行查询
+     *
+     * @param sql
+     *
+     * @return
+     *
+     */
+
+    public List getListBySQL(String sql ){
+        Session session = getNewSession();
+        try{
+            List list = session.createSQLQuery( sql ).list();
+            return list;
+        }catch ( Exception e ){
+            return null;
+        }
+    }
+
+
+    /**
+     * 使用注解名进行查询  跨表查询的时候 只能跨两张表进行查询
+     *
+     * @param sqlname  注解名称
+     *
+     * @return
+     *
+     */
+
+    public List getListByNameNative(String sqlname ){
+        Session session = getNewSession();
+        try{
+            List list = session.getNamedQuery(sqlname ).list();
+            return list;
+        }catch ( Exception e ){
+            return null;
+        }
+    }
+
+    /**
+     * 执行事务  目前支持只原生的SQL 后端因为使用mycat 所以原生SQL效率更高 出错率更低
+     *
+     * @param sql
+     *
+     * @return
+     *
+     */
+
+    public String excuteTransactionBySQL(String sql ){
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
+        t.begin();
+        try{
+            session.createSQLQuery( sql ).executeUpdate();
+            t.commit();
+            return "SUCCESS";
+        }catch ( Exception e ){
+            t.rollback();
+            return "FAILED";
+        }
+    }
+
+
+    /**
+     * 执行事务  目前支持只原生的SQL 后端因为使用mycat 所以原生SQL效率更高 出错率更低
+     *
+     * @param sqlname
+     *
+     * @return
+     *
+     */
+
+    public String excuteTransactionByNameNative(String sqlname ){
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
+        t.begin();
+        try{
+            session.getNamedQuery( sqlname ).executeUpdate();
+            t.commit();
+            return "SUCCESS";
+        }catch ( Exception e ){
+            t.rollback();
+            return "FAILED";
         }
     }
 

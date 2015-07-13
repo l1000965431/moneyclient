@@ -5,6 +5,7 @@ import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import dao.BaseDao;
+import model.ActivityModel;
 import model.OrderModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.GsonUntil;

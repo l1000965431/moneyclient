@@ -1,57 +1,71 @@
 package model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by liumin on 15/7/6.
  */
 
 @Entity
-@Table(name = "order")
+@Table(name = "activityorder")
 public class OrderModel {
 
     @Id
-    private Long orderID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    private int activityID;
+    private long orderid;
 
-    private int userID;
+    private int activityid;
 
-    private String orderdate;
+    private int userid;
+
+    private Date orderdate;
 
     private int orderlines;
 
-    private int activitygroupID;
+    private int activitygroupid;
 
-    public Long getOrderID() {
-        return orderID;
+    private int orderstate;
+
+    public long getId() {
+        return id;
     }
 
-    public void setOrderID(Long orderID) {
-        this.orderID = orderID;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public int getActivityID() {
-        return activityID;
+    public long getOrderid() {
+        return orderid;
     }
 
-    public void setActivityID(int activityID) {
-        this.activityID = activityID;
+    public void setOrderid(long orderid) {
+        this.orderid = orderid;
     }
 
-    public int getUserID() {
-        return userID;
+    public int getActivityid() {
+        return activityid;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setActivityid(int activityid) {
+        this.activityid = activityid;
     }
 
-    public String getOrderdate() {
+    public int getUserid() {
+        return userid;
+    }
+
+    public void setUserid(int userid) {
+        this.userid = userid;
+    }
+
+    public Date getOrderdate() {
         return orderdate;
     }
 
-    public void setOrderdate(String orderdate) {
+    public void setOrderdate(Date orderdate) {
         this.orderdate = orderdate;
     }
 
@@ -63,12 +77,12 @@ public class OrderModel {
         this.orderlines = orderlines;
     }
 
-    public int getActivitygroupID() {
-        return activitygroupID;
+    public int getActivitygroupid() {
+        return activitygroupid;
     }
 
-    public void setActivitygroupID(int activitygroupID) {
-        this.activitygroupID = activitygroupID;
+    public void setActivitygroupid(int activitygroupid) {
+        this.activitygroupid = activitygroupid;
     }
 
     public int getOrderstate() {
@@ -78,6 +92,4 @@ public class OrderModel {
     public void setOrderstate(int orderstate) {
         this.orderstate = orderstate;
     }
-
-    private int orderstate;
 }

@@ -14,6 +14,7 @@ import until.GsonUntil;
 import until.MoneyServerDate;
 import until.MoneySeverRandom;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -64,12 +65,16 @@ public class OrderService extends ServiceBase implements ServiceInterface {
 
         OrderModel orderModel = new OrderModel();
 
-        orderModel.setActivitygroupID(activitygroupID);
-        orderModel.setActivityID( activityID );
+        orderModel.setActivitygroupid(activitygroupID);
+        orderModel.setActivityid(activityID);
         orderModel.setOrderlines(lines);
-        orderModel.setUserID( userID );
-        orderModel.setOrderID( OrderID );
-        orderModel.setOrderdate(MoneyServerDate.getCurData());
+        orderModel.setUserid(userID);
+        orderModel.setOrderid(OrderID);
+        try {
+            orderModel.setOrderdate( MoneyServerDate.getDateCurDate());
+        } catch (ParseException e) {
+            return null;
+        }
         orderModel.setOrderstate(ORDER_STATE_NOSUBMITTED);
 
         //插入消息队列
