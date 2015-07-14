@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import until.CallbackFunction;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
  * @date 2014年5月7日 下午5:09:22
  * @version V1.0
  */
+
 @Repository
 public class BaseDao {
 
@@ -65,6 +67,11 @@ public class BaseDao {
         return session.get(c, id);
     }
 
+    public <T> T load( T c, String id) {
+        Session session = getSession();
+        return (T)session.get(c.getClass(), id);
+    }
+
     /**
      * 获取所有信息
      *
@@ -105,6 +112,14 @@ public class BaseDao {
     public Long getTotalCount(Class c) {
         Session session = getNewSession();
         String hql = "select count(*) from " + c.getName();
+        Long count = (Long) session.createQuery(hql).uniqueResult();
+        session.close();
+        return count != null ? count.longValue() : 0;
+    }
+
+    public Long getTotalCount(String name) {
+        Session session = getNewSession();
+        String hql = "select count(*) from " + name;
         Long count = (Long) session.createQuery(hql).uniqueResult();
         session.close();
         return count != null ? count.longValue() : 0;
@@ -254,6 +269,26 @@ public class BaseDao {
         }
     }
 
+    /**
+     * 通过回掉函数执行事务
+     * @param callbackFunction  回掉函数
+     * @return
+     */
+    public String excuteTransactionByCallback( CallbackFunction callbackFunction ){
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
+        t.begin();
+        try{
+            if( callbackFunction != null ){
+                callbackFunction.callback();
+            }
+            t.commit();
+            return "SUCCESS";
+        }catch ( Exception e ){
+            t.rollback();
+            return "FAILED";
+        }
+    }
 
     /**
      * 执行事务  目前支持只原生的SQL 后端因为使用mycat 所以原生SQL效率更高 出错率更低
@@ -277,5 +312,17 @@ public class BaseDao {
             return "FAILED";
         }
     }
+
+    /**
+     * 判断一张表是否存在
+     * @param ModelName
+     * @return
+     */
+    public boolean IsModelExist( String ModelName ){
+        Session session = getNewSession();
+
+        return true;
+    }
+
 
 }
