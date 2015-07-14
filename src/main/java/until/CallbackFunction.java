@@ -5,5 +5,7 @@ package until;
  */
 public interface CallbackFunction {
 
-    void callback();
+    void callback() throws Exception;
+
+    void callback( Object object ) throws Exception;
 }
