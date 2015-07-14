@@ -3,6 +3,7 @@ package dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import until.CallbackFunction;
@@ -83,6 +84,22 @@ public class BaseDao {
         String hql = "from " + c.getName();
         Session session = getSession();
         return session.createQuery(hql).list();
+    }
+
+    /**
+     * 获取所有信息
+     *
+     * @param c
+     *
+     * @return
+     */
+    @SuppressWarnings({ "rawtypes" })
+    public List getAllList(Class c, String orderBy, boolean isAsc) {
+        if( isAsc ){
+            return getNewSession().createCriteria(c).addOrder(Order.asc(orderBy)).list();
+        }else {
+            return getNewSession().createCriteria(c).addOrder(Order.desc(orderBy)).list();
+        }
     }
 
     /**
