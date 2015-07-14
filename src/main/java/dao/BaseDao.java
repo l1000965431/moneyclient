@@ -291,6 +291,27 @@ public class BaseDao {
     }
 
     /**
+     * 通过回掉函数执行事务
+     * @param callbackFunction  回掉函数
+     * @return
+     */
+    public String excuteTransactionByCallback( CallbackFunction callbackFunction,Object object ){
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
+        t.begin();
+        try{
+            if( callbackFunction != null ){
+                callbackFunction.callback(object);
+            }
+            t.commit();
+            return "SUCCESS";
+        }catch ( Exception e ){
+            t.rollback();
+            return "FAILED";
+        }
+    }
+
+    /**
      * 执行事务  目前支持只原生的SQL 后端因为使用mycat 所以原生SQL效率更高 出错率更低
      *
      * @param sqlname
