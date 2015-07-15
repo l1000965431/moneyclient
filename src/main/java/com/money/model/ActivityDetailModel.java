@@ -34,6 +34,12 @@ public class ActivityDetailModel implements Serializable {
     Long id;
 
     /**
+     * 项目状态
+     * {@link #ONLINEACTIVITY_START}
+     */
+    int status;
+
+    /**
      * 项目名称
      */
     String name;
@@ -104,6 +110,14 @@ public class ActivityDetailModel implements Serializable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getName() {
