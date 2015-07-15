@@ -111,7 +111,7 @@ public class BuilderFactory {
       final Iterator<Object> iterator = flatHash.iterator();
       while (iterator.hasNext()) {
         hash.put(SafeEncoder.encode((byte[]) iterator.next()),
-          String.valueOf((Long) iterator.next()));
+          String.valueOf(iterator.next()));
       }
 
       return hash;

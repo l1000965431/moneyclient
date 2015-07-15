@@ -28,7 +28,7 @@
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 
         <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="model"/> <!-- 使用应用程序管理类型的JPA  值为包路径-->
+        <property name="packagesToScan" value="com.money.model"/> <!-- 使用应用程序管理类型的JPA  值为包路径-->
         <property name="hibernateProperties">
             <props>
                 <prop key="dialect">org.hibernate.dialect.MySQL5Dialect</prop>
@@ -60,7 +60,7 @@
     <!--advice-ref="txAdvice" />-->
     <!--</aop:config>-->
 
-    <bean id="DaoFactory" class="dao.DaoFactory" ></bean>
+    <bean id="DaoFactory" class="com.money.dao.DaoFactory" ></bean>
 
     <!--<bean id="hedao"-->
     <!--class="until.Hibernate.HibernateEntityDao" scope="prototype">-->
@@ -77,7 +77,7 @@
     <!--</bean>-->
 
     <!--&lt;!&ndash;使用泛型DAO作为抽象基类&ndash;&gt;-->
-    <!--<bean id="baseDao" class="dao.BaseDao"-->
+    <!--<bean id="baseDao" class="BaseDao"-->
     <!--abstract="true" depends-on="hedao,hgdao">-->
     <!--<property name="hedao">-->
     <!--<ref bean="hedao" />-->
@@ -86,10 +86,5 @@
     <!--<ref bean="hgdao" />-->
     <!--</property>-->
     <!--</bean>-->
-
-    <bean id="BaseDao" class="dao.BaseDao">
-    </bean>
-
-
 
 </beans>

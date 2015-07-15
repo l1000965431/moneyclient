@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-       <bean id="ServiceFactory" class="Service.ServiceFactory" ></bean>
+    <bean id="ServiceFactory" class="com.money.Service.ServiceFactory" ></bean>
 
-       <!-- 声明自定义服务  注意一定要声明scope="prototype" -->
-       <bean id="ServiceSubmitActivity"
-             class="Service.ServiceSubmitActivity">
-              <property name="serviceName" value="ServiceSubmitActivity" />
-       </bean>
-       <bean id="OrderService"
-             class="Service.order.OrderService">
-              <property name="serviceName" value="OrderService" />
-       </bean>
+    <!-- 声明自定义服务  注意一定要声明scope="prototype" -->
+<!--    <bean id="ServiceSubmitActivity"
+          class="com.money.Service.ServiceSubmitActivity">
+        <property name="serviceName" value="ServiceSubmitActivity" />
+    </bean>
+    <bean id="OrderService"
+          class="com.money.Service.order.OrderService">
+        <property name="serviceName" value="OrderService" />
+    </bean>
+    <bean id="ActivityService"
+          class="com.money.Service.activity.ActivityService">
+        <property name="serviceName" value="ActivityService" />
+    </bean>-->
+
 </beans>

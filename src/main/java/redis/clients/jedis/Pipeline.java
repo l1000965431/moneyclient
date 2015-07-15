@@ -109,7 +109,7 @@ public class Pipeline extends MultiKeyPipelineBase {
       }
       return formatted;
     } else {
-      return java.util.Collections.<Object> emptyList();
+      return java.util.Collections.emptyList();
     }
   }
 

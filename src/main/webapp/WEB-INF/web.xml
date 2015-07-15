@@ -3,23 +3,19 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Archetype Created Web Application</display-name>
+    <display-name>MoneyServer</display-name>
     <servlet>
         <servlet-name>spring</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <!-- 初始化applicationContext.xml文件-->
         <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>/WEB-INF/classes/applicationContext.xml</param-value>
+                <param-name>contextConfigLocation</param-name>
+                <param-value>/WEB-INF/classes/applicationContext.xml</param-value>
         </init-param>
-        <!-- 容器启动时调用这个servlet -->
         <load-on-startup>1</load-on-startup>
     </servlet>
 
-    <!-- 这里的配置信息就是把后缀为*.do的请求都丢给总控制器来分发-->
     <servlet-mapping>
         <servlet-name>spring</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-
 </web-app>

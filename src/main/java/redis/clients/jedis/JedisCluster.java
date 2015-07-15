@@ -15,7 +15,7 @@ public class JedisCluster implements JedisCommands, BasicCommands, Closeable {
   private static final int DEFAULT_TIMEOUT = 2000;
   private static final int DEFAULT_MAX_REDIRECTIONS = 5;
 
-  public static enum Reset {
+  public enum Reset {
     SOFT, HARD
   }
 
