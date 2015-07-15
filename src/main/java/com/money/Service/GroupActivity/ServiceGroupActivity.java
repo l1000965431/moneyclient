@@ -1,7 +1,7 @@
 package com.money.Service.GroupActivity;
 
-import Service.ServiceBase;
-import dao.BaseDao;
+import com.money.Service.ServiceBase;
+import com.money.dao.GeneraDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class ServiceGroupActivity extends ServiceBase {
     @Autowired
-    private BaseDao baseDao;
+    private GeneraDAO generaDAO;
 
 
 }
