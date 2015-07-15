@@ -58,7 +58,7 @@ public class activityDAO extends BaseDao {
             return activitydynamicmodel;
         }else{
             try{
-                ActivityDynamicModel activitydynamicmodel = (ActivityDynamicModel)this.load(OrderModel.class, activityID);
+                ActivityDynamicModel activitydynamicmodel = (ActivityDynamicModel)this.load(ActivityDynamicModel.class, activityID);
                 return activitydynamicmodel;
             }catch ( Exception e ){
                 return null;

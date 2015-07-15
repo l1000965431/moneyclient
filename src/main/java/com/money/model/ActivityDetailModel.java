@@ -13,6 +13,19 @@ import java.io.Serializable;
 @Entity
 @Table(name = "activitydetails")
 public class ActivityDetailModel implements Serializable {
+
+    //上线项目开始
+    public final static int ONLINEACTIVITY_START = 1;
+
+    //上线项目完成
+    public final static int ONLINEACTIVITY_COMPLETE = 2;
+
+    //上线项目结算
+    public final static int ONLINEACTIVITY_SETTLEMENT = 3;
+
+    //上线项目错误
+    public final static int ONLINEACTIVITY_ERROR = 4;
+
     /**
      * 项目ID
      */

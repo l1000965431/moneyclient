@@ -3,6 +3,7 @@ package com.money.controller;
 import com.money.Service.ServiceFactory;
 import com.money.Service.activity.ActivityService;
 import com.money.model.ActivityDetailModel;
+import com.money.model.ActivityDynamicModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,8 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 public class ActivityController extends ControllerBase implements IController {
 
     @RequestMapping( "/getActivityDetails" )
-    @ResponseBody
-    public String getActivityDetails( HttpServletRequest request, HttpServletResponse response ){
+         @ResponseBody
+         public String getActivityDetails( HttpServletRequest request, HttpServletResponse response ){
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
@@ -32,7 +33,26 @@ public class ActivityController extends ControllerBase implements IController {
             return "";
         }else{
             try{
-                ActivityDetailModel activityModel = activityService.getOrderDetails(1);
+                ActivityDetailModel activityModel = activityService.getActivityDetails(1);
+                String Json = GsonUntil.JavaClassToJson(activityModel);
+                return Json;
+            }catch ( Exception e ){
+                return "";
+            }
+        }
+    }
+
+    @RequestMapping( "/getActivityDynamic" )
+    @ResponseBody
+    public String getActivityDynamic( HttpServletRequest request, HttpServletResponse response ){
+
+        ActivityService activityService = ServiceFactory.getService("ActivityService");
+
+        if( activityService == null ){
+            return "";
+        }else{
+            try{
+                ActivityDynamicModel activityModel = activityService.getActivityDynamic(1);
                 String Json = GsonUntil.JavaClassToJson(activityModel);
                 return Json;
             }catch ( Exception e ){

@@ -24,7 +24,7 @@ import java.util.List;
  * <p>Version: 1.0
  */
 
-@Service
+@Service("OrderService")
 public class OrderService extends ServiceBase implements ServiceInterface {
 
     @Autowired
