@@ -33,7 +33,7 @@ public class activityDAO extends BaseDao {
             return activitymodel;
         }else{
             try{
-                ActivityDetailModel activitymodel = (ActivityDetailModel)this.load(OrderModel.class, Long.toString(activityID));
+                ActivityDetailModel activitymodel = (ActivityDetailModel)this.load(OrderModel.class, activityID);
                 return activitymodel;
             }catch ( Exception e ){
                 return null;
@@ -58,7 +58,7 @@ public class activityDAO extends BaseDao {
             return activitydynamicmodel;
         }else{
             try{
-                ActivityDynamicModel activitydynamicmodel = (ActivityDynamicModel)this.load(OrderModel.class, Long.toString(activityID));
+                ActivityDynamicModel activitydynamicmodel = (ActivityDynamicModel)this.load(OrderModel.class, activityID);
                 return activitydynamicmodel;
             }catch ( Exception e ){
                 return null;
