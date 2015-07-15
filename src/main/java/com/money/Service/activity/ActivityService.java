@@ -29,9 +29,14 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     @Autowired
     private activityDAO activityDao;
 
-    public ActivityDetailModel getOrderDetails( int ActivityID ){
+    public ActivityDetailModel getActivityDetails( int ActivityID ){
         ActivityDetailModel activitymodel = activityDao.getActivityDetails( ActivityID );
             return activitymodel;
+    }
+
+    public ActivityDynamicModel getActivityDynamic( int ActivityID ){
+        ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamic( ActivityID );
+        return activityDynamicModel;
     }
 
     public List<ActivityDetailModel> getOrderDetailsList( int minpage,int maxpage ){

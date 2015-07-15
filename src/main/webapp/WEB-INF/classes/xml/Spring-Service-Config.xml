@@ -19,7 +19,7 @@
         <property name="serviceName" value="ActivityService" />
     </bean>-->
 
-       <!-- 声明自定义服务  注意一定要声明scope="prototype" -->
+<!--       &lt;!&ndash; 声明自定义服务  注意一定要声明scope="prototype" &ndash;&gt;
        <bean id="ServiceSubmitActivity"
              class="com.money.Service.SubmitActivity.ServiceSubmitActivity">
               <property name="serviceName" value="ServiceSubmitActivity" />
@@ -31,5 +31,5 @@
        <bean id="ServiceAuditActivity"
              class="com.money.Service.AuditActivity.ServiceAuditActivity">
            <property name="serviceName" value="ServiceAuditActivity"/>
-       </bean>
+       </bean>-->
 </beans>

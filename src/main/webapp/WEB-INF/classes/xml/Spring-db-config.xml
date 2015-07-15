@@ -45,8 +45,6 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <tx:annotation-driven transaction-manager="txManager"/>
-
     <tx:advice id="txAdvice" transaction-manager="txManager">
         <tx:attributes>
             <tx:method name="get*" read-only="false" propagation="NOT_SUPPORTED"/>

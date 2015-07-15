@@ -16,7 +16,8 @@ import java.util.List;
 /**
  * Created by happysky on 15-7-11.
  */
-@Service
+
+@Service("ServiceAuditActivity")
 public class ServiceAuditActivity extends ServiceBase {
     @Autowired
     private GeneraDAO baseDao;
