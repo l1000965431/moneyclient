@@ -10,7 +10,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "activitygroup")
-public class ActivityGroup {
+public class ActivityGroupModel {
     /**
      *  项目组ID
      */
@@ -22,4 +22,20 @@ public class ActivityGroup {
      *  项目组名称
      */
     String name;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

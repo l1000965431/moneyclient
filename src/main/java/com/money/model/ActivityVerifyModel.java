@@ -11,8 +11,17 @@ import javax.persistence.*;
 @Entity
 @Table(name = "activityverify")
 public class ActivityVerifyModel {
+    /**
+     * 还未审核
+     */
     public static final int STATUS_UN_AUDITOR = 0;
+    /**
+     * 通过审核
+     */
     public static final int STATUS_AUDITOR_PASS = 1;
+    /**
+     * 未通过审核
+     */
     public static final int STATUS_AUDITOR_NOT_PASS = 2;
     /**
      * 项目ID
