@@ -1,13 +1,14 @@
-package com.money.Service;
+package com.money.Service.SubmitActivity;
 
-import com.money.dao.BaseDao;
+import com.money.Service.ServiceBase;
 import com.money.dao.GeneraDAO;
-import com.money.model.ActivityModel;
+import com.money.model.ActivityVerifyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import until.GsonUntil;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * 项目提交服务
@@ -15,23 +16,20 @@ import javax.servlet.http.HttpServletResponse;
  * <p>Date: 15-7-8
  * <p>Version: 1.0
  */
-
 @Service
 public class ServiceSubmitActivity extends ServiceBase {
     @Autowired
     private GeneraDAO baseDao;
 
-    public String submitActivity( HttpServletRequest request, HttpServletResponse response ){
-        ActivityModel activityModel = createProject(request );
+    public String submitActivity( ActivityVerifyModel activityModel ){
+        baseDao.save(activityModel);
         return "hahha";
     }
 
-    private ActivityModel createProject( HttpServletRequest request ){
+    private ActivityVerifyModel createProject( HttpServletRequest request ){
 
-        ActivityModel activityModel = new ActivityModel();
-        activityModel.setActivityIntroduce("fda;fsdk");
-
-
+        String param = request.getParameter("data");
+        ActivityVerifyModel activityModel = GsonUntil.jsonToJavaClass(param, ActivityVerifyModel.class);
         baseDao.save(activityModel);
 
         return activityModel;

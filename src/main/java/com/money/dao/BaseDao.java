@@ -274,7 +274,6 @@ public class BaseDao {
     public String excuteTransactionByCallback( CallbackFunction callbackFunction ){
         Session session = getNewSession();
         Transaction t = session.beginTransaction();
-        t.begin();
         try{
             if( callbackFunction != null ){
                 callbackFunction.callback();
@@ -295,7 +294,6 @@ public class BaseDao {
     public String excuteTransactionByCallback( CallbackFunction callbackFunction,Object object ){
         Session session = getNewSession();
         Transaction t = session.beginTransaction();
-        t.begin();
         try{
             if( callbackFunction != null ){
                 callbackFunction.callback(object);
@@ -316,7 +314,6 @@ public class BaseDao {
     public String excuteTransactionByCallback( TransactionCallback callbackFunction ){
         Session session = getNewSession();
         Transaction t = session.beginTransaction();
-        t.begin();
         try{
             if( callbackFunction != null ){
                 callbackFunction.callback(session);
