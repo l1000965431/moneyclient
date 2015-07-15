@@ -1,7 +1,11 @@
 package com.money.controller;
 
+import com.money.Service.ServiceFactory;
+import com.money.Service.activity.ActivityService;
+import com.money.model.ActivityDetailModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import until.GsonUntil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,22 +24,18 @@ public class ActivityController extends ControllerBase implements IController {
     @RequestMapping( "/getActivityDetails" )
     public String getActivityDetails( HttpServletRequest request, HttpServletResponse response ){
 
-/*        ActivityService activityService = ServiceFactory.getService("ActivityService");
-
-        ActivityModel activityModel = activityService.getOrderDetails(1);
+        ActivityService activityService = ServiceFactory.getService("ActivityService");
 
         if( activityService == null ){
             return "";
         }else{
-            String Json = GsonUntil.JavaClassToJson(activityModel);
-            return Json;
+            try{
+                ActivityDetailModel activityModel = activityService.getOrderDetails(1);
+                String Json = GsonUntil.JavaClassToJson(activityModel);
+                return Json;
+            }catch ( Exception e ){
+                return "";
+            }
         }
-
-        ServiceSubmitActivity serviceSubmitActivity;
-        serviceSubmitActivity = ServiceFactory.getService("ServiceSubmitActivity");
-
-        return serviceSubmitActivity.submitActivity(request, response);*/
-
-        return "haha";
     }
 }

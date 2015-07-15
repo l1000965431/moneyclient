@@ -60,12 +60,12 @@ public class BaseDao {
      */
     @SuppressWarnings("rawtypes")
     public Object load(Class c, String id) {
-        Session session = getSession();
+        Session session = getNewSession();
         return session.get(c, id);
     }
 
     public <T> T load( T c, String id) {
-        Session session = getSession();
+        Session session = getNewSession();
         return (T)session.get(c.getClass(), id);
     }
 

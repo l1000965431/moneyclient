@@ -7,8 +7,8 @@ import com.money.Service.ServiceFactory;
 import com.google.gson.reflect.TypeToken;
 import com.money.config.Config;
 import com.money.dao.activityDAO.activityDAO;
+import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityDynamicModel;
-import com.money.model.ActivityModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
@@ -23,22 +23,18 @@ import java.util.Map;
  * <p>Version: 1.0
  */
 
-@Service
+@Service("ActivityService")
 public class ActivityService extends ServiceBase implements ServiceInterface {
 
     @Autowired
     private activityDAO activityDao;
 
-    public ActivityModel getOrderDetails( int ActivityID ){
-        try{
-            ActivityModel activitymodel = activityDao.getActivityDetails( ActivityID );
+    public ActivityDetailModel getOrderDetails( int ActivityID ){
+        ActivityDetailModel activitymodel = activityDao.getActivityDetails( ActivityID );
             return activitymodel;
-        }catch ( Exception e ){
-            return null;
-        }
     }
 
-    public List<ActivityModel> getOrderDetailsList( int minpage,int maxpage ){
+    public List<ActivityDetailModel> getOrderDetailsList( int minpage,int maxpage ){
         try{
             return null;
         }catch ( Exception e ){
@@ -89,7 +85,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      */
     public boolean IsActivityExist( int activityID ){
 
-        ActivityModel activityModel = activityDao.getActivityDetails( activityID );
+        ActivityDetailModel activityModel = activityDao.getActivityDetails( activityID );
 
         if( activityModel == null ){
             return false;

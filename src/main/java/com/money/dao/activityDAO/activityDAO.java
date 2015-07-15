@@ -3,8 +3,8 @@ package com.money.dao.activityDAO;
 import com.money.config.Config;
 import com.money.dao.BaseDao;
 import com.money.memcach.MemCachService;
+import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityDynamicModel;
-import com.money.model.ActivityModel;
 import com.money.model.OrderModel;
 import org.springframework.stereotype.Repository;
 import until.GsonUntil;
@@ -24,18 +24,16 @@ public class activityDAO extends BaseDao {
      * @param activityID
      * @return
      */
-    public ActivityModel getActivityDetails( int activityID ){
+    public ActivityDetailModel getActivityDetails( int activityID ){
 
         String UserID = Long.toString( activityID );
         if(MemCachService.KeyIsExists( UserID ) ){
-
             String activityJson = MemCachService.MemCachgGet( UserID );
-
-            ActivityModel activitymodel = GsonUntil.jsonToJavaClass( activityJson,OrderModel.class );
+            ActivityDetailModel activitymodel = GsonUntil.jsonToJavaClass( activityJson,OrderModel.class );
             return activitymodel;
         }else{
             try{
-                ActivityModel activitymodel = (ActivityModel)this.load(OrderModel.class, Long.toString(activityID));
+                ActivityDetailModel activitymodel = (ActivityDetailModel)this.load(OrderModel.class, Long.toString(activityID));
                 return activitymodel;
             }catch ( Exception e ){
                 return null;
