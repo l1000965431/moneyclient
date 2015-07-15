@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans  xmlns="http://www.springframework.org/schema/beans"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 
-        xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx.xsd"
-        xmlns:tx="http://www.springframework.org/schema/tx">
+        http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+       xmlns:tx="http://www.springframework.org/schema/tx">
 
     <!-- 获取数据源/使用数据源连接池 -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
@@ -31,9 +31,10 @@
         <property name="packagesToScan" value="com.money.model"/> <!-- 使用应用程序管理类型的JPA  值为包路径-->
         <property name="hibernateProperties">
             <props>
-                <prop key="dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.show_sql">true</prop>
+                <prop key="connection.autocommit">false</prop>
             </props>
         </property>
     </bean>
@@ -47,18 +48,18 @@
         <tx:attributes>
             <tx:method name="get*" read-only="false" propagation="NOT_SUPPORTED"/>
             <tx:method name="find*" read-only="false" propagation="NOT_SUPPORTED"/>
-            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="save*" propagation="REQUIRED" />
             <tx:method name="update*" propagation="REQUIRED"/>
             <tx:method name="delete*" propagation="REQUIRED"/>
         </tx:attributes>
     </tx:advice>
 
-    <!--<aop:config>-->
-    <!--<aop:pointcut id="bussinessService"-->
-    <!--expression="execution(* Service.test.*.*(..))" />-->
-    <!--<aop:advisor pointcut-ref="bussinessService"-->
-    <!--advice-ref="txAdvice" />-->
-    <!--</aop:config>-->
+    <aop:config>
+    <aop:pointcut id="bussinessService"
+    expression="execution(* com.money.dao.*.*(..))" />
+    <aop:advisor pointcut-ref="bussinessService"
+    advice-ref="txAdvice" />
+    </aop:config>
 
     <bean id="DaoFactory" class="com.money.dao.DaoFactory" ></bean>
 

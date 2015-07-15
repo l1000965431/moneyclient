@@ -19,4 +19,17 @@
         <property name="serviceName" value="ActivityService" />
     </bean>-->
 
+       <!-- 声明自定义服务  注意一定要声明scope="prototype" -->
+       <bean id="ServiceSubmitActivity"
+             class="com.money.Service.SubmitActivity.ServiceSubmitActivity">
+              <property name="serviceName" value="ServiceSubmitActivity" />
+       </bean>
+       <bean id="OrderService"
+             class="com.money.Service.order.OrderService">
+              <property name="serviceName" value="OrderService" />
+       </bean>
+       <bean id="ServiceAuditActivity"
+             class="com.money.Service.AuditActivity.ServiceAuditActivity">
+           <property name="serviceName" value="ServiceAuditActivity"/>
+       </bean>
 </beans>
