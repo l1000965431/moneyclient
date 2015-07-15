@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  * <p>Date: 15-7-8
  * <p>Version: 1.0
  */
-@Service
+@Service("ServiceSubmitActivity")
 public class ServiceSubmitActivity extends ServiceBase {
     @Autowired
     private GeneraDAO baseDao;
