@@ -9,11 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class ServiceGroupActivity extends ServiceBase {
     @Autowired
-<<<<<<< HEAD
-    private GeneraDAO generaDAO;
-=======
     private GeneraDAO baseDao;
->>>>>>> eedba10b4e60ec96c2369787da02be17a7605fff
 
 
 }

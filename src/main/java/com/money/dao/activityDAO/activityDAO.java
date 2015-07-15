@@ -29,19 +29,11 @@ public class activityDAO extends BaseDao {
         String UserID = Long.toString( activityID );
         if(MemCachService.KeyIsExists( UserID ) ){
             String activityJson = MemCachService.MemCachgGet( UserID );
-<<<<<<< HEAD
-
-=======
->>>>>>> eedba10b4e60ec96c2369787da02be17a7605fff
             ActivityDetailModel activitymodel = GsonUntil.jsonToJavaClass( activityJson,OrderModel.class );
             return activitymodel;
         }else{
             try{
-<<<<<<< HEAD
-                ActivityDetailModel activitymodel = (ActivityDetailModel)this.load(OrderModel.class, activityID);
-=======
                 ActivityDetailModel activitymodel = (ActivityDetailModel)this.load(OrderModel.class, Long.toString(activityID));
->>>>>>> eedba10b4e60ec96c2369787da02be17a7605fff
                 return activitymodel;
             }catch ( Exception e ){
                 return null;
@@ -66,7 +58,7 @@ public class activityDAO extends BaseDao {
             return activitydynamicmodel;
         }else{
             try{
-                ActivityDynamicModel activitydynamicmodel = (ActivityDynamicModel)this.load(OrderModel.class, activityID);
+                ActivityDynamicModel activitydynamicmodel = (ActivityDynamicModel)this.load(OrderModel.class, Long.toString(activityID));
                 return activitydynamicmodel;
             }catch ( Exception e ){
                 return null;

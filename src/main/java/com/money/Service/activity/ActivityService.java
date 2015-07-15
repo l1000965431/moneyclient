@@ -30,12 +30,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     private activityDAO activityDao;
 
     public ActivityDetailModel getOrderDetails( int ActivityID ){
-<<<<<<< HEAD
-        try{
-            ActivityDetailModel activitymodel = activityDao.getActivityDetails( ActivityID );
-=======
         ActivityDetailModel activitymodel = activityDao.getActivityDetails( ActivityID );
->>>>>>> eedba10b4e60ec96c2369787da02be17a7605fff
             return activitymodel;
     }
 
