@@ -59,9 +59,13 @@ public class MemCachService {
      */
     public static boolean KeyIsExists( String Key ){
         ShardedJedis shardedJedis = shardedPool.getResource();
-        boolean IsExists = shardedJedis.exists(Key);
-        shardedPool.returnResourceObject( shardedJedis );
-        return IsExists;
+        try{
+            boolean IsExists = shardedJedis.exists(Key);
+            shardedPool.returnResourceObject( shardedJedis );
+            return IsExists;
+        }catch ( Exception e ){
+            return false;
+        }
     }
 
     /**

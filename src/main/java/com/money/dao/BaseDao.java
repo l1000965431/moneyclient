@@ -61,13 +61,17 @@ public class BaseDao {
      * @return
      */
     @SuppressWarnings("rawtypes")
+<<<<<<< HEAD
     public Object load(Class c, Serializable id) {
+=======
+    public Object load(Class c, String id) {
+>>>>>>> eedba10b4e60ec96c2369787da02be17a7605fff
         Session session = getNewSession();
         return session.get(c, id);
     }
 
     public <T> T load( T c, String id) {
-        Session session = getSession();
+        Session session = getNewSession();
         return (T)session.get(c.getClass(), id);
     }
 

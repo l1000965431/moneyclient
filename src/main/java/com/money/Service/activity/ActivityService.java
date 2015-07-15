@@ -23,19 +23,20 @@ import java.util.Map;
  * <p>Version: 1.0
  */
 
-@Service
+@Service("ActivityService")
 public class ActivityService extends ServiceBase implements ServiceInterface {
 
     @Autowired
     private activityDAO activityDao;
 
     public ActivityDetailModel getOrderDetails( int ActivityID ){
+<<<<<<< HEAD
         try{
             ActivityDetailModel activitymodel = activityDao.getActivityDetails( ActivityID );
+=======
+        ActivityDetailModel activitymodel = activityDao.getActivityDetails( ActivityID );
+>>>>>>> eedba10b4e60ec96c2369787da02be17a7605fff
             return activitymodel;
-        }catch ( Exception e ){
-            return null;
-        }
     }
 
     public List<ActivityDetailModel> getOrderDetailsList( int minpage,int maxpage ){
