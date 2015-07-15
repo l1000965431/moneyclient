@@ -6,7 +6,6 @@ import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
 import com.money.config.Config;
 import com.money.config.MoneyServerMQ_Topic;
-import com.money.dao.BaseDao;
 import com.money.dao.GeneraDAO;
 import com.money.model.OrderModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,7 +137,7 @@ public class OrderService extends ServiceBase implements ServiceInterface {
 
     public OrderModel getOrderByOrderID( long OrderID ){
 
-        return (OrderModel)baseDao.load( OrderModel.class,Long.toString( OrderID ) );
+        return (OrderModel)baseDao.load( OrderModel.class,OrderID );
     }
 
 
