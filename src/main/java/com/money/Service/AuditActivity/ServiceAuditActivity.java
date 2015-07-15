@@ -56,7 +56,7 @@ public class ServiceAuditActivity extends ServiceBase {
     }
 
     public boolean setActivityAuditorResult(Long id, int status){
-        ActivityVerifyModel ActivityVerifyModel = (ActivityVerifyModel)baseDao.load(ActivityVerifyModel.class, String.valueOf(id));
+        ActivityVerifyModel ActivityVerifyModel = (ActivityVerifyModel)baseDao.load(ActivityVerifyModel.class, id);
         if( ActivityVerifyModel == null ){
             return false;
         }
@@ -67,7 +67,7 @@ public class ServiceAuditActivity extends ServiceBase {
     }
 
     public boolean setActivityToGroup(){
-        ActivityDetailModel activityDetailModel = (ActivityDetailModel)baseDao.load(ActivityDetailModel.class, String.valueOf(1));
+        ActivityDetailModel activityDetailModel = (ActivityDetailModel)baseDao.load(ActivityDetailModel.class, 1l);
         baseDao.excuteTransactionByCallback(new TransactionCallback() {
             public void callback(Session session) throws Exception {
                 ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel)session.get(ActivityVerifyModel.class, 4l);

@@ -6,6 +6,8 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.CallbackFunction;
+
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -59,8 +61,8 @@ public class BaseDao {
      * @return
      */
     @SuppressWarnings("rawtypes")
-    public Object load(Class c, String id) {
-        Session session = getSession();
+    public Object load(Class c, Serializable id) {
+        Session session = getNewSession();
         return session.get(c, id);
     }
 
