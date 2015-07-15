@@ -33,7 +33,7 @@ public class activityDAO extends BaseDao {
             return activitymodel;
         }else{
             try{
-                ActivityDetailModel activitymodel = (ActivityDetailModel)this.load(OrderModel.class, activityID);
+                ActivityDetailModel activitymodel = (ActivityDetailModel)this.load(ActivityDetailModel.class, (long)activityID);
                 return activitymodel;
             }catch ( Exception e ){
                 return null;
@@ -88,7 +88,7 @@ public class activityDAO extends BaseDao {
 
            return null;
         }else{
-            //插入到这张表中
+            //插入到这张表中 
 
             return null;
         }

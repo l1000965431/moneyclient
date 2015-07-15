@@ -138,7 +138,7 @@ public class OrderService extends ServiceBase implements ServiceInterface {
 
     public OrderModel getOrderByOrderID( long OrderID ){
 
-        return (OrderModel)baseDao.load( OrderModel.class, OrderID);
+        return (OrderModel)baseDao.load( OrderModel.class,Long.toString( OrderID ) );
     }
 
 
