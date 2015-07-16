@@ -31,7 +31,7 @@ public class AuditActivityController extends ControllerBase implements IControll
 
         activityVerifyModel = serviceAuditActivity.getOldestActivity();
 
-        List<ActivityVerifyModel> list = serviceAuditActivity.getActivityList(true);
+        List<ActivityVerifyModel> list = serviceAuditActivity.getActivityList(true, ActivityVerifyModel.STATUS_UN_AUDITOR);
 
         serviceAuditActivity.setActivityToGroup();
         return "success";

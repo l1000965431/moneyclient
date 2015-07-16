@@ -43,8 +43,4 @@ public class ServiceGroupActivity extends ServiceBase {
         generaDAO.save(relationshipModel);
         return "";
     }
-
-    /**
-     * 从组里删除一个项目
-     */
 }

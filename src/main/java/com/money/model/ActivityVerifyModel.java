@@ -3,7 +3,7 @@ package com.money.model;
 import javax.persistence.*;
 
 /**
- * 项目提交
+ * 项目提交后等待审核
  * <p>User: Guo Hong
  * <p>Date: 15-7-8
  * <p>Version: 1.0
