@@ -1,6 +1,7 @@
 package com.money.controller;
 
 import com.money.Service.AuditActivity.ServiceAuditActivity;
+import com.money.Service.GroupActivity.ServiceGroupActivity;
 import com.money.Service.ServiceFactory;
 import com.money.model.ActivityVerifyModel;
 import org.springframework.stereotype.Controller;
@@ -23,17 +24,20 @@ public class AuditActivityController extends ControllerBase implements IControll
     @RequestMapping("getOneActivity")
     @ResponseBody
     public String getOneActivity( HttpServletRequest request, HttpServletResponse response ){
-        ServiceAuditActivity serviceAuditActivity = ServiceFactory.getService("ServiceAuditActivity");
-        if( serviceAuditActivity == null ){
-            return "failure";
-        }
-        ActivityVerifyModel activityVerifyModel = serviceAuditActivity.getNewestActivity();
+//        ServiceAuditActivity serviceAuditActivity = ServiceFactory.getService("ServiceAuditActivity");
+//        if( serviceAuditActivity == null ){
+//            return "failure";
+//        }
+//        ActivityVerifyModel activityVerifyModel = serviceAuditActivity.getNewestActivity();
+//
+//        activityVerifyModel = serviceAuditActivity.getOldestActivity();
+//
+//        List<ActivityVerifyModel> list = serviceAuditActivity.getActivityList(true, ActivityVerifyModel.STATUS_UN_AUDITOR);
+//
+//        serviceAuditActivity.setActivityToGroup();
 
-        activityVerifyModel = serviceAuditActivity.getOldestActivity();
-
-        List<ActivityVerifyModel> list = serviceAuditActivity.getActivityList(true, ActivityVerifyModel.STATUS_UN_AUDITOR);
-
-        serviceAuditActivity.setActivityToGroup();
+        ServiceGroupActivity serviceGroupActivity = ServiceFactory.getService("ServiceGroupActivity");
+        serviceGroupActivity.test();
         return "success";
     }
 
