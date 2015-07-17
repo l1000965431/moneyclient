@@ -40,4 +40,57 @@ public class BRInvestEarningModel implements Serializable {
      *  投资金额对应的收益
      */
     int earningPrice;
+
+    /**
+     *  已经卖出去了多少张
+     */
+    int soldNum;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public ActivityDetailModel getActivityDetailModel() {
+        return activityDetailModel;
+    }
+
+    public void setActivityDetailModel(ActivityDetailModel activityDetailModel) {
+        this.activityDetailModel = activityDetailModel;
+    }
+
+    public int getInvestPrice() {
+        return investPrice;
+    }
+
+    public void setInvestPrice(int investPrice) {
+        this.investPrice = investPrice;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
+
+    public int getEarningPrice() {
+        return earningPrice;
+    }
+
+    public void setEarningPrice(int earningPrice) {
+        this.earningPrice = earningPrice;
+    }
+
+    public int getSoldNum() {
+        return soldNum;
+    }
+
+    public void setSoldNum(int soldNum) {
+        this.soldNum = soldNum;
+    }
 }
