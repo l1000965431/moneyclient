@@ -3,7 +3,6 @@ package com.money.Service.GroupActivity;
 import com.money.Service.ServiceBase;
 import com.money.dao.GeneraDAO;
 import com.money.model.ActivityGroupModel;
-import com.money.model.ActivityGroupRelationshipModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,10 +36,30 @@ public class ServiceGroupActivity extends ServiceBase {
         if( activityGroupModel == null ){
             return "";
         }
-        ActivityGroupRelationshipModel relationshipModel = new ActivityGroupRelationshipModel();
-        relationshipModel.setGroupId( groupId );
-        relationshipModel.setActivityId( activityId );
-        generaDAO.save(relationshipModel);
         return "";
+    }
+
+    public void test(){
+//        ActivityGroupModel groupModel = new ActivityGroupModel();
+//        groupModel.setName("group1");
+//
+//        ActivityDetailModel detailModel = new ActivityDetailModel();
+//        detailModel.setName("123");
+//
+//        ActivityDetailModel detailModel1 = new ActivityDetailModel();
+//        detailModel1.setName("456");
+//
+//        detailModel.setActivityGroupModel(groupModel);
+//        detailModel1.setActivityGroupModel(groupModel);
+//
+//        groupModel.getActivityDetailModels().add(detailModel);
+//        groupModel.getActivityDetailModels().add(detailModel1);
+//
+//        generaDAO.save(groupModel);
+
+        ActivityGroupModel activityGroupModel = (ActivityGroupModel)generaDAO.load(ActivityGroupModel.class, 1l);
+        if( activityGroupModel == null ){
+            return;
+        }
     }
 }

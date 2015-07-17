@@ -3,6 +3,8 @@ package com.money.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 项目已上线
@@ -32,6 +34,27 @@ public class ActivityDetailModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    public ActivityGroupModel getActivityGroupModel() {
+        return activityGroupModel;
+    }
+
+    public void setActivityGroupModel(ActivityGroupModel activityGroupModel) {
+        this.activityGroupModel = activityGroupModel;
+    }
+
+    /**
+     *  项目组ID
+     */
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false)
+    @JoinColumn(name = "groupId", referencedColumnName = "id")
+    ActivityGroupModel activityGroupModel;
+
+    /**
+     * 项目中大R投资与收益信息
+     */
+    @OneToMany(mappedBy = "activityDetailModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Set<BRInvestEarningModel> brInvestEarningModels = new HashSet<BRInvestEarningModel>();
 
     /**
      * 项目状态

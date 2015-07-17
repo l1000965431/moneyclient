@@ -1,6 +1,9 @@
 package com.money.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 项目组
@@ -10,7 +13,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "activitygroup")
-public class ActivityGroupModel {
+public class ActivityGroupModel implements Serializable{
     /**
      *  项目组ID
      */
@@ -22,6 +25,24 @@ public class ActivityGroupModel {
      *  项目组名称
      */
     String name;
+
+    /**
+     *  项目组中的所有项目
+     */
+    @OneToMany(mappedBy = "activityGroupModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Set<ActivityDetailModel> activityDetailModels = new HashSet<ActivityDetailModel>();
+
+    /**
+     *  项目组中小R投资层次
+     */
+    @OneToMany(mappedBy = "activityGroupModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Set<SRInvestTicketModel> srInvestTicketModels = new HashSet<SRInvestTicketModel>();
+
+    /**
+     * 项目组中小R收益层次
+     */
+    @OneToMany(mappedBy = "activityGroupModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Set<SREarningModel> srEarningModels = new HashSet<SREarningModel>();
 
     /**
      *  小R需投资金额
@@ -64,8 +85,22 @@ public class ActivityGroupModel {
      */
     float baseProbability;
 
+    public Set<SRInvestTicketModel> getSrInvestTicketModels() {
+        return srInvestTicketModels;
+    }
+
+    public void setSrInvestTicketModels(Set<SRInvestTicketModel> srInvestTicketModels) {
+        this.srInvestTicketModels = srInvestTicketModels;
+    }
 
 
+    public Set<ActivityDetailModel> getActivityDetailModels() {
+        return activityDetailModels;
+    }
+
+    public void setActivityDetailModels(Set<ActivityDetailModel> activityDetailModels) {
+        this.activityDetailModels = activityDetailModels;
+    }
 
     public Long getId() {
         return id;
@@ -137,5 +172,13 @@ public class ActivityGroupModel {
 
     public void setBaseProbability(float baseProbability) {
         this.baseProbability = baseProbability;
+    }
+
+    public Set<SREarningModel> getSrEarningModels() {
+        return srEarningModels;
+    }
+
+    public void setSrEarningModels(Set<SREarningModel> srEarningModels) {
+        this.srEarningModels = srEarningModels;
     }
 }
