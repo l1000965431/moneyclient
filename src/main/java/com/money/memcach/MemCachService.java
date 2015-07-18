@@ -129,23 +129,31 @@ public class MemCachService {
         shardedPool.returnResourceObject( shardedJedis );
     }
 
-    public static String MemCachSetMap( String UserID,Map<String,String> map ){
+    public static String MemCachSetMap( String Key,Map<String,String> map ){
         ShardedJedis shardedJedis = shardedPool.getResource();
-        shardedJedis.hmset( UserID,map );
+        shardedJedis.hmset( Key,map );
         shardedPool.returnResourceObject( shardedJedis );
         return "SUCCESS";
     }
 
-    public static Map<String,String> GetMemCachMap( String UserID ){
+    public static String MemCachSetMap( String Key,int time,Map<String,String> map ){
         ShardedJedis shardedJedis = shardedPool.getResource();
-        Map<String,String> map = shardedJedis.hgetAll( UserID );
+        shardedJedis.hmset( Key,map );
+        shardedJedis.expire( Key,time );
+        shardedPool.returnResourceObject( shardedJedis );
+        return "SUCCESS";
+    }
+
+    public static Map<String,String> GetMemCachMap( String Key ){
+        ShardedJedis shardedJedis = shardedPool.getResource();
+        Map<String,String> map = shardedJedis.hgetAll( Key );
         shardedPool.returnResourceObject( shardedJedis );
         return map;
     }
 
-    public static String GetMemCachMapByMapKey( String UserID,String MapKey ){
+    public static String GetMemCachMapByMapKey( String Key,String MapKey ){
         ShardedJedis shardedJedis = shardedPool.getResource();
-        String map = shardedJedis.hget(UserID, MapKey );
+        String map = shardedJedis.hget(Key, MapKey );
         shardedPool.returnResourceObject( shardedJedis );
         return map;
     }
