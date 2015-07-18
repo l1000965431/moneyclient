@@ -1,5 +1,6 @@
 package com.money.memcach;
 
+import com.money.config.Config;
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 
@@ -133,7 +134,7 @@ public class MemCachService {
         ShardedJedis shardedJedis = shardedPool.getResource();
         shardedJedis.hmset( Key,map );
         shardedPool.returnResourceObject( shardedJedis );
-        return "SUCCESS";
+        return Config.SERVICE_SUCCESS;
     }
 
     public static String MemCachSetMap( String Key,int time,Map<String,String> map ){
@@ -141,7 +142,16 @@ public class MemCachService {
         shardedJedis.hmset( Key,map );
         shardedJedis.expire( Key,time );
         shardedPool.returnResourceObject( shardedJedis );
-        return "SUCCESS";
+        return Config.SERVICE_SUCCESS;
+    }
+
+    public static String SetMemCachMapByMapKey( String Key,String MapKey,String MapValue ){
+        ShardedJedis shardedJedis = shardedPool.getResource();
+        Map<String,String> map = GetMemCachMap( Key );
+        map.put( MapKey,MapValue );
+        shardedJedis.hmset( Key,map );
+        shardedPool.returnResourceObject( shardedJedis );
+        return Config.SERVICE_SUCCESS;
     }
 
     public static Map<String,String> GetMemCachMap( String Key ){
