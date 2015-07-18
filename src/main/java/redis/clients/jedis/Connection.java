@@ -104,7 +104,7 @@ public class Connection implements Closeable {
   protected Connection sendCommand(final ProtocolCommand cmd) {
     try {
       connect();
-      Protocol.sendCommand(outputStream, cmd, new byte[0][]);
+      Protocol.sendCommand(outputStream, cmd);
       pipelinedCommands++;
       return this;
     } catch (JedisConnectionException ex) {

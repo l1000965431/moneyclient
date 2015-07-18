@@ -4,17 +4,15 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-       <bean id="InsertOrderListener" class="MoneyServerMQ.MQListener.InsertOrderListener">
+       <bean id="InsertOrderListener" class="com.money.MoneyServerMQ.MQListener.InsertOrderListener">
        <property name="messageTopic" value="MoneyServer_Order_Insert"/>
        </bean>
 
-       <bean id="MoneySeverMQManager" class="MoneyServerMQ.MoneyServerMQManager" >
+       <bean id="MoneySeverMQManager" class="com.money.MoneyServerMQ.MoneyServerMQManager" >
               <constructor-arg>
                      <list>
                             <ref bean="InsertOrderListener" />
                      </list>
               </constructor-arg>
-
        </bean>
-
 </beans>

@@ -27,7 +27,7 @@ public class BinaryClient extends Connection {
     BEFORE, AFTER;
     public final byte[] raw;
 
-    private LIST_POSITION() {
+    LIST_POSITION() {
       raw = SafeEncoder.encode(name());
     }
   }
