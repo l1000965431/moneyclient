@@ -36,7 +36,7 @@ public class MemCachService {
      *覆盖已有键值对
      *
      */
-    void MemCachSet( String Key, String Vaule ){
+    public static void MemCachSet( String Key, String Vaule ){
         ShardedJedis shardedJedis = shardedPool.getResource();
         shardedJedis.set( Key,Vaule );
         shardedPool.returnResourceObject( shardedJedis );
