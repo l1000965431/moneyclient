@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
-public class JedisCluster implements JedisCommands, BasicCommands, Closeable {
+public class JedisCluster implements redis.clients.jedis.JedisCommands, redis.clients.jedis.BasicCommands, Closeable {
   public static final short HASHSLOTS = 16384;
   private static final int DEFAULT_TIMEOUT = 2000;
   private static final int DEFAULT_MAX_REDIRECTIONS = 5;
