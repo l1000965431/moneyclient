@@ -16,10 +16,10 @@ public class User extends ServiceBase implements UserInterface
 
     UserBase userbase=new UserBase();
 
-    //ÓÃ»§×¢²á£¬ÅĞ¶ÏÑéÖ¤ÂëÊÇ·ñÕıÈ·£¬ÕıÈ·ÔòÍê³ÉÓÃ»§×¢²á
+    //ç”¨æˆ·æ³¨å†Œï¼Œåˆ¤æ–­éªŒè¯ç æ˜¯å¦æ­£ç¡®ï¼Œæ­£ç¡®åˆ™å®Œæˆç”¨æˆ·æ³¨å†Œ
     public boolean userRegister(String username,String code,String password,String userType)
     {
-        //ÅĞ¶ÏÊÖ»úÑéÖ¤ÂëÊÇ·ñÊäÈëÕıÈ·
+        //åˆ¤æ–­æ‰‹æœºéªŒè¯ç æ˜¯å¦è¾“å…¥æ­£ç¡®
         if(userbase.checkTeleCode(username, code)==true)
         {
             userbase.registered(username,password,userType);
@@ -31,20 +31,20 @@ public class User extends ServiceBase implements UserInterface
 
 
     }
-    //ÓÃ»§×¢²á-Ìá½»ÊÖ»úºÅ£¬ÑéÖ¤ÊÇ·ñÒÑ×¢²á£¬·¢ËÍ¶ÌĞÅÑéÖ¤Âë
-    //ÒÑ×¢²á·µ»Ø2,·¢ËÍÑéÖ¤Âë³É¹¦·µ»Ø1,Ê§°Ü·µ»Ø0,ÃÜÂë²»ºÏ·¨·µ»Ø3
+    //ç”¨æˆ·æ³¨å†Œ-æäº¤æ‰‹æœºå·ï¼ŒéªŒè¯æ˜¯å¦å·²æ³¨å†Œï¼Œå‘é€çŸ­ä¿¡éªŒè¯ç 
+    //å·²æ³¨å†Œè¿”å›2,å‘é€éªŒè¯ç æˆåŠŸè¿”å›1,å¤±è´¥è¿”å›0,å¯†ç ä¸åˆæ³•è¿”å›3
     public int submitTeleNum(String username,String password)
     {
-        //ÑéÖ¤ÓÃ»§ÃûÊÇ·ñÒÑ×¢²á
+        //éªŒè¯ç”¨æˆ·åæ˜¯å¦å·²æ³¨å†Œ
         if(userbase.checkUserName(username)==true)
             return Config.USER_IS_REGISTER;
         else
         {
-            //ÑéÖ¤ÃÜÂëÊÇ·ñºÏ·¨
+            //éªŒè¯å¯†ç æ˜¯å¦åˆæ³•
             boolean passwordIsRight=userbase.passwordIsRight(password);
             if(passwordIsRight==true)
             {
-                //·¢ËÍÊÖ»úÑéÖ¤Âë£¬²¢ÑéÖ¤ÊÇ·ñ·¢ËÍ³É¹¦
+                //å‘é€æ‰‹æœºéªŒè¯ç ï¼Œå¹¶éªŒè¯æ˜¯å¦å‘é€æˆåŠŸ
                 return userbase.teleCodeIsSend(username);
             }
             else
@@ -53,12 +53,12 @@ public class User extends ServiceBase implements UserInterface
         }
     }
 
-    //ÍË³öµÇÂ¼
+    //é€€å‡ºç™»å½•
     public boolean quitLand(String username)
     {
         return userbase.quitTokenLand(username);
     }
-    //Ê¹ÓÃÓÃ»§ÃûÃÜÂëµÇÂ¼
+    //ä½¿ç”¨ç”¨æˆ·åå¯†ç ç™»å½•
     public String userLand(String username,String password)
     {
         boolean userIsExist=userbase.userIsExist(username);
@@ -71,16 +71,16 @@ public class User extends ServiceBase implements UserInterface
             return "userName is not exist";
     }
 
-    //ÓÃ»§tokenµÇÂ½,0µÇÂ¼Ê§°Ü£¬1ÒÑµÇÂ¼£¬2µÇÂ¼³É¹¦,3Ê¹ÓÃÓÃ»§ÃûÃÜÂëµÇÂ¼»òtoken²»ÕıÈ·
+    //ç”¨æˆ·tokenç™»é™†,0ç™»å½•å¤±è´¥ï¼Œ1å·²ç™»å½•ï¼Œ2ç™»å½•æˆåŠŸ,3ä½¿ç”¨ç”¨æˆ·åå¯†ç ç™»å½•æˆ–tokenä¸æ­£ç¡®
     public int tokenLand(String username,String token)
     {
 
-        //²é¿´»º´æÖĞÊÇ·ñº¬ÓĞtoken,ÇÒ¿Í»§¶Ë²ÎÊıÊÇ·ñÓëtokenÒ»Ñù
+        //æŸ¥çœ‹ç¼“å­˜ä¸­æ˜¯å¦å«æœ‰token,ä¸”å®¢æˆ·ç«¯å‚æ•°æ˜¯å¦ä¸tokenä¸€æ ·
         boolean tokenExist=userbase.isTokenExist(username, token);
-        //Èô´æÔÚ£¬²éÑ¯ÓÃ»§µÇÂ¼×´Ì¬£¬·ñÔò,Ó¦¸ÃÊ¹ÓÃÓÃ»§ÃûÃÜÂëµÇÂ¼£¬·µ»Ø3
+        //è‹¥å­˜åœ¨ï¼ŒæŸ¥è¯¢ç”¨æˆ·ç™»å½•çŠ¶æ€ï¼Œå¦åˆ™,åº”è¯¥ä½¿ç”¨ç”¨æˆ·åå¯†ç ç™»å½•ï¼Œè¿”å›3
         if(tokenExist==true)
         {
-            //±È¶Ô»º´ætokenÉÏ´Î¸üĞÂÊ±¼ä£¬ÅĞ¶ÏÓÃ»§ÊÇ·ñÒÑµÇÂ¼
+            //æ¯”å¯¹ç¼“å­˜tokenä¸Šæ¬¡æ›´æ–°æ—¶é—´ï¼Œåˆ¤æ–­ç”¨æˆ·æ˜¯å¦å·²ç™»å½•
             Long orderTime = System.currentTimeMillis();
             String time = Long.toString(orderTime);
             Long timeLong=Long.parseLong(time);
@@ -101,21 +101,21 @@ public class User extends ServiceBase implements UserInterface
 
     }
 
-    //ÍêÉÆĞÅÏ¢ 0Î´µÇÂ¼£»1£¬ĞŞ¸ÄĞÅÏ¢³É¹¦£»2£¬ĞÅÏ¢²»ºÏ·¨;3£¬token²»Ò»ÖÂ;4,userTypeÓĞÎÊÌâ
+    //å®Œå–„ä¿¡æ¯ 0æœªç™»å½•ï¼›1ï¼Œä¿®æ”¹ä¿¡æ¯æˆåŠŸï¼›2ï¼Œä¿¡æ¯ä¸åˆæ³•;3ï¼Œtokenä¸ä¸€è‡´;4,userTypeæœ‰é—®é¢˜
     public int perfectInfo(String username,String token,String info)
     {
-        //²é¿´»º´æÖĞÊÇ·ñº¬ÓĞtoken,ÇÒ¿Í»§¶Ë²ÎÊıÊÇ·ñÓëtokenÒ»Ñù
+        //æŸ¥çœ‹ç¼“å­˜ä¸­æ˜¯å¦å«æœ‰token,ä¸”å®¢æˆ·ç«¯å‚æ•°æ˜¯å¦ä¸tokenä¸€æ ·
         boolean tokenExist=userbase.isTokenExist(username, token);
 
         if(tokenExist==true)
         {
-            //±È¶Ô»º´ætokenÉÏ´Î¸üĞÂÊ±¼ä£¬ÅĞ¶ÏÓÃ»§ÊÇ·ñÒÑµÇÂ¼
+            //æ¯”å¯¹ç¼“å­˜tokenä¸Šæ¬¡æ›´æ–°æ—¶é—´ï¼Œåˆ¤æ–­ç”¨æˆ·æ˜¯å¦å·²ç™»å½•
             Long orderTime = System.currentTimeMillis();
             String time = Long.toString(orderTime);
             Long timeLong=Long.parseLong(time);
             boolean landFlag=userbase.tokenTime(username,timeLong);
             if(landFlag==true) {
-                //¸ù¾İusername,²éÕÒÓÃ»§ÀàĞÍ
+                //æ ¹æ®username,æŸ¥æ‰¾ç”¨æˆ·ç±»å‹
                 String userType =userbase.getUserType(username);
                 if (userType == "INVESTOR")
                     return userbase.modifyInvestorInfo(username, info);
@@ -132,21 +132,21 @@ public class User extends ServiceBase implements UserInterface
             return 3;
     }
 
-    //ĞŞ¸ÄĞÅÏ¢,0Î´µÇÂ¼£»1£¬ĞŞ¸ÄĞÅÏ¢³É¹¦£»2£¬ĞÅÏ¢²»ºÏ·¨;3,tooken²»Ò»ÖÂ;4,userTypeÓĞÎÊÌâ
+    //ä¿®æ”¹ä¿¡æ¯,0æœªç™»å½•ï¼›1ï¼Œä¿®æ”¹ä¿¡æ¯æˆåŠŸï¼›2ï¼Œä¿¡æ¯ä¸åˆæ³•;3,tookenä¸ä¸€è‡´;4,userTypeæœ‰é—®é¢˜
     public int changeInfo(String userName,String token,String info)
     {
-        //²é¿´»º´æÖĞÊÇ·ñº¬ÓĞtoken,ÇÒ¿Í»§¶Ë²ÎÊıÊÇ·ñÓëtokenÒ»Ñù
+        //æŸ¥çœ‹ç¼“å­˜ä¸­æ˜¯å¦å«æœ‰token,ä¸”å®¢æˆ·ç«¯å‚æ•°æ˜¯å¦ä¸tokenä¸€æ ·
         boolean tokenExist=userbase.isTokenExist(userName, token);
 
         if(tokenExist==true)
         {
-            //±È¶Ô»º´ætokenÉÏ´Î¸üĞÂÊ±¼ä£¬ÅĞ¶ÏÓÃ»§ÊÇ·ñÒÑµÇÂ¼
+            //æ¯”å¯¹ç¼“å­˜tokenä¸Šæ¬¡æ›´æ–°æ—¶é—´ï¼Œåˆ¤æ–­ç”¨æˆ·æ˜¯å¦å·²ç™»å½•
             Long orderTime = System.currentTimeMillis();
             String time = Long.toString(orderTime);
             Long timeLong=Long.parseLong(time);
             boolean landFlag=userbase.tokenTime(userName,timeLong);
             if(landFlag==true) {
-                //¸ù¾İusername,²éÕÒÓÃ»§ÀàĞÍ
+                //æ ¹æ®username,æŸ¥æ‰¾ç”¨æˆ·ç±»å‹
                 String userType =userbase.getUserType(userName);
                 if (userType == "INVESTOR")
                     return userbase.changeInvestorInfo(userName, info);
@@ -164,15 +164,15 @@ public class User extends ServiceBase implements UserInterface
 
     }
 
-    //ĞŞ¸ÄÃÜÂë·¢ËÍÑéÖ¤Âë 3,ÃÜÂë²»ÕıÈ·;2,ĞÂÃÜÂë²»ºÏ·¨£»0¶ÌĞÅÎ´·¢ËÍ³É¹¦£»1³É¹¦
+    //ä¿®æ”¹å¯†ç å‘é€éªŒè¯ç  3,å¯†ç ä¸æ­£ç¡®;2,æ–°å¯†ç ä¸åˆæ³•ï¼›0çŸ­ä¿¡æœªå‘é€æˆåŠŸï¼›1æˆåŠŸ
     public int sendPasswordCode(String userName,String password,String newPassword)
     {
-        //¼ì²é¾ÉÃÜÂëÊÇ·ñÕıÈ·
+        //æ£€æŸ¥æ—§å¯†ç æ˜¯å¦æ­£ç¡®
         if(userbase.checkPassWord(userName,password)==true)
         {
-            //¼ì²éĞÂÃÜÂëÊÇ·ñºÏ·¨
+            //æ£€æŸ¥æ–°å¯†ç æ˜¯å¦åˆæ³•
             boolean passwordIsRight=userbase.passwordIsRight(newPassword);
-            //Èô·¢ËÍÑéÖ¤Âë³É¹¦
+            //è‹¥å‘é€éªŒè¯ç æˆåŠŸ
             int sendSuccess=userbase.teleCodeIsSend(userName);
             if(passwordIsRight==true)
             {
@@ -184,7 +184,7 @@ public class User extends ServiceBase implements UserInterface
         else
             return Config.PASSWORD_NOTRIGHT;
     }
-    //±È¶ÔÑéÖ¤Âë£¬ĞŞ¸ÄÃÜÂë
+    //æ¯”å¯¹éªŒè¯ç ï¼Œä¿®æ”¹å¯†ç 
     public  boolean changPassword(String userName,String code,String newPassWord)
     {
        if(userbase.checkTeleCode(userName,code)==true) {

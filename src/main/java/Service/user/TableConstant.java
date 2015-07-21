@@ -8,9 +8,9 @@ import java.util.Map;
  */
 public class TableConstant {
     /**
-     * tableBean 实体类与表名称的对应关系map
-     * key：实体类全名
-     * value：表名称
+     * tableBean 瀹炰綋绫讳笌琛ㄥ悕绉扮殑瀵瑰簲鍏崇郴map
+     * key锛氬疄浣撶被鍏ㄥ悕
+     * value锛氳〃鍚嶇О
      */
     public static final Map<String, String> TABLE_BEAN = new HashMap<String, String>();
     static{
@@ -18,9 +18,9 @@ public class TableConstant {
     }
 
     /**
-     * TABLE_PRIMARY_KEY 表名称与该表主键字段的对应关系map
-     * key：表名称
-     * value：表主键字段名称
+     * TABLE_PRIMARY_KEY 琛ㄥ悕绉颁笌璇ヨ〃涓婚敭瀛楁鐨勫搴斿叧绯籱ap
+     * key锛氳〃鍚嶇О
+     * value锛氳〃涓婚敭瀛楁鍚嶇О
      */
     public static final Map<String, String> TABLE_PRIMARY_KEY = new HashMap<String, String>();
     static{

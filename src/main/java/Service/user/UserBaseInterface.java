@@ -7,57 +7,57 @@ import java.util.Map;
  */
 public interface UserBaseInterface {
 
-    //Í¶×ÊÕßÍêÉÆ¸öÈËĞÅÏ¢,1£¬ĞŞ¸ÄĞÅÏ¢³É¹¦£»2£¬ĞÅÏ¢²»ºÏ·¨
+    //æŠ•èµ„è€…å®Œå–„ä¸ªäººä¿¡æ¯,1ï¼Œä¿®æ”¹ä¿¡æ¯æˆåŠŸï¼›2ï¼Œä¿¡æ¯ä¸åˆæ³•
     public int modifyInvestorInfo(String userName,String info);
 
-    //½è´ûÕßÍêÉÆ¸öÈËĞÅÏ¢
+    //å€Ÿè´·è€…å®Œå–„ä¸ªäººä¿¡æ¯
     public int  modifyBorrowerInfo(String userName,String info);
 
-    //Í¶×ÊÕßĞŞ¸Ä¸öÈËĞÅÏ¢
+    //æŠ•èµ„è€…ä¿®æ”¹ä¸ªäººä¿¡æ¯
     public int changeInvestorInfo(String userName,String info);
 
-    //½è´ûÕßĞŞ¸Ä¸öÈËĞÅÏ¢
+    //å€Ÿè´·è€…ä¿®æ”¹ä¸ªäººä¿¡æ¯
     public int changeBorrowerInfo(String userName,String info);
 
-    //ĞŞ¸ÄÃÜÂë
+    //ä¿®æ”¹å¯†ç 
     public boolean changePassword(String userName,String newPassWord);
 
-    //×¢²á
+    //æ³¨å†Œ
     public void registered(String userName,String passWord,String userType);
 
-    //ÑéÖ¤ÓÃ»§ÃûÊÇ·ñÒÑ×¢²á
+    //éªŒè¯ç”¨æˆ·åæ˜¯å¦å·²æ³¨å†Œ
     public boolean checkUserName(String userName);
 
-    //ÑéÖ¤¶ÌĞÅÑéÖ¤ÂëÊÇ·ñÕıÈ·
+    //éªŒè¯çŸ­ä¿¡éªŒè¯ç æ˜¯å¦æ­£ç¡®
     public boolean checkTeleCode(String userName,String code);
 
-    //·¢ËÍÊÖ»úÑéÖ¤Âë£¬²¢ÑéÖ¤ÊÖ»ú¶ÌĞÅÊÇ·ñ·¢ËÍ³É¹¦ 1Îª³É¹¦£¬0ÎªÊ§°Ü............ÑéÖ¤ÂëÄÚÈİ´ı¸Ä£¬Êä³ö´ı¸Ä
+    //å‘é€æ‰‹æœºéªŒè¯ç ï¼Œå¹¶éªŒè¯æ‰‹æœºçŸ­ä¿¡æ˜¯å¦å‘é€æˆåŠŸ 1ä¸ºæˆåŠŸï¼Œ0ä¸ºå¤±è´¥............éªŒè¯ç å†…å®¹å¾…æ”¹ï¼Œè¾“å‡ºå¾…æ”¹
     public int teleCodeIsSend(String userName);
 
-    //µÇÂ¼£¬²éÑ¯DB
+    //ç™»å½•ï¼ŒæŸ¥è¯¢DB
     public String landing(String userName, String passWord);
 
-    //²éÑ¯ÓÃ»§ÃûÊÇ·ñ´æÔÚ
+    //æŸ¥è¯¢ç”¨æˆ·åæ˜¯å¦å­˜åœ¨
     public boolean userIsExist(String userName);
 
-    //²éÑ¯Êı¾İ¿â£¬±È¶ÔÓÃ»§ÃÜÂëÊÇ·ñÕıÈ·
+    //æŸ¥è¯¢æ•°æ®åº“ï¼Œæ¯”å¯¹ç”¨æˆ·å¯†ç æ˜¯å¦æ­£ç¡®
     public boolean checkPassWord(String userName,String passWord);
 
-    //µÇÂ¼£¬2³É¹¦£¬0Ê§°Ü
+    //ç™»å½•ï¼Œ2æˆåŠŸï¼Œ0å¤±è´¥
     public int tokenLand(String userName,String time);
 
-    //¸ù¾İuserName²éÕÒ»º´æÖĞÉÏ´Îtoken¸üĞÂÊ±¼ä,ÅĞ¶ÏÊÇ·ñÎªµÇÂ¼×´Ì¬
+    //æ ¹æ®userNameæŸ¥æ‰¾ç¼“å­˜ä¸­ä¸Šæ¬¡tokenæ›´æ–°æ—¶é—´,åˆ¤æ–­æ˜¯å¦ä¸ºç™»å½•çŠ¶æ€
     public boolean tokenTime(String userName,Long time);
 
-    //²éÑ¯»º´æÖĞÊÇ·ñÓĞtoken×Ö·û´®,²¢ÑéÖ¤token×Ö·û´®ÊÇ·ñÓë¿Í»§¶Ë´«À´µÄÏàµÈ
+    //æŸ¥è¯¢ç¼“å­˜ä¸­æ˜¯å¦æœ‰tokenå­—ç¬¦ä¸²,å¹¶éªŒè¯tokenå­—ç¬¦ä¸²æ˜¯å¦ä¸å®¢æˆ·ç«¯ä¼ æ¥çš„ç›¸ç­‰
     public boolean isTokenExist(String userName,String token);
 
-    //ÍË³öµÇÂ¼
+    //é€€å‡ºç™»å½•
     public boolean quitTokenLand(String userName);
 
-    //»ñÈ¡ÓÃ»§ÀàĞÍ
+    //è·å–ç”¨æˆ·ç±»å‹
     public String getUserType(String userName);
 
-    //¼ì²éµÇÂ¼ÃÜÂëÊÇ·ñºÏ·¨
+    //æ£€æŸ¥ç™»å½•å¯†ç æ˜¯å¦åˆæ³•
     public boolean passwordIsRight(String password);
 }

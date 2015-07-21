@@ -11,7 +11,7 @@ public class Token
     static MoneyServerMd5Utils md5=new MoneyServerMd5Utils();
     public static String creat(String userName)
     {
-        //获取当前时间
+        //鑾峰彇褰撳墠鏃堕棿
         Long orderTime = System.currentTimeMillis();
         String time=orderTime.toString();
         int random = MoneySeverRandom.getRandomNum(1, 10000);
