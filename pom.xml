@@ -148,6 +148,11 @@
       <artifactId>junit</artifactId>
       <version>4.11</version>
     </dependency>
+    <dependency>
+      <groupId>com.rest</groupId>
+      <artifactId>restsms</artifactId>
+      <version>2.6</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>Longyan</finalName>
