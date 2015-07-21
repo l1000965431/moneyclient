@@ -14,6 +14,21 @@ import java.util.Date;
 @Table(name = "activityorder")
 public class OrderModel {
 
+    //订单未提交
+    public final static int ORDER_STATE_NOSUBMITTED = 0;
+
+    //订单正在提交
+    public final static int ORDER_STATE_SUBMITTING = 1;
+
+    //订单提交成功
+    public final static int ORDER_STATE_SUBMITTSUCCESS = 2;
+
+    //订单提交失败
+    public final static int ORDER_STATE_SUBMITTEDFAIL = 3;
+
+    //订单取消
+    public final static int ORDER_STATE_SUBMITTECANEL = 4;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -22,7 +37,7 @@ public class OrderModel {
 
     private int activityid;
 
-    private int userid;
+    private String userid;
 
     private Date orderdate;
 
@@ -56,11 +71,11 @@ public class OrderModel {
         this.activityid = activityid;
     }
 
-    public int getUserid() {
+    public String getUserid() {
         return userid;
     }
 
-    public void setUserid(int userid) {
+    public void setUserid(String userid) {
         this.userid = userid;
     }
 

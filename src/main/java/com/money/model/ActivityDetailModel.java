@@ -28,6 +28,9 @@ public class ActivityDetailModel implements Serializable {
     //上线项目错误
     public final static int ONLINEACTIVITY_ERROR = 4;
 
+    //上线项目错误
+    public final static int ONLINEACTIVITY_FAILED = 5;
+
     /**
      * 项目ID
      */
@@ -126,6 +129,11 @@ public class ActivityDetailModel implements Serializable {
      * 团队人数
      */
     int teamSize;
+
+    /**
+     * 各金额总人数
+     */
+    String activitylinespeoples;
 
     public long getId() {
         return id;
@@ -245,5 +253,13 @@ public class ActivityDetailModel implements Serializable {
 
     public void setTeamSize(int teamSize) {
         this.teamSize = teamSize;
+    }
+
+    public String getActivitylinespeoples() {
+        return activitylinespeoples;
+    }
+
+    public void setActivitylinespeoples(String activitylinespeoples) {
+        this.activitylinespeoples = activitylinespeoples;
     }
 }

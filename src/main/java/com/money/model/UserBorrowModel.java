@@ -25,6 +25,8 @@ public class UserBorrowModel implements Serializable {
     //个人介绍
     private String personalProfile;
 
+    private boolean isperfectInfo;
+
     public String getUserId() {
         return userId;
     }
@@ -73,5 +75,11 @@ public class UserBorrowModel implements Serializable {
         this.personalProfile = personalProfile;
     }
 
+    public boolean isperfectInfo() {
+        return isperfectInfo;
+    }
 
+    public void setIsperfectInfo(boolean isperfectInfo) {
+        this.isperfectInfo = isperfectInfo;
+    }
 }

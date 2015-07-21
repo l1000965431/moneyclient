@@ -9,6 +9,8 @@ import com.money.model.OrderModel;
 import org.springframework.stereotype.Repository;
 import until.GsonUntil;
 
+import java.util.List;
+
 /**
  * 项目服务
  * <p>User: 刘旻
@@ -74,11 +76,15 @@ public class activityDAO extends BaseDao {
     public String InsertUserToBuyList( int activityID,int userID,int Lines ){
         String DBName = Integer.toString( activityID );
         //如果没有查询表则创建
-        if( !this.IsModelExist( DBName ) ) {
+/*        if( !this.IsModelExist( DBName ) ) {
 
-        }
+            this.excuteBySQL( " CREATE TABLE `moneyserver`.`1` (" + "`id` INT NOT NULL," + "`tablename` VARCHAR(45) NULL," + "PRIMARY KEY (`id`));" );
+        }*/
 
-        //获得当前最新的存储表的名字
+        List list = this.getListBySQL( "select tablename from activity_1 where id=(select max(id) from activity_1)" );
+
+
+/*        //获得当前最新的存储表的名字
         String MaxDBName = DBName + "_1";
 
         long count = this.getTotalCount( MaxDBName );
@@ -88,9 +94,10 @@ public class activityDAO extends BaseDao {
 
            return null;
         }else{
-            //插入到这张表中 
+            //插入到这张表中
 
             return null;
-        }
+        }*/
+        return null;
     }
 }

@@ -1,6 +1,7 @@
 package com.money.Service.AuditActivity;
 
 import com.money.Service.ServiceBase;
+import com.money.dao.BaseDao;
 import com.money.dao.GeneraDAO;
 import com.money.dao.TransactionCallback;
 import com.money.model.ActivityDetailModel;
@@ -16,92 +17,84 @@ import java.util.List;
 /**
  * Created by happysky on 15-7-11.
  */
+
 @Service("ServiceAuditActivity")
 public class ServiceAuditActivity extends ServiceBase {
     @Autowired
-    private GeneraDAO generaDAO;
+    private GeneraDAO baseDao;
 
     @SuppressWarnings("unchecked")
     public ActivityVerifyModel getOldestActivity(){
-        Session session = generaDAO.getNewSession();
+        Session session = baseDao.getNewSession();
         ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel)session.createCriteria(ActivityVerifyModel.class)
                 .setMaxResults(1)
                 .addOrder(Order.asc("id"))
                 .add(Restrictions.eq("auditorStatus", ActivityVerifyModel.STATUS_UN_AUDITOR))
                 .uniqueResult();
 
+        session.flush();
+        session.clear();
         session.close();
         return activityVerifyModel;
     }
 
     public ActivityVerifyModel getNewestActivity(){
-        Session session = generaDAO.getNewSession();
+        Session session = baseDao.getNewSession();
         ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel)session.createCriteria(ActivityVerifyModel.class)
                 .setMaxResults(1)
                 .addOrder(Order.desc("id"))
                 .add(Restrictions.eq("auditorStatus", ActivityVerifyModel.STATUS_UN_AUDITOR))
                 .uniqueResult();
 
+        session.flush();
+        session.clear();
         session.close();
         return activityVerifyModel;
     }
 
-    /**
-     * 获取项目列表
-     * @param isAsc 排列方式是升序还是降序
-     * @param activityStatus {@link ActivityVerifyModel#STATUS_UN_AUDITOR}
-     *                      {@link ActivityVerifyModel#STATUS_AUDITOR_PASS}
-     *                      {@link ActivityVerifyModel#STATUS_AUDITOR_NOT_PASS}
-     * @return
-     */
     @SuppressWarnings("unchecked")
-    public List<ActivityVerifyModel> getActivityList(boolean isAsc, int activityStatus){
-        Session session = generaDAO.getNewSession();
-        List<ActivityVerifyModel> list = session.createCriteria(ActivityVerifyModel.class)
-                .setMaxResults(10)
-                .addOrder(Order.desc("id"))
-                .add(Restrictions.eq("auditorStatus", activityStatus))
-                .list();
-        return list;
-    }
-
-    /**
-     * 获得项目审核状态
-     * @param id
-     * @return {@link ActivityVerifyModel#STATUS_UN_AUDITOR}
-     *         或者-1:没有此项目
-     *
-     */
-    public int getActivityStatus(Long id){
-        ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel) generaDAO.load(ActivityVerifyModel.class, id);
-        if( activityVerifyModel == null ){
-            return -1;
-        }
-        return activityVerifyModel.getAuditorStatus();
+    public List<ActivityVerifyModel> getActivityList(boolean isAsc){
+        return baseDao.getAllList(ActivityVerifyModel.class, "id", isAsc);
     }
 
     public boolean setActivityAuditorResult(Long id, int status){
-        ActivityVerifyModel ActivityVerifyModel = (ActivityVerifyModel) generaDAO.load(ActivityVerifyModel.class, id);
+        ActivityVerifyModel ActivityVerifyModel = (ActivityVerifyModel)baseDao.load(ActivityVerifyModel.class, id);
         if( ActivityVerifyModel == null ){
             return false;
         }
 
         ActivityVerifyModel.setAuditorStatus(status);
-        generaDAO.update(ActivityVerifyModel);
+        baseDao.update(ActivityVerifyModel);
         return true;
     }
 
     public boolean setActivityToGroup(){
-        generaDAO.excuteTransactionByCallback(new TransactionCallback() {
-            public void callback(Session session) throws Exception {
-                ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel) session.get(ActivityVerifyModel.class, 4l);
+        ActivityDetailModel activityDetailModel = (ActivityDetailModel)baseDao.load(ActivityDetailModel.class, 1l);
+        baseDao.excuteTransactionByCallback(new TransactionCallback() {
+            public void callback(BaseDao baseDao ) throws Exception {
+/*                ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel)session.get(ActivityVerifyModel.class, 4l);
                 if (activityVerifyModel != null) {
                     ActivityDetailModel activityDetailModel = verifyToDetail(activityVerifyModel);
                     session.save(activityDetailModel);
-                    session.delete(activityVerifyModel);
+                    session.delete(activityVerifyModel);*/
                 }
-            }
+            //}
         });
+//        Session session = baseDao.getNewSession();
+//        Transaction transaction = session.beginTransaction();
+//
+//        ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel)session.get(ActivityVerifyModel.class, 1l);
+//        if( activityVerifyModel != null ){
+//            ActivityDetailModel activityDetailModel = verifyToDetail(activityVerifyModel);
+//            session.save(activityDetailModel);
+//            session.delete(activityVerifyModel);
+//        }
+//
+//        transaction.commit();
+//
+//        session.flush();
+//        session.clear();
+//        session.close();
         return true;
     }
 

@@ -28,9 +28,8 @@ public class UserModel implements Serializable {
     private String location;
     //真实姓名
     private String realName;
-
-
-
+    //是否已经完善过信息
+    private boolean isperfectInfo;
 
 
     public String getUserId() {
@@ -97,5 +96,11 @@ public class UserModel implements Serializable {
         this.realName = realName;
     }
 
+    public boolean isperfectInfo() {
+        return isperfectInfo;
+    }
 
+    public void setIsperfectInfo(boolean isperfectInfo) {
+        this.isperfectInfo = isperfectInfo;
+    }
 }

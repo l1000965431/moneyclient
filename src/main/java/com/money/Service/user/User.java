@@ -2,10 +2,9 @@ package com.money.Service.user;
 
 import com.money.Service.ServiceBase;
 import com.money.config.Config;
-import com.money.memcach.MemCachService;
+import com.money.dao.userDAO.UserDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by fisher on 2015/7/6.
@@ -13,8 +12,8 @@ import java.util.Map;
 @Service("User")
 public class User extends ServiceBase implements UserInterface
 {
-
-    UserBase userbase=new UserBase();
+    @Autowired
+    UserDAO userbase;
 
     //用户注册，判断验证码是否正确，正确则完成用户注册
     public boolean userRegister(String username,String code,String password,String userType)
@@ -25,7 +24,6 @@ public class User extends ServiceBase implements UserInterface
             userbase.registered(username,password,userType);
             return true;
         }
-
         else
             return false;
 
@@ -58,6 +56,7 @@ public class User extends ServiceBase implements UserInterface
     {
         return userbase.quitTokenLand(username);
     }
+
     //使用用户名密码登录
     public String userLand(String username,String password)
     {
@@ -184,15 +183,28 @@ public class User extends ServiceBase implements UserInterface
         else
             return Config.PASSWORD_NOTRIGHT;
     }
+
     //比对验证码，修改密码
     public  boolean changPassword(String userName,String code,String newPassWord)
     {
-       if(userbase.checkTeleCode(userName,code)==true) {
-           boolean changeOK=userbase.changePassword(userName, newPassWord);
-           return changeOK;
-       }
+        if(userbase.checkTeleCode(userName,code)==true) {
+            boolean changeOK=userbase.changePassword(userName, newPassWord);
+            return changeOK;
+        }
         else
-           return false;
-
+            return false;
     }
+
+
+    /**
+     * 用户是否完善过信息
+     * @param userID  用户ID
+     * @return
+     */
+
+    public boolean IsPerfectInfo( String userID ){
+
+        return true;
+    }
+
 }

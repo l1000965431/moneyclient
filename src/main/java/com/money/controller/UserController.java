@@ -1,6 +1,7 @@
-package Controller;
+package com.money.controller;
 
-import Service.user.User;
+import com.money.Service.user.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/User")
 public class UserController extends ControllerBase implements IController
 {
-    User user=new User();
+    @Autowired
+    User user;
 
     @RequestMapping("passWordLogin")
     @ResponseBody
@@ -26,14 +28,16 @@ public class UserController extends ControllerBase implements IController
         String PassWord = request.getParameter( "PassWord" );
         return user.userLand(UserName,PassWord);
     }
+
     @RequestMapping("tokenLogin")
     @ResponseBody
     public int tokenLogin( HttpServletRequest request,
                               HttpServletResponse response )
     {
         String token = request.getParameter( "token" );
-        return user.tokenLand(token);
+        return user.tokenLand("",token);
     }
+
     @RequestMapping("perfectInfo")
     @ResponseBody
     public int perfectInfo( HttpServletRequest request,
@@ -44,6 +48,7 @@ public class UserController extends ControllerBase implements IController
         String userType=request.getParameter("userType");
         return user.perfectInfo(token, info, userType);
     }
+
     @RequestMapping("changeInfo")
     @ResponseBody
     public int changeInfo( HttpServletRequest request,
@@ -54,6 +59,7 @@ public class UserController extends ControllerBase implements IController
         String userType=request.getParameter("userType");
         return user.changeInfo(token, info, userType);
     }
+
     @RequestMapping("quitLogin")
     @ResponseBody
     public boolean quitLogin( HttpServletRequest request,
@@ -62,6 +68,7 @@ public class UserController extends ControllerBase implements IController
         String token = request.getParameter( "token" );
         return user.quitLand(token);
     }
+
     @RequestMapping("register")
     @ResponseBody
     public  boolean register(HttpServletRequest request,
@@ -69,25 +76,28 @@ public class UserController extends ControllerBase implements IController
     {
         String userName = request.getParameter( "userName" );
         String code = request.getParameter( "code" );
-        return  user.userRegister(userName, code);
+        return  user.userRegister("","",userName, code);
     }
+
     @RequestMapping("submitTeleNum")
     @ResponseBody
     public  int submitTeleNum(HttpServletRequest request,
                              HttpServletResponse response )
     {
         String userName = request.getParameter( "userName" );
-        return  user.submitTeleNum(userName);
+        return  user.submitTeleNum(userName,"");
     }
+
     @RequestMapping("sendPasswordCode")
     @ResponseBody
-    public  boolean sendPasswordCode(HttpServletRequest request,
+    public int sendPasswordCode(HttpServletRequest request,
                                   HttpServletResponse response )
     {
         String userName = request.getParameter( "userName" );
         String password = request.getParameter( "password" );
-        return  user.sendPasswordCode(userName, password);
+        return  user.sendPasswordCode(userName, password,"");
     }
+
     @RequestMapping("changPassword")
     @ResponseBody
     public  boolean sendPasswochangPasswordrdCode(HttpServletRequest request,

@@ -55,4 +55,12 @@ public class Config {
 
     //单表最大行数
     public static final int MAXDBROWNUM = 800000;
+
+    public static final int RETURNERROR = -1;
+
+    //几率的放大倍数  方便计算
+    public static final int PROBABILITYAMPLIFICATION = 1000000;
+
+    //几率的放大倍数  方便计算
+    public static final String ACTIVITYGROUPTICKETNAME = "Ticket_";
 }

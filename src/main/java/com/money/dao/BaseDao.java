@@ -270,6 +270,29 @@ public class BaseDao {
     }
 
     /**
+     * 原生SQL语句查询  跨表查询的时候 只能跨两张表进行查询
+     *
+     * @param sql
+     *
+     * @return 放回结果的行数
+     *
+     */
+
+    public int excuteintBySQL(String sql ){
+        Session session = getNewSession();
+        try{
+            int row = session.createSQLQuery( sql ).executeUpdate();
+            session.clear();
+            session.close();
+            return row;
+        }catch ( Exception e ){
+            session.clear();
+            session.close();
+            return Config.RETURNERROR;
+        }
+    }
+
+    /**
      * 使用注解名进行查询  跨表查询的时候 只能跨两张表进行查询
      *
      * @param sqlname  注解名称

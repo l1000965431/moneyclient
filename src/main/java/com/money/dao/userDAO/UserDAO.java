@@ -1,6 +1,8 @@
-package com.money.Service.user;
+package com.money.dao.userDAO;
 
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
+import com.money.Service.user.Token;
+import com.money.Service.user.UserBaseInterface;
 import com.money.config.Config;
 import com.money.dao.BaseDao;
 import com.money.memcach.MemCachService;
@@ -18,8 +20,8 @@ import java.util.*;
  * Created by fisher on 2015/7/9.
  */
     @Repository
-    public class UserBase extends BaseDao implements UserBaseInterface {
-    private static Logger logger = LoggerFactory.getLogger(UserBase.class);
+    public class UserDAO extends BaseDao implements UserBaseInterface {
+    private static Logger logger = LoggerFactory.getLogger(UserDAO.class);
     static MoneyServerMd5Utils md5=new MoneyServerMd5Utils();
     Token moneyServerToken=new Token();
 
@@ -235,7 +237,6 @@ import java.util.*;
     //登录，查询DB
     public String landing(String userName, String passWord)
     {
-
         //根据用户名查找数据库中密码并解密,比对密码是否正确
         boolean passWordIsRight=checkPassWord(userName, passWord);
         //登陆成功返回true，否则false
@@ -255,6 +256,7 @@ import java.util.*;
             return null;
         }
     }
+
     //查询用户名是否存在
     public boolean userIsExist(String userName)
     {
@@ -276,6 +278,7 @@ import java.util.*;
         else
             return false;
     }
+
     //登录，2成功，0失败
     public int tokenLand(String userName,String time)
     {
@@ -286,6 +289,7 @@ import java.util.*;
         else
             return Config.TOKENLAND_FAILED;
     }
+
     //根据userName查找缓存中上次token更新时间,判断是否为登录状态
     public boolean tokenTime(String userName,Long time)
     {
