@@ -22,6 +22,7 @@
 
     </bean>
 
+
     <!-- 1111111111111111111111111111111111111111111声明Hibernate的Session工厂 111111111111111111111111111111111111111111111111111111111111111111-->
     <!-- 用注解的方式定义持久化，声明Hibernate的Session工厂 -->
     <!-- 声明了sessionFactory后，在DAO中可以使用@Autowired和@Qualifier注入属性访问sessionFactory -->
@@ -34,7 +35,7 @@
             <props>
                 <prop key="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
-                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.show_sql">false</prop>
                 <prop key="connection.autocommit">false</prop>
             </props>
         </property>
