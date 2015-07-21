@@ -12,21 +12,21 @@ public class UserModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //Ö÷¼ü£¬ÊÖ»úºÅ
-    private String userId;//serviceÀïµÄusername
-    //µÇÂ¼ÃÜÂë
+    //ä¸»é”®ï¼Œæ‰‹æœºå·
+    private String userId;//serviceé‡Œçš„username
+    //ç™»å½•å¯†ç 
     private String password;
-    //ÓÃ»§ÀàĞÍ
+    //ç”¨æˆ·ç±»å‹
     private String userType;
-    //ÓÃ»§Ãû
+    //ç”¨æˆ·å
     private String userName;
-    //ÓÊÏä
+    //é‚®ç®±
     private String mail;
-    //ĞÔ±ğ
+    //æ€§åˆ«
     private String sex;
-    //ËùÔÚµØ
+    //æ‰€åœ¨åœ°
     private String location;
-    //ÕæÊµĞÕÃû
+    //çœŸå®å§“å
     private String realName;
 
 

@@ -12,17 +12,17 @@ public class UserBorrowModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //Ö÷¼ü£¬ÊÖ»úºÅ
-    private String userId;//serviceÀïµÄusername
-    //Éí·İÖ¤
+    //ä¸»é”®ï¼Œæ‰‹æœºå·
+    private String userId;//serviceé‡Œçš„username
+    //èº«ä»½è¯
     private String identity;
-    //Ò»¾ä»°½éÉÜ×Ô¼º
+    //ä¸€å¥è¯ä»‹ç»è‡ªå·±
     private String selfIntroduce;
-    //ÉÃ³¤ÁìÓò
+    //æ“…é•¿é¢†åŸŸ
     private String goodAtField;
-    //½ÌÓı¾­Àú
+    //æ•™è‚²ç»å†
     private String education;
-    //¸öÈË½éÉÜ
+    //ä¸ªäººä»‹ç»
     private String personalProfile;
 
     public String getUserId() {
