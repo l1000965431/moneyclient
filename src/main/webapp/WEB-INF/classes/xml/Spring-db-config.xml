@@ -14,9 +14,9 @@
 
         <property value="com.mysql.jdbc.Driver" name="driverClassName"/><!--driverClassName指定了JDBC驱动类的全限定类名 -->
 
-        <property value="jdbc:mysql://115.29.111.0:3306/moneyserver" name="url"/><!-- 数据库所在IP地址和数据库名-->
+        <property value="jdbc:mysql:moneyserver.mysql.rds.aliyuncs.com:3306/moneyserver" name="url"/><!-- 数据库所在IP地址和数据库名-->
 
-        <property value="root" name="username"/>
+        <property value="money" name="username"/>
 
         <property value="123456" name="password"/>
 
@@ -37,6 +37,7 @@
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="connection.autocommit">false</prop>
+                <prop key="hibernate.current_session_context_class">thread</prop>
             </props>
         </property>
     </bean>

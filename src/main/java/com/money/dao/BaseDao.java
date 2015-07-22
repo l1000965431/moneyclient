@@ -1,9 +1,11 @@
 package com.money.dao;
 
+import com.money.config.Config;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.CallbackFunction;
 
@@ -33,25 +35,25 @@ public class BaseDao {
      *
      * @return
      */
-    public Session getSession() {
+/*    public Session getSession() {
         return sessionFactory.getCurrentSession();
-    }
+    }*/
 
     /**
      * openSession 需要手动关闭session 意思是打开一个新的session
      *
      * @return
      */
-    public Session getNewSession() {
-        return sessionFactory.openSession();
+    Session getNewSession() {
+        return sessionFactory.getCurrentSession();
     }
 
     public void flush() {
-        getSession().flush();
+        getNewSession().flush();
     }
 
     public void clear() {
-        getSession().clear();
+        getNewSession().clear();
     }
 
     /**
@@ -87,7 +89,7 @@ public class BaseDao {
     @SuppressWarnings({ "rawtypes" })
     public List getAllList(Class c) {
         String hql = "from " + c.getName();
-        Session session = getSession();
+        Session session = getNewSession();
         return session.createQuery(hql).list();
     }
 
@@ -126,7 +128,7 @@ public class BaseDao {
         Session session = getNewSession();
         String hql = "select count(*) from " + name;
         Long count = (Long) session.createQuery(hql).uniqueResult();
-        session.close();
+        //session.close();
         return count != null ? count.longValue() : 0;
     }
 
@@ -143,7 +145,7 @@ public class BaseDao {
             result = session.save(bean);
             session.flush();
             session.clear();
-            session.close();
+            //session.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -162,7 +164,7 @@ public class BaseDao {
         session.update(bean);
         session.flush();
         session.clear();
-        session.close();
+        //session.close();
     }
 
     /**
@@ -176,7 +178,7 @@ public class BaseDao {
         session.delete(bean);
         session.flush();
         session.clear();
-        session.close();
+        //session.close();
     }
 
     /**
@@ -207,9 +209,9 @@ public class BaseDao {
     @SuppressWarnings({ "rawtypes" })
     public void delete(Class c, String[] ids) {
         for (String id : ids) {
-            Object obj = getSession().get(c, id);
+            Object obj = getNewSession().get(c, id);
             if (obj != null) {
-                getSession().delete(obj);
+                getNewSession().delete(obj);
             }
         }
     }
@@ -244,11 +246,11 @@ public class BaseDao {
         try{
             List list = session.createSQLQuery( sql ).setResultTransformer( Transformers.aliasToBean(c) ).list();
             session.clear();
-            session.close();
+            //session.close();
             return list;
         }catch ( Exception e ){
             session.clear();
-            session.close();
+            //session.close();
             return null;
         }
     }
@@ -267,11 +269,11 @@ public class BaseDao {
         try{
             session.createSQLQuery( sql ).executeUpdate();
             session.clear();
-            session.close();
+            //session.close();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
             session.clear();
-            session.close();
+            //session.close();
             return Config.SERVICE_FAILED;
         }
     }
@@ -290,11 +292,11 @@ public class BaseDao {
         try{
             int row = session.createSQLQuery( sql ).executeUpdate();
             session.clear();
-            session.close();
+            //session.close();
             return row;
         }catch ( Exception e ){
             session.clear();
-            session.close();
+            //session.close();
             return Config.RETURNERROR;
         }
     }
@@ -313,11 +315,11 @@ public class BaseDao {
         try{
             List list = session.getNamedQuery(sqlname ).list();
             session.clear();
-            session.close();
+            //session.close();
             return list;
         }catch ( Exception e ){
             session.clear();
-            session.close();
+            //session.close();
             return null;
         }
     }
@@ -336,12 +338,12 @@ public class BaseDao {
             }
             t.commit();
             session.clear();
-            session.close();
+            //session.close();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
             t.rollback();
             session.clear();
-            session.close();
+            //session.close();
             return Config.SERVICE_FAILED;
         }
     }
@@ -360,12 +362,12 @@ public class BaseDao {
             }
             t.commit();
             session.clear();
-            session.close();
+            //session.close();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
             t.rollback();
             session.clear();
-            session.close();
+            //session.close();
             return Config.SERVICE_FAILED;
         }
     }
@@ -384,12 +386,12 @@ public class BaseDao {
             }
             t.commit();
             session.clear();
-            session.close();
+            //session.close();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
             t.rollback();
             session.clear();
-            session.close();
+            //session.close();
             return Config.SERVICE_FAILED;
         }
     }

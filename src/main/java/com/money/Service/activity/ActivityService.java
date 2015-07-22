@@ -415,7 +415,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      */
     public String SetActivityGroupLinesPeoples( ActivityGroupModel activityGroupModel,int Lines ) {
         try {
-            String activitycurlines = activityGroupModel.getSrTickets();
+            String activitycurlines = "";//activityGroupModel.getSrTickets();
 
             Map<String, Integer> mappeoples = GsonUntil.jsonToJavaClass(activitycurlines, new TypeToken<Map<String, Integer>>() {
             }.getType());
@@ -425,7 +425,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
             mappeoples.put(Integer.toString(Lines), linespeople);
 
             String newlinespeoples = GsonUntil.JavaClassToJson(mappeoples);
-            activityGroupModel.setSrTickets(newlinespeoples);
+            //activityGroupModel.setSrTickets(newlinespeoples);
             return Config.SERVICE_SUCCESS;
         } catch (Exception e) {
             return Config.SERVICE_FAILED;
@@ -454,7 +454,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     public int GetActivityGroupPeople( ActivityGroupModel activityGroupModel ){
 
         int curpeoples = 0;
-        String activitycurlines = activityGroupModel.getSrTickets();
+        String activitycurlines = "";//activityGroupModel.getSrTickets();
 
         Map<String, Integer> mappeoples = GsonUntil.jsonToJavaClass(activitycurlines, new TypeToken<Map<String, Integer>>() {
         }.getType());

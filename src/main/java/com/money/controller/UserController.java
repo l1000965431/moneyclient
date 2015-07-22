@@ -12,11 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by fisher on 2015/7/13.
  */
+
 @Controller
 @RequestMapping("/User")
 public class UserController extends ControllerBase implements IController
 {
-    @Autowired
+    //@Autowired
     User user;
 
     @RequestMapping("passWordLogin")
