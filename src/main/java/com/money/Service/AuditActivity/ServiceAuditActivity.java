@@ -30,7 +30,7 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
         ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel)session.createCriteria(ActivityVerifyModel.class)
                 .setMaxResults(1)
                 .addOrder(Order.asc("id"))
-                .add(Restrictions.eq("auditorStatus", ActivityVerifyModel.STATUS_UN_AUDITOR))
+                .add(Restrictions.eq("auditorStatus", ActivityVerifyModel.STATUS_FIRST_AUDITING))
                 .uniqueResult();
 
         session.flush();
@@ -44,7 +44,7 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
         ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel)session.createCriteria(ActivityVerifyModel.class)
                 .setMaxResults(1)
                 .addOrder(Order.desc("id"))
-                .add(Restrictions.eq("auditorStatus", ActivityVerifyModel.STATUS_UN_AUDITOR))
+                .add(Restrictions.eq("auditorStatus", ActivityVerifyModel.STATUS_FIRST_AUDITING))
                 .uniqueResult();
 
         session.flush();
