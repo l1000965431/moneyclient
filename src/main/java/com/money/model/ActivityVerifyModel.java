@@ -13,17 +13,30 @@ import java.util.Date;
 @Table(name = "activityverify")
 public class ActivityVerifyModel {
     /**
-     * 还未审核
+     * 初次审核
      */
-    public static final int STATUS_UN_AUDITOR = 0;
+    public static final int STATUS_FIRST_AUDITING = 0;
+
+    /**
+     * 需修改
+     */
+    public static final int STATUS_NEED_REVAMP = 1;
+
+    /**
+     * 修改完成需再次审核
+     */
+    public static final int STATUS_REVAMPED = 2;
+
     /**
      * 通过审核
      */
-    public static final int STATUS_AUDITOR_PASS = 1;
+    public static final int STATUS_AUDITOR_PASS = 3;
+
     /**
      * 未通过审核
      */
-    public static final int STATUS_AUDITOR_NOT_PASS = 2;
+    public static final int STATUS_AUDITOR_NOT_PASS = 4;
+
     /**
      * 项目ID
      */
@@ -45,6 +58,11 @@ public class ActivityVerifyModel {
      *  项目审核者ID
      */
     String auditorId;
+
+    /**
+     *  项目修改次数
+     */
+    int revampCount;
 
     /**
      *  项目提交时间
@@ -123,10 +141,11 @@ public class ActivityVerifyModel {
     String noaudireason;
 
     public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -272,5 +291,13 @@ public class ActivityVerifyModel {
 
     public void setNoaudireason(String noaudireason) {
         this.noaudireason = noaudireason;
+    }
+
+    public int getRevampCount() {
+        return revampCount;
+    }
+
+    public void setRevampCount(int revampCount) {
+        this.revampCount = revampCount;
     }
 }
