@@ -64,12 +64,16 @@ public class ServiceGroupActivity extends ServiceBase {
         // 投资每个层次金额列表
         HashSet<SRInvestTicketModel> ticketModels = calcInvestTicket(srInvestAmount, investLevelList, investProportionList);
 
+        activityGroupModel.setSrInvestTicketModels( ticketModels );
+
         int ticketsNum = 0;
         for(SRInvestTicketModel model : ticketModels){
             ticketsNum += model.getNum();
         }
 
         HashSet<SREarningModel> prizeModels = calcEarningPrize(activityGroupModel.getEarningAmount(),  null, null, ticketsNum);
+
+        activityGroupModel.setSrEarningModels(prizeModels);
     }
 
     /**
