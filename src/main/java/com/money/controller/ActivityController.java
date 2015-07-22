@@ -2,7 +2,7 @@ package com.money.controller;
 
 import com.money.Service.ServiceFactory;
 import com.money.Service.activity.ActivityService;
-import com.money.Service.user.User;
+import com.money.Service.user.UserService;
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import com.money.model.ActivityDetailModel;
@@ -89,7 +89,7 @@ public class ActivityController extends ControllerBase implements IController {
 
         //获取UserID;
 
-        User userService = ServiceFactory.getService( "User" );
+        UserService userService = ServiceFactory.getService( "userService" );
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
@@ -116,7 +116,7 @@ public class ActivityController extends ControllerBase implements IController {
 
         //获取UserID;
 
-        User userService = ServiceFactory.getService( "User" );
+        UserService userService = ServiceFactory.getService( "User" );
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 

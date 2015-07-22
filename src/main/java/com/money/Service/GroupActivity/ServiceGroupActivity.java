@@ -65,7 +65,7 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
         // 投资每个层次金额列表
         HashSet<SRInvestTicketModel> ticketModels = calcInvestTicket(srInvestAmount, investLevelList, investProportionList);
 
-        activityGroupModel.setSrInvestTicketModels( ticketModels );
+
 
         int ticketsNum = 0;
         for(SRInvestTicketModel model : ticketModels){
@@ -73,8 +73,6 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
         }
 
         HashSet<SREarningModel> prizeModels = calcEarningPrize(activityGroupModel.getEarningAmount(),  null, null, ticketsNum);
-
-        activityGroupModel.setSrEarningModels(prizeModels);
     }
 
     /**

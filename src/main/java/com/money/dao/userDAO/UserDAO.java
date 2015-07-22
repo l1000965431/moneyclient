@@ -2,7 +2,6 @@ package com.money.dao.userDAO;
 
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
 import com.money.Service.user.Token;
-import com.money.Service.user.UserBaseInterface;
 import com.money.config.Config;
 import com.money.dao.BaseDao;
 import com.money.memcach.MemCachService;
@@ -22,7 +21,7 @@ import java.util.*;
  */
 
 @Repository
-public class UserDAO extends BaseDao implements UserBaseInterface {
+public class UserDAO extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(UserDAO.class);
 

@@ -1,6 +1,7 @@
 package com.money.Service.user;
 
 import com.money.Service.ServiceBase;
+import com.money.Service.ServiceInterface;
 import com.money.config.Config;
 import com.money.dao.userDAO.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,9 @@ import org.springframework.stereotype.Service;
  * Created by fisher on 2015/7/6.
  */
 
-@Service("User")
-public class User extends ServiceBase implements UserInterface {
+@Service("UserService")
+public class UserService extends ServiceBase implements ServiceInterface {
+
     @Autowired
     UserDAO userDAO;
 
