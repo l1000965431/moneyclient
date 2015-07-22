@@ -9,13 +9,10 @@
        </bean>
 
        <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-              <property name="maxActive" value="${redis.pool.maxActive}"/>
               <property name="maxIdle"   value="${redis.pool.maxIdle}" />
-              <property name="maxWait"   value="${redis.pool.maxWait}"/>
               <property name="minEvictableIdleTimeMillis" value="300000"/>
               <property name="numTestsPerEvictionRun" value="3"/>
               <property name="timeBetweenEvictionRunsMillis" value="60000"/>
-              <property name="whenExhaustedAction" value="1"/>
        </bean>
 
        <bean id = "shardedJedisPool" class = "redis.clients.jedis.ShardedJedisPool">

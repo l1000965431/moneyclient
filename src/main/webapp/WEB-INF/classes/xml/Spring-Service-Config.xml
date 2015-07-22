@@ -4,32 +4,4 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="ServiceFactory" class="com.money.Service.ServiceFactory" ></bean>
-
-    <!-- 声明自定义服务  注意一定要声明scope="prototype" -->
-<!--    <bean id="ServiceSubmitActivity"
-          class="com.money.Service.ServiceSubmitActivity">
-        <property name="serviceName" value="ServiceSubmitActivity" />
-    </bean>
-    <bean id="OrderService"
-          class="com.money.Service.order.OrderService">
-        <property name="serviceName" value="OrderService" />
-    </bean>
-    <bean id="ActivityService"
-          class="com.money.Service.activity.ActivityService">
-        <property name="serviceName" value="ActivityService" />
-    </bean>-->
-
-<!--       &lt;!&ndash; 声明自定义服务  注意一定要声明scope="prototype" &ndash;&gt;
-       <bean id="ServiceSubmitActivity"
-             class="com.money.Service.SubmitActivity.ServiceSubmitActivity">
-              <property name="serviceName" value="ServiceSubmitActivity" />
-       </bean>
-       <bean id="OrderService"
-             class="com.money.Service.order.OrderService">
-              <property name="serviceName" value="OrderService" />
-       </bean>
-       <bean id="ServiceAuditActivity"
-             class="com.money.Service.AuditActivity.ServiceAuditActivity">
-           <property name="serviceName" value="ServiceAuditActivity"/>
-       </bean>-->
 </beans>
