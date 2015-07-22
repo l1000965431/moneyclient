@@ -79,7 +79,7 @@ public class TicketService extends ServiceBase implements ServiceInterface {
     /**
      * 发奖类型
      */
-    int lotteryType;
+    int lotteryType = LOTTERYPRICKSILK;
 
 
     /**
@@ -268,6 +268,11 @@ public class TicketService extends ServiceBase implements ServiceInterface {
      * @return
      */
     boolean IsAllLinesLotteryConpelete() {
+
+        if(LotteryGradation == null){
+            return false;
+        }
+
         for (int i = 0; i < LotteryGradation.size(); ++i) {
 
             if (!IsLinesLotteryCompelete(LotteryGradation.get(i))) {

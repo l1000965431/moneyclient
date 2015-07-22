@@ -22,7 +22,7 @@ public class ServiceSubmitActivity extends ServiceBase {
     private GeneraDAO baseDao;
 
     public String submitActivity( ActivityVerifyModel activityModel ){
-        activityModel.setAuditorStatus(ActivityVerifyModel.STATUS_FIRST_AUDITING);
+        activityModel.setAuditorStatus(ActivityVerifyModel.STATUS_UN_AUDITOR);
         baseDao.save(activityModel);
         return "hahha";
     }

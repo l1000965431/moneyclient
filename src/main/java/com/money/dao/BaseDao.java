@@ -65,18 +65,28 @@ public class BaseDao {
     @SuppressWarnings("rawtypes")
     public Object load(Class c, Serializable id) {
         Session session = getNewSession();
-        return session.get(c, id);
+        Transaction t = session.beginTransaction();
+        Object o = session.get(c, id);
+        t.commit();
+        return o;
     }
 
     @SuppressWarnings("rawtypes")
     public Object load(Class c, String id) {
         Session session = getNewSession();
-        return session.get(c, id);
+        Transaction t = session.beginTransaction();
+        Object o = session.get(c, id);
+        t.commit();
+
+        return o;
     }
 
     public <T> T load( T c, String id) {
         Session session = getNewSession();
-        return (T)session.get(c.getClass(), id);
+        Transaction t = session.beginTransaction();
+        T Value = (T)session.get(c.getClass(), id);
+        t.commit();
+        return Value;
     }
 
     /**
@@ -90,7 +100,11 @@ public class BaseDao {
     public List getAllList(Class c) {
         String hql = "from " + c.getName();
         Session session = getNewSession();
-        return session.createQuery(hql).list();
+        Transaction t = session.beginTransaction();
+        List list =  session.createQuery(hql).list();
+        t.commit();
+
+        return list;
     }
 
     /**
@@ -118,18 +132,29 @@ public class BaseDao {
     @SuppressWarnings("rawtypes")
     public Long getTotalCount(Class c) {
         Session session = getNewSession();
+        Transaction t = session.beginTransaction();
         String hql = "select count(*) from " + c.getName();
         Long count = (Long) session.createQuery(hql).uniqueResult();
-        session.close();
-        return count != null ? count.longValue() : 0;
+
+        if( count == null ){
+            count = (long)0;
+        }
+
+        return count;
     }
 
     public Long getTotalCount(String name) {
         Session session = getNewSession();
+        Transaction t = session.beginTransaction();
         String hql = "select count(*) from " + name;
         Long count = (Long) session.createQuery(hql).uniqueResult();
-        //session.close();
-        return count != null ? count.longValue() : 0;
+        t.commit();
+
+        if( count == null ){
+            count = (long)0;
+        }
+
+        return count;
     }
 
     /**
@@ -140,14 +165,17 @@ public class BaseDao {
      */
     public Serializable save(Object bean) {
         Serializable result = null;
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
         try {
-            Session session = getNewSession();
             result = session.save(bean);
             session.flush();
             session.clear();
+            t.commit();
             //session.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            session.clear();
+            t.rollback();
         }
 
         return result;
@@ -161,9 +189,17 @@ public class BaseDao {
      */
     public void update(Object bean) {
         Session session = getNewSession();
-        session.update(bean);
-        session.flush();
-        session.clear();
+        Transaction t = session.beginTransaction();
+        try{
+            session.update(bean);
+            session.flush();
+            session.clear();
+            t.commit();
+        } catch ( Exception e ){
+            session.clear();
+            t.rollback();
+        }
+
         //session.close();
     }
 
@@ -175,9 +211,18 @@ public class BaseDao {
      */
     public void delete(Object bean) {
         Session session = getNewSession();
-        session.delete(bean);
-        session.flush();
-        session.clear();
+        Transaction t = session.beginTransaction();
+        try {
+            session.delete(bean);
+            session.flush();
+            session.clear();
+            t.commit();
+        } catch ( Exception e ){
+            session.clear();
+            t.rollback();
+        }
+
+
         //session.close();
     }
 
@@ -228,14 +273,15 @@ public class BaseDao {
 
     public List<Object[]> getListBySQL(String sql ){
         Session session = getNewSession();
+        Transaction t = session.beginTransaction();
         try{
             List list = session.createSQLQuery( sql ).list();
             session.clear();
-            session.close();
+            t.commit();
             return list;
         }catch ( Exception e ){
             session.clear();
-            session.close();
+            t.rollback();
             return null;
         }
     }
@@ -243,13 +289,16 @@ public class BaseDao {
 
     public List getListClassBySQL(String sql,Class c ){
         Session session = getNewSession();
+        Transaction t = session.beginTransaction();
         try{
             List list = session.createSQLQuery( sql ).setResultTransformer( Transformers.aliasToBean(c) ).list();
             session.clear();
+            t.commit();
             //session.close();
             return list;
         }catch ( Exception e ){
             session.clear();
+            t.rollback();
             //session.close();
             return null;
         }
@@ -266,14 +315,17 @@ public class BaseDao {
 
     public String excuteBySQL(String sql ){
         Session session = getNewSession();
+        Transaction t = session.beginTransaction();
         try{
             session.createSQLQuery( sql ).executeUpdate();
             session.clear();
             //session.close();
+            t.commit();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
             session.clear();
             //session.close();
+            t.rollback();
             return Config.SERVICE_FAILED;
         }
     }
@@ -289,13 +341,16 @@ public class BaseDao {
 
     public int excuteintBySQL(String sql ){
         Session session = getNewSession();
+        Transaction t = session.beginTransaction();
         try{
             int row = session.createSQLQuery( sql ).executeUpdate();
             session.clear();
+            t.commit();
             //session.close();
             return row;
         }catch ( Exception e ){
             session.clear();
+            t.rollback();
             //session.close();
             return Config.RETURNERROR;
         }
@@ -312,13 +367,16 @@ public class BaseDao {
 
     public List getListByNameNative(String sqlname ){
         Session session = getNewSession();
+        Transaction t = session.beginTransaction();
         try{
             List list = session.getNamedQuery(sqlname ).list();
             session.clear();
+            t.commit();
             //session.close();
             return list;
         }catch ( Exception e ){
             session.clear();
+            t.rollback();
             //session.close();
             return null;
         }
