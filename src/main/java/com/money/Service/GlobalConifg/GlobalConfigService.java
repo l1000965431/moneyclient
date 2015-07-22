@@ -1,13 +1,10 @@
 package com.money.Service.GlobalConifg;
 
-import com.google.gson.Gson;
+import com.money.Service.ServiceBase;
+import com.money.Service.ServiceInterface;
 import com.money.dao.GeneraDAO;
-import com.money.model.ActivityVerifyModel;
 import com.money.model.GlobalConfigDataStruct;
 import com.money.model.GlobalConfigModel;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
@@ -23,7 +20,7 @@ import java.util.List;
  * <p>Version: 1.0
 **/
 @Service("GlobalConfigService")
-public class GlobalConfigService {
+public class GlobalConfigService extends ServiceBase implements ServiceInterface {
     @Autowired
     private GeneraDAO generaDAO;
 

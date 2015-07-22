@@ -3,6 +3,7 @@ package com.money.Service.GroupActivity;
 import com.money.Service.GlobalConifg.GlobalConfigService;
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceFactory;
+import com.money.Service.ServiceInterface;
 import com.money.dao.GeneraDAO;
 import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityGroupModel;
@@ -18,7 +19,7 @@ import java.util.*;
  * Created by happysky on 15-7-15.
  */
 @Service("ServiceGroupActivity")
-public class ServiceGroupActivity extends ServiceBase {
+public class ServiceGroupActivity extends ServiceBase implements ServiceInterface {
     @Autowired
     private GeneraDAO generaDAO;
 
@@ -178,7 +179,7 @@ public class ServiceGroupActivity extends ServiceBase {
      * @return
      */
     public String addActivityToGroup(Long groupId, Long activityId){
-        ActivityGroupModel activityGroupModel = (ActivityGroupModel)generaDAO.getSession().load(ActivityGroupModel.class, groupId);
+        ActivityGroupModel activityGroupModel = (ActivityGroupModel)generaDAO.load(ActivityGroupModel.class, groupId);
         if( activityGroupModel == null ){
             return "";
         }

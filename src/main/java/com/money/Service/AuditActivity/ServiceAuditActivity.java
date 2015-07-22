@@ -1,6 +1,7 @@
 package com.money.Service.AuditActivity;
 
 import com.money.Service.ServiceBase;
+import com.money.Service.ServiceInterface;
 import com.money.dao.BaseDao;
 import com.money.dao.GeneraDAO;
 import com.money.dao.TransactionCallback;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 
 @Service("ServiceAuditActivity")
-public class ServiceAuditActivity extends ServiceBase {
+public class ServiceAuditActivity extends ServiceBase implements ServiceInterface {
     @Autowired
     private GeneraDAO baseDao;
 

@@ -30,8 +30,6 @@ public class OrderService extends ServiceBase implements ServiceInterface {
     @Autowired
     private GeneraDAO baseDao;
 
-
-
     OrderService() {
         super();
     }
