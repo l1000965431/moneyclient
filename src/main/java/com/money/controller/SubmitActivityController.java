@@ -20,9 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping("/SubmitActivity")
 public class SubmitActivityController extends ControllerBase implements IController {
-//    @Autowired
-//    private ServiceSubmitActivity serviceSubmitActivity;
-
     @RequestMapping("submitActivity")
     @ResponseBody
     public String commitProject( HttpServletRequest request, HttpServletResponse response){
