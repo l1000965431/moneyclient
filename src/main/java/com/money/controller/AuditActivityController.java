@@ -3,7 +3,9 @@ package com.money.controller;
 import com.money.Service.AuditActivity.ServiceAuditActivity;
 import com.money.Service.GroupActivity.ServiceGroupActivity;
 import com.money.Service.ServiceFactory;
+import com.money.config.Config;
 import com.money.model.ActivityVerifyModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,36 +22,52 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/AuditActivity")
-public class AuditActivityController extends ControllerBase implements IController{
-    @RequestMapping("getOneActivity")
-    @ResponseBody
-    public String getOneActivity( HttpServletRequest request, HttpServletResponse response ){
-//        ServiceAuditActivity serviceAuditActivity = ServiceFactory.getService("ServiceAuditActivity");
-//        if( serviceAuditActivity == null ){
-//            return "failure";
-//        }
-//        ActivityVerifyModel activityVerifyModel = serviceAuditActivity.getNewestActivity();
-//
-//        activityVerifyModel = serviceAuditActivity.getOldestActivity();
-//
-//        List<ActivityVerifyModel> list = serviceAuditActivity.getActivityList(true, ActivityVerifyModel.STATUS_UN_AUDITOR);
-//
-//        serviceAuditActivity.setActivityToGroup();
+public class AuditActivityController extends ControllerBase implements IController {
 
-        ServiceGroupActivity serviceGroupActivity = ServiceFactory.getService("ServiceGroupActivity");
-        serviceGroupActivity.test();
-        return "success";
+    @Autowired
+    ServiceAuditActivity serviceAuditActivity;
+
+    /**
+     * 获取未审批的项目列表
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("getNoAudiActivity")
+    @ResponseBody
+    public String getNoAudiActivity(HttpServletRequest request, HttpServletResponse response) {
+
+
+        return "";
+    }
+
+
+    /**
+     * 获取已审批的项目列表
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("getHasAudiActivity")
+    @ResponseBody
+    public String getHasAudiActivity(HttpServletRequest request, HttpServletResponse response) {
+
+
+        return "";
     }
 
     @RequestMapping("setActivityAuditResult")
     @ResponseBody
-    public String setActivityAuditResult( HttpServletRequest request, HttpServletResponse response ){
+    public String setActivityAuditResult(HttpServletRequest request, HttpServletResponse response) {
         ServiceAuditActivity serviceAuditActivity = ServiceFactory.getService("ServiceAuditActivity");
-        if( serviceAuditActivity == null ){
-            return "failure";
+        if (serviceAuditActivity == null) {
+            return Config.SERVICE_FAILED;
         }
         serviceAuditActivity.setActivityAuditorResult(1l, ActivityVerifyModel.STATUS_AUDITOR_PASS);
 
         return "";
     }
+
 }

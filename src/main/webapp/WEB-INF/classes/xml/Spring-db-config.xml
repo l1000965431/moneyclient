@@ -14,7 +14,7 @@
 
         <property value="com.mysql.jdbc.Driver" name="driverClassName"/><!--driverClassName指定了JDBC驱动类的全限定类名 -->
 
-        <property value="jdbc:mysql:moneyserver.mysql.rds.aliyuncs.com:3306/moneyserver" name="url"/><!-- 数据库所在IP地址和数据库名-->
+        <property value="jdbc:mysql://moneyserver.mysql.rds.aliyuncs.com:3306/moneyserver" name="url"/><!-- 数据库所在IP地址和数据库名-->
 
         <property value="money" name="username"/>
 
@@ -33,11 +33,10 @@
         <property name="packagesToScan" value="com.money.model"/> <!-- 使用应用程序管理类型的JPA  值为包路径-->
         <property name="hibernateProperties">
             <props>
-                <prop key="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="connection.autocommit">false</prop>
-                <prop key="hibernate.current_session_context_class">thread</prop>
             </props>
         </property>
     </bean>

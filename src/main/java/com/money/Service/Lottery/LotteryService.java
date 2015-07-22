@@ -36,8 +36,8 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
      */
     public static final int LOTTERYPRICKSILK = 2;
 
-    @Autowired
-    LotteryDAO lotteryDAO;
+/*    @Autowired
+    LotteryDAO lotteryDAO;*/
 
     @Autowired
     TicketDAO ticketDAO;

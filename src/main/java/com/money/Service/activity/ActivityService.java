@@ -5,7 +5,7 @@ import com.money.Service.ServiceInterface;
 import com.money.Service.order.OrderService;
 import com.money.Service.ServiceFactory;
 import com.google.gson.reflect.TypeToken;
-import com.money.Service.user.User;
+import com.money.Service.user.UserService;
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import com.money.dao.BaseDao;
@@ -35,8 +35,8 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     @Autowired
     private activityDAO activityDao;
 
-    @Autowired
-    private User UserService;
+    //@Autowired
+    private UserService userService;
 
     public ActivityDetailModel getActivityDetails( int ActivityID ){
         ActivityDetailModel activitymodel = activityDao.getActivityDetails(ActivityID);
@@ -66,11 +66,11 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
     public int ActivityBuy( int activityID,int activitylines,int activitygroupId,String userID,String token ){
 
-        if( UserService.tokenLand( userID,token ) == 0 ){
+        if( userService.tokenLand( userID,token ) == 0 ){
             return ServerReturnValue.USERNOTLAND;
         }
 
-        if( UserService.IsPerfectInfo( userID ) ){
+        if( userService.IsPerfectInfo( userID ) ){
             return ServerReturnValue.USERNOTPERFECTINFO;
         }
 

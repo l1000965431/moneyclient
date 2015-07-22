@@ -1,6 +1,6 @@
 package com.money.controller;
 
-import com.money.Service.user.User;
+import com.money.Service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/User")
 public class UserController extends ControllerBase implements IController
 {
-    //@Autowired
-    User user;
+    @Autowired
+    UserService userService;
 
     @RequestMapping("passWordLogin")
     @ResponseBody
@@ -27,7 +27,7 @@ public class UserController extends ControllerBase implements IController
     {
         String UserName = request.getParameter( "username" );
         String PassWord = request.getParameter( "PassWord" );
-        return user.userLand(UserName,PassWord);
+        return userService.userLand(UserName,PassWord);
     }
 
     @RequestMapping("tokenLogin")
@@ -36,7 +36,7 @@ public class UserController extends ControllerBase implements IController
                               HttpServletResponse response )
     {
         String token = request.getParameter( "token" );
-        return user.tokenLand("",token);
+        return userService.tokenLand("",token);
     }
 
     @RequestMapping("perfectInfo")
@@ -47,7 +47,7 @@ public class UserController extends ControllerBase implements IController
         String token = request.getParameter( "token" );
         String info = request.getParameter( "info" );
         String userType=request.getParameter("userType");
-        return user.perfectInfo(token, info, userType);
+        return userService.perfectInfo(token, info, userType);
     }
 
     @RequestMapping("changeInfo")
@@ -58,7 +58,7 @@ public class UserController extends ControllerBase implements IController
         String token = request.getParameter( "token" );
         String info = request.getParameter( "info" );
         String userType=request.getParameter("userType");
-        return user.changeInfo(token, info, userType);
+        return userService.changeInfo(token, info, userType);
     }
 
     @RequestMapping("quitLogin")
@@ -67,7 +67,7 @@ public class UserController extends ControllerBase implements IController
                                 HttpServletResponse response )
     {
         String token = request.getParameter( "token" );
-        return user.quitLand(token);
+        return userService.quitLand(token);
     }
 
     @RequestMapping("register")
@@ -77,7 +77,7 @@ public class UserController extends ControllerBase implements IController
     {
         String userName = request.getParameter( "userName" );
         String code = request.getParameter( "code" );
-        return  user.userRegister("","",userName, code);
+        return  userService.userRegister("","",userName, code);
     }
 
     @RequestMapping("submitTeleNum")
@@ -86,7 +86,7 @@ public class UserController extends ControllerBase implements IController
                              HttpServletResponse response )
     {
         String userName = request.getParameter( "userName" );
-        return  user.submitTeleNum(userName,"");
+        return  userService.submitTeleNum(userName,"");
     }
 
     @RequestMapping("sendPasswordCode")
@@ -96,7 +96,7 @@ public class UserController extends ControllerBase implements IController
     {
         String userName = request.getParameter( "userName" );
         String password = request.getParameter( "password" );
-        return  user.sendPasswordCode(userName, password,"");
+        return  userService.sendPasswordCode(userName, password,"");
     }
 
     @RequestMapping("changPassword")
@@ -107,6 +107,6 @@ public class UserController extends ControllerBase implements IController
         String userName = request.getParameter( "userName" );
         String code = request.getParameter( "code" );
         String newPassword = request.getParameter( "newPassword" );
-        return  user.changPassword(userName,code,newPassword);
+        return  userService.changPassword(userName,code,newPassword);
     }
 }

@@ -26,7 +26,7 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
 
     @SuppressWarnings("unchecked")
     public ActivityVerifyModel getOldestActivity(){
-        Session session = baseDao.getNewSession();
+/*        Session session = baseDao.getNewSession();
         ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel)session.createCriteria(ActivityVerifyModel.class)
                 .setMaxResults(1)
                 .addOrder(Order.asc("id"))
@@ -35,12 +35,12 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
 
         session.flush();
         session.clear();
-        session.close();
-        return activityVerifyModel;
+        session.close();*/
+        return null;
     }
 
     public ActivityVerifyModel getNewestActivity(){
-        Session session = baseDao.getNewSession();
+/*        Session session = baseDao.getNewSession();
         ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel)session.createCriteria(ActivityVerifyModel.class)
                 .setMaxResults(1)
                 .addOrder(Order.desc("id"))
@@ -49,8 +49,8 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
 
         session.flush();
         session.clear();
-        session.close();
-        return activityVerifyModel;
+        session.close();*/
+        return null;
     }
 
     @SuppressWarnings("unchecked")
