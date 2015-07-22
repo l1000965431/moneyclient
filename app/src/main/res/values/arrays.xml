@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 提交项目时项目类别列表 -->
+    <array name="array_project_type_list">
+        <item>科技</item>
+        <item>工艺</item>
+        <item>出版</item>
+        <item>娱乐</item>
+        <item>艺术</item>
+        <item>农业</item>
+        <item>商铺</item>
+        <item>其他</item>
+    </array>
+</resources>

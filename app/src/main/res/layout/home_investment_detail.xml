@@ -241,7 +241,8 @@
                     android:layout_gravity="center"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true">
+                    android:layout_alignParentStart="true"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -409,7 +410,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:text="4"
-                                android:id="@+id/textView62"
+                                android:id="@+id/textView162"
                                 android:textSize="30dp" />
 
                             <TextView
@@ -432,7 +433,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="筹款进度：10%"
-                    android:id="@+id/textView57"
+                    android:id="@+id/project_detail_tv_project_progress"
                     android:textSize="13dp"
                     android:textColor="#ff767676"
                     android:textIsSelectable="false"
@@ -443,19 +444,13 @@
                     android:layout_alignParentEnd="true"
                     android:paddingTop="5dp" />
 
-                <ImageView
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="fill_parent"
                     android:layout_height="8dp"
-                    android:id="@+id/imageView7"
-                    android:background="#ffffdb90" />
-
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="8dp"
-                    android:id="@+id/imageView8"
-                    android:background="#fffeb008"
-                    android:layout_marginTop="-8dp"
-                    android:focusableInTouchMode="false" />
+                    android:id="@+id/project_detail_progressbar"
+                    android:progressDrawable="@drawable/project_progressbar"
+                    android:progress="10"/>
 
             </LinearLayout>
 

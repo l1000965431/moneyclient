@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">flower</string>
+    <string name="app_name">微聚竞投</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -14,9 +14,9 @@
     <string name="home_invert_top_tab_earnings_record">收益</string>
     <string name="home_invert_top_tab_investment_record">投资</string>
     <string name="home_invert_top_tab_dividendt_record">分红</string>
-    <string name="title_activity_project_detail">ProjectDetailActivity</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_project_detail">投资项目</string>
+    <string name="title_activity_login">登录</string>
+    <string name="title_activity_register">注册</string>
 
     <!-- 下拉刷新控件 -->
     <string name="pull_to_refresh">下拉可以刷新</string>
@@ -26,19 +26,20 @@
     <string name="updated_at">上次更新于%1$s前</string>
     <string name="updated_just_now">刚刚更新</string>
     <string name="time_error">时间有问题</string>
-    <string name="title_activity_project_edit">ProjectEditActivity</string>
-    <string name="title_activity_improve_user_info">ImproveUserInfoActivity</string>
+    <string name="title_activity_project_edit">发起项目</string>
+    <string name="title_activity_improve_user_info">资料完善</string>
 
     <!-- 上拉加载状态 -->
     <string name="pull_to_load_loading">加载中</string>
     <string name="pull_to_load_failure">加载失败</string>
     <string name="pull_to_load_no_more">已无更多</string>
-    <string name="title_activity_image_explorer">ImageExplorerActivity</string>
+    <string name="title_activity_image_explorer">图片</string>
 
     <!-- 投资界面 -->
     <string name="invest_project_invested_price">您已入资:%.2f￥</string>
     <string name="invest_project_no_invested_price">您尚未入资</string>
     <string name="invest_project_select_invest_price">选择入资金额:</string>
+    <string name="invest_project_project_progress">筹款进度:%d%%</string>
     
     <!-- 货币单位 -->
     <string name="monetary_unit_rmb">元</string>

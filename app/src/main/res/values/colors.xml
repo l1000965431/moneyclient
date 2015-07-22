@@ -7,4 +7,8 @@
 
     <color name="home_investment_top_button_selected">#fff0a219</color>
     <color name="home_investment_top_button_unselected">#ffb0b0b0</color>
+
+    <!-- 项目进度条底色 -->
+    <color name="project_progress_bar_background">#ffffdb90</color>
+    <color name="project_progress_bar_progress">#fffeb008</color>
 </resources>

@@ -50,7 +50,7 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/fragment_register_Enter_SecurityCode_Text"
+                        android:id="@+id/project_launched_et_project_name"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
                         android:hint="项目名称不能不能拆过15个字"
@@ -63,7 +63,8 @@
                         android:textSize="13dp"
                         android:paddingLeft="10dp"
                         android:layout_marginLeft="1dp"
-                        android:layout_gravity="center" />
+                        android:layout_gravity="center"
+                        android:maxLength="15"/>
 
                 </LinearLayout>
 
@@ -93,7 +94,7 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText2"
+                        android:id="@+id/project_launched_et_target_price"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
                         android:hint="不少于500元"
@@ -106,7 +107,8 @@
                         android:textSize="13dp"
                         android:paddingLeft="10dp"
                         android:layout_weight="1"
-                        android:layout_gravity="center" />
+                        android:layout_gravity="center"
+                        android:inputType="number"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -148,7 +150,7 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText3"
+                        android:id="@+id/project_launched_et_raise_day"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
                         android:hint="10~90天"
@@ -161,7 +163,8 @@
                         android:textSize="13dp"
                         android:paddingLeft="10dp"
                         android:layout_weight="1"
-                        android:layout_gravity="center" />
+                        android:layout_gravity="center"
+                        android:inputType="number"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -203,7 +206,7 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText11"
+                        android:id="@+id/project_launched_et_crew_number"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
                         android:hint="填入开发团队人员总数量"
@@ -216,7 +219,8 @@
                         android:textSize="13dp"
                         android:paddingLeft="10dp"
                         android:layout_weight="1"
-                        android:layout_gravity="center" />
+                        android:layout_gravity="center"
+                        android:inputType="number"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -258,7 +262,7 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText13"
+                        android:id="@+id/project_launched_et_address"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
                         android:hint="填入开发团队办公地址"
@@ -297,11 +301,18 @@
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center" />
 
+                    <RadioGroup
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/project_launched_rg_project_type">
+                    </RadioGroup>
+
                     <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center">
+                        android:layout_gravity="center"
+                        android:visibility="gone">
 
                         <LinearLayout
                             android:orientation="horizontal"
@@ -418,6 +429,13 @@
                                 android:layout_marginLeft="3dp"
                                 android:background="@drawable/edittext1" />
 
+                            <RadioButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="New RadioButton"
+                                android:id="@+id/radioButton4"
+                                android:checked="false"/>
+
                         </LinearLayout>
                     </LinearLayout>
 
@@ -502,7 +520,7 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText4"
+                        android:id="@+id/project_launched_et_video_url"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
                         android:hint="请输入优酷视频的播放页地址"
@@ -545,7 +563,7 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText5"
+                        android:id="@+id/project_launched_et_summary"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
                         android:hint="不能超过75个字"
@@ -587,7 +605,7 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText6"
+                        android:id="@+id/project_launched_et_introduce"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
                         android:hint="请填写用户需求、解决方案、方案优势"
@@ -629,7 +647,7 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText7"
+                        android:id="@+id/project_launched_et_market_analysis"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
                         android:hint="请填写市场分析、发展规划"
@@ -671,7 +689,7 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText8"
+                        android:id="@+id/project_launched_et_profit_model"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
                         android:hint="请填写项目的盈利模式"
@@ -713,7 +731,7 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText9"
+                        android:id="@+id/project_launched_et_team_introduce"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
                         android:hint="请填写团队成员介绍"
@@ -755,7 +773,7 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText10"
+                        android:id="@+id/project_launched_et_tags"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
                         android:hint="请使用空格或逗号分隔不同标签"
