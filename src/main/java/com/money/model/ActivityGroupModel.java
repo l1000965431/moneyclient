@@ -45,45 +45,113 @@ public class ActivityGroupModel implements Serializable{
     Set<SREarningModel> srEarningModels = new HashSet<SREarningModel>();
 
     /**
+     * 投资总金额
+     */
+    int investAmount;
+
+    /**
+     * 收益总金额
+     */
+    int earningAmount;
+
+
+    /**
      *  小R需投资金额
      */
-    float srInvestAmount;
+    int srInvestAmount;
+
+    /**
+     *  小R投资占比
+     */
+    float srInvestProportion;
 
     /**
      *  大R需投资金额
      */
-    float brInvestAmount;
+    int brInvestAmount;
+
+    /**
+     *  大R需投资占比
+     */
+    float brInvestProportion;
 
     /**
      *  小R收益金额
      */
-    float srEarningAmount;
+    int srEarningAmount;
+
+    /**
+     *  小R收益占比
+     */
+    float srEarningProportion;
 
     /**
      *  大R收益金额
      */
-    float brEarningAmount;
+    int brEarningAmount;
 
     /**
-     *  小R各个金额的票和票数
-     *  存储为json数组
-     *  每个元素的key为票价，value为票数
+     *  大R收益占比
      */
-    @Column(columnDefinition = "TEXT")
-    String srTickets;
+    float brEarningProportion;
 
     /**
-     *  小R收益层次金额
-     *  存储为json数组
-     *  每个元素的key为奖励金额，value为数量
+     * rc开头函数会重新计算大R与小R占比与金额
+     * @param srInvestProportion
      */
-    @Column(columnDefinition = "TEXT")
-    String srBonus;
+    public void rcSetSrInvestProportion(float srInvestProportion) {
+        int investAmount = getInvestAmount();
+        int srInvestAmount = (int)(investAmount * srInvestProportion);
+        srInvestAmount = srInvestAmount - srInvestAmount % 2;
+        setSrInvestAmount(srInvestAmount);
+        setBrInvestAmount(investAmount - srInvestAmount);
+        setSrInvestProportion( (float)srInvestAmount / investAmount );
+        setBrInvestProportion( (float)getBrInvestAmount() / investAmount );
+    }
 
-    /**
-     *  基础中奖几率
-     */
-    float baseProbability;
+    public void rcSetBrInvestProportion(float brInvestProportion) {
+        rcSetSrInvestProportion(1.0f - brInvestProportion);
+    }
+
+    public void rcSetSrInvestAmount(int srInvestAmount) {
+        int investAmount = getInvestAmount();
+        srInvestAmount = srInvestAmount - srInvestAmount % 2;
+        float srInvestProportion = srInvestAmount / (float)investAmount;
+        rcSetSrInvestProportion(srInvestProportion);
+    }
+
+    public void rcSetBrInvestAmount(int brInvestAmount) {
+        int investAmount = getInvestAmount();
+        brInvestAmount = brInvestAmount - brInvestAmount % 2;
+        float brInvestProportion = brInvestAmount / (float)investAmount;
+        rcSetBrInvestProportion(brInvestProportion);
+    }
+
+    public void rcSetSrEarningProportion(float srEarningProportion) {
+        int earningAmount = getEarningAmount();
+        int srEarningAmount = (int)(earningAmount * srEarningProportion);
+        setSrEarningAmount(srEarningAmount);
+        setBrEarningAmount(earningAmount - srEarningAmount);
+        setSrEarningProportion(srEarningProportion);
+        setBrEarningProportion(1.0f - srEarningProportion);
+    }
+
+    public void rcSetBrEarningProportion(float brEarningProportion) {
+        rcSetSrEarningProportion(1.0f - brEarningProportion);
+    }
+
+    public void rcSetSrEarningAmount(int srEarningAmount) {
+        int earningAmount = getEarningAmount();
+        setSrEarningAmount( srEarningAmount );
+        setSrEarningProportion( srEarningAmount / (float)earningAmount );
+        setBrEarningAmount( earningAmount - srEarningAmount );
+        setBrEarningProportion( 1.0f - getSrEarningProportion() );
+    }
+
+    public void rcSetBrEarningAmount(int brEarningAmount) {
+        int earningAmount = getEarningAmount();
+        rcSetSrEarningAmount( earningAmount - brEarningAmount );
+    }
 
     public Set<SRInvestTicketModel> getSrInvestTicketModels() {
         return srInvestTicketModels;
@@ -92,7 +160,6 @@ public class ActivityGroupModel implements Serializable{
     public void setSrInvestTicketModels(Set<SRInvestTicketModel> srInvestTicketModels) {
         this.srInvestTicketModels = srInvestTicketModels;
     }
-
 
     public Set<ActivityDetailModel> getActivityDetailModels() {
         return activityDetailModels;
@@ -118,60 +185,36 @@ public class ActivityGroupModel implements Serializable{
         this.name = name;
     }
 
-    public float getSrInvestAmount() {
+    public int getSrInvestAmount() {
         return srInvestAmount;
     }
 
-    public void setSrInvestAmount(float srInvestAmount) {
+    public void setSrInvestAmount(int srInvestAmount) {
         this.srInvestAmount = srInvestAmount;
     }
 
-    public float getBrInvestAmount() {
+    public int getBrInvestAmount() {
         return brInvestAmount;
     }
 
-    public void setBrInvestAmount(float brInvestAmount) {
+    public void setBrInvestAmount(int brInvestAmount) {
         this.brInvestAmount = brInvestAmount;
     }
 
-    public float getSrEarningAmount() {
+    public int getSrEarningAmount() {
         return srEarningAmount;
     }
 
-    public void setSrEarningAmount(float srEarningAmount) {
+    public void setSrEarningAmount(int srEarningAmount) {
         this.srEarningAmount = srEarningAmount;
     }
 
-    public float getBrEarningAmount() {
+    public int getBrEarningAmount() {
         return brEarningAmount;
     }
 
-    public void setBrEarningAmount(float brEarningAmount) {
+    public void setBrEarningAmount(int brEarningAmount) {
         this.brEarningAmount = brEarningAmount;
-    }
-
-    public String getSrTickets() {
-        return srTickets;
-    }
-
-    public void setSrTickets(String srTickets) {
-        this.srTickets = srTickets;
-    }
-
-    public String getSrBonus() {
-        return srBonus;
-    }
-
-    public void setSrBonus(String srBonus) {
-        this.srBonus = srBonus;
-    }
-
-    public float getBaseProbability() {
-        return baseProbability;
-    }
-
-    public void setBaseProbability(float baseProbability) {
-        this.baseProbability = baseProbability;
     }
 
     public Set<SREarningModel> getSrEarningModels() {
@@ -180,5 +223,54 @@ public class ActivityGroupModel implements Serializable{
 
     public void setSrEarningModels(Set<SREarningModel> srEarningModels) {
         this.srEarningModels = srEarningModels;
+    }
+
+    public float getSrInvestProportion() {
+        return srInvestProportion;
+    }
+
+    public void setSrInvestProportion(float srInvestProportion) {
+        this.srInvestProportion = srInvestProportion;
+    }
+
+    public float getBrInvestProportion() {
+        return brInvestProportion;
+    }
+
+    public void setBrInvestProportion(float brInvestProportion) {
+        this.brInvestProportion = brInvestProportion;
+    }
+
+    public float getSrEarningProportion() {
+        return srEarningProportion;
+    }
+
+    public void setSrEarningProportion(float srEarningProportion) {
+        this.srEarningProportion = srEarningProportion;
+    }
+
+    public float getBrEarningProportion() {
+        return brEarningProportion;
+    }
+
+    public void setBrEarningProportion(float brEarningProportion) {
+        this.brEarningProportion = brEarningProportion;
+    }
+
+
+    public void setInvestAmount(int investAmount) {
+        this.investAmount = investAmount;
+    }
+
+    public void setEarningAmount(int earningAmount) {
+        this.earningAmount = earningAmount;
+    }
+
+    public int getInvestAmount() {
+        return investAmount;
+    }
+
+    public int getEarningAmount() {
+        return earningAmount;
     }
 }

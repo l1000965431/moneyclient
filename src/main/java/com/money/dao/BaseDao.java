@@ -66,6 +66,12 @@ public class BaseDao {
         return session.get(c, id);
     }
 
+    @SuppressWarnings("rawtypes")
+    public Object load(Class c, String id) {
+        Session session = getNewSession();
+        return session.get(c, id);
+    }
+
     public <T> T load( T c, String id) {
         Session session = getNewSession();
         return (T)session.get(c.getClass(), id);
@@ -130,16 +136,19 @@ public class BaseDao {
      * @param bean
      *
      */
-    public void save(Object bean) {
+    public Serializable save(Object bean) {
+        Serializable result = null;
         try {
             Session session = getNewSession();
-            session.save(bean);
+            result = session.save(bean);
             session.flush();
             session.clear();
             session.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return result;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.money.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 项目提交后等待审核
@@ -36,9 +37,19 @@ public class ActivityVerifyModel {
     int auditorStatus;
 
     /**
-     *  创建者ID
+     *  项目提交者ID
      */
     String creatorId;
+
+    /**
+     *  项目审核者ID
+     */
+    String auditorId;
+
+    /**
+     *  项目提交时间
+     */
+    Date createDate;
 
     /**
      * 项目名称
@@ -231,5 +242,21 @@ public class ActivityVerifyModel {
 
     public void setTeamSize(int teamSize) {
         this.teamSize = teamSize;
+    }
+
+    public String getAuditorId() {
+        return auditorId;
+    }
+
+    public void setAuditorId(String auditorId) {
+        this.auditorId = auditorId;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }

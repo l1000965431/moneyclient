@@ -80,6 +80,12 @@ public class ServiceAuditActivity extends ServiceBase {
         return activityVerifyModel.getAuditorStatus();
     }
 
+    /**
+     * 设置项目审核状态
+     * @param id
+     * @param status
+     * @return
+     */
     public boolean setActivityAuditorResult(Long id, int status){
         ActivityVerifyModel ActivityVerifyModel = (ActivityVerifyModel) generaDAO.load(ActivityVerifyModel.class, id);
         if( ActivityVerifyModel == null ){
