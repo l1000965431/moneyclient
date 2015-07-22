@@ -1,8 +1,6 @@
 package com.money.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -29,6 +27,7 @@ public class ActivityDynamicModel implements Serializable {
     public final static int ONLINEACTIVITY_ERROR = 4;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int activityprivateid;
 
     /**

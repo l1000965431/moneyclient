@@ -4,11 +4,9 @@ import com.money.MoneyServerMQ.MoneyServerListener;
 import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
-import com.money.dao.BaseDao;
 import com.money.dao.GeneraDAO;
 import com.money.model.OrderModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import until.GsonUntil;
 
 /**

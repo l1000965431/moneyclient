@@ -224,16 +224,80 @@ public class BaseDao {
      *
      */
 
-    public List getListBySQL(String sql ){
+    public List<Object[]> getListBySQL(String sql ){
         Session session = getNewSession();
         try{
             List list = session.createSQLQuery( sql ).list();
+            session.clear();
+            session.close();
             return list;
         }catch ( Exception e ){
+            session.clear();
+            session.close();
             return null;
         }
     }
 
+
+    public List getListClassBySQL(String sql,Class c ){
+        Session session = getNewSession();
+        try{
+            List list = session.createSQLQuery( sql ).setResultTransformer( Transformers.aliasToBean(c) ).list();
+            session.clear();
+            session.close();
+            return list;
+        }catch ( Exception e ){
+            session.clear();
+            session.close();
+            return null;
+        }
+    }
+
+    /**
+     * 原生SQL语句查询  跨表查询的时候 只能跨两张表进行查询
+     *
+     * @param sql
+     *
+     * @return
+     *
+     */
+
+    public String excuteBySQL(String sql ){
+        Session session = getNewSession();
+        try{
+            session.createSQLQuery( sql ).executeUpdate();
+            session.clear();
+            session.close();
+            return Config.SERVICE_SUCCESS;
+        }catch ( Exception e ){
+            session.clear();
+            session.close();
+            return Config.SERVICE_FAILED;
+        }
+    }
+
+    /**
+     * 原生SQL语句查询  跨表查询的时候 只能跨两张表进行查询
+     *
+     * @param sql
+     *
+     * @return 放回结果的行数
+     *
+     */
+
+    public int excuteintBySQL(String sql ){
+        Session session = getNewSession();
+        try{
+            int row = session.createSQLQuery( sql ).executeUpdate();
+            session.clear();
+            session.close();
+            return row;
+        }catch ( Exception e ){
+            session.clear();
+            session.close();
+            return Config.RETURNERROR;
+        }
+    }
 
     /**
      * 使用注解名进行查询  跨表查询的时候 只能跨两张表进行查询
@@ -248,8 +312,12 @@ public class BaseDao {
         Session session = getNewSession();
         try{
             List list = session.getNamedQuery(sqlname ).list();
+            session.clear();
+            session.close();
             return list;
         }catch ( Exception e ){
+            session.clear();
+            session.close();
             return null;
         }
     }
@@ -267,10 +335,14 @@ public class BaseDao {
                 callbackFunction.callback();
             }
             t.commit();
-            return "SUCCESS";
+            session.clear();
+            session.close();
+            return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
             t.rollback();
-            return "FAILED";
+            session.clear();
+            session.close();
+            return Config.SERVICE_FAILED;
         }
     }
 
@@ -287,10 +359,14 @@ public class BaseDao {
                 callbackFunction.callback(object);
             }
             t.commit();
-            return "SUCCESS";
+            session.clear();
+            session.close();
+            return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
             t.rollback();
-            return "FAILED";
+            session.clear();
+            session.close();
+            return Config.SERVICE_FAILED;
         }
     }
 
@@ -304,13 +380,17 @@ public class BaseDao {
         Transaction t = session.beginTransaction();
         try{
             if( callbackFunction != null ){
-                callbackFunction.callback(session);
+                callbackFunction.callback(this);
             }
             t.commit();
-            return "SUCCESS";
+            session.clear();
+            session.close();
+            return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
             t.rollback();
-            return "FAILED";
+            session.clear();
+            session.close();
+            return Config.SERVICE_FAILED;
         }
     }
 
@@ -322,7 +402,7 @@ public class BaseDao {
     public boolean IsModelExist( String ModelName ){
         Session session = getNewSession();
 
-        return true;
+        return false;
     }
 
 

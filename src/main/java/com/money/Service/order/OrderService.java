@@ -30,20 +30,7 @@ public class OrderService extends ServiceBase implements ServiceInterface {
     @Autowired
     private GeneraDAO baseDao;
 
-    //订单未提交
-    final static int ORDER_STATE_NOSUBMITTED = 0;
 
-    //订单正在提交
-    final static int ORDER_STATE_SUBMITTING = 1;
-
-    //订单提交成功
-    final static int ORDER_STATE_SUBMITTSUCCESS = 2;
-
-    //订单提交失败
-    final static int ORDER_STATE_SUBMITTEDFAIL = 3;
-
-    //订单取消
-    final static int ORDER_STATE_SUBMITTECANEL = 4;
 
     OrderService() {
         super();
@@ -60,7 +47,7 @@ public class OrderService extends ServiceBase implements ServiceInterface {
      *
      * @return
      */
-    public String createOrder( int userID,int activityID,int lines,int activitygroupID ){
+    public String createOrder( String userID,int activityID,int lines,int activitygroupID ){
 
         Long OrderID = createOrderID();
 
@@ -74,16 +61,16 @@ public class OrderService extends ServiceBase implements ServiceInterface {
         try {
             orderModel.setOrderdate( MoneyServerDate.getDateCurDate());
         } catch (ParseException e) {
-            return null;
+            return Config.SERVICE_FAILED;
         }
-        orderModel.setOrderstate(ORDER_STATE_NOSUBMITTED);
+        orderModel.setOrderstate(OrderModel.ORDER_STATE_NOSUBMITTED);
 
         //插入消息队列
         String messagebody = GsonUntil.JavaClassToJson( orderModel );
         MoneyServerMQManager.SendMessage( new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TOPIC,
                 MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TAG,messagebody,Long.toString(OrderID)) );
 
-        return "SUCCESS";
+        return Config.SERVICE_SUCCESS;
     }
 
     /**
@@ -100,8 +87,8 @@ public class OrderService extends ServiceBase implements ServiceInterface {
             return Config.SERVICE_FAILED;
         }
 
-        orderModel.setOrderstate( ORDER_STATE_SUBMITTECANEL );
-        baseDao.save( orderModel );
+        orderModel.setOrderstate( OrderModel.ORDER_STATE_SUBMITTECANEL );
+        baseDao.update(orderModel);
 
         return Config.SERVICE_SUCCESS;
     }
@@ -136,7 +123,6 @@ public class OrderService extends ServiceBase implements ServiceInterface {
      */
 
     public OrderModel getOrderByOrderID( long OrderID ){
-
         return (OrderModel)baseDao.load( OrderModel.class,OrderID );
     }
 
@@ -168,8 +154,15 @@ public class OrderService extends ServiceBase implements ServiceInterface {
      */
     public String submitteOrder( int orderID ){
         //发送付款成功的消息
+        OrderModel orderModel = getOrderByOrderID( orderID );
 
-        return null;
+        if( orderModel == null ){
+            return  Config.SERVICE_FAILED;
+        }
+
+        orderModel.setOrderstate( OrderModel.ORDER_STATE_SUBMITTSUCCESS );
+        baseDao.update( orderModel );
+        return Config.SERVICE_FAILED;
     }
 
 
