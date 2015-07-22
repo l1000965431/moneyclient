@@ -35,7 +35,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     @Autowired
     private activityDAO activityDao;
 
-    //@Autowired
+    @Autowired
     private UserService userService;
 
     public ActivityDetailModel getActivityDetails( int ActivityID ){

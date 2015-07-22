@@ -134,6 +134,13 @@ public class ActivityVerifyModel {
      */
     int teamSize;
 
+    /**
+     * 审核不同过原因
+     */
+    @Column(columnDefinition = "VARCHAR",length=500)
+    String noaudireason;
+
+    public long getId() {
     public Long getId() {
         return id;
     }
@@ -276,6 +283,14 @@ public class ActivityVerifyModel {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public String getNoaudireason() {
+        return noaudireason;
+    }
+
+    public void setNoaudireason(String noaudireason) {
+        this.noaudireason = noaudireason;
     }
 
     public int getRevampCount() {

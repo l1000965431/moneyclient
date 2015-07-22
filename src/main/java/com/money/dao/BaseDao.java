@@ -44,7 +44,7 @@ public class BaseDao {
      *
      * @return
      */
-    Session getNewSession() {
+    protected Session getNewSession() {
         return sessionFactory.getCurrentSession();
     }
 

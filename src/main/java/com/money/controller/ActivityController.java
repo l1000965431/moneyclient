@@ -29,24 +29,25 @@ public class ActivityController extends ControllerBase implements IController {
 
     /**
      * 获得项目详情
+     *
      * @param request
      * @param response
      * @return
      */
-    @RequestMapping( "/getActivityDetails" )
-         @ResponseBody
-         public String getActivityDetails( HttpServletRequest request, HttpServletResponse response ){
+    @RequestMapping("/getActivityDetails")
+    @ResponseBody
+    public String getActivityDetails(HttpServletRequest request, HttpServletResponse response) {
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
-        if( activityService == null ){
+        if (activityService == null) {
             return "";
-        }else{
-            try{
+        } else {
+            try {
                 ActivityDetailModel activityModel = activityService.getActivityDetails(1);
                 String Json = GsonUntil.JavaClassToJson(activityModel);
                 return Json;
-            }catch ( Exception e ){
+            } catch (Exception e) {
                 return "";
             }
         }
@@ -54,24 +55,25 @@ public class ActivityController extends ControllerBase implements IController {
 
     /**
      * 获得项目动态信息
+     *
      * @param request
      * @param response
      * @return
      */
-    @RequestMapping( "/getActivityDynamic" )
+    @RequestMapping("/getActivityDynamic")
     @ResponseBody
-    public String getActivityDynamic( HttpServletRequest request, HttpServletResponse response ){
+    public String getActivityDynamic(HttpServletRequest request, HttpServletResponse response) {
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
-        if( activityService == null ){
+        if (activityService == null) {
             return "";
-        }else{
-            try{
+        } else {
+            try {
                 ActivityDynamicModel activityModel = activityService.getActivityDynamic(1);
                 String Json = GsonUntil.JavaClassToJson(activityModel);
                 return Json;
-            }catch ( Exception e ){
+            } catch (Exception e) {
                 return "";
             }
         }
@@ -79,69 +81,70 @@ public class ActivityController extends ControllerBase implements IController {
 
     /**
      * 获得已经收益的项目
+     *
      * @param request
      * @param response
      * @return
      */
-    @RequestMapping( "/GetActivityHasEarnings" )
+    @RequestMapping("/GetActivityHasEarnings")
     @ResponseBody
-    public String GetActivityHasEarnings( HttpServletRequest request, HttpServletResponse response ){
+    public String GetActivityHasEarnings(HttpServletRequest request, HttpServletResponse response) {
 
         //获取UserID;
 
-        UserService userService = ServiceFactory.getService( "userService" );
+        UserService userService = ServiceFactory.getService("userService");
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
-        if( userService.tokenLand( "","" ) == 0 ){
-            return Integer.toString(ServerReturnValue.USERNOTLAND );
+        if (userService.tokenLand("", "") == 0) {
+            return Integer.toString(ServerReturnValue.USERNOTLAND);
         }
 
-        List ActivityHasEarnings = activityService.GetActivityHasEarnings( "" );
+        List ActivityHasEarnings = activityService.GetActivityHasEarnings("");
 
-        String Json = GsonUntil.JavaClassToJson( ActivityHasEarnings );
+        String Json = GsonUntil.JavaClassToJson(ActivityHasEarnings);
 
         return Json;
     }
 
     /**
      * 获得已经投资的项目
+     *
      * @param request
      * @param response
      * @return
      */
-    @RequestMapping( "/GetActivityHasInvestment" )
+    @RequestMapping("/GetActivityHasInvestment")
     @ResponseBody
-    public String GetActivityHasInvestment( HttpServletRequest request, HttpServletResponse response ){
+    public String GetActivityHasInvestment(HttpServletRequest request, HttpServletResponse response) {
 
         //获取UserID;
 
-        UserService userService = ServiceFactory.getService( "User" );
+        UserService userService = ServiceFactory.getService("User");
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
-        if( userService.tokenLand( "","" ) == 0 ){
-            return Integer.toString(ServerReturnValue.USERNOTLAND );
+        if (userService.tokenLand("", "") == 0) {
+            return Integer.toString(ServerReturnValue.USERNOTLAND);
         }
 
-        List ActivityHasEarnings = activityService.GetActivityHasInvestment( "" );
+        List ActivityHasEarnings = activityService.GetActivityHasInvestment("");
 
-        String Json = GsonUntil.JavaClassToJson( ActivityHasEarnings );
+        String Json = GsonUntil.JavaClassToJson(ActivityHasEarnings);
 
         return Json;
     }
 
 
-
-    @RequestMapping( "/Test" )
+    @RequestMapping("/Test")
     @ResponseBody
-    public String Test( HttpServletRequest request, HttpServletResponse response ){
+    public String Test(HttpServletRequest request, HttpServletResponse response) {
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
-        if(activityService.CanelActivity(1) == Config.SERVICE_SUCCESS ){
+        if (activityService.CanelActivity(1) == Config.SERVICE_SUCCESS) {
             return Config.SERVICE_SUCCESS;
-        }else{
+        } else {
             return Config.SERVICE_FAILED;
         }
     }
