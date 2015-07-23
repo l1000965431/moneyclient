@@ -154,8 +154,8 @@ public class UserDAO extends BaseDao {
     }
 
     //注册
-    public void registered(final String userName, final String passWord, final int userType) {
-        this.excuteTransactionByCallback(new TransactionCallback() {
+    public boolean registered(final String userName, final String passWord, final int userType) {
+       if (this.excuteTransactionByCallback(new TransactionCallback() {
             public void callback(BaseDao basedao) throws Exception {
                 UserModel userModel = new UserModel();
                 //用户注册，存入数据库
@@ -163,21 +163,27 @@ public class UserDAO extends BaseDao {
                 String passWordHash = MoneyServerMd5Utils.hash(passWord);
                 userModel.setPassword(passWordHash);
                 userModel.setUserType(userType);
-                basedao.getNewSession().save( userModel );
-                switch ( userType ){
+                basedao.getNewSession().save(userModel);
+                switch (userType) {
                     //发起人
                     case Config.BORROWER:
                         UserBorrowModel userBorrowModel = new UserBorrowModel();
-                        basedao.getNewSession().save( userBorrowModel );
+                        basedao.getNewSession().save(userBorrowModel);
                         break;
                     //投资者
                     case Config.INVESTOR:
                         UserInvestorModel userInvestorModel = new UserInvestorModel();
-                        basedao.getNewSession().save( userInvestorModel );
+                        basedao.getNewSession().save(userInvestorModel);
                         break;
+                    default:
+                        throw new Exception();
                 }
             }
-        });
+        })==Config.SERVICE_SUCCESS){
+           return true;
+       }else {
+           return false;
+       }
     }
 
     //验证用户名是否已注册
@@ -331,7 +337,7 @@ public class UserDAO extends BaseDao {
     //信息完善，写数据库信息
     private void writeInfo(String userName, Map<String, String> map) {
 
-        UserInvestorModel userInvestorModel = (UserInvestorModel)this.load(UserInvestorModel.class, userName);
+        UserInvestorModel userInvestorModel = (UserInvestorModel) this.load(UserInvestorModel.class, userName);
 
         String user = map.get("user");
         String mail = map.get("mail");

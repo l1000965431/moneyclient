@@ -21,8 +21,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
     public boolean userRegister(String username, String code, String password, int userType) {
         //判断手机验证码是否输入正确
         if (userDAO.checkTeleCode(username, code)) {
-            userDAO.registered(username, password, userType);
-            return true;
+            return userDAO.registered(username, password, userType);
         } else {
             return false;
         }
