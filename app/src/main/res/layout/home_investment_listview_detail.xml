@@ -202,9 +202,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="20dp"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="10dp"
-                    android:background="#ff6bd808">
+                    android:background="#ff6bd808"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp">
 
                     <ImageView
                         android:layout_width="20dp"
@@ -217,7 +217,7 @@
                         android:layout_marginRight="5dp" />
 
                     <TextView
-                        android:layout_width="130dp"
+                        android:layout_width="190dp"
                         android:layout_height="30dp"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="@string/invest_project_select_invest_price"
