@@ -65,9 +65,12 @@ public class AuditActivityController extends ControllerBase implements IControll
         if (serviceAuditActivity == null) {
             return Config.SERVICE_FAILED;
         }
-        serviceAuditActivity.setActivityAuditorResult(1l, ActivityVerifyModel.STATUS_AUDITOR_PASS);
 
-        return "";
+        if( serviceAuditActivity.setActivityAuditorResult(2l, ActivityVerifyModel.STATUS_AUDITOR_PASS, "") ){
+            return Config.SERVICE_SUCCESS;
+        }else {
+            return Config.SERVICE_FAILED;
+        }
     }
 
 }

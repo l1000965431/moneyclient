@@ -86,7 +86,7 @@ public class ActivityBuyListener extends MoneyServerListener {
             }
 
             //验证项目是否完成
-            if( activityDetailModel.getStatus() == ActivityDetailModel.ONLINEACTIVITY_COMPLETE ){
+            if( activityDetailModel.getStatus() == ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE){
                 return;
             }
 

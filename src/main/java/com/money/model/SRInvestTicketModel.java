@@ -22,7 +22,7 @@ public class SRInvestTicketModel implements Serializable {
     /**
      *  项目组ID
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, optional = false)
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn( name = "groupId",referencedColumnName = "id")
     ActivityGroupModel activityGroupModel;
 

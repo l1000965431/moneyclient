@@ -1,6 +1,7 @@
 package until;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
+import com.money.model.ActivityDetailModel;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
@@ -21,7 +22,15 @@ public class GsonUntil {
     private static Gson gson = null;
 
     GsonUntil(){
-        gson = new Gson();
+        gson = new GsonBuilder().registerTypeAdapter(ActivityDetailModel.class, new JsonSerializer<ActivityDetailModel>() {
+            public JsonElement serialize(ActivityDetailModel src, Type typeOfSrc,
+                                         JsonSerializationContext context) {
+                JsonObject o=new JsonObject();
+                o.addProperty("activityStageId", src.getActivityStageId());
+                o.addProperty("fatherActivityId", src.getFatherActivityID());
+                return o;
+            }
+        }).create();
     }
 
     /**
