@@ -14,7 +14,6 @@ public class UserInvestorModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Id
     //主键，手机号
     private String userId;//service里的username
     //用户名
