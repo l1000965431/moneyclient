@@ -137,10 +137,9 @@ public class ActivityVerifyModel {
     /**
      * 审核不同过原因
      */
-    @Column(columnDefinition = "VARCHAR",length=500)
-    String noaudireason;
+    @Column(length = 500)
+    String auditNotPassedReason;
 
-    public long getId() {
     public Long getId() {
         return id;
     }
@@ -285,12 +284,12 @@ public class ActivityVerifyModel {
         this.createDate = createDate;
     }
 
-    public String getNoaudireason() {
-        return noaudireason;
+    public String getAuditNotPassedReason() {
+        return auditNotPassedReason;
     }
 
-    public void setNoaudireason(String noaudireason) {
-        this.noaudireason = noaudireason;
+    public void setAuditNotPassedReason(String noaudireason) {
+        this.auditNotPassedReason = noaudireason;
     }
 
     public int getRevampCount() {
