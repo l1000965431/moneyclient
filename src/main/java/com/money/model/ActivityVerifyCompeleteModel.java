@@ -4,70 +4,27 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * 项目提交后等待审核
- * <p>User: Guo Hong
- * <p>Date: 15-7-8
- * <p>Version: 1.0
+ * Created by liumin on 15/7/23.
  */
+
+
 @Entity
-@Table(name = "activityverify")
-public class ActivityVerifyModel {
-    /**
-     * 初次审核
-     */
-    public static final int STATUS_FIRST_AUDITING = 0;
+@Table(name = "activityVerifyCompelete")
+public class ActivityVerifyCompeleteModel {
 
-    /**
-     * 需修改
-     */
-    public static final int STATUS_NEED_REVAMP = 1;
-
-    /**
-     * 修改完成需再次审核
-     */
-    public static final int STATUS_REVAMPED = 2;
-
-    /**
-     * 通过审核
-     */
-    public static final int STATUS_AUDITOR_PASS = 3;
-
-    /**
-     * 未通过审核
-     */
-    public static final int STATUS_AUDITOR_NOT_PASS = 4;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * 项目ID
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    String ActivityID;
 
     /**
-     *  审核状态
+     * 项目状态
      */
-    int auditorStatus;
-
-    /**
-     *  项目提交者ID
-     */
-    String creatorId;
-
-    /**
-     *  项目审核者ID
-     */
-    String auditorId;
-
-    /**
-     *  项目修改次数
-     */
-    int revampCount;
-
-    /**
-     *  项目提交时间
-     */
-    Date createDate;
+    int status;
 
     /**
      * 项目名称
@@ -125,6 +82,16 @@ public class ActivityVerifyModel {
     int targetFund;
 
     /**
+     * 已筹资金
+     */
+    int curFund;
+
+    /**
+     * 开始筹款时间
+     */
+    //Date activityStartTime;
+
+    /**
      * 筹资天数
      */
     int raiseDay;
@@ -135,12 +102,12 @@ public class ActivityVerifyModel {
     int teamSize;
 
     /**
-     * 审核不同过原因
+     * 各金额总人数
      */
-    @Column(length=500)
-    String noaudireason;
+    String activitylinespeoples;
 
-    public long getId() {
+
+    public Long getId() {
         return id;
     }
 
@@ -148,20 +115,12 @@ public class ActivityVerifyModel {
         this.id = id;
     }
 
-    public int getAuditorStatus() {
-        return auditorStatus;
+    public int getStatus() {
+        return status;
     }
 
-    public void setAuditorStatus(int auditorStatus) {
-        this.auditorStatus = auditorStatus;
-    }
-
-    public String getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(String creatorId) {
-        this.creatorId = creatorId;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getName() {
@@ -252,6 +211,22 @@ public class ActivityVerifyModel {
         this.targetFund = targetFund;
     }
 
+    public int getCurFund() {
+        return curFund;
+    }
+
+    public void setCurFund(int curFund) {
+        this.curFund = curFund;
+    }
+
+/*    public Date getActivityStartTime() {
+        return activityStartTime;
+    }
+
+    public void setActivityStartTime(Date activityStartTime) {
+        this.activityStartTime = activityStartTime;
+    }*/
+
     public int getRaiseDay() {
         return raiseDay;
     }
@@ -268,35 +243,19 @@ public class ActivityVerifyModel {
         this.teamSize = teamSize;
     }
 
-    public String getAuditorId() {
-        return auditorId;
+    public String getActivitylinespeoples() {
+        return activitylinespeoples;
     }
 
-    public void setAuditorId(String auditorId) {
-        this.auditorId = auditorId;
+    public void setActivitylinespeoples(String activitylinespeoples) {
+        this.activitylinespeoples = activitylinespeoples;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public String getActivityID() {
+        return ActivityID;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public String getNoaudireason() {
-        return noaudireason;
-    }
-
-    public void setNoaudireason(String noaudireason) {
-        this.noaudireason = noaudireason;
-    }
-
-    public int getRevampCount() {
-        return revampCount;
-    }
-
-    public void setRevampCount(int revampCount) {
-        this.revampCount = revampCount;
+    public void setActivityID(String activityID) {
+        ActivityID = activityID;
     }
 }

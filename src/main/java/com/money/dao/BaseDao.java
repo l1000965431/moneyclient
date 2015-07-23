@@ -204,6 +204,26 @@ public class BaseDao {
     }
 
     /**
+     * 更新或插入
+     *
+     * @param bean
+     *
+     */
+    public void saveOrupdate( Object bean ){
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
+        try{
+            session.saveOrUpdate(bean);
+            session.flush();
+            session.clear();
+            t.commit();
+        } catch ( Exception e ){
+            session.clear();
+            t.rollback();
+        }
+    }
+
+    /**
      * 删除
      *
      * @param bean

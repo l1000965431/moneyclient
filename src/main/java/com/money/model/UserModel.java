@@ -12,6 +12,9 @@ public class UserModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+
     //主键，手机号
     private String userId;//service里的username
     //登录密码
@@ -102,5 +105,13 @@ public class UserModel implements Serializable {
 
     public void setIsperfectInfo(boolean isperfectInfo) {
         this.isperfectInfo = isperfectInfo;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

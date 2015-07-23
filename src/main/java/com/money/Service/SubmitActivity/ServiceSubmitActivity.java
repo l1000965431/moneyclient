@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import until.GsonUntil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 
 
 /**
@@ -24,7 +23,6 @@ public class ServiceSubmitActivity extends ServiceBase {
 
     public String submitActivity( ActivityVerifyModel activityModel ){
         activityModel.setAuditorStatus(ActivityVerifyModel.STATUS_FIRST_AUDITING);
-        activityModel.setCreateDate(new Date(System.currentTimeMillis()));
         baseDao.save(activityModel);
         return "hahha";
     }

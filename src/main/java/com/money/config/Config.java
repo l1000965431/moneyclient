@@ -63,4 +63,37 @@ public class Config {
 
     //几率的放大倍数  方便计算
     public static final String ACTIVITYGROUPTICKETNAME = "Ticket_";
+
+    /**
+     * 项目状态
+     */
+    //尚未发布
+    public static final int NOTYETRELEASE = 1;
+
+    //第几期众筹中
+    public static final int INSTALLMENTCRWWDFUNDING = 2;
+
+    //第几期众筹完成
+    public static final int INSTALLMENTCRWWDFUNDED = 3;
+
+    //众筹成功
+    public static final int CRWWDFUNDCOMPELETE = 4;
+
+    //众筹失败
+    public static final int CRWWDFUNDFAILED = 5;
+
+    //众筹分红
+    public static final int DIVIDEND = 6;
+
+    /**
+     * 分期项目池状态
+     */
+    //分期项目尚未开始
+     public static final int NOINSTALLMENTACTIVITYSTART = 1;
+
+    //分期项目进行中
+    public static final int INSTALLMENTACTIVITYDOING = 2;
+
+    //分期项目结束
+    public static final int INSTALLMENTACTIVITYEND = 3;
 }
