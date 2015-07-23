@@ -9,8 +9,8 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "activityVerifyCompelete")
-public class ActivityVerifyCompeleteModel {
+@Table(name = "activityVerifyComplete")
+public class ActivityVerifyCompleteModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
