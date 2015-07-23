@@ -52,6 +52,31 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
         return true;
     }
 
+    /**
+     * 设置项目审核不通过
+     * @return
+     */
+    public void setActivityNotPass(ActivityVerifyModel activityVerifyModel){
+        activityVerifyModel.setAuditorStatus(ActivityVerifyModel.STATUS_AUDITOR_NOT_PASS);
+
+        auditActivityDao.update(activityVerifyModel);
+    }
+
+    /**
+     * 设置项目审核不通过，需要修改
+     * @return
+     */
+    public void setActivityNeedRevamp(ActivityVerifyModel activityVerifyModel, String reason){
+        activityVerifyModel.setAuditorStatus(ActivityVerifyModel.STATUS_NEED_REVAMP);
+        activityVerifyModel.setRevampCount(activityVerifyModel.getRevampCount() + 1);
+        auditActivityDao.update(activityVerifyModel);
+    }
+
+    public void setActivityPass(ActivityVerifyModel activityVerifyModel){
+        activityVerifyModel.setAuditorStatus(ActivityVerifyModel.STATUS_AUDITOR_PASS);
+        auditActivityDao.update(activityVerifyModel);
+    }
+
     public boolean setActivityToGroup(){
         ActivityDetailModel activityDetailModel = (ActivityDetailModel) auditActivityDao.load(ActivityDetailModel.class, 1l);
         auditActivityDao.excuteTransactionByCallback(new TransactionCallback() {
