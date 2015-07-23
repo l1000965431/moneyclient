@@ -9,6 +9,7 @@ import com.money.memcach.MemCachService;
 import com.money.model.UserBorrowModel;
 import com.money.model.UserInvestorModel;
 import com.money.model.UserModel;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -154,12 +155,12 @@ public class UserDAO extends BaseDao {
     }
 
     //注册
-    public boolean registered(final String userName, final String passWord, final int userType) {
+    public boolean registered(final String userID, final String passWord, final int userType) {
        if (this.excuteTransactionByCallback(new TransactionCallback() {
             public void callback(BaseDao basedao) throws Exception {
                 UserModel userModel = new UserModel();
                 //用户注册，存入数据库
-                userModel.setUserId(userName);
+                userModel.setUserId(userID);
                 String passWordHash = MoneyServerMd5Utils.hash(passWord);
                 userModel.setPassword(passWordHash);
                 userModel.setUserType(userType);
@@ -168,11 +169,13 @@ public class UserDAO extends BaseDao {
                     //发起人
                     case Config.BORROWER:
                         UserBorrowModel userBorrowModel = new UserBorrowModel();
+                        userBorrowModel.setUserId( userID );
                         basedao.getNewSession().save(userBorrowModel);
                         break;
                     //投资者
                     case Config.INVESTOR:
                         UserInvestorModel userInvestorModel = new UserInvestorModel();
+                        userInvestorModel.setUserId( userID );
                         basedao.getNewSession().save(userInvestorModel);
                         break;
                     default:
@@ -263,8 +266,8 @@ public class UserDAO extends BaseDao {
     }
 
     //查询用户名是否存在
-    public boolean userIsExist(String userName) {
-        UserModel userModel = (UserModel) this.load(UserModel.class, userName);
+    public boolean userIsExist(String userID) {
+        UserModel userModel = getUSerModel( userID );
         if (userModel != null)
             return true;
         else
@@ -415,5 +418,19 @@ public class UserDAO extends BaseDao {
         return result;
     }
 
+    UserModel getUSerModel( final String UserID ){
+        final UserModel[] userModel = {null};
+
+        this.excuteTransactionByCallback(new TransactionCallback() {
+            public void callback(BaseDao basedao) throws Exception {
+                userModel[0] = (UserModel) basedao.getNewSession().createCriteria( UserModel.class )
+                        .setMaxResults( 1 )
+                        .add(Restrictions.eq( "userId",UserID ))
+                        .uniqueResult();
+            }
+        });
+
+     return userModel[0];
+    }
 
 }

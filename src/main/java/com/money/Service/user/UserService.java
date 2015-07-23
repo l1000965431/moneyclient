@@ -57,7 +57,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
             String tokenData = userDAO.landing(username, password);
             return tokenData;
         } else
-            return "userName is not exist";
+            return Config.SERVICE_FAILED;
     }
 
     //用户token登陆,0登录失败，1已登录，2登录成功,3使用用户名密码登录或token不正确

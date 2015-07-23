@@ -479,6 +479,32 @@ public class BaseDao {
     }
 
     /**
+     * 通过回掉函数执行事务
+     * @param transactionSessionCallback  回掉函数
+     * @return
+     */
+    public String excuteTransactionByCallback( TransactionSessionCallback transactionSessionCallback ){
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
+        try{
+            if( transactionSessionCallback != null ){
+                transactionSessionCallback.callback(session);
+            }
+            session.clear();
+            t.commit();
+            //
+            //session.close();
+            return Config.SERVICE_SUCCESS;
+        }catch ( Exception e ){
+            session.clear();
+            t.rollback();
+            //
+            //session.close();
+            return Config.SERVICE_FAILED;
+        }
+    }
+
+    /**
      * 判断一张表是否存在
      * @param ModelName
      * @return

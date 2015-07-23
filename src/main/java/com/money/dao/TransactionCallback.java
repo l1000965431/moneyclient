@@ -6,3 +6,5 @@ public interface TransactionCallback {
 
         void callback( BaseDao basedao ) throws Exception;
 }
+
+

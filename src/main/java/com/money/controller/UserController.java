@@ -26,7 +26,7 @@ public class UserController extends ControllerBase implements IController
                               HttpServletResponse response )
     {
         String UserName = request.getParameter( "username" );
-        String PassWord = request.getParameter( "PassWord" );
+        String PassWord = request.getParameter( "password" );
         return userService.userLand(UserName,PassWord);
     }
 
