@@ -89,7 +89,7 @@ public class ActivityVerifyCompeleteModel {
     /**
      * 开始筹款时间
      */
-    //Date activityStartTime;
+    Date activityStartTime;
 
     /**
      * 筹资天数
@@ -219,13 +219,13 @@ public class ActivityVerifyCompeleteModel {
         this.curFund = curFund;
     }
 
-/*    public Date getActivityStartTime() {
+    public Date getActivityStartTime() {
         return activityStartTime;
     }
 
     public void setActivityStartTime(Date activityStartTime) {
         this.activityStartTime = activityStartTime;
-    }*/
+    }
 
     public int getRaiseDay() {
         return raiseDay;

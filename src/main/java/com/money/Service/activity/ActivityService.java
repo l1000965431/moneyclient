@@ -251,7 +251,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      */
     public int GetActivityLinesTotalPeoples( ActivityDetailModel activityDetailModel,int Lines ){
         try{
-            String activitycurlines = activityDetailModel.getActivitylinespeoples();
+            String activitycurlines = activityDetailModel.getActivityLinesPeoples();
             Map<String,Integer> mappeoples = GsonUntil.jsonToJavaClass( activitycurlines,new TypeToken<Map<String,Integer>>(){}.getType() );
             int peoples = mappeoples.get( Integer.toString( Lines ) );
             return peoples;
@@ -477,7 +477,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     public int GetActivityPeople( ActivityDetailModel activityDetailModel ){
 
         int curpeoples = 0;
-        String activitycurlines = activityDetailModel.getActivitylinespeoples();
+        String activitycurlines = activityDetailModel.getActivityLinesPeoples();
 
         Map<String, Integer> mappeoples = GsonUntil.jsonToJavaClass(activitycurlines, new TypeToken<Map<String, Integer>>() {
         }.getType());

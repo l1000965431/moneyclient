@@ -85,7 +85,7 @@ public class ActivityDetailModel implements Serializable {
     /**
      * 各金额总人数
      */
-    String activitylinespeoples;
+    String activityLinesPeoples;
 
     /**
      * 父项目ID
@@ -144,12 +144,12 @@ public class ActivityDetailModel implements Serializable {
         this.raiseDay = raiseDay;
     }
 
-    public String getActivitylinespeoples() {
-        return activitylinespeoples;
+    public String getActivityLinesPeoples() {
+        return activityLinesPeoples;
     }
 
-    public void setActivitylinespeoples(String activitylinespeoples) {
-        this.activitylinespeoples = activitylinespeoples;
+    public void setActivityLinesPeoples(String activitylinespeoples) {
+        this.activityLinesPeoples = activitylinespeoples;
     }
 
     public String getFatherActivityID() {

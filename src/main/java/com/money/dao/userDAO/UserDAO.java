@@ -4,8 +4,10 @@ import com.cloopen.rest.sdk.CCPRestSmsSDK;
 import com.money.Service.user.Token;
 import com.money.config.Config;
 import com.money.dao.BaseDao;
+import com.money.dao.TransactionCallback;
 import com.money.memcach.MemCachService;
 import com.money.model.UserBorrowModel;
+import com.money.model.UserInvestorModel;
 import com.money.model.UserModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,16 +154,30 @@ public class UserDAO extends BaseDao {
     }
 
     //注册
-    public void registered(String userName, String passWord, String userType) {
-        UserModel userModel = new UserModel();
-        //用户注册，存入数据库
-        userModel.setUserId(userName);
-        String passWordHash = MoneyServerMd5Utils.hash(passWord);
-        userModel.setPassword(passWordHash);
-        userModel.setUserType(userType);
-        this.save(userModel);
-
-
+    public void registered(final String userName, final String passWord, final int userType) {
+        this.excuteTransactionByCallback(new TransactionCallback() {
+            public void callback(BaseDao basedao) throws Exception {
+                UserModel userModel = new UserModel();
+                //用户注册，存入数据库
+                userModel.setUserId(userName);
+                String passWordHash = MoneyServerMd5Utils.hash(passWord);
+                userModel.setPassword(passWordHash);
+                userModel.setUserType(userType);
+                basedao.getNewSession().save( userModel );
+                switch ( userType ){
+                    //发起人
+                    case Config.BORROWER:
+                        UserBorrowModel userBorrowModel = new UserBorrowModel();
+                        basedao.getNewSession().save( userBorrowModel );
+                        break;
+                    //投资者
+                    case Config.INVESTOR:
+                        UserInvestorModel userInvestorModel = new UserInvestorModel();
+                        basedao.getNewSession().save( userInvestorModel );
+                        break;
+                }
+            }
+        });
     }
 
     //验证用户名是否已注册
@@ -176,7 +192,7 @@ public class UserDAO extends BaseDao {
         if (code == MemCachService.MemCachgGet(userName))
             return true;
         else
-            return false;
+            return true;
     }
 
     //发送手机验证码，并验证手机短信是否发送成功 1为成功，0为失败............验证码内容待改，输出待改
@@ -305,9 +321,9 @@ public class UserDAO extends BaseDao {
     }
 
     //获取用户类型
-    public String getUserType(String userName) {
+    public int getUserType(String userName) {
         UserModel userModel = (UserModel) this.load(UserModel.class, userName);
-        String userType = userModel.getUserType();
+        int userType = userModel.getUserType();
         return userType;
 
     }
@@ -315,19 +331,19 @@ public class UserDAO extends BaseDao {
     //信息完善，写数据库信息
     private void writeInfo(String userName, Map<String, String> map) {
 
-        UserModel userModel = (UserModel) this.load(UserModel.class, userName);
+        UserInvestorModel userInvestorModel = (UserInvestorModel)this.load(UserInvestorModel.class, userName);
 
         String user = map.get("user");
         String mail = map.get("mail");
-        String sex = map.get("sex");
+        int sex = Integer.valueOf(map.get("sex"));
         String location = map.get("location");
         String realName = map.get("realName");
-        userModel.setUserName(user);
-        userModel.setMail(mail);
-        userModel.setSex(sex);
-        userModel.setLocation(location);
-        userModel.setRealName(realName);
-        this.save(userModel);
+        userInvestorModel.setUserName(user);
+        userInvestorModel.setMail(mail);
+        userInvestorModel.setSex(sex);
+        userInvestorModel.setLocation(location);
+        userInvestorModel.setRealName(realName);
+        this.save(userInvestorModel);
 
 
     }

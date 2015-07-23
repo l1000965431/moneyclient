@@ -39,19 +39,6 @@
                                       expression = "org.springframework.stereotype.Service" />
        </context:component-scan >
 
-       <!--这里配置了一个listener，也可以配置servlet:-->
-       <!--
-       <servlet>
-        <servlet-name>log4j</servlet-name>
-        <servlet-class>
-        org.springframework.web.util.Log4jConfigServlet
-        </servlet-class>
-        <load-on-startup>1</load-on-startup>
-        </servlet>
-       -->
-
-
-
        <!-- 读取配置文件-->
        <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
               <property name="locations">

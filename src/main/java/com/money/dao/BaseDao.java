@@ -44,7 +44,7 @@ public class BaseDao {
      *
      * @return
      */
-    protected Session getNewSession() {
+    public Session getNewSession() {
         return sessionFactory.getCurrentSession();
     }
 
@@ -414,13 +414,15 @@ public class BaseDao {
             if( callbackFunction != null ){
                 callbackFunction.callback();
             }
-            t.commit();
             session.clear();
+            t.commit();
+
             //session.close();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
-            t.rollback();
             session.clear();
+            t.rollback();
+
             //session.close();
             return Config.SERVICE_FAILED;
         }
@@ -438,13 +440,13 @@ public class BaseDao {
             if( callbackFunction != null ){
                 callbackFunction.callback(object);
             }
-            t.commit();
             session.clear();
+            t.commit();
             //session.close();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
-            t.rollback();
             session.clear();
+            t.rollback();
             //session.close();
             return Config.SERVICE_FAILED;
         }
@@ -462,13 +464,15 @@ public class BaseDao {
             if( callbackFunction != null ){
                 callbackFunction.callback(this);
             }
-            t.commit();
             session.clear();
+            t.commit();
+            //
             //session.close();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
-            t.rollback();
             session.clear();
+            t.rollback();
+            //
             //session.close();
             return Config.SERVICE_FAILED;
         }

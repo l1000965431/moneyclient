@@ -18,7 +18,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
     UserDAO userDAO;
 
     //用户注册，判断验证码是否正确，正确则完成用户注册
-    public boolean userRegister(String username, String code, String password, String userType) {
+    public boolean userRegister(String username, String code, String password, int userType) {
         //判断手机验证码是否输入正确
         if (userDAO.checkTeleCode(username, code)) {
             userDAO.registered(username, password, userType);
@@ -97,10 +97,10 @@ public class UserService extends ServiceBase implements ServiceInterface {
             boolean landFlag = userDAO.tokenTime(username, timeLong);
             if (landFlag == true) {
                 //根据username,查找用户类型
-                String userType = userDAO.getUserType(username);
-                if (userType == "INVESTOR")
+                int userType = userDAO.getUserType(username);
+                if (userType == Config.INVESTOR)
                     return userDAO.modifyInvestorInfo(username, info);
-                if (userType == "BORROWER")
+                if (userType == Config.BORROWER)
                     return userDAO.modifyBorrowerInfo(username, info);
                 else
                     return 4;
@@ -123,10 +123,10 @@ public class UserService extends ServiceBase implements ServiceInterface {
             boolean landFlag = userDAO.tokenTime(userName, timeLong);
             if (landFlag == true) {
                 //根据username,查找用户类型
-                String userType = userDAO.getUserType(userName);
-                if (userType == "INVESTOR")
+                int userType = userDAO.getUserType(userName);
+                if (userType == Config.INVESTOR)
                     return userDAO.changeInvestorInfo(userName, info);
-                if (userType == "BORROWER")
+                if (userType == Config.BORROWER)
                     return userDAO.changeBorrowerInfo(userName, info);
                 else
                     return Config.USERTYPE_FAILED;

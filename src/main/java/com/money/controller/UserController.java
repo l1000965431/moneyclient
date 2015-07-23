@@ -77,7 +77,9 @@ public class UserController extends ControllerBase implements IController
     {
         String userName = request.getParameter( "userName" );
         String code = request.getParameter( "code" );
-        return  userService.userRegister("","",userName, code);
+        String password = request.getParameter( "password" );
+        int userType = Integer.valueOf(request.getParameter( "userType" ));
+        return  userService.userRegister( userName, code,password,userType );
     }
 
     @RequestMapping("submitTeleNum")

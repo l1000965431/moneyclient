@@ -96,4 +96,10 @@ public class Config {
 
     //分期项目结束
     public static final int INSTALLMENTACTIVITYEND = 3;
+
+    //投资者
+    public static final int INVESTOR = 1;
+
+    //发布者
+    public static final int BORROWER = 2;
 }
