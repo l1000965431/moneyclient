@@ -12,6 +12,8 @@ public class UserBorrowModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     //主键，手机号
     private String userId;//service里的username
     //身份证
@@ -81,5 +83,13 @@ public class UserBorrowModel implements Serializable {
 
     public void setIsperfectInfo(boolean isperfectInfo) {
         this.isperfectInfo = isperfectInfo;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

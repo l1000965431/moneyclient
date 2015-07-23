@@ -82,22 +82,23 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
         return true;
     }
 
+
     private ActivityDetailModel verifyToDetail(ActivityVerifyModel activity){
         ActivityDetailModel activityDetailModel = new ActivityDetailModel();
 
-        activityDetailModel.setActivityIntroduce(activity.getActivityIntroduce());
+/*        activityDetailModel.setActivityIntroduce(activity.getActivityIntroduce());
         activityDetailModel.setAddress(activity.getAddress());
         activityDetailModel.setCategory(activity.getCategory());
         activityDetailModel.setImageUrl(activity.getImageUrl());
         activityDetailModel.setMarketAnalysis(activity.getMarketAnalysis());
-        activityDetailModel.setName(activity.getName());
+        activityDetailModel.setName(activity.getName());*/
         activityDetailModel.setRaiseDay(activity.getRaiseDay());
-        activityDetailModel.setSummary(activity.getSummary());
-        activityDetailModel.setTags(activity.getTags());
+/*        activityDetailModel.setSummary(activity.getSummary());
+        activityDetailModel.setTags(activity.getTags());*/
         activityDetailModel.setTargetFund(activity.getTargetFund());
-        activityDetailModel.setTeamIntroduce(activity.getTeamIntroduce());
+/*        activityDetailModel.setTeamIntroduce(activity.getTeamIntroduce());
         activityDetailModel.setTeamSize(activity.getTeamSize());
-        activityDetailModel.setVideoUrl(activity.getVideoUrl());
+        activityDetailModel.setVideoUrl(activity.getVideoUrl());*/
 
         return activityDetailModel;
     }

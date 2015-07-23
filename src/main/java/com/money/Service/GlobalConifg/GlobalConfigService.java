@@ -61,7 +61,7 @@ public class GlobalConfigService extends ServiceBase implements ServiceInterface
 
         if( configModel == null ){
             configModel = new GlobalConfigModel();
-            configModel.setKey(key);
+            configModel.setConfigkey(key);
             generaDAO.save(configModel);
             return;
         }

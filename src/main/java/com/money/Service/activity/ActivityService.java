@@ -11,9 +11,7 @@ import com.money.config.ServerReturnValue;
 import com.money.dao.BaseDao;
 import com.money.dao.TransactionCallback;
 import com.money.dao.activityDAO.activityDAO;
-import com.money.model.ActivityDetailModel;
-import com.money.model.ActivityDynamicModel;
-import com.money.model.ActivityGroupModel;
+import com.money.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
@@ -534,6 +532,53 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      * @return
      */
     public List GetActivityHasInvestment( String UserID ){
+
+        return null;
+    }
+
+    /**
+     * 项目分期
+     */
+    public String ActivityInstallment( List<ActivityDetailModel> newInstallmentList ){
+
+        List<ActivityDetailModel> OldInstallmentList = null;
+
+        List<ActivityDetailModel> DeleteInstallmentList = null;
+
+        for( ActivityDetailModel newIt:newInstallmentList ){
+            //项目状态尚未开始 可以修改分期状态
+            if( newIt.getStatus() == Config.NOINSTALLMENTACTIVITYSTART ){
+                activityDao.saveOrupdate( newIt );
+            }
+        }
+
+        for( ActivityDetailModel It: OldInstallmentList ){
+            for( ActivityDetailModel It1: newInstallmentList ){
+                if( It != It1 && It1.getStatus() == Config.NOINSTALLMENTACTIVITYSTART ){
+                    DeleteInstallmentList.add( It );
+                    break;
+                }
+            }
+        }
+
+        //批量删除分期项目
+        // DeleteInstallmentList
+
+
+        return null;
+    }
+
+
+    /**
+     * 后台修改项目的状态
+     */
+    public String SetActivityState( int State,String ActivityID ){
+
+        ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel)activityDao.load(ActivityVerifyModel.class, ActivityID);
+
+        activityVerifyModel.setAuditorStatus( State );
+
+        activityDao.update( activityVerifyModel );
 
         return null;
     }

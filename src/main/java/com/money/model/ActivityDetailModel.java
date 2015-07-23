@@ -3,6 +3,7 @@ package com.money.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,6 +39,12 @@ public class ActivityDetailModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    /**
+     *分期的项目ID
+     */
+    //@Id
+    String ActivityID;
+
     public ActivityGroupModel getActivityGroupModel() {
         return activityGroupModel;
     }
@@ -66,56 +73,6 @@ public class ActivityDetailModel implements Serializable {
     int status;
 
     /**
-     * 项目名称
-     */
-    String name;
-
-    /**
-     * 团队地址
-     */
-    String address;
-
-    /**
-     * 项目视频
-     */
-    String videoUrl;
-
-    /**
-     * 项目图片
-     */
-    String imageUrl;
-
-    /**
-     * 项目简介
-     */
-    String summary;
-
-    /**
-     * 项目介绍
-     */
-    String activityIntroduce;
-
-    /**
-     * 项目类别
-     */
-    String category;
-
-    /**
-     * 市场分析
-     */
-    String marketAnalysis;
-
-    /**
-     * 团队介绍
-     */
-    String teamIntroduce;
-
-    /**
-     * 标签
-     */
-    String tags;
-
-    /**
      * 筹资金额
      */
     int targetFund;
@@ -126,21 +83,41 @@ public class ActivityDetailModel implements Serializable {
     int raiseDay;
 
     /**
-     * 团队人数
-     */
-    int teamSize;
-
-    /**
      * 各金额总人数
      */
     String activitylinespeoples;
 
-    public long getId() {
+    /**
+     * 父项目ID
+     */
+    String FatherActivityID;
+
+    /**
+     * 发布时间
+     * @return
+     */
+    Date ActivityStartTime;
+
+    /**
+     * 结束时间
+     * @return
+     */
+    Date ActivityEndTime;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public Set<BRInvestEarningModel> getBrInvestEarningModels() {
+        return brInvestEarningModels;
+    }
+
+    public void setBrInvestEarningModels(Set<BRInvestEarningModel> brInvestEarningModels) {
+        this.brInvestEarningModels = brInvestEarningModels;
     }
 
     public int getStatus() {
@@ -149,86 +126,6 @@ public class ActivityDetailModel implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getVideoUrl() {
-        return videoUrl;
-    }
-
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getActivityIntroduce() {
-        return activityIntroduce;
-    }
-
-    public void setActivityIntroduce(String activityIntroduce) {
-        this.activityIntroduce = activityIntroduce;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getMarketAnalysis() {
-        return marketAnalysis;
-    }
-
-    public void setMarketAnalysis(String marketAnalysis) {
-        this.marketAnalysis = marketAnalysis;
-    }
-
-    public String getTeamIntroduce() {
-        return teamIntroduce;
-    }
-
-    public void setTeamIntroduce(String teamIntroduce) {
-        this.teamIntroduce = teamIntroduce;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
     }
 
     public int getTargetFund() {
@@ -247,19 +144,43 @@ public class ActivityDetailModel implements Serializable {
         this.raiseDay = raiseDay;
     }
 
-    public int getTeamSize() {
-        return teamSize;
-    }
-
-    public void setTeamSize(int teamSize) {
-        this.teamSize = teamSize;
-    }
-
     public String getActivitylinespeoples() {
         return activitylinespeoples;
     }
 
     public void setActivitylinespeoples(String activitylinespeoples) {
         this.activitylinespeoples = activitylinespeoples;
+    }
+
+    public String getFatherActivityID() {
+        return FatherActivityID;
+    }
+
+    public void setFatherActivityID(String fatherActivityID) {
+        FatherActivityID = fatherActivityID;
+    }
+
+    public String getActivityID() {
+        return ActivityID;
+    }
+
+    public void setActivityID(String activityID) {
+        ActivityID = activityID;
+    }
+
+    public Date getActivityStartTime() {
+        return ActivityStartTime;
+    }
+
+    public void setActivityStartTime(Date activityStartTime) {
+        ActivityStartTime = activityStartTime;
+    }
+
+    public Date getActivityEndTime() {
+        return ActivityEndTime;
+    }
+
+    public void setActivityEndTime(Date activityEndTime) {
+        ActivityEndTime = activityEndTime;
     }
 }

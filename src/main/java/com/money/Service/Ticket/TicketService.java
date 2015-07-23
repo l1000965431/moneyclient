@@ -356,7 +356,7 @@ public class TicketService extends ServiceBase implements ServiceInterface {
         long orderTime = System.currentTimeMillis();
         while (true) {
             testindex++;
-            if (testindex >= 20) {
+            if (testindex >= 2) {
                 orderTime = System.currentTimeMillis() - orderTime;
                 System.out.printf(Long.toString(orderTime));
                 return false;

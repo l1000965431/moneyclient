@@ -5,10 +5,7 @@ import com.money.Service.ServiceBase;
 import com.money.Service.ServiceFactory;
 import com.money.Service.ServiceInterface;
 import com.money.dao.GeneraDAO;
-import com.money.model.ActivityDetailModel;
-import com.money.model.ActivityGroupModel;
-import com.money.model.SREarningModel;
-import com.money.model.SRInvestTicketModel;
+import com.money.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -186,6 +183,7 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
         }
         return "";
     }
+
 
     public void test(){
 //        ActivityGroupModel groupModel = new ActivityGroupModel();

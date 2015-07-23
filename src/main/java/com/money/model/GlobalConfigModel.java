@@ -17,7 +17,7 @@ public class GlobalConfigModel implements Serializable{
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    String key;
+    int id;
 
     /**
      * 值
@@ -25,12 +25,17 @@ public class GlobalConfigModel implements Serializable{
     @Column(columnDefinition = "TEXT")
     String value;
 
-    public String getKey() {
-        return key;
+    /**
+     *
+     */
+    String Configkey;
+
+    public String getConfigkey() {
+        return Configkey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setConfigkey(String configkey) {
+        Configkey = configkey;
     }
 
     public String getValue() {
@@ -39,5 +44,13 @@ public class GlobalConfigModel implements Serializable{
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
