@@ -10,10 +10,10 @@
     android:id="@+id/home_investment_list_view_root">
 
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="170dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/imageView"
-        android:src="@mipmap/projects_display002_1"
+        android:src="@mipmap/projects_display002_0"
         android:scaleType="fitXY" />
 
     <TextView
@@ -22,7 +22,6 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="卡西欧游戏机"
         android:id="@+id/textView53"
-        android:layout_gravity="center|right"
         android:background="#82000000"
         android:layout_marginTop="-20dp"
         android:textColor="#ffffffff"
@@ -103,9 +102,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="1"
+                        android:text="99"
                         android:id="@+id/textView5"
-                        android:textSize="30dp" />
+                        android:textSize="20dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -122,10 +121,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="3"
+                        android:text="99"
                         android:id="@+id/textView7"
-                        android:textSize="30dp"
-                        android:layout_marginLeft="10dp" />
+                        android:textSize="20dp"
+                        android:layout_marginLeft="5dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -142,16 +141,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="15:00"
+                        android:text="00:00"
                         android:id="@+id/textView9"
-                        android:textSize="30dp"
-                        android:layout_marginLeft="10dp" />
+                        android:textSize="20dp"
+                        android:layout_marginLeft="5dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="点"
+                        android:text="时"
                         android:id="@+id/textView10"
                         android:textSize="15dp"
                         android:textColor="#ff767676"
@@ -159,44 +158,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="您已入资：87￥"
-                    android:id="@+id/textView16"
-                    android:textSize="13dp"
-                    android:textColor="#ff767676"
-                    android:textIsSelectable="false"
-                    android:textStyle="bold"
-                    android:layout_gravity="right"
-                    android:layout_alignTop="@+id/linearLayout15"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="您购买了：7期"
-                    android:id="@+id/textView17"
-                    android:textSize="13dp"
-                    android:textColor="#ff767676"
-                    android:textIsSelectable="false"
-                    android:textStyle="bold"
-                    android:layout_below="@+id/textView16"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
             </LinearLayout>
 
             <TextView

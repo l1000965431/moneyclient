@@ -148,20 +148,43 @@
 
                     </LinearLayout>
 
-                    <TextView
+                    <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="您已入资：12487￥"
-                        android:id="@+id/invest_project_tv_invest_price"
-                        android:textSize="13dp"
-                        android:textColor="#ff767676"
-                        android:textIsSelectable="false"
-                        android:textStyle="bold"
-                        android:layout_gravity="center"
-                        android:layout_alignTop="@+id/linearLayout15"
+                        android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true" />
+                        android:layout_alignParentEnd="true">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="您已入资：87￥"
+                            android:id="@+id/invest_project_tv_invest_price"
+                            android:textSize="13dp"
+                            android:textColor="#ff767676"
+                            android:textIsSelectable="false"
+                            android:textStyle="bold"
+                            android:layout_gravity="right"
+                            android:layout_alignTop="@+id/linearLayout15"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="您购买了：7期"
+                            android:id="@+id/textView13"
+                            android:textSize="13dp"
+                            android:textColor="#ff767676"
+                            android:textIsSelectable="false"
+                            android:textStyle="bold"
+                            android:layout_below="@+id/invest_project_tv_invest_price"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
+                    </LinearLayout>
 
                 </RelativeLayout>
 
