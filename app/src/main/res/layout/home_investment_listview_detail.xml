@@ -41,7 +41,7 @@
 
                     <LinearLayout
                         android:orientation="vertical"
-                        android:layout_width="wrap_content"
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_alignParentTop="true"
@@ -53,7 +53,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="第3期 众筹中"
+                            android:text="第3/20期 众筹中"
                             android:id="@+id/textView2"
                             android:textSize="17dp"
                             android:textColor="#ff767676"
@@ -148,44 +148,6 @@
 
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="您已入资：87￥"
-                            android:id="@+id/invest_project_tv_invest_price"
-                            android:textSize="13dp"
-                            android:textColor="#ff767676"
-                            android:textIsSelectable="false"
-                            android:textStyle="bold"
-                            android:layout_gravity="right"
-                            android:layout_alignTop="@+id/linearLayout15"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentEnd="true" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="您购买了：7期"
-                            android:id="@+id/textView13"
-                            android:textSize="13dp"
-                            android:textColor="#ff767676"
-                            android:textIsSelectable="false"
-                            android:textStyle="bold"
-                            android:layout_below="@+id/invest_project_tv_invest_price"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentEnd="true" />
-                    </LinearLayout>
-
                 </RelativeLayout>
 
                 <TextView
@@ -218,7 +180,7 @@
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="#fff6b20c">
+                android:background="#ffffffff">
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -262,7 +224,8 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
 
                     <Button
                         android:layout_width="wrap_content"
@@ -282,8 +245,114 @@
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="20dp"
+                        android:background="#ffbbbbbb">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:paddingLeft="30dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="购买数量选择："
+                                android:id="@+id/textView13"
+                                android:textSize="15dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical" />
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:id="@+id/imageView7"
+                                android:layout_gravity="center"
+                                android:src="@mipmap/icon_add"
+                                android:layout_marginLeft="30dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="000"
+                                android:id="@+id/textView18"
+                                android:textSize="17dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="20dp" />
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:id="@+id/imageView10"
+                                android:layout_gravity="center"
+                                android:src="@mipmap/icon_add"
+                                android:layout_marginLeft="20dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:paddingLeft="30dp"
+                            android:layout_marginTop="20dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="购买期数选择："
+                                android:id="@+id/textView19"
+                                android:textSize="15dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical" />
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:id="@+id/imageView11"
+                                android:layout_gravity="center"
+                                android:src="@mipmap/icon_add"
+                                android:layout_marginLeft="30dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="000"
+                                android:id="@+id/textView21"
+                                android:textSize="17dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="20dp" />
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:id="@+id/imageView12"
+                                android:layout_gravity="center"
+                                android:src="@mipmap/icon_add"
+                                android:layout_marginLeft="20dp" />
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:orientation="horizontal"
@@ -304,7 +373,8 @@
                             android:textStyle="bold"
                             android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:gravity="center_vertical" />
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="7dp" />
 
                     </LinearLayout>
 

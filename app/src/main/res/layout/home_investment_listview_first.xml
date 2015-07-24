@@ -65,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="第三期 众筹中"
+                    android:text="第3/20期 众筹中"
                     android:id="@+id/textView2"
                     android:textSize="17dp"
                     android:textColor="#ff767676"
