@@ -10,6 +10,8 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by happysky on 15-7-22.
  * 审核项目dao
@@ -53,5 +55,19 @@ public class AuditActivityDao extends BaseDao {
         });
 
         return result.compareTo(Config.SERVICE_SUCCESS) == 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ActivityVerifyModel> getAuditingActivityList(){
+        Session session = getNewSession();
+        List<ActivityVerifyModel> activityVerifyModels = session.createCriteria(ActivityVerifyModel.class)
+                .addOrder(Order.desc("id"))
+                .add(Restrictions.eq("auditorStatus", ActivityVerifyModel.STATUS_FIRST_AUDITING))
+                .list();
+
+        session.flush();
+        session.clear();
+        session.close();
+        return activityVerifyModels;
     }
 }

@@ -37,6 +37,14 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
     }
 
     /**
+     * 获得所有审核中项目
+     * @return
+     */
+    public List<ActivityVerifyModel> getAuditingActivityList(){
+        return auditActivityDao.getAuditingActivityList();
+    }
+
+    /**
      * 设置项目审核状态
      * @param id
      * @param status
