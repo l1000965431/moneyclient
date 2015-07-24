@@ -10,6 +10,7 @@ import com.money.memcach.MemCachService;
 import com.money.model.UserBorrowModel;
 import com.money.model.UserInvestorModel;
 import com.money.model.UserModel;
+import com.money.model.WalletModel;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,6 +187,10 @@ public class UserDAO extends BaseDao {
                         UserInvestorModel userInvestorModel = new UserInvestorModel();
                         userInvestorModel.setUserId( userID );
                         basedao.getNewSession().save(userInvestorModel);
+
+                        WalletModel walletModel = new WalletModel();
+                        walletModel.setUserID( userID );
+                        basedao.getNewSession().save(walletModel);
                         break;
                     default:
                         throw new Exception();

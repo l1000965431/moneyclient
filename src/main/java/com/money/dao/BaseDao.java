@@ -169,12 +169,12 @@ public class BaseDao {
         Transaction t = session.beginTransaction();
         try {
             result = session.save(bean);
-            session.flush();
-            session.clear();
+            //session.flush();
+            //session.clear();
             t.commit();
             //session.close();
         } catch (Exception e) {
-            session.clear();
+            //session.clear();
             t.rollback();
         }
 
@@ -192,11 +192,11 @@ public class BaseDao {
         Transaction t = session.beginTransaction();
         try{
             session.update(bean);
-            session.flush();
-            session.clear();
+            //session.flush();
+            //session.clear();
             t.commit();
         } catch ( Exception e ){
-            session.clear();
+            //session.clear();
             t.rollback();
         }
 
@@ -214,11 +214,11 @@ public class BaseDao {
         Transaction t = session.beginTransaction();
         try{
             session.saveOrUpdate(bean);
-            session.flush();
-            session.clear();
+            //session.flush();
+            //session.clear();
             t.commit();
         } catch ( Exception e ){
-            session.clear();
+            //session.clear();
             t.rollback();
         }
     }
@@ -234,11 +234,11 @@ public class BaseDao {
         Transaction t = session.beginTransaction();
         try {
             session.delete(bean);
-            session.flush();
-            session.clear();
+            //session.flush();
+            //session.clear();
             t.commit();
         } catch ( Exception e ){
-            session.clear();
+            //session.clear();
             t.rollback();
         }
 
@@ -296,11 +296,11 @@ public class BaseDao {
         Transaction t = session.beginTransaction();
         try{
             List list = session.createSQLQuery( sql ).list();
-            session.clear();
+            //session.clear();
             t.commit();
             return list;
         }catch ( Exception e ){
-            session.clear();
+            //session.clear();
             t.rollback();
             return null;
         }
@@ -312,12 +312,12 @@ public class BaseDao {
         Transaction t = session.beginTransaction();
         try{
             List list = session.createSQLQuery( sql ).setResultTransformer( Transformers.aliasToBean(c) ).list();
-            session.clear();
+            //session.clear();
             t.commit();
             //session.close();
             return list;
         }catch ( Exception e ){
-            session.clear();
+            //session.clear();
             t.rollback();
             //session.close();
             return null;
@@ -338,12 +338,12 @@ public class BaseDao {
         Transaction t = session.beginTransaction();
         try{
             session.createSQLQuery( sql ).executeUpdate();
-            session.clear();
+            //session.clear();
             //session.close();
             t.commit();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
-            session.clear();
+            //session.clear();
             //session.close();
             t.rollback();
             return Config.SERVICE_FAILED;
@@ -364,12 +364,12 @@ public class BaseDao {
         Transaction t = session.beginTransaction();
         try{
             int row = session.createSQLQuery( sql ).executeUpdate();
-            session.clear();
+            //session.clear();
             t.commit();
             //session.close();
             return row;
         }catch ( Exception e ){
-            session.clear();
+            //session.clear();
             t.rollback();
             //session.close();
             return Config.RETURNERROR;
@@ -390,12 +390,12 @@ public class BaseDao {
         Transaction t = session.beginTransaction();
         try{
             List list = session.getNamedQuery(sqlname ).list();
-            session.clear();
+            //session.clear();
             t.commit();
             //session.close();
             return list;
         }catch ( Exception e ){
-            session.clear();
+            //session.clear();
             t.rollback();
             //session.close();
             return null;
@@ -414,13 +414,13 @@ public class BaseDao {
             if( callbackFunction != null ){
                 callbackFunction.callback();
             }
-            session.clear();
+            //session.clear();
             t.commit();
 
             //session.close();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
-            session.clear();
+            //session.clear();
             t.rollback();
 
             //session.close();
@@ -440,12 +440,12 @@ public class BaseDao {
             if( callbackFunction != null ){
                 callbackFunction.callback(object);
             }
-            session.clear();
+            //session.clear();
             t.commit();
             //session.close();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
-            session.clear();
+            //session.clear();
             t.rollback();
             //session.close();
             return Config.SERVICE_FAILED;
@@ -464,13 +464,13 @@ public class BaseDao {
             if( callbackFunction != null ){
                 callbackFunction.callback(this);
             }
-            session.clear();
+            //session.clear();
             t.commit();
             //
             //session.close();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
-            session.clear();
+            //session.clear();
             t.rollback();
             //
             //session.close();
