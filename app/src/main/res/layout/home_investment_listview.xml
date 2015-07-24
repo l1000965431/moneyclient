@@ -22,7 +22,6 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="卡西欧游戏机"
         android:id="@+id/textView53"
-        android:layout_gravity="center|right"
         android:background="#82000000"
         android:layout_marginTop="-20dp"
         android:textColor="#ffffffff"
@@ -37,19 +36,9 @@
         android:layout_height="fill_parent"
         android:background="#ffffffff">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="这款 WESTERN BAR 是其中一款，它是以西部牛仔为主题的射击游戏；另外还有“Great Racer”以及“Space Attacker”款式."
-            android:id="@+id/textView"
-            android:textSize="13dp"
-            android:padding="8dp" />
-
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="7dp"
             android:paddingRight="7dp">
 
             <LinearLayout
@@ -60,7 +49,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:id="@+id/linearLayout17">
+                android:id="@+id/linearLayout17"
+                android:layout_marginTop="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -72,14 +62,16 @@
                     android:textColor="#ff767676"
                     android:textIsSelectable="false"
                     android:textStyle="bold"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:paddingLeft="7dp" />
 
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="visible"
-                    android:layout_marginTop="3dp">
+                    android:layout_marginTop="3dp"
+                    android:paddingLeft="7dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -97,7 +89,8 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="7dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -159,6 +152,21 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="点击查看收益概率"
+                    android:id="@+id/textView22"
+                    android:background="#ff1a9cff"
+                    android:textColor="#ffffffff"
+                    android:textSize="13dp"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_gravity="left|center"
+                    android:layout_marginTop="5dp" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -167,7 +175,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" >
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:id="@+id/linearLayout19">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -225,9 +235,9 @@
                 android:textStyle="bold"
                 android:layout_gravity="center|right"
                 android:paddingRight="7dp"
-                android:layout_below="@+id/linearLayout17"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignBottom="@+id/linearLayout17"
+                android:layout_alignRight="@+id/linearLayout19"
+                android:layout_alignEnd="@+id/linearLayout19" />
 
         </RelativeLayout>
 
