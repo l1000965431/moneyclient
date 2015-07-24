@@ -74,4 +74,24 @@ public class ServerReturnValue {
      * 验证码错误
      */
     public static final int REQISTEREDCODEERROR = 105;
+
+    /**
+     * 登录成功
+     */
+    public static final String LANDSUCCESS = "100";
+
+    /**
+     * 用户名或密码错误
+     */
+    public static final String LANDUSERERROR = "101";
+
+    /**
+     * 验证码错误
+     */
+    public static final String LANDCODEERROR = "102";
+
+    /**
+     * 登录失败
+     */
+    public static final String LANDFAILED = "103";
 }

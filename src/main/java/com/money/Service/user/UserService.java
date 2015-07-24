@@ -67,12 +67,12 @@ public class UserService extends ServiceBase implements ServiceInterface {
         if (userIsExist) {
             String tokenData = userDAO.landing(username, password);
             if( tokenData == null ){
-                return Config.SERVICE_FAILED;
+                return ServerReturnValue.LANDFAILED;
             }else{
                 return tokenData;
             }
         } else
-            return Config.SERVICE_FAILED;
+            return ServerReturnValue.LANDUSERERROR;
     }
 
     //用户token登陆,0登录失败，1已登录，2登录成功,3使用用户名密码登录或token不正确

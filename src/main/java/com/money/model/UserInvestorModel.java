@@ -27,6 +27,7 @@ public class UserInvestorModel implements Serializable {
     //真实姓名
     private String realName;
 
+    private int Wallet;
 
     public String getUserId() {
         return userId;
