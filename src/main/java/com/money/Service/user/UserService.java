@@ -63,7 +63,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
 
     //使用用户名密码登录
     public String userLand(String username, String password) {
-        boolean userIsExist = userDAO.userIsExist(username);
+        boolean userIsExist = userDAO.checkPassWord(username, password);
         if (userIsExist) {
             String tokenData = userDAO.landing(username, password);
             if( tokenData == null ){

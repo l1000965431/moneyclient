@@ -256,22 +256,16 @@ public class UserDAO extends BaseDao {
 
     //登录，查询DB
     public String landing(String userName, String passWord) {
-        //根据用户名查找数据库中密码并解密,比对密码是否正确
-        boolean passWordIsRight = checkPassWord(userName, passWord);
-        //登陆成功返回true，否则false
-        if (passWordIsRight) {
-            String tokenData = Token.create(userName);
-            Long orderTime = System.currentTimeMillis();
-            String time = Long.toString(orderTime);
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("token", tokenData);
-            map.put("time", time);
-            //存入缓存
-            MemCachService.MemCachSetMap(userName, Config.FAILUER_TIME, map);
-            return tokenData;
-        } else {
-            return null;
-        }
+        String tokenData = Token.create(userName);
+        Long orderTime = System.currentTimeMillis();
+        String time = Long.toString(orderTime);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("token", tokenData);
+        map.put("time", time);
+        //存入缓存
+        MemCachService.MemCachSetMap(userName, Config.FAILUER_TIME, map);
+        return tokenData;
+
     }
 
     //查询用户名是否存在
