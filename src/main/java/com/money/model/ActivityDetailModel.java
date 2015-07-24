@@ -18,45 +18,30 @@ import java.util.Set;
 public class ActivityDetailModel implements Serializable {
 
     //上线项目开始
-    public final static int ONLINEACTIVITY_START = 1;
+    public final static int ONLINE_ACTIVITY_START = 1;
 
     //上线项目完成
-    public final static int ONLINEACTIVITY_COMPLETE = 2;
+    public final static int ONLINE_ACTIVITY_COMPLETE = 2;
 
     //上线项目结算
-    public final static int ONLINEACTIVITY_SETTLEMENT = 3;
+    public final static int ONLINE_ACTIVITY_SETTLEMENT = 3;
 
     //上线项目错误
-    public final static int ONLINEACTIVITY_ERROR = 4;
+    public final static int ONLINE_ACTIVITY_ERROR = 4;
 
     //上线项目错误
-    public final static int ONLINEACTIVITY_FAILED = 5;
-
-    /**
-     * 项目ID
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    public final static int ONLINE_ACTIVITY_FAILED = 5;
 
     /**
      *分期的项目ID
      */
-    //@Id
-    String ActivityID;
-
-    public ActivityGroupModel getActivityGroupModel() {
-        return activityGroupModel;
-    }
-
-    public void setActivityGroupModel(ActivityGroupModel activityGroupModel) {
-        this.activityGroupModel = activityGroupModel;
-    }
+    @Id
+    String activityStageId;
 
     /**
      *  项目组ID
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, optional = false)
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "groupId", referencedColumnName = "id")
     ActivityGroupModel activityGroupModel;
 
@@ -68,7 +53,7 @@ public class ActivityDetailModel implements Serializable {
 
     /**
      * 项目状态
-     * {@link #ONLINEACTIVITY_START}
+     * {@link #ONLINE_ACTIVITY_START}
      */
     int status;
 
@@ -90,26 +75,26 @@ public class ActivityDetailModel implements Serializable {
     /**
      * 父项目ID
      */
-    String FatherActivityID;
+    String fatherActivityID;
 
     /**
      * 发布时间
      * @return
      */
-    Date ActivityStartTime;
+    Date activityStartTime;
 
     /**
      * 结束时间
      * @return
      */
-    Date ActivityEndTime;
+    Date activityEndTime;
 
-    public Long getId() {
-        return id;
+    public ActivityGroupModel getActivityGroupModel() {
+        return activityGroupModel;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setActivityGroupModel(ActivityGroupModel activityGroupModel) {
+        this.activityGroupModel = activityGroupModel;
     }
 
     public Set<BRInvestEarningModel> getBrInvestEarningModels() {
@@ -153,34 +138,34 @@ public class ActivityDetailModel implements Serializable {
     }
 
     public String getFatherActivityID() {
-        return FatherActivityID;
+        return fatherActivityID;
     }
 
     public void setFatherActivityID(String fatherActivityID) {
-        FatherActivityID = fatherActivityID;
+        fatherActivityID = fatherActivityID;
     }
 
-    public String getActivityID() {
-        return ActivityID;
+    public String getActivityStageId() {
+        return activityStageId;
     }
 
-    public void setActivityID(String activityID) {
-        ActivityID = activityID;
+    public void setActivityStageId(String activityID) {
+        activityStageId = activityID;
     }
 
     public Date getActivityStartTime() {
-        return ActivityStartTime;
+        return activityStartTime;
     }
 
     public void setActivityStartTime(Date activityStartTime) {
-        ActivityStartTime = activityStartTime;
+        activityStartTime = activityStartTime;
     }
 
     public Date getActivityEndTime() {
-        return ActivityEndTime;
+        return activityEndTime;
     }
 
     public void setActivityEndTime(Date activityEndTime) {
-        ActivityEndTime = activityEndTime;
+        activityEndTime = activityEndTime;
     }
 }

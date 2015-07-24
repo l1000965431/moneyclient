@@ -1,6 +1,9 @@
 package com.money.dao.auditActivityDAO;
 
+import com.money.config.Config;
 import com.money.dao.BaseDao;
+import com.money.dao.TransactionSessionCallback;
+import com.money.model.ActivityVerifyCompleteModel;
 import com.money.model.ActivityVerifyModel;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -39,5 +42,16 @@ public class AuditActivityDao extends BaseDao {
         session.clear();
         session.close();
         return null;
+    }
+
+    public boolean setActivityPass(final ActivityVerifyModel verifyModel, final ActivityVerifyCompleteModel completeModel){
+        String result = excuteTransactionByCallback(new TransactionSessionCallback() {
+            public void callback(Session session) throws Exception {
+                session.delete(verifyModel);
+                session.save(completeModel);
+            }
+        });
+
+        return result.compareTo(Config.SERVICE_SUCCESS) == 0;
     }
 }

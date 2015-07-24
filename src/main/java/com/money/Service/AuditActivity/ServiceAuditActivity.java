@@ -6,6 +6,7 @@ import com.money.dao.BaseDao;
 import com.money.dao.TransactionCallback;
 import com.money.dao.auditActivityDAO.AuditActivityDao;
 import com.money.model.ActivityDetailModel;
+import com.money.model.ActivityVerifyCompleteModel;
 import com.money.model.ActivityVerifyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,14 +42,27 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
      * @param status
      * @return
      */
-    public boolean setActivityAuditorResult(Long id, int status){
-        ActivityVerifyModel ActivityVerifyModel = (ActivityVerifyModel) auditActivityDao.load(ActivityVerifyModel.class, id);
-        if( ActivityVerifyModel == null ){
+    public boolean setActivityAuditorResult(Long id, int status, String param){
+        ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel) auditActivityDao.load(ActivityVerifyModel.class, id);
+        if( activityVerifyModel == null ){
             return false;
         }
 
-        ActivityVerifyModel.setAuditorStatus(status);
-        auditActivityDao.update(ActivityVerifyModel);
+        switch (status){
+            case ActivityVerifyModel.STATUS_NEED_REVAMP:
+                setActivityNeedRevamp(activityVerifyModel, param);
+                break;
+            case ActivityVerifyModel.STATUS_AUDITOR_NOT_PASS:
+                setActivityNotPass(activityVerifyModel);
+                break;
+            case ActivityVerifyModel.STATUS_AUDITOR_PASS:
+                return setActivityPass(activityVerifyModel);
+            default:
+                activityVerifyModel.setAuditorStatus(status);
+                auditActivityDao.update(activityVerifyModel);
+                break;
+        }
+
         return true;
     }
 
@@ -72,9 +86,14 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
         auditActivityDao.update(activityVerifyModel);
     }
 
-    public void setActivityPass(ActivityVerifyModel activityVerifyModel){
+    /**
+     * 设置项目通过
+     * @param activityVerifyModel
+     */
+    public boolean setActivityPass(ActivityVerifyModel activityVerifyModel){
         activityVerifyModel.setAuditorStatus(ActivityVerifyModel.STATUS_AUDITOR_PASS);
-        auditActivityDao.update(activityVerifyModel);
+        ActivityVerifyCompleteModel completeModel = verifyComplete(activityVerifyModel);
+        return auditActivityDao.setActivityPass(activityVerifyModel, completeModel);
     }
 
     public boolean setActivityToGroup(){
@@ -108,23 +127,24 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
     }
 
 
-    private ActivityDetailModel verifyToDetail(ActivityVerifyModel activity){
-        ActivityDetailModel activityDetailModel = new ActivityDetailModel();
+    private ActivityVerifyCompleteModel verifyComplete(ActivityVerifyModel activity){
+        ActivityVerifyCompleteModel completeModel = new ActivityVerifyCompleteModel();
 
-/*        activityDetailModel.setActivityIntroduce(activity.getActivityIntroduce());
-        activityDetailModel.setAddress(activity.getAddress());
-        activityDetailModel.setCategory(activity.getCategory());
-        activityDetailModel.setImageUrl(activity.getImageUrl());
-        activityDetailModel.setMarketAnalysis(activity.getMarketAnalysis());
-        activityDetailModel.setName(activity.getName());*/
-        activityDetailModel.setRaiseDay(activity.getRaiseDay());
-/*        activityDetailModel.setSummary(activity.getSummary());
-        activityDetailModel.setTags(activity.getTags());*/
-        activityDetailModel.setTargetFund(activity.getTargetFund());
-/*        activityDetailModel.setTeamIntroduce(activity.getTeamIntroduce());
-        activityDetailModel.setTeamSize(activity.getTeamSize());
-        activityDetailModel.setVideoUrl(activity.getVideoUrl());*/
+        completeModel.setActivityID(String.valueOf(activity.getId()));
+        completeModel.setActivityIntroduce(activity.getActivityIntroduce());
+        completeModel.setAddress(activity.getAddress());
+        completeModel.setCategory(activity.getCategory());
+        completeModel.setImageUrl(activity.getImageUrl());
+        completeModel.setMarketAnalysis(activity.getMarketAnalysis());
+        completeModel.setName(activity.getName());
+        completeModel.setRaiseDay(activity.getRaiseDay());
+        completeModel.setSummary(activity.getSummary());
+        completeModel.setTags(activity.getTags());
+        completeModel.setTargetFund(activity.getTargetFund());
+        completeModel.setTeamIntroduce(activity.getTeamIntroduce());
+        completeModel.setTeamSize(activity.getTeamSize());
+        completeModel.setVideoUrl(activity.getVideoUrl());
 
-        return activityDetailModel;
+        return completeModel;
     }
 }

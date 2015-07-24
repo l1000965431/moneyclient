@@ -44,10 +44,11 @@ public class ActivityController extends ControllerBase implements IController {
             return "";
         } else {
             try {
-                ActivityDetailModel activityModel = activityService.getActivityDetails(1);
-                String Json = GsonUntil.JavaClassToJson(activityModel);
-                return Json;
+                List<ActivityDetailModel> activityModels = activityService.getAllActivityDetail();
+                String json = GsonUntil.getGson().toJson(activityModels);
+                return json;
             } catch (Exception e) {
+                e.printStackTrace();
                 return "";
             }
         }

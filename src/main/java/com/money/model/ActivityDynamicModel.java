@@ -15,130 +15,116 @@ import java.io.Serializable;
 public class ActivityDynamicModel implements Serializable {
 
     //上线项目开始
-    public final static int ONLINEACTIVITY_START = 1;
+    public final static int ONLINE_ACTIVITY_START = 1;
 
     //上线项目完成
-    public final static int ONLINEACTIVITY_COMPLETE = 2;
+    public final static int ONLINE_ACTIVITY_COMPLETE = 2;
 
     //上线项目结算
-    public final static int ONLINEACTIVITY_SETTLEMENT = 3;
+    public final static int ONLINE_ACTIVITY_SETTLEMENT = 3;
 
     //上线项目错误
-    public final static int ONLINEACTIVITY_ERROR = 4;
+    public final static int ONLINE_ACTIVITY_ERROR = 4;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int activityprivateid;
-
-    /**
-     * 活动ID
-     */
-    int activityID;
+    String activityStageId;
 
     /**
      * 项目总金额
      */
-    int activitytotalamount;
+    int activityTotalAmount;
 
     /**
      * 项目状态
      */
-    int activitystate;
+    int activityState;
 
     /**
      * 父项目ID
      */
-    int activityparentid;
+    int activityParentId;
 
     /**
      * 项目组ID
     */
-    int activitygroup;
+    int activityGroup;
 
     /**
      * 项目概率参数
      */
-    String activityprobabilityparameters;
+    String activityProbabilityParameters;
 
     /**
      * 项目当前金额
      */
-    int activitycurlines;
+    int activityCurLines;
 
     /**
      * 项目当前金额的人数
      */
-    String activitycurlinespeoples;
+    String activityCurLinesPeoples;
 
-    public int getActivitycurlines() {
-        return activitycurlines;
+    public int getActivityCurLines() {
+        return activityCurLines;
     }
 
-    public void setActivitycurlines(int activitycurlines) {
-        this.activitycurlines = activitycurlines;
+    public void setActivityCurLines(int activityCurLines) {
+        this.activityCurLines = activityCurLines;
     }
 
-    public int getActivityprivateid() {
-        return activityprivateid;
+    public String getActivityStageId() {
+        return activityStageId;
     }
 
-    public void setActivityprivateid(int activityprivateid) {
-        this.activityprivateid = activityprivateid;
+    public void setActivityStageId(String activityStageId) {
+        this.activityStageId = activityStageId;
     }
 
-    public int getActivityID() {
-        return activityID;
+    public int getActivityTotalAmount() {
+        return activityTotalAmount;
     }
 
-    public void setActivityID(int activityID) {
-        this.activityID = activityID;
+    public void setActivityTotalAmount(int activityTotalAmount) {
+        this.activityTotalAmount = activityTotalAmount;
     }
 
-    public int getActivitytotalamount() {
-        return activitytotalamount;
+    public int getActivityState() {
+        return activityState;
     }
 
-    public void setActivitytotalamount(int activitytotalamount) {
-        this.activitytotalamount = activitytotalamount;
+    public void setActivityState(int activityState) {
+        this.activityState = activityState;
     }
 
-    public int getActivitystate() {
-        return activitystate;
+    public int getActivityParentId() {
+        return activityParentId;
     }
 
-    public void setActivitystate(int activitystate) {
-        this.activitystate = activitystate;
+    public void setActivityParentId(int activityParentId) {
+        this.activityParentId = activityParentId;
     }
 
-    public int getActivityparentid() {
-        return activityparentid;
+    public int getActivityGroup() {
+        return activityGroup;
     }
 
-    public void setActivityparentid(int activityparentid) {
-        this.activityparentid = activityparentid;
+    public void setActivityGroup(int activityGroup) {
+        this.activityGroup = activityGroup;
     }
 
-    public int getActivitygroup() {
-        return activitygroup;
+    public String getActivityProbabilityParameters() {
+        return activityProbabilityParameters;
     }
 
-    public void setActivitygroup(int activitygroup) {
-        this.activitygroup = activitygroup;
+    public void setActivityProbabilityParameters(String activityProbabilityParameters) {
+        this.activityProbabilityParameters = activityProbabilityParameters;
     }
 
-    public String getActivityprobabilityparameters() {
-        return activityprobabilityparameters;
+    public String getActivityCurLinesPeoples() {
+        return activityCurLinesPeoples;
     }
 
-    public void setActivityprobabilityparameters(String activityprobabilityparameters) {
-        this.activityprobabilityparameters = activityprobabilityparameters;
-    }
-
-    public String getActivitycurlinespeoples() {
-        return activitycurlinespeoples;
-    }
-
-    public void setActivitycurlinespeoples(String activitycurlinespeoples) {
-        this.activitycurlinespeoples = activitycurlinespeoples;
+    public void setActivityCurLinesPeoples(String activityCurLinesPeoples) {
+        this.activityCurLinesPeoples = activityCurLinesPeoples;
     }
 }

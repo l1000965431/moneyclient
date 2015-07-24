@@ -22,8 +22,8 @@ public class BRInvestEarningModel implements Serializable {
     /**
      *  项目组ID
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, optional = false)
-    @JoinColumn( name = "activityId",referencedColumnName = "id")
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn( name = "activityId",referencedColumnName = "activityStageId")
     ActivityDetailModel activityDetailModel;
 
     /**

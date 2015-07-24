@@ -490,13 +490,11 @@ public class BaseDao {
             if( transactionSessionCallback != null ){
                 transactionSessionCallback.callback(session);
             }
-            session.clear();
             t.commit();
             //
             //session.close();
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
-            session.clear();
             t.rollback();
             //
             //session.close();

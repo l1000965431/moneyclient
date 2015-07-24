@@ -46,6 +46,12 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
         return activityDynamicModel;
     }
 
+    @SuppressWarnings("unchecked")
+    public List<ActivityDetailModel> getAllActivityDetail(){
+        List<ActivityDetailModel> activityDetailModels = activityDao.getAllList(ActivityDetailModel.class);
+        return activityDetailModels;
+    }
+
     public List<ActivityDetailModel> getOrderDetailsList( int minpage,int maxpage ){
         try{
             return null;
@@ -76,7 +82,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
             return ServerReturnValue.ACTIVITYIDERROR;
         }
 
-        if( getActivityState( activityID ) != ActivityDynamicModel.ONLINEACTIVITY_START ){
+        if( getActivityState( activityID ) != ActivityDynamicModel.ONLINE_ACTIVITY_START){
             return ServerReturnValue.ACTIVITYSTATEERROR;
         }
 
@@ -96,7 +102,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     public int getActivityState( int activityID ){
         ActivityDynamicModel activityModel = activityDao.getActivityDynamic(activityID);
 
-        return activityModel.getActivitystate();
+        return activityModel.getActivityState();
     }
 
     /**
@@ -148,8 +154,8 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      * @return
      */
     public void SetActivityCurLines( ActivityDynamicModel activitydynamicmodel,int addlines ){
-        int activitycurlines = activitydynamicmodel.getActivitystate();
-        activitydynamicmodel.setActivitycurlines(activitycurlines + addlines);
+        int activitycurlines = activitydynamicmodel.getActivityState();
+        activitydynamicmodel.setActivityCurLines(activitycurlines + addlines);
     }
 
 
@@ -169,11 +175,11 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      * @return
      */
     private boolean IsActivityComplete( ActivityDynamicModel activitydynamicmodel ){
-        int curactivitylines = activitydynamicmodel.getActivitycurlines();
-        int totalactivitylines = activitydynamicmodel.getActivitytotalamount();
+        int curactivitylines = activitydynamicmodel.getActivityCurLines();
+        int totalactivitylines = activitydynamicmodel.getActivityTotalAmount();
 
         if( curactivitylines >= totalactivitylines ){
-            activitydynamicmodel.setActivitystate( ActivityDynamicModel.ONLINEACTIVITY_COMPLETE );
+            activitydynamicmodel.setActivityState(ActivityDynamicModel.ONLINE_ACTIVITY_COMPLETE);
             return true;
         }else{
             return false;
@@ -190,7 +196,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
             public void callback(BaseDao basedao) throws Exception {
 
                 ActivityDetailModel activityDetailModel = activityDao.getActivityDetails( activityID );
-                activityDetailModel.setStatus( ActivityDetailModel.ONLINEACTIVITY_FAILED );
+                activityDetailModel.setStatus( ActivityDetailModel.ONLINE_ACTIVITY_FAILED);
                 activityDao.update( activityDetailModel );
 
                 ActivityDynamicModel activitydynamicmodel = activityDao.getActivityDynamic(activityID);
@@ -223,7 +229,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      */
     public int GetActivityLinesCurPeoples( ActivityDynamicModel activitydynamicmodel,int Lines ){
         try{
-            String activitycurlines = activitydynamicmodel.getActivitycurlinespeoples();
+            String activitycurlines = activitydynamicmodel.getActivityCurLinesPeoples();
             Map<String,Integer> mappeoples = GsonUntil.jsonToJavaClass( activitycurlines,new TypeToken<Map<String,Integer>>(){}.getType() );
             int peoples = mappeoples.get( Integer.toString( Lines ) );
             return peoples;
@@ -314,9 +320,9 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      */
     public String AddActivityLines( ActivityDynamicModel activitydynamicmodel, int addLines ){
         try{
-            int curLines = activitydynamicmodel.getActivitycurlines();
+            int curLines = activitydynamicmodel.getActivityCurLines();
             curLines += addLines;
-            activitydynamicmodel.setActivitycurlines(curLines);
+            activitydynamicmodel.setActivityCurLines(curLines);
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
             return Config.SERVICE_FAILED;
@@ -347,7 +353,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      */
     public String AddActivityCurLinesPeoples( ActivityDynamicModel activitydynamicmodel,int addlines ){
         try {
-            String activitycurlines = activitydynamicmodel.getActivitycurlinespeoples();
+            String activitycurlines = activitydynamicmodel.getActivityCurLinesPeoples();
 
             Map<String,Integer> mappeoples = GsonUntil.jsonToJavaClass( activitycurlines,new TypeToken<Map<String,Integer>>(){}.getType() );
 
@@ -356,7 +362,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
             mappeoples.put( Integer.toString( addlines ),linespeople );
 
             String newlinespeoples = GsonUntil.JavaClassToJson(mappeoples);
-            activitydynamicmodel.setActivitycurlinespeoples( newlinespeoples );
+            activitydynamicmodel.setActivityCurLinesPeoples(newlinespeoples);
             return Config.SERVICE_SUCCESS;
         }catch (Exception e){
             return Config.SERVICE_FAILED;
@@ -380,11 +386,11 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      */
     public String SetActivityCompelete( ActivityDetailModel activityDetailModel,ActivityDynamicModel activitydynamicmodel ){
         try{
-            int curactivitylines = activitydynamicmodel.getActivitycurlines();
-            int totalactivitylines = activitydynamicmodel.getActivitytotalamount();
+            int curactivitylines = activitydynamicmodel.getActivityCurLines();
+            int totalactivitylines = activitydynamicmodel.getActivityTotalAmount();
 
             if( curactivitylines >= totalactivitylines ){
-                activityDetailModel.setStatus( ActivityDetailModel.ONLINEACTIVITY_COMPLETE );
+                activityDetailModel.setStatus( ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE);
             }
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
