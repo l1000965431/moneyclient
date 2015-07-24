@@ -299,7 +299,7 @@
                                 android:layout_height="30dp"
                                 android:id="@+id/imageView10"
                                 android:layout_gravity="center"
-                                android:src="@mipmap/icon_add"
+                                android:src="@mipmap/icon_less"
                                 android:layout_marginLeft="20dp" />
 
                         </LinearLayout>
@@ -349,7 +349,7 @@
                                 android:layout_height="30dp"
                                 android:id="@+id/imageView12"
                                 android:layout_gravity="center"
-                                android:src="@mipmap/icon_add"
+                                android:src="@mipmap/icon_less"
                                 android:layout_marginLeft="20dp" />
                         </LinearLayout>
                     </LinearLayout>
