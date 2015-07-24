@@ -26,7 +26,7 @@ public class UserInvestorModel implements Serializable {
     private String location;
     //真实姓名
     private String realName;
-
+    //用户钱包余额
     private int Wallet;
 
     public String getUserId() {
@@ -83,5 +83,13 @@ public class UserInvestorModel implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getWallet() {
+        return Wallet;
+    }
+
+    public void setWallet(int wallet) {
+        Wallet = wallet;
     }
 }
