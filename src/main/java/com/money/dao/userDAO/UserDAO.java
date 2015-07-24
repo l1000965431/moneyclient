@@ -3,6 +3,7 @@ package com.money.dao.userDAO;
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
 import com.money.Service.user.Token;
 import com.money.config.Config;
+import com.money.config.ServerReturnValue;
 import com.money.dao.BaseDao;
 import com.money.dao.TransactionCallback;
 import com.money.memcach.MemCachService;
@@ -165,7 +166,7 @@ public class UserDAO extends BaseDao {
     }
 
     //注册
-    public boolean registered(final String userID, final String passWord, final int userType) {
+    public int registered(final String userID, final String passWord, final int userType) {
        if (this.excuteTransactionByCallback(new TransactionCallback() {
             public void callback(BaseDao basedao) throws Exception {
                 UserModel userModel = new UserModel();
@@ -192,9 +193,9 @@ public class UserDAO extends BaseDao {
                 }
             }
         })==Config.SERVICE_SUCCESS){
-           return true;
+           return ServerReturnValue.REQISTEREDSUCCESS;
        }else {
-           return false;
+           return ServerReturnValue.REQISTEREDFAILED;
        }
     }
 

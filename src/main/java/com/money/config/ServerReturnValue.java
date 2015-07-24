@@ -43,4 +43,35 @@ public class ServerReturnValue {
      * 项目状态错误
      */
     public static final int ACTIVITYSTATEERROR = 5;
+
+    /**
+     * 注册成功
+     */
+    public static final int REQISTEREDSUCCESS = 100;
+
+    /**
+     * 注册失败
+     */
+    public static final int REQISTEREDFAILED = 101;
+
+    /**
+     * 用户名重复
+     */
+    public static final int REQISTEREDUSERNAMEREPEAT = 102;
+
+    /**
+     * 用户名密码格式错误
+     */
+    public static final int REQISTEREDUSERNAMEERROR = 103;
+
+    /**
+     * 注册关闭
+     */
+    public static final int REQISTEREDUSERNAMESHUTDOWN = 104;
+
+
+    /**
+     * 验证码错误
+     */
+    public static final int REQISTEREDCODEERROR = 105;
 }

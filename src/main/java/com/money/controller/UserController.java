@@ -73,7 +73,7 @@ public class UserController extends ControllerBase implements IController
 
     @RequestMapping("register")
     @ResponseBody
-    public  boolean register(HttpServletRequest request,
+    public  int register(HttpServletRequest request,
                              HttpServletResponse response )
     {
         String userName = request.getParameter( "userId" );

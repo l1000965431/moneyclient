@@ -3,6 +3,7 @@ package com.money.Service.user;
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
 import com.money.config.Config;
+import com.money.config.ServerReturnValue;
 import com.money.dao.userDAO.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,22 +19,22 @@ public class UserService extends ServiceBase implements ServiceInterface {
     UserDAO userDAO;
 
     //用户注册，判断验证码是否正确，正确则完成用户注册
-    public boolean userRegister(String username, String code, String password, int userType) {
+    public int userRegister(String username, String code, String password, int userType) {
 
         //用户名 密码合法性
         if( !userDAO.userIsRight( username ) || !userDAO.passwordIsRight( password ) ){
-            return false;
+            return ServerReturnValue.REQISTEREDUSERNAMEERROR;
         }
 
         if( userDAO.checkUserName( username ) ){
-            return false;
+            return ServerReturnValue.REQISTEREDUSERNAMEREPEAT;
         }
 
         //判断手机验证码是否输入正确
         if (userDAO.checkTeleCode(username, code)) {
             return userDAO.registered(username, password, userType);
         } else {
-            return false;
+            return ServerReturnValue.REQISTEREDCODEERROR;
         }
     }
 
