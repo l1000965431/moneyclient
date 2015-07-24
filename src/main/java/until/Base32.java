@@ -93,7 +93,7 @@ public class Base32 {
             base32.append(base32Chars.charAt(digit));
         }
 
-        // begin fix
+/*        // begin fix
         // added by jonelo@jonelo.de, Feb 13, 2005
         // according to RFC 3548, the encoding must also contain paddings in some cases
         switch (bytes.length) {
@@ -110,7 +110,7 @@ public class Base32 {
                 base32.append("=");
                 break;
         }
-        // end fix
+        // end fix*/
 
         return base32.toString();
     }

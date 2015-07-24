@@ -21,7 +21,7 @@ public class Config {
 
     public static final String MESSAFE_SECRETKEY = "2f3BFhlGVSh6I3LJDIIL1D1t5YVDlW";
     //缓存失效时间，单位为秒
-    public static final int FAILUER_TIME=5*60;
+    public static final int FAILUER_TIME=1800;
 
     public static final int MODIFYINFO_SUCCESS =1;
 
