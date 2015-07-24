@@ -10,5 +10,5 @@
 
     <!-- 项目进度条底色 -->
     <color name="project_progress_bar_background">#ffffdb90</color>
-    <color name="project_progress_bar_progress">#fffeb008</color>
+    <color name="project_progress_bar_progress">#1aff25</color>
 </resources>
