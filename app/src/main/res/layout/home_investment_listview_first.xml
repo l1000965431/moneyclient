@@ -3,10 +3,10 @@
     android:layout_width="fill_parent" android:layout_height="wrap_content"
     android:background="#ff1e1e1e"
     android:orientation="vertical"
-    android:paddingTop="17dp"
-    android:paddingBottom="17dp"
-    android:paddingLeft="7dp"
-    android:paddingRight="7dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:paddingLeft="3dp"
+    android:paddingRight="3dp"
     android:id="@+id/home_investment_list_view_root">
 
     <ImageView
@@ -65,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="第三期 众筹中"
+                    android:text="第3/20期 众筹中"
                     android:id="@+id/textView2"
                     android:textSize="17dp"
                     android:textColor="#ff767676"

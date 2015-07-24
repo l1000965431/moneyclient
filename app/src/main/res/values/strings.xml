@@ -38,6 +38,8 @@
 
     <!-- 投资界面 -->
     <string name="invest_project_invested_price">您已入资:%.2f￥</string>
+    <string name="invest_project_invested_quantity">购买数量:X</string>
+    <string name="invest_project_invested_installments">您购买了:X期</string>
     <string name="invest_project_no_invested_price">您尚未入资</string>
     <string name="invest_project_select_invest_price">点击此处选择入资金额:</string>
     <string name="invest_project_project_progress">筹款进度:%d%%</string>
