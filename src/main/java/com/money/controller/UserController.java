@@ -35,6 +35,7 @@ public class UserController extends ControllerBase implements IController
             response.setHeader( "LoginResult", ServerReturnValue.LANDSUCCESS );
         }else{
             response.setHeader( "LoginResult",LoginResult );
+            return null;
         }
 
         return LoginResult;
