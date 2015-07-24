@@ -38,18 +38,15 @@ public class ActivityDetailModel implements Serializable {
     @Id
     String activityStageId;
 
-    /**
-     *  项目组ID
-     */
-    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "groupId", referencedColumnName = "id")
-    ActivityGroupModel activityGroupModel;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = ActivityDynamicModel.class)
+    private ActivityDynamicModel dynamicModel;
 
     /**
-     * 项目中大R投资与收益信息
+     * 父项目
      */
-    @OneToMany(mappedBy = "activityDetailModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    Set<BRInvestEarningModel> brInvestEarningModels = new HashSet<BRInvestEarningModel>();
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "parentActivityId", referencedColumnName = "activityId")
+    ActivityVerifyCompleteModel activityVerifyCompleteModel;
 
     /**
      * 项目状态
@@ -73,11 +70,6 @@ public class ActivityDetailModel implements Serializable {
     String activityLinesPeoples;
 
     /**
-     * 父项目ID
-     */
-    String fatherActivityID;
-
-    /**
      * 发布时间
      * @return
      */
@@ -89,21 +81,6 @@ public class ActivityDetailModel implements Serializable {
      */
     Date activityEndTime;
 
-    public ActivityGroupModel getActivityGroupModel() {
-        return activityGroupModel;
-    }
-
-    public void setActivityGroupModel(ActivityGroupModel activityGroupModel) {
-        this.activityGroupModel = activityGroupModel;
-    }
-
-    public Set<BRInvestEarningModel> getBrInvestEarningModels() {
-        return brInvestEarningModels;
-    }
-
-    public void setBrInvestEarningModels(Set<BRInvestEarningModel> brInvestEarningModels) {
-        this.brInvestEarningModels = brInvestEarningModels;
-    }
 
     public int getStatus() {
         return status;
@@ -137,10 +114,6 @@ public class ActivityDetailModel implements Serializable {
         this.activityLinesPeoples = activitylinespeoples;
     }
 
-    public String getFatherActivityID() {
-        return fatherActivityID;
-    }
-
     public void setFatherActivityID(String fatherActivityID) {
         fatherActivityID = fatherActivityID;
     }
@@ -167,5 +140,21 @@ public class ActivityDetailModel implements Serializable {
 
     public void setActivityEndTime(Date activityEndTime) {
         activityEndTime = activityEndTime;
+    }
+
+    public ActivityDynamicModel getDynamicModel() {
+        return dynamicModel;
+    }
+
+    public void setDynamicModel(ActivityDynamicModel dynamicModel) {
+        this.dynamicModel = dynamicModel;
+    }
+
+    public ActivityVerifyCompleteModel getActivityVerifyCompleteModel() {
+        return activityVerifyCompleteModel;
+    }
+
+    public void setActivityVerifyCompleteModel(ActivityVerifyCompleteModel activityVerifyCompleteModel) {
+        this.activityVerifyCompleteModel = activityVerifyCompleteModel;
     }
 }

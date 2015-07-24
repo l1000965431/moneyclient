@@ -2,6 +2,8 @@ package com.money.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by liumin on 15/7/23.
@@ -12,14 +14,17 @@ import java.util.Date;
 @Table(name = "activityVerifyComplete")
 public class ActivityVerifyCompleteModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     /**
      * 项目ID
      */
-    String ActivityID;
+    @Id
+    String activityId;
+
+    /**
+     *  项目分期列表
+     */
+    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Set<ActivityDetailModel> activityDetailModels = new HashSet<ActivityDetailModel>();
 
     /**
      * 项目状态
@@ -104,16 +109,7 @@ public class ActivityVerifyCompleteModel {
     /**
      * 各金额总人数
      */
-    String activitylinespeoples;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    String activityLinesPeoples;
 
     public int getStatus() {
         return status;
@@ -243,19 +239,27 @@ public class ActivityVerifyCompleteModel {
         this.teamSize = teamSize;
     }
 
-    public String getActivitylinespeoples() {
-        return activitylinespeoples;
+    public String getActivityLinesPeoples() {
+        return activityLinesPeoples;
     }
 
-    public void setActivitylinespeoples(String activitylinespeoples) {
-        this.activitylinespeoples = activitylinespeoples;
+    public void setActivityLinesPeoples(String activityLinesPeoples) {
+        this.activityLinesPeoples = activityLinesPeoples;
     }
 
-    public String getActivityID() {
-        return ActivityID;
+    public String getActivityId() {
+        return activityId;
     }
 
-    public void setActivityID(String activityID) {
-        ActivityID = activityID;
+    public void setActivityId(String activityID) {
+        activityID = activityID;
+    }
+
+    public Set<ActivityDetailModel> getActivityDetailModels() {
+        return activityDetailModels;
+    }
+
+    public void setActivityDetailModels(Set<ActivityDetailModel> activityDetailModels) {
+        this.activityDetailModels = activityDetailModels;
     }
 }

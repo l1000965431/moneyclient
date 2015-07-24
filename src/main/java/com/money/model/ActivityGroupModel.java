@@ -30,7 +30,7 @@ public class ActivityGroupModel implements Serializable{
      *  项目组中的所有项目
      */
     @OneToMany(mappedBy = "activityGroupModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    Set<ActivityDetailModel> activityDetailModels = new HashSet<ActivityDetailModel>();
+    Set<ActivityDynamicModel> activityDynamicModes = new HashSet<ActivityDynamicModel>();
 
     /**
      *  项目组中小R投资层次
@@ -161,12 +161,12 @@ public class ActivityGroupModel implements Serializable{
         this.srInvestTicketModels = srInvestTicketModels;
     }
 
-    public Set<ActivityDetailModel> getActivityDetailModels() {
-        return activityDetailModels;
+    public Set<ActivityDynamicModel> getActivityDynamicModes() {
+        return activityDynamicModes;
     }
 
-    public void setActivityDetailModels(Set<ActivityDetailModel> activityDetailModels) {
-        this.activityDetailModels = activityDetailModels;
+    public void setActivityDynamicModes(Set<ActivityDynamicModel> activityDetailModels) {
+        this.activityDynamicModes = activityDetailModels;
     }
 
     public Long getId() {
