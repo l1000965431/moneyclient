@@ -19,6 +19,16 @@ public class UserService extends ServiceBase implements ServiceInterface {
 
     //用户注册，判断验证码是否正确，正确则完成用户注册
     public boolean userRegister(String username, String code, String password, int userType) {
+
+        //用户名 密码合法性
+        if( !userDAO.userIsRight( username ) || !userDAO.passwordIsRight( password ) ){
+            return false;
+        }
+
+        if( userDAO.checkUserName( username ) ){
+            return false;
+        }
+
         //判断手机验证码是否输入正确
         if (userDAO.checkTeleCode(username, code)) {
             return userDAO.registered(username, password, userType);
@@ -31,12 +41,12 @@ public class UserService extends ServiceBase implements ServiceInterface {
     //已注册返回2,发送验证码成功返回1,失败返回0,密码不合法返回3
     public int submitTeleNum(String username, String password) {
         //验证用户名是否已注册
-        if (userDAO.checkUserName(username) == true)
+        if (userDAO.checkUserName(username))
             return Config.USER_IS_REGISTER;
         else {
             //验证密码是否合法
             boolean passwordIsRight = userDAO.passwordIsRight(password);
-            if (passwordIsRight == true) {
+            if (passwordIsRight) {
                 //发送手机验证码，并验证是否发送成功
                 return userDAO.teleCodeIsSend(username);
             } else
@@ -46,36 +56,40 @@ public class UserService extends ServiceBase implements ServiceInterface {
     }
 
     //退出登录
-    public boolean quitLand(String username) {
-        return userDAO.quitTokenLand(username);
+    public boolean quitLand(String userId) {
+        return userDAO.quitTokenLand(userId);
     }
 
     //使用用户名密码登录
     public String userLand(String username, String password) {
         boolean userIsExist = userDAO.userIsExist(username);
-        if (userIsExist == true) {
+        if (userIsExist) {
             String tokenData = userDAO.landing(username, password);
-            return tokenData;
+            if( tokenData == null ){
+                return Config.SERVICE_FAILED;
+            }else{
+                return tokenData;
+            }
         } else
             return Config.SERVICE_FAILED;
     }
 
     //用户token登陆,0登录失败，1已登录，2登录成功,3使用用户名密码登录或token不正确
-    public int tokenLand(String username, String token) {
+    public int tokenLand(String userID, String token) {
 
         //查看缓存中是否含有token,且客户端参数是否与token一样
-        boolean tokenExist = userDAO.isTokenExist(username, token);
+        boolean tokenExist = userDAO.isTokenExist(userID, token);
         //若存在，查询用户登录状态，否则,应该使用用户名密码登录，返回3
-        if (tokenExist == true) {
+        if (tokenExist) {
             //比对缓存token上次更新时间，判断用户是否已登录
             Long orderTime = System.currentTimeMillis();
             String time = Long.toString(orderTime);
             Long timeLong = Long.parseLong(time);
-            boolean landFlag = userDAO.tokenTime(username, timeLong);
-            if (landFlag == true) {
+            boolean landFlag = userDAO.tokenTime(userID, timeLong);
+            if (landFlag) {
                 return Config.ALREADLAND;
             } else {
-                return userDAO.tokenLand(username, time);
+                return userDAO.tokenLand(userID, time);
             }
         } else {
             return Config.USEPASSWORD;
@@ -88,13 +102,13 @@ public class UserService extends ServiceBase implements ServiceInterface {
         //查看缓存中是否含有token,且客户端参数是否与token一样
         boolean tokenExist = userDAO.isTokenExist(username, token);
 
-        if (tokenExist == true) {
+        if (tokenExist) {
             //比对缓存token上次更新时间，判断用户是否已登录
             Long orderTime = System.currentTimeMillis();
             String time = Long.toString(orderTime);
             Long timeLong = Long.parseLong(time);
             boolean landFlag = userDAO.tokenTime(username, timeLong);
-            if (landFlag == true) {
+            if (landFlag) {
                 //根据username,查找用户类型
                 int userType = userDAO.getUserType(username);
                 if (userType == Config.INVESTOR)
@@ -114,13 +128,13 @@ public class UserService extends ServiceBase implements ServiceInterface {
         //查看缓存中是否含有token,且客户端参数是否与token一样
         boolean tokenExist = userDAO.isTokenExist(userName, token);
 
-        if (tokenExist == true) {
+        if (tokenExist) {
             //比对缓存token上次更新时间，判断用户是否已登录
             Long orderTime = System.currentTimeMillis();
             String time = Long.toString(orderTime);
             Long timeLong = Long.parseLong(time);
             boolean landFlag = userDAO.tokenTime(userName, timeLong);
-            if (landFlag == true) {
+            if (landFlag) {
                 //根据username,查找用户类型
                 int userType = userDAO.getUserType(userName);
                 if (userType == Config.INVESTOR)
@@ -144,7 +158,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
             boolean passwordIsRight = userDAO.passwordIsRight(newPassword);
             //若发送验证码成功
             int sendSuccess = userDAO.teleCodeIsSend(userName);
-            if (passwordIsRight == true) {
+            if (passwordIsRight) {
                 return sendSuccess;
             } else {
                 return Config.NEWPASSWORD_FAILED;
@@ -155,9 +169,9 @@ public class UserService extends ServiceBase implements ServiceInterface {
     }
 
     //比对验证码，修改密码
-    public boolean changPassword(String userName, String code, String newPassWord) {
+    public boolean changPassword(String userName, String code, String newPassWord,String oldPassWord) {
         if (userDAO.checkTeleCode(userName, code) == true) {
-            boolean changeOK = userDAO.changePassword(userName, newPassWord);
+            boolean changeOK = userDAO.changePassword(userName, newPassWord,oldPassWord);
             return changeOK;
         } else
             return false;

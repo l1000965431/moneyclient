@@ -25,7 +25,7 @@ public class UserController extends ControllerBase implements IController
     public String Login( HttpServletRequest request,
                               HttpServletResponse response )
     {
-        String UserName = request.getParameter( "username" );
+        String UserName = request.getParameter( "userId" );
         String PassWord = request.getParameter( "password" );
         return userService.userLand(UserName,PassWord);
     }
@@ -36,7 +36,8 @@ public class UserController extends ControllerBase implements IController
                               HttpServletResponse response )
     {
         String token = request.getParameter( "token" );
-        return userService.tokenLand("",token);
+        String userId = request.getParameter( "userId" );
+        return userService.tokenLand(userId,token);
     }
 
     @RequestMapping("perfectInfo")
@@ -66,8 +67,8 @@ public class UserController extends ControllerBase implements IController
     public boolean quitLogin( HttpServletRequest request,
                                 HttpServletResponse response )
     {
-        String token = request.getParameter( "token" );
-        return userService.quitLand(token);
+        String userID = request.getParameter( "userId" );
+        return userService.quitLand(userID);
     }
 
     @RequestMapping("register")
@@ -75,10 +76,10 @@ public class UserController extends ControllerBase implements IController
     public  boolean register(HttpServletRequest request,
                              HttpServletResponse response )
     {
-        String userName = request.getParameter( "userName" );
+        String userName = request.getParameter( "userId" );
         String code = request.getParameter( "code" );
         String password = request.getParameter( "password" );
-        int userType = Integer.valueOf(request.getParameter( "userType" ));
+        int userType = Integer.valueOf(request.getParameter("userType"));
         return  userService.userRegister( userName, code,password,userType );
     }
 
@@ -87,7 +88,7 @@ public class UserController extends ControllerBase implements IController
     public  int submitTeleNum(HttpServletRequest request,
                              HttpServletResponse response )
     {
-        String userName = request.getParameter( "userName" );
+        String userName = request.getParameter( "userId" );
         return  userService.submitTeleNum(userName,"");
     }
 
@@ -96,7 +97,7 @@ public class UserController extends ControllerBase implements IController
     public int sendPasswordCode(HttpServletRequest request,
                                   HttpServletResponse response )
     {
-        String userName = request.getParameter( "userName" );
+        String userName = request.getParameter( "userId" );
         String password = request.getParameter( "password" );
         return  userService.sendPasswordCode(userName, password,"");
     }
@@ -106,9 +107,10 @@ public class UserController extends ControllerBase implements IController
     public  boolean sendPasswochangPasswordrdCode(HttpServletRequest request,
                                      HttpServletResponse response )
     {
-        String userName = request.getParameter( "userName" );
+        String userName = request.getParameter( "userId" );
         String code = request.getParameter( "code" );
         String newPassword = request.getParameter( "newPassword" );
-        return  userService.changPassword(userName,code,newPassword);
+        String oldPassword = request.getParameter( "oldPassword" );
+        return  userService.changPassword(userName,code,newPassword,oldPassword);
     }
 }

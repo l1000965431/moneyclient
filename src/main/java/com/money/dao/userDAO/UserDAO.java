@@ -13,6 +13,7 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import until.Base32;
 import until.GsonUntil;
 import until.MoneyServerMd5Utils;
 import until.MoneySeverRandom;
@@ -49,7 +50,7 @@ public class UserDAO extends BaseDao {
         String user = map.get("user");
         boolean userIsRight = userIsRight(user);
 
-        if ((userIsRight == true) && (infoFlag == true)) {
+        if ((userIsRight) && (infoFlag)) {
             //写数据库信息
             writeInfo(userName, map);
             return Config.MODIFYINFO_SUCCESS;
@@ -78,7 +79,7 @@ public class UserDAO extends BaseDao {
         String user = map.get("user");
         boolean userIsRight = userIsRight(user);
 
-        if ((userIsRight == true) && (infoFlag == true)) {
+        if ((userIsRight) && (infoFlag)) {
             //写数据库信息
             writeBorrowInfo(userName, map);
             return Config.MODIFYINFO_SUCCESS;
@@ -106,7 +107,7 @@ public class UserDAO extends BaseDao {
         String user = map.get("user");
         boolean userIsRight = userIsRight(user);
 
-        if ((userIsRight == true) && (infoFlag == true)) {
+        if ((userIsRight) && (infoFlag)) {
             //写数据库信息
             writeInfo(userName, map);
             return Config.MODIFYINFO_SUCCESS;
@@ -134,7 +135,7 @@ public class UserDAO extends BaseDao {
         String user = map.get("user");
         boolean userIsRight = userIsRight(user);
 
-        if ((userIsRight == true) && (infoFlag == true)) {
+        if ((userIsRight) && (infoFlag)) {
             //写数据库信息
             writeBorrowInfo(userName, map);
             return Config.MODIFYINFO_SUCCESS;
@@ -143,15 +144,24 @@ public class UserDAO extends BaseDao {
     }
 
     //修改密码
-    public boolean changePassword(String userName, String newPassWord) {
-        UserModel userModel = (UserModel) this.load(UserModel.class, userName);
-        userModel.setPassword(newPassWord);
-        this.save(userModel);
+    public boolean changePassword(String userID, String newPassWord,String oldPassWord) {
+        UserModel userModel = this.getUSerModel(userID);
 
-        if (userModel.getPassword() == newPassWord)
-            return true;
-        else
+        if( userModel == null ){
             return false;
+        }
+
+        String CurPassWord = userModel.getPassword();
+
+        String decodePassword = new String(Base32.decode( CurPassWord ));
+
+        if( !oldPassWord.equals( decodePassword ) ){
+            return  false;
+        }
+
+        userModel.setPassword(newPassWord);
+        this.update(userModel);
+        return true;
     }
 
     //注册
@@ -161,8 +171,7 @@ public class UserDAO extends BaseDao {
                 UserModel userModel = new UserModel();
                 //用户注册，存入数据库
                 userModel.setUserId(userID);
-                String passWordHash = MoneyServerMd5Utils.hash(passWord);
-                userModel.setPassword(passWordHash);
+                userModel.setPassword(passWord);
                 userModel.setUserType(userType);
                 basedao.getNewSession().save(userModel);
                 switch (userType) {
@@ -250,7 +259,7 @@ public class UserDAO extends BaseDao {
         //根据用户名查找数据库中密码并解密,比对密码是否正确
         boolean passWordIsRight = checkPassWord(userName, passWord);
         //登陆成功返回true，否则false
-        if (passWordIsRight == true) {
+        if (passWordIsRight) {
             String tokenData = Token.create(userName);
             Long orderTime = System.currentTimeMillis();
             String time = Long.toString(orderTime);
@@ -275,11 +284,13 @@ public class UserDAO extends BaseDao {
     }
 
     //查询数据库，比对用户密码是否正确
-    public boolean checkPassWord(String userName, String passWord) {
-        UserModel userModel = (UserModel) this.load(UserModel.class, userName);
+    public boolean checkPassWord(String userID, String passWord) {
+        UserModel userModel = this.getUSerModel(userID);
         String passWordSql = userModel.getPassword();
-        String decodePassWord = MoneyServerMd5Utils.hash(MoneyServerMd5Utils.hash(passWordSql));
-        if (passWord == decodePassWord)
+
+        String decodePassWord = new String(Base32.decode(passWordSql));
+
+        if (passWord.equals(decodePassWord) )
             return true;
         else
             return false;
@@ -309,12 +320,15 @@ public class UserDAO extends BaseDao {
     }
 
     //查询缓存中是否有token字符串,并验证token字符串是否与客户端传来的相等
-    public boolean isTokenExist(String userName, String token) {
-        boolean tokenIsExist = MemCachService.KeyIsExists(userName);
+    public boolean isTokenExist(String userID, String token) {
+        boolean tokenIsExist = MemCachService.KeyIsExists(userID);
+
+        Map map = MemCachService.GetMemCachMap( userID );
+
         //若存在
-        if (tokenIsExist == true) {
-            String memToken = MemCachService.GetMemCachMapByMapKey(userName, "token");
-            if (token == memToken)
+        if (tokenIsExist) {
+            String memToken = MemCachService.GetMemCachMapByMapKey(userID, "token");
+            if (token.equals(memToken))
                 return true;
             else
                 return false;
@@ -323,9 +337,9 @@ public class UserDAO extends BaseDao {
     }
 
     //退出登录
-    public boolean quitTokenLand(String userName) {
+    public boolean quitTokenLand(String userId) {
         //清楚缓存中token
-        MemCachService.RemoveValue(userName);
+        MemCachService.RemoveValue(userId);
         return true;
     }
 
@@ -374,48 +388,13 @@ public class UserDAO extends BaseDao {
     }
 
     //查看用户昵称是否合法
-    private boolean userIsRight(String user) {
-        byte[] temp = user.getBytes();
-        boolean result = true;
-        int length;
-        if (temp[0] > 47 && temp[0] < 58) {     //判断用户名第一个字符不能为数字
-            result = false;
-        } else {
-            length = temp.length;
-            if (length > 5 && length < 20) {    //判断用户名的长度
-                for (int i = 0; i < temp.length; i++) {
-                    if (!((temp[i] > 47 && temp[i] < 58) || (temp[i] > 64 && temp[i] < 91)
-                            || (temp[i] > 96 && temp[i] < 123))) { //判断用户名是否在合法字符内
-                        result = false;
-                        break;                              //终止循环退出
-                    }
-                }
-            } else {
-                result = false;
-            }
-        }
-
-        return result;
+    public boolean userIsRight(String user) {
+       return true;
     }
 
     //检查登录密码是否合法
     public boolean passwordIsRight(String password) {
-        byte[] temp = password.getBytes();
-        boolean result = true;
-        int length = temp.length;
-        if (length > 6 && length < 16) {    //判断用户名的长度
-            for (int i = 0; i < temp.length; i++) {
-                if (!(temp[i] > 33 && temp[i] < 126)) { //判断用户名是否在合法字符内
-                    result = false;
-                    break;                              //终止循环退出
-                }
-            }
-        } else {
-            result = false;
-        }
-
-
-        return result;
+        return true;
     }
 
     UserModel getUSerModel( final String UserID ){

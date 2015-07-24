@@ -1,5 +1,7 @@
 package com.money.model;
 
+import until.Base32;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -37,7 +39,8 @@ public class UserModel implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        String encodePassword = Base32.encode(password.getBytes());
+        this.password = encodePassword;
     }
 
     public int getUserType() {

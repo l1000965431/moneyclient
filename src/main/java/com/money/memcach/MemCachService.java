@@ -4,6 +4,7 @@ import com.money.config.Config;
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,9 +50,16 @@ public class MemCachService {
      */
     public static  String  MemCachgGet( String Key ){
         ShardedJedis shardedJedis = shardedPool.getResource();
-        String value = shardedJedis.get( Key );
-        shardedPool.returnResourceObject( shardedJedis );
-        return value;
+
+        try{
+            String value = shardedJedis.get( Key );
+            return value;
+        }catch ( Exception e ){
+            return "";
+        }
+        finally {
+            shardedPool.returnResourceObject( shardedJedis );
+        }
     }
 
     /**
@@ -105,7 +113,10 @@ public class MemCachService {
      */
     public static void RemoveValue( String Key ){
         ShardedJedis shardedJedis = shardedPool.getResource();
-        shardedJedis.del( Key );
+
+        if( shardedJedis.exists( Key ) ){
+            shardedJedis.del( Key );
+        }
         shardedPool.returnResourceObject( shardedJedis );
     }
 
@@ -139,7 +150,7 @@ public class MemCachService {
 
     public static String MemCachSetMap( String Key,int time,Map<String,String> map ){
         ShardedJedis shardedJedis = shardedPool.getResource();
-        shardedJedis.hmset( Key,map );
+        String a = shardedJedis.hmset( Key,map );
         shardedJedis.expire( Key,time );
         shardedPool.returnResourceObject( shardedJedis );
         return Config.SERVICE_SUCCESS;
@@ -163,9 +174,17 @@ public class MemCachService {
 
     public static String GetMemCachMapByMapKey( String Key,String MapKey ){
         ShardedJedis shardedJedis = shardedPool.getResource();
-        String map = shardedJedis.hget(Key, MapKey );
+        String map = shardedJedis.hget(Key, MapKey);
         shardedPool.returnResourceObject( shardedJedis );
         return map;
     }
+
+    public static List GetMemCachValuesByMapKey( String Key,String ... MapKey ){
+        ShardedJedis shardedJedis = shardedPool.getResource();
+        List list = shardedJedis.hmget(Key, MapKey);
+
+        return list;
+    }
+
 
 }
