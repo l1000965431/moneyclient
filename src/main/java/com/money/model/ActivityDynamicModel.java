@@ -2,6 +2,8 @@ package com.money.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 项目动态
@@ -28,6 +30,22 @@ public class ActivityDynamicModel implements Serializable {
 
     @Id
     String activityStageId;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = ActivityDetailModel.class)
+    ActivityDetailModel activityDetailModel;
+
+    /**
+     *  项目组ID
+     */
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "groupId", referencedColumnName = "id")
+    ActivityGroupModel activityGroupModel;
+
+    /**
+     * 项目中大R投资与收益信息
+     */
+    @OneToMany(mappedBy = "activityDynamicModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Set<BRInvestEarningModel> brInvestEarningModels = new HashSet<BRInvestEarningModel>();
 
     /**
      * 项目总金额
@@ -63,6 +81,22 @@ public class ActivityDynamicModel implements Serializable {
      * 项目当前金额的人数
      */
     String activityCurLinesPeoples;
+
+    public ActivityGroupModel getActivityGroupModel() {
+        return activityGroupModel;
+    }
+
+    public void setActivityGroupModel(ActivityGroupModel activityGroupModel) {
+        this.activityGroupModel = activityGroupModel;
+    }
+
+    public Set<BRInvestEarningModel> getBrInvestEarningModels() {
+        return brInvestEarningModels;
+    }
+
+    public void setBrInvestEarningModels(Set<BRInvestEarningModel> brInvestEarningModels) {
+        this.brInvestEarningModels = brInvestEarningModels;
+    }
 
     public int getActivityCurLines() {
         return activityCurLines;

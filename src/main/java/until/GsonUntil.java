@@ -27,7 +27,6 @@ public class GsonUntil {
                                          JsonSerializationContext context) {
                 JsonObject o=new JsonObject();
                 o.addProperty("activityStageId", src.getActivityStageId());
-                o.addProperty("fatherActivityId", src.getFatherActivityID());
                 return o;
             }
         }).create();

@@ -130,7 +130,7 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
     private ActivityVerifyCompleteModel verifyComplete(ActivityVerifyModel activity){
         ActivityVerifyCompleteModel completeModel = new ActivityVerifyCompleteModel();
 
-        completeModel.setActivityID(String.valueOf(activity.getId()));
+        completeModel.setActivityId(String.valueOf(activity.getId()));
         completeModel.setActivityIntroduce(activity.getActivityIntroduce());
         completeModel.setAddress(activity.getAddress());
         completeModel.setCategory(activity.getCategory());

@@ -2,6 +2,7 @@ package com.money.controller;
 
 import com.money.Service.GroupActivity.ServiceGroupActivity;
 import com.money.model.ActivityDetailModel;
+import com.money.model.ActivityDynamicModel;
 import com.money.model.ActivityGroupModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,9 +33,9 @@ public class ActivityBeginController extends ControllerBase implements IControll
 
         //前端发过来的分组项目
 
-        Set<ActivityDetailModel> activityDetailModels = null;
+        Set<ActivityDynamicModel> activityDynamicModels = null;
 
-        ActivityGroupModel activityGroupModel = serviceGroupActivity.createActivityGroup("", activityDetailModels);
+        ActivityGroupModel activityGroupModel = serviceGroupActivity.createActivityGroup("", activityDynamicModels);
 
         serviceGroupActivity.generateGroupTickets( activityGroupModel );
 

@@ -23,8 +23,8 @@ public class BRInvestEarningModel implements Serializable {
      *  项目组ID
      */
     @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn( name = "activityId",referencedColumnName = "activityStageId")
-    ActivityDetailModel activityDetailModel;
+    @JoinColumn( name = "activityId", referencedColumnName = "activityStageId")
+    ActivityDynamicModel activityDynamicModel;
 
     /**
      *  投资金额
@@ -54,12 +54,12 @@ public class BRInvestEarningModel implements Serializable {
         this.id = id;
     }
 
-    public ActivityDetailModel getActivityDetailModel() {
-        return activityDetailModel;
+    public ActivityDynamicModel getActivityDynamicModel() {
+        return activityDynamicModel;
     }
 
-    public void setActivityDetailModel(ActivityDetailModel activityDetailModel) {
-        this.activityDetailModel = activityDetailModel;
+    public void setActivityDynamicModel(ActivityDynamicModel activityDetailModel) {
+        this.activityDynamicModel = activityDetailModel;
     }
 
     public int getInvestPrice() {

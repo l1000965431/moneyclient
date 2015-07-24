@@ -9,7 +9,6 @@ import com.money.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -25,9 +24,9 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
      * @param name
      * @return
      */
-    public ActivityGroupModel createActivityGroup(String name, Set<ActivityDetailModel> activityDetailModels){
+    public ActivityGroupModel createActivityGroup(String name, Set<ActivityDynamicModel> activityDynamicModels){
         ActivityGroupModel activityGroup = new ActivityGroupModel();
-        activityGroup.setActivityDetailModels(activityDetailModels);
+        activityGroup.setActivityDynamicModes(activityDynamicModels);
         setGroupDefaultValue(activityGroup);
         generaDAO.save(activityGroup);
         return activityGroup;
