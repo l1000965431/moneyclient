@@ -34,18 +34,24 @@ public class ActivityDynamicModel implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = ActivityDetailModel.class)
     ActivityDetailModel activityDetailModel;
 
-    /**
-     *  项目组ID
-     */
-    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "groupId", referencedColumnName = "id")
-    ActivityGroupModel activityGroupModel;
+//    /**
+//     *  项目组ID
+//     */
+//    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "groupId", referencedColumnName = "id")
+//    ActivityGroupModel activityGroupModel;
 
     /**
-     * 项目中大R投资与收益信息
+     * 父项目
      */
-    @OneToMany(mappedBy = "activityDynamicModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    Set<BRInvestEarningModel> brInvestEarningModels = new HashSet<BRInvestEarningModel>();
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "parentActivityId", referencedColumnName = "activityId")
+    ActivityVerifyCompleteModel activityVerifyCompleteModel;
+
+    /**
+     *  组号
+     */
+    int groupId;
 
     /**
      * 项目总金额
@@ -68,11 +74,6 @@ public class ActivityDynamicModel implements Serializable {
     int activityGroup;
 
     /**
-     * 项目概率参数
-     */
-    String activityProbabilityParameters;
-
-    /**
      * 项目当前金额
      */
     int activityCurLines;
@@ -80,23 +81,23 @@ public class ActivityDynamicModel implements Serializable {
     /**
      * 项目当前金额的人数
      */
-    String activityCurLinesPeoples;
+    int activityCurLinesPeoples;
 
-    public ActivityGroupModel getActivityGroupModel() {
-        return activityGroupModel;
+    public ActivityDetailModel getActivityDetailModel() {
+        return activityDetailModel;
     }
 
-    public void setActivityGroupModel(ActivityGroupModel activityGroupModel) {
-        this.activityGroupModel = activityGroupModel;
+    public void setActivityDetailModel(ActivityDetailModel activityDetailModel) {
+        this.activityDetailModel = activityDetailModel;
     }
 
-    public Set<BRInvestEarningModel> getBrInvestEarningModels() {
-        return brInvestEarningModels;
-    }
-
-    public void setBrInvestEarningModels(Set<BRInvestEarningModel> brInvestEarningModels) {
-        this.brInvestEarningModels = brInvestEarningModels;
-    }
+//    public ActivityGroupModel getActivityGroupModel() {
+//        return activityGroupModel;
+//    }
+//
+//    public void setActivityGroupModel(ActivityGroupModel activityGroupModel) {
+//        this.activityGroupModel = activityGroupModel;
+//    }
 
     public int getActivityCurLines() {
         return activityCurLines;
@@ -146,19 +147,27 @@ public class ActivityDynamicModel implements Serializable {
         this.activityGroup = activityGroup;
     }
 
-    public String getActivityProbabilityParameters() {
-        return activityProbabilityParameters;
-    }
-
-    public void setActivityProbabilityParameters(String activityProbabilityParameters) {
-        this.activityProbabilityParameters = activityProbabilityParameters;
-    }
-
-    public String getActivityCurLinesPeoples() {
+    public int getActivityCurLinesPeoples() {
         return activityCurLinesPeoples;
     }
 
-    public void setActivityCurLinesPeoples(String activityCurLinesPeoples) {
+    public void setActivityCurLinesPeoples(int activityCurLinesPeoples) {
         this.activityCurLinesPeoples = activityCurLinesPeoples;
+    }
+
+    public ActivityVerifyCompleteModel getActivityVerifyCompleteModel() {
+        return activityVerifyCompleteModel;
+    }
+
+    public void setActivityVerifyCompleteModel(ActivityVerifyCompleteModel activityVerifyCompleteModel) {
+        this.activityVerifyCompleteModel = activityVerifyCompleteModel;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 }

@@ -11,8 +11,8 @@ import java.util.Set;
  * <p>Date: 15-7-8
  * <p>Version: 1.0
  */
-@Entity
-@Table(name = "activitygroup")
+//@Entity
+//@Table(name = "activitygroup")
 public class ActivityGroupModel implements Serializable{
     /**
      *  项目组ID

@@ -47,9 +47,8 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     }
 
     @SuppressWarnings("unchecked")
-    public List<ActivityDetailModel> getAllActivityDetail(){
-        List<ActivityDetailModel> activityDetailModels = activityDao.getAllList(ActivityDetailModel.class);
-        return activityDetailModels;
+    public List<ActivityDynamicModel> getAllActivityDetail(){
+        return activityDao.getActivityListActivity(0, 1000);
     }
 
     public List<ActivityDetailModel> getOrderDetailsList( int minpage,int maxpage ){
@@ -229,8 +228,8 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      */
     public int GetActivityLinesCurPeoples( ActivityDynamicModel activitydynamicmodel,int Lines ){
         try{
-            String activitycurlines = activitydynamicmodel.getActivityCurLinesPeoples();
-            Map<String,Integer> mappeoples = GsonUntil.jsonToJavaClass( activitycurlines,new TypeToken<Map<String,Integer>>(){}.getType() );
+            int activitycurlines = activitydynamicmodel.getActivityCurLinesPeoples();
+            Map<String,Integer> mappeoples = GsonUntil.jsonToJavaClass( "",new TypeToken<Map<String,Integer>>(){}.getType() );
             int peoples = mappeoples.get( Integer.toString( Lines ) );
             return peoples;
         }catch ( Exception e ){
@@ -353,16 +352,16 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      */
     public String AddActivityCurLinesPeoples( ActivityDynamicModel activitydynamicmodel,int addlines ){
         try {
-            String activitycurlines = activitydynamicmodel.getActivityCurLinesPeoples();
+            int activitycurlines = activitydynamicmodel.getActivityCurLinesPeoples();
 
-            Map<String,Integer> mappeoples = GsonUntil.jsonToJavaClass( activitycurlines,new TypeToken<Map<String,Integer>>(){}.getType() );
+            Map<String,Integer> mappeoples = GsonUntil.jsonToJavaClass( "",new TypeToken<Map<String,Integer>>(){}.getType() );
 
             int linespeople = mappeoples.get( Integer.toString( addlines ) );
             linespeople += 1;
             mappeoples.put( Integer.toString( addlines ),linespeople );
 
             String newlinespeoples = GsonUntil.JavaClassToJson(mappeoples);
-            activitydynamicmodel.setActivityCurLinesPeoples(newlinespeoples);
+            activitydynamicmodel.setActivityCurLinesPeoples(0);
             return Config.SERVICE_SUCCESS;
         }catch (Exception e){
             return Config.SERVICE_FAILED;

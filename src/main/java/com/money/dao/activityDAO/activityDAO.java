@@ -6,6 +6,8 @@ import com.money.memcach.MemCachService;
 import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityDynamicModel;
 import com.money.model.OrderModel;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import until.GsonUntil;
 
@@ -99,5 +101,26 @@ public class activityDAO extends BaseDao {
             return null;
         }*/
         return null;
+    }
+
+    /**
+     * 得到app需要显示的项目列表
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public List<ActivityDynamicModel> getActivityListActivity(int page, int pageNum){
+        String hql = "from " + ActivityDynamicModel.class.getName();
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
+        List<ActivityDynamicModel> list =  session.createQuery(hql)
+                .setFirstResult(pageNum * page)
+                .setMaxResults(pageNum)
+                .list();
+        for(ActivityDynamicModel activityDynamicModel : list){
+            activityDynamicModel.getActivityDetailModel().getActivityVerifyCompleteModel().getActivityId();
+        }
+        t.commit();
+
+        return list;
     }
 }

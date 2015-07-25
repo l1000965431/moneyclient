@@ -49,10 +49,26 @@ public class ActivityDetailModel implements Serializable {
     ActivityVerifyCompleteModel activityVerifyCompleteModel;
 
     /**
+     * 项目组中小R收益层次
+     */
+    @OneToMany(mappedBy = "activityDetailModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Set<SREarningModel> srEarningModels = new HashSet<SREarningModel>();
+
+    /**
      * 项目状态
      * {@link #ONLINE_ACTIVITY_START}
      */
     int status;
+
+    /**
+     *  项目期数
+     */
+    int stageIndex;
+
+    /**
+     *  组号
+     */
+    int groupId;
 
     /**
      * 筹资金额
@@ -156,5 +172,29 @@ public class ActivityDetailModel implements Serializable {
 
     public void setActivityVerifyCompleteModel(ActivityVerifyCompleteModel activityVerifyCompleteModel) {
         this.activityVerifyCompleteModel = activityVerifyCompleteModel;
+    }
+
+    public Set<SREarningModel> getSrEarningModels() {
+        return srEarningModels;
+    }
+
+    public void setSrEarningModels(Set<SREarningModel> srEarningModels) {
+        this.srEarningModels = srEarningModels;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    public int getStageIndex() {
+        return stageIndex;
+    }
+
+    public void setStageIndex(int stageIndex) {
+        this.stageIndex = stageIndex;
     }
 }

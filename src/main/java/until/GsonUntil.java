@@ -2,6 +2,7 @@ package until;
 
 import com.google.gson.*;
 import com.money.model.ActivityDetailModel;
+import com.money.model.ActivityDynamicModel;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
@@ -22,11 +23,14 @@ public class GsonUntil {
     private static Gson gson = null;
 
     GsonUntil(){
-        gson = new GsonBuilder().registerTypeAdapter(ActivityDetailModel.class, new JsonSerializer<ActivityDetailModel>() {
-            public JsonElement serialize(ActivityDetailModel src, Type typeOfSrc,
+        gson = new GsonBuilder().registerTypeAdapter(ActivityDynamicModel.class, new JsonSerializer<ActivityDynamicModel>() {
+            public JsonElement serialize(ActivityDynamicModel src, Type typeOfSrc,
                                          JsonSerializationContext context) {
                 JsonObject o=new JsonObject();
                 o.addProperty("activityStageId", src.getActivityStageId());
+                o.addProperty("activityId", src.getActivityDetailModel().getActivityVerifyCompleteModel().getActivityId());
+                o.addProperty("activityName", src.getActivityDetailModel().getActivityVerifyCompleteModel().getName());
+                o.addProperty("activityIntroduce", src.getActivityDetailModel().getActivityVerifyCompleteModel().getActivityIntroduce());
                 return o;
             }
         }).create();

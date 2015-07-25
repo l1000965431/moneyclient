@@ -21,10 +21,41 @@ public class ActivityVerifyCompleteModel {
     String activityId;
 
     /**
-     *  项目分期列表
+     *  项目分期静态列表
      */
     @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<ActivityDetailModel> activityDetailModels = new HashSet<ActivityDetailModel>();
+
+    /**
+     *  项目分期动态列表
+     */
+    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Set<ActivityDynamicModel> activityDynamicModels = new HashSet<ActivityDynamicModel>();
+
+    /**
+     *  项目需要筹集的原始金额
+     */
+    int originalFund;
+
+    /**
+     *  小R投资占比
+     */
+    float srInvestProportion;
+
+    /**
+     *  大R投资占比
+     */
+    float brInvestProportion;
+
+    /**
+     * 筹资金额
+     */
+    int targetFund;
+
+    /**
+     * 已筹资金
+     */
+    int curFund;
 
     /**
      * 项目状态
@@ -80,16 +111,6 @@ public class ActivityVerifyCompleteModel {
      * 标签
      */
     String tags;
-
-    /**
-     * 筹资金额
-     */
-    int targetFund;
-
-    /**
-     * 已筹资金
-     */
-    int curFund;
 
     /**
      * 开始筹款时间
@@ -261,5 +282,37 @@ public class ActivityVerifyCompleteModel {
 
     public void setActivityDetailModels(Set<ActivityDetailModel> activityDetailModels) {
         this.activityDetailModels = activityDetailModels;
+    }
+
+    public Set<ActivityDynamicModel> getActivityDynamicModels() {
+        return activityDynamicModels;
+    }
+
+    public void setActivityDynamicModels(Set<ActivityDynamicModel> activityDynamicModels) {
+        this.activityDynamicModels = activityDynamicModels;
+    }
+
+    public int getOriginalFund() {
+        return originalFund;
+    }
+
+    public void setOriginalFund(int originalFund) {
+        this.originalFund = originalFund;
+    }
+
+    public float getSrInvestProportion() {
+        return srInvestProportion;
+    }
+
+    public void setSrInvestProportion(float srInvestProportion) {
+        this.srInvestProportion = srInvestProportion;
+    }
+
+    public float getBrInvestProportion() {
+        return brInvestProportion;
+    }
+
+    public void setBrInvestProportion(float brInvestProportion) {
+        this.brInvestProportion = brInvestProportion;
     }
 }

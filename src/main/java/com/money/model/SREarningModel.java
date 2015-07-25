@@ -23,8 +23,8 @@ public class SREarningModel implements Serializable {
      *  项目组ID
      */
     @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn( name = "groupId",referencedColumnName = "id")
-    ActivityGroupModel activityGroupModel;
+    @JoinColumn( name = "activityStageId",referencedColumnName = "activityStageId")
+    ActivityDetailModel activityDetailModel;
 
     /**
      *  收益金额
@@ -49,14 +49,6 @@ public class SREarningModel implements Serializable {
         this.id = id;
     }
 
-    public ActivityGroupModel getActivityGroupModel() {
-        return activityGroupModel;
-    }
-
-    public void setActivityGroupModel(ActivityGroupModel activityGroupModel) {
-        this.activityGroupModel = activityGroupModel;
-    }
-
     public int getNum() {
         return num;
     }
@@ -79,5 +71,13 @@ public class SREarningModel implements Serializable {
 
     public void setBaseProbability(float baseProbability) {
         this.baseProbability = baseProbability;
+    }
+
+    public ActivityDetailModel getActivityDetailModel() {
+        return activityDetailModel;
+    }
+
+    public void setActivityDetailModel(ActivityDetailModel activityDetailModel) {
+        this.activityDetailModel = activityDetailModel;
     }
 }
