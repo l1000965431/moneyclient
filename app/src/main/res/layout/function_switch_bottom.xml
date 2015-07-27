@@ -102,47 +102,6 @@
             android:layout_height="wrap_content"
             android:background="#ff0487de"
             android:layout_weight="1"
-            android:id="@+id/function_switch_bottom_button_news" >
-
-            <ImageView
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:id="@+id/function_switch_bottom_button_news_red"
-                android:src="@mipmap/icon_point"
-                android:layout_gravity="center|right"
-                android:tint="#ffff4b51"
-                android:scaleType="fitXY"
-                android:layout_marginRight="22dp"
-                android:layout_marginBottom="-10dp" />
-
-            <ImageView
-                android:layout_width="27dp"
-                android:layout_height="27dp"
-                android:id="@+id/function_switch_bottom_button_news_imageView"
-                android:src="@mipmap/button_news"
-                android:layout_gravity="center"
-                android:tint="@color/home_bottom_button_unselected"
-                android:scaleType="fitXY" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="资讯"
-                android:id="@+id/function_switch_bottom_button_news_textView"
-                android:layout_gravity="center"
-                android:textSize="10dp"
-                android:textColor="@color/home_bottom_button_unselected"
-                android:paddingBottom="3dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#ff0681d3"
-            android:layout_weight="1"
             android:id="@+id/function_switch_bottom_button_me" >
 
             <ImageView
