@@ -266,5 +266,55 @@
             android:background="#fffeb008"
             android:layout_marginTop="-7dp" />
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#ffbbbbbb"
+            android:padding="5dp"
+            android:visibility="visible">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="未完成的投资"
+                android:id="@+id/textView82"
+                android:layout_gravity="center"
+                android:textSize="13dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="#ffffffff"
+                android:layout_weight="1"
+                android:layout_marginLeft="15dp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="取消"
+                android:id="@+id/textView30"
+                android:layout_gravity="center"
+                android:textSize="15dp"
+                android:background="@drawable/bg_rounded10blue"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="#ffe3404b"
+                android:layout_weight="1"
+                android:layout_marginLeft="20dp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="支付"
+                android:id="@+id/textView57"
+                android:layout_gravity="center"
+                android:textSize="15dp"
+                android:background="@drawable/bg_rounded10blue"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="#ff2a2a2a"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>
