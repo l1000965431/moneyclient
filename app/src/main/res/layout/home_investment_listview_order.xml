@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:id="@+id/home_investment_listview_detail_late"
+    android:background="#ff1e1e1e">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingLeft="7dp"
+            android:paddingTop="17dp"
+            android:paddingRight="7dp"
+            android:paddingBottom="17dp"
+            android:background="#ff1e1e1e">
+
+            <com.dragoneye.money.view.DotViewPager
+                android:layout_width="fill_parent"
+                android:layout_height="170dp"
+                android:id="@+id/investment_project_detail_dot_viewpager"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffffff">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="7dp">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:id="@+id/linearLayout15">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="第3/20期 众筹中"
+                            android:id="@+id/textView2"
+                            android:textSize="17dp"
+                            android:textColor="#ff767676"
+                            android:textIsSelectable="false"
+                            android:textStyle="bold"
+                            android:visibility="visible" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffbbbbbb">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:paddingBottom="25dp"
+                        android:visibility="visible">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:paddingLeft="30dp"
+                            android:layout_marginTop="17dp" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="入资总金额："
+                                android:id="@+id/textView26"
+                                android:textSize="15dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="25dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="00"
+                                android:id="@+id/textView29"
+                                android:textSize="17dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="20dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:paddingLeft="30dp"
+                            android:layout_marginTop="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="购买期数："
+                                android:id="@+id/textView19"
+                                android:textSize="15dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="40dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="00"
+                                android:id="@+id/textView21"
+                                android:textSize="17dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="20dp" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="70dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="回报几率与金额："
+                            android:id="@+id/textView14"
+                            android:textSize="13dp"
+                            android:textColor="#ff221d0d"
+                            android:textIsSelectable="false"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="7dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="70dp"
+                        android:id="@+id/investment_ll_result_root">
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="支付"
+                    android:id="@+id/textView27"
+                    android:layout_gravity="center"
+                    android:textSize="15dp"
+                    android:background="@drawable/bg_rounded10blue"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="#ff2a2a2a" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
