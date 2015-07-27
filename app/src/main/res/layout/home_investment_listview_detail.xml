@@ -180,127 +180,100 @@
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="#ffffffff">
+                android:background="#ffbbbbbb">
 
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="20dp"
-                    android:background="#ffffac16"
+                    android:layout_height="50dp"
+                    android:background="#ff46d1ff"
                     android:paddingTop="3dp"
-                    android:paddingBottom="3dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:id="@+id/imageView6"
-                        android:src="@mipmap/icon_editor"
-                        android:layout_gravity="center"
-                        android:scaleType="fitXY"
-                        android:tint="#ff63ff0e"
-                        android:layout_marginRight="5dp" />
+                    android:paddingBottom="3dp" >
 
                     <TextView
-                        android:layout_width="190dp"
+                        android:layout_width="fill_parent"
                         android:layout_height="30dp"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="@string/invest_project_select_invest_price"
-                        android:id="@+id/textView20"
+                        android:text="去领投（领投资金为：200万￥）"
+                        android:id="@+id/textView24"
+                        android:textSize="18dp"
+                        android:textColor="#ffffffff"
+                        android:textIsSelectable="false"
+                        android:layout_gravity="center"
+                        android:gravity="center_vertical|center_horizontal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp"
+                    android:background="#ffffac16"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp" >
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="30dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="去跟投"
+                        android:id="@+id/textView23"
                         android:textSize="18dp"
                         android:textColor="#ffffffff"
                         android:textIsSelectable="false"
                         android:layout_gravity="center"
                         android:gravity="center_vertical|center_horizontal" />
 
-                    <Spinner
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/invest_project_spinner"
-                        android:layout_weight="1"
-                        android:spinnerMode="dialog"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible">
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="测试开奖"
-                        android:id="@+id/test_button"
-                        android:layout_marginLeft="50dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:id="@+id/test_result"
-                        android:layout_marginLeft="20dp"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:paddingTop="15dp"
                         android:paddingBottom="20dp"
-                        android:background="#ffbbbbbb">
+                        android:background="#ffffac16"
+                        android:visibility="visible">
 
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:paddingLeft="30dp">
+                            android:paddingLeft="30dp"
+                            android:visibility="visible"
+                            android:layout_marginTop="20dp">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:id="@+id/imageView6"
+                                android:src="@mipmap/icon_editor"
+                                android:tint="#ff7cff00"
+                                android:layout_gravity="center" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="购买数量选择："
+                                android:text="输入您的购买数量："
                                 android:id="@+id/textView13"
                                 android:textSize="15dp"
                                 android:textColor="#ffffffff"
                                 android:textIsSelectable="false"
                                 android:layout_gravity="center"
-                                android:gravity="center_vertical" />
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:id="@+id/imageView7"
-                                android:layout_gravity="center"
-                                android:src="@mipmap/icon_add"
-                                android:layout_marginLeft="30dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="000"
-                                android:id="@+id/textView18"
-                                android:textSize="17dp"
-                                android:textColor="#ffffffff"
-                                android:textIsSelectable="false"
-                                android:layout_gravity="center"
                                 android:gravity="center_vertical"
-                                android:layout_marginLeft="20dp" />
+                                android:layout_marginLeft="10dp" />
 
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:id="@+id/imageView10"
-                                android:layout_gravity="center"
-                                android:src="@mipmap/icon_less"
-                                android:layout_marginLeft="20dp" />
+                            <EditText
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/editText"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp" />
 
                         </LinearLayout>
 
@@ -321,7 +294,8 @@
                                 android:textColor="#ffffffff"
                                 android:textIsSelectable="false"
                                 android:layout_gravity="center"
-                                android:gravity="center_vertical" />
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="40dp" />
 
                             <ImageView
                                 android:layout_width="30dp"
