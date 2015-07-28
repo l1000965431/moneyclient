@@ -64,61 +64,6 @@
                 android:visibility="invisible" />
         </LinearLayout>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/home_record_top_tab_ll_bonus" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/home_invert_top_tab_dividendt_record"
-                android:id="@+id/home_record_top_tab_ll_bonus_tv"
-                android:layout_gravity="center"
-                android:textSize="15dp"
-                android:textColor="@color/home_investment_top_button_unselected"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp" />
-
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:id="@+id/home_record_top_tab_ll_bonus_iv"
-                android:layout_gravity="center"
-                android:background="@color/home_investment_top_button_selected"
-                android:visibility="invisible" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/home_record_top_tab_ll_search" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/home_invert_top_tab_search"
-                android:id="@+id/home_record_top_tab_ll_search_tv"
-                android:layout_gravity="center"
-                android:textSize="15dp"
-                android:textColor="@color/home_investment_top_button_unselected"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp" />
-
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:id="@+id/home_record_top_tab_ll_search_iv"
-                android:layout_gravity="center"
-                android:background="@color/home_investment_top_button_selected"
-                android:visibility="invisible" />
-        </LinearLayout>
     </LinearLayout>
 
     <com.dragoneye.money.view.RefreshableView

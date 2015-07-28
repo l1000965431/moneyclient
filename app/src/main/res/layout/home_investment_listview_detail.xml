@@ -179,8 +179,7 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="#ffbbbbbb">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:orientation="horizontal"
