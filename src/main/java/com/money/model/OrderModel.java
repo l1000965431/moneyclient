@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "activityorder")
-public class OrderModel {
+public class OrderModel extends BaseModel {
 
     //订单未提交
     public final static int ORDER_STATE_NOSUBMITTED = 0;
@@ -62,16 +62,9 @@ public class OrderModel {
     /**
      * 项目信息
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.EAGER)
     @JoinColumn( name = "activityId", referencedColumnName = "activityId")
     private ActivityVerifyCompleteModel activityVerifyCompleteModel;
-
-    /**
-     * 项目动态信息
-     */
-    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn( name = "installmentActivityID", referencedColumnName = "activityStageId")
-    private ActivityDynamicModel activityDynamicModel;
 
 
     public long getId() {
@@ -138,14 +131,6 @@ public class OrderModel {
 
     public void setActivityVerifyCompleteModel(ActivityVerifyCompleteModel activityVerifyCompleteModel) {
         this.activityVerifyCompleteModel = activityVerifyCompleteModel;
-    }
-
-    public ActivityDynamicModel getActivityDynamicModel() {
-        return activityDynamicModel;
-    }
-
-    public void setActivityDynamicModel(ActivityDynamicModel activityDynamicModel) {
-        this.activityDynamicModel = activityDynamicModel;
     }
 
     public int getOrderState() {

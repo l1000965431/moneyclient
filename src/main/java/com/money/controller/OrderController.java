@@ -1,5 +1,6 @@
 package com.money.controller;
 
+import com.google.gson.Gson;
 import com.money.Service.order.OrderService;
 import com.money.Service.user.UserService;
 import com.money.config.ServerReturnValue;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import until.GsonUntil;
+import until.OrderGsonAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,9 +52,16 @@ public class OrderController {
         List<OrderModel> list = orderService.getOrderByUserID( UserID,firstPage );
         response.setHeader( "response", ServerReturnValue.LANDSUCCESS );
 
-        String Json = GsonUntil.JavaClassToJson( list );
+        try{
+            Gson gson = GsonUntil.getNewGsonByAdapter(OrderModel.class, new OrderGsonAdapter());
+            String Json = gson.toJson( list );
+            return Json;
 
-        return Json;
+        } catch ( Exception e ){
+            int a= 0;
+            return null;
+        }
+
     }
 
 
