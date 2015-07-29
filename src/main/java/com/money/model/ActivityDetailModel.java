@@ -15,7 +15,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "activitydetails")
-public class ActivityDetailModel implements Serializable {
+public class ActivityDetailModel extends BaseModel {
 
     //上线项目开始
     public final static int ONLINE_ACTIVITY_START = 1;

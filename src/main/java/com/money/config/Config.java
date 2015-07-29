@@ -61,8 +61,11 @@ public class Config {
     //几率的放大倍数  方便计算
     public static final int PROBABILITYAMPLIFICATION = 1000000;
 
-    //几率的放大倍数  方便计算
+    //项目票的辅助表名称前缀
     public static final String ACTIVITYGROUPTICKETNAME = "Ticket_";
+
+    //项目预售的辅助表名称前缀
+    public static final String ACTIVITYPURCHASE = "Purchase_";
 
     /**
      * 项目状态
@@ -102,4 +105,14 @@ public class Config {
 
     //发布者
     public static final int BORROWER = 2;
+
+    /**
+     * 土豪发奖
+     */
+    public static final int PURCHASELOCALTYRANTS = 1;
+
+    /**
+     * 屌丝发奖
+     */
+    public static final int PURCHASEPRICKSILK = 2;
 }

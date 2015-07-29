@@ -10,7 +10,7 @@ import java.util.List;
  * <p>Date: 15-7-8
  * <p>Version: 1.0
  */
-public class GlobalConfigDataStruct {
+public class GlobalConfigDataStruct extends BaseModel{
     /**
      * 总分成设置
      */

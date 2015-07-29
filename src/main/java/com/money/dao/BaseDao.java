@@ -35,9 +35,9 @@ public class BaseDao {
      *
      * @return
      */
-/*    public Session getSession() {
-        return sessionFactory.getCurrentSession();
-    }*/
+    public Session getSession() {
+        return sessionFactory.openSession();
+    }
 
     /**
      * openSession 需要手动关闭session 意思是打开一个新的session

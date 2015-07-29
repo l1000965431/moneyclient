@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "wallet")
-public class WalletModel {
+public class WalletModel extends BaseModel{
 
     @Id
     String UserID;

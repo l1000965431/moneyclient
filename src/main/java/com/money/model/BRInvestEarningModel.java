@@ -9,21 +9,21 @@ import java.io.Serializable;
  * <p>Date: 15-7-8
  * <p>Version: 1.0
  */
-//@Entity
-//@Table(name = "brinvestearning")
-public class BRInvestEarningModel implements Serializable {
+@Entity
+@Table(name = "brinvestearning")
+public class BRInvestEarningModel extends BaseModel {
     /**
      *  ID
      */
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     /**
      *  项目组ID
      */
-//    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
-//    @JoinColumn( name = "activityId", referencedColumnName = "activityStageId")
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn( name = "activityId", referencedColumnName = "activityStageId")
     ActivityDynamicModel activityDynamicModel;
 
     /**

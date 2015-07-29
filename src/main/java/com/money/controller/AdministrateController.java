@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 
 @Controller
-@RequestMapping("/User")
+@RequestMapping("/AdministrateController")
 public class AdministrateController extends ControllerBase implements IController {
 
-    @RequestMapping("Test")
+    @RequestMapping("/Test")
     @ResponseBody
     public int Test(){
         return 1;
     }
-    
+
 
 }

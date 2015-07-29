@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "globalconfig")
-public class GlobalConfigModel implements Serializable{
+public class GlobalConfigModel extends BaseModel{
     /**
      * 键
      */

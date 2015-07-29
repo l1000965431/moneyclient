@@ -6,7 +6,7 @@ import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
 import com.money.config.Config;
 import com.money.config.MoneyServerMQ_Topic;
-import com.money.dao.GeneraDAO;
+import com.money.dao.orderDAO.OrderDAO;
 import com.money.model.OrderModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ import java.util.List;
 public class OrderService extends ServiceBase implements ServiceInterface {
 
     @Autowired
-    private GeneraDAO baseDao;
+    private OrderDAO orderDAO;
 
     OrderService() {
         super();
@@ -45,23 +45,20 @@ public class OrderService extends ServiceBase implements ServiceInterface {
      *
      * @return
      */
-    public String createOrder( String userID,int activityID,int lines,int activitygroupID ){
+    public String createOrder( String userID,String activityID,int lines,int activitygroupID ){
 
         Long OrderID = createOrderID();
 
         OrderModel orderModel = new OrderModel();
-
-        orderModel.setActivitygroupid(activitygroupID);
-        orderModel.setActivityid(activityID);
-        orderModel.setOrderlines(lines);
-        orderModel.setUserid(userID);
-        orderModel.setOrderid(OrderID);
+        orderModel.setOrderLines(lines);
+        orderModel.setUserId(userID);
+        orderModel.setOrderId(OrderID);
         try {
-            orderModel.setOrderdate( MoneyServerDate.getDateCurDate());
+            orderModel.setOrderDate(MoneyServerDate.getDateCurDate());
         } catch (ParseException e) {
             return Config.SERVICE_FAILED;
         }
-        orderModel.setOrderstate(OrderModel.ORDER_STATE_NOSUBMITTED);
+        orderModel.setOrderState(OrderModel.ORDER_STATE_NOSUBMITTED);
 
         //插入消息队列
         String messagebody = GsonUntil.JavaClassToJson( orderModel );
@@ -85,8 +82,8 @@ public class OrderService extends ServiceBase implements ServiceInterface {
             return Config.SERVICE_FAILED;
         }
 
-        orderModel.setOrderstate( OrderModel.ORDER_STATE_SUBMITTECANEL );
-        baseDao.update(orderModel);
+        orderModel.setOrderState(OrderModel.ORDER_STATE_SUBMITTECANEL);
+        orderDAO.update(orderModel);
 
         return Config.SERVICE_SUCCESS;
     }
@@ -101,7 +98,7 @@ public class OrderService extends ServiceBase implements ServiceInterface {
     public String deleteOrder( long OrderID ){
         OrderModel orderModel = getOrderByOrderID( OrderID );
         try{
-            baseDao.delete( orderModel );
+            orderDAO.delete( orderModel );
             return Config.SERVICE_SUCCESS;
         }catch ( Exception e ){
             return Config.SERVICE_FAILED;
@@ -121,7 +118,7 @@ public class OrderService extends ServiceBase implements ServiceInterface {
      */
 
     public OrderModel getOrderByOrderID( long OrderID ){
-        return (OrderModel)baseDao.load( OrderModel.class,OrderID );
+        return (OrderModel)orderDAO.load( OrderModel.class,OrderID );
     }
 
 
@@ -158,8 +155,8 @@ public class OrderService extends ServiceBase implements ServiceInterface {
             return  Config.SERVICE_FAILED;
         }
 
-        orderModel.setOrderstate( OrderModel.ORDER_STATE_SUBMITTSUCCESS );
-        baseDao.update( orderModel );
+        orderModel.setOrderState(OrderModel.ORDER_STATE_SUBMITTSUCCESS);
+        orderDAO.update( orderModel );
         return Config.SERVICE_FAILED;
     }
 
@@ -176,6 +173,18 @@ public class OrderService extends ServiceBase implements ServiceInterface {
         int random = MoneySeverRandom.getRandomNum( 1,10000 );
         long orderTime = System.currentTimeMillis();
         return orderTime^random;
+    }
+
+
+    /**
+     * 根据用户ID 获得订单序列
+     * @param UserID
+     * @param firstPage
+     * @return
+     */
+    public List getOrderByUserID( String UserID,int firstPage ){
+          List list = orderDAO.getOrderByUserID( UserID,firstPage,10 );
+          return list;
     }
 
 }

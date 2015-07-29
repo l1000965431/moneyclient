@@ -33,19 +33,46 @@ public class OrderModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private long orderid;
+    private long orderId;
 
-    private int activityid;
+    private String userId;
 
-    private String userid;
+    private Date orderDate;
 
-    private Date orderdate;
+    /**
+     * 订单状态
+     */
+    private int orderState;
 
-    private int orderlines;
+    /**
+     * 购买票数
+     */
+    private int PurchaseNum;
 
-    private int activitygroupid;
+    /**
+     * 购买期数
+     */
+    private int AdvanceNum;
 
-    private int orderstate;
+    /**
+     * 订单金额
+     */
+    private int orderLines;
+
+    /**
+     * 项目信息
+     */
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn( name = "activityId", referencedColumnName = "activityId")
+    private ActivityVerifyCompleteModel activityVerifyCompleteModel;
+
+    /**
+     * 项目动态信息
+     */
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn( name = "installmentActivityID", referencedColumnName = "activityStageId")
+    private ActivityDynamicModel activityDynamicModel;
+
 
     public long getId() {
         return id;
@@ -55,59 +82,77 @@ public class OrderModel {
         this.id = id;
     }
 
-    public long getOrderid() {
-        return orderid;
+    public long getOrderId() {
+        return orderId;
     }
 
-    public void setOrderid(long orderid) {
-        this.orderid = orderid;
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
     }
 
-    public int getActivityid() {
-        return activityid;
+
+
+    public String getUserId() {
+        return userId;
     }
 
-    public void setActivityid(int activityid) {
-        this.activityid = activityid;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getUserid() {
-        return userid;
+    public Date getOrderDate() {
+        return orderDate;
     }
 
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
     }
 
-    public Date getOrderdate() {
-        return orderdate;
+    public int getPurchaseNum() {
+        return PurchaseNum;
     }
 
-    public void setOrderdate(Date orderdate) {
-        this.orderdate = orderdate;
+    public void setPurchaseNum(int purchaseNum) {
+        PurchaseNum = purchaseNum;
     }
 
-    public int getOrderlines() {
-        return orderlines;
+    public int getAdvanceNum() {
+        return AdvanceNum;
     }
 
-    public void setOrderlines(int orderlines) {
-        this.orderlines = orderlines;
+    public void setAdvanceNum(int advanceNum) {
+        AdvanceNum = advanceNum;
     }
 
-    public int getActivitygroupid() {
-        return activitygroupid;
+    public int getOrderLines() {
+        return orderLines;
     }
 
-    public void setActivitygroupid(int activitygroupid) {
-        this.activitygroupid = activitygroupid;
+    public void setOrderLines(int orderLines) {
+        this.orderLines = orderLines;
     }
 
-    public int getOrderstate() {
-        return orderstate;
+    public ActivityVerifyCompleteModel getActivityVerifyCompleteModel() {
+        return activityVerifyCompleteModel;
     }
 
-    public void setOrderstate(int orderstate) {
-        this.orderstate = orderstate;
+    public void setActivityVerifyCompleteModel(ActivityVerifyCompleteModel activityVerifyCompleteModel) {
+        this.activityVerifyCompleteModel = activityVerifyCompleteModel;
+    }
+
+    public ActivityDynamicModel getActivityDynamicModel() {
+        return activityDynamicModel;
+    }
+
+    public void setActivityDynamicModel(ActivityDynamicModel activityDynamicModel) {
+        this.activityDynamicModel = activityDynamicModel;
+    }
+
+    public int getOrderState() {
+        return orderState;
+    }
+
+    public void setOrderState(int orderState) {
+        this.orderState = orderState;
     }
 }

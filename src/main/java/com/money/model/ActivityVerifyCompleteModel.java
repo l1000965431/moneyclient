@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "activityVerifyComplete")
-public class ActivityVerifyCompleteModel {
+public class ActivityVerifyCompleteModel extends BaseModel {
 
     /**
      * 项目ID
