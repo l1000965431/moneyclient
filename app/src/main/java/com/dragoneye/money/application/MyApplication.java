@@ -3,6 +3,7 @@ package com.dragoneye.money.application;
 import android.app.Application;
 import android.net.Uri;
 
+import com.dragoneye.money.DemoDataModel;
 import com.dragoneye.money.R;
 import com.dragoneye.money.config.ProjectStatusConfig;
 import com.dragoneye.money.dao.MyDaoMaster;
@@ -10,6 +11,10 @@ import com.dragoneye.money.dao.Project;
 import com.dragoneye.money.dao.ProjectDao;
 import com.dragoneye.money.dao.ProjectImage;
 import com.dragoneye.money.dao.ProjectImageDao;
+import com.dragoneye.money.http.HttpClient;
+import com.dragoneye.money.user.CurrentUser;
+import com.dragoneye.money.user.UserEntrepreneur;
+import com.dragoneye.money.user.UserInvestor;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -30,9 +35,17 @@ public class MyApplication extends Application {
     public void onCreate(){
         super.onCreate();
         MyDaoMaster.init(this);
+        HttpClient.initHttpClient(this);
         createTestData();
         initImageLoader();
+        initTestData();
+
+        UserEntrepreneur entrepreneur = new UserEntrepreneur();
+        entrepreneur.setUserId("test");
+        CurrentUser.setCurrentUser(entrepreneur);
     }
+
+    public DemoDataModel demoDataModel;
 
     public static void createTestData(){
         ProjectDao dao = MyDaoMaster.getDaoSession().getProjectDao();
@@ -96,5 +109,10 @@ public class MyApplication extends Application {
                 .writeDebugLogs()
                 .build();
         ImageLoader.getInstance().init(configuration);
+    }
+
+    private void initTestData(){
+        demoDataModel = new DemoDataModel();
+        demoDataModel.initTestData();
     }
 }

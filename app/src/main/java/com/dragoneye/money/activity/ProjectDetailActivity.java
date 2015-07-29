@@ -11,8 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.config.ProjectStatusConfig;
 import com.dragoneye.money.dao.MyDaoMaster;
 import com.dragoneye.money.dao.Project;
 import com.dragoneye.money.dao.ProjectDao;
@@ -32,6 +35,9 @@ public class ProjectDetailActivity extends ActionBarActivity {
     private ArrayList<String> mImageUrl;
     ArrayList<View> viewContainer = new ArrayList<>();
     private Project mProject;
+    private ProgressBar mProgressBar;
+    private TextView mTextViewProjectProgress;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +45,42 @@ public class ProjectDetailActivity extends ActionBarActivity {
         setContentView(R.layout.home_investment_detail);
         initView();
         initData();
+        initViewPagerImages();
+        mDotViewPager.setAdapter(new ImageViewPagerAdapter());
+        updateUIContent();
+    }
 
+    private void initView(){
+        mDotViewPager = (DotViewPager)findViewById(R.id.project_detail_dot_viewpager);
+
+        mProgressBar = (ProgressBar)findViewById(R.id.project_detail_progressbar);
+        mTextViewProjectProgress = (TextView)findViewById(R.id.project_detail_tv_project_progress);
+    }
+
+    private void initData(){
+        mImageUrl = new ArrayList<>();
+
+        Intent intent = getIntent();
+        String projectId = intent.getStringExtra(InvestProjectActivity.EXTRA_PROJECT_ID);
+
+//        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
+//        mProject = projectDao.load(projectId);
+//        if( mProject == null ){
+//            finish();
+//            return;
+//        }
+
+        ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
+        QueryBuilder queryBuilder = projectImageDao.queryBuilder();
+        queryBuilder.where(ProjectImageDao.Properties.ProjectId.eq(1));
+        List<ProjectImage> projectImages = queryBuilder.build().list();
+
+        for(ProjectImage projectImage : projectImages){
+            mImageUrl.add(projectImage.getImageUrl());
+        }
+    }
+
+    private void initViewPagerImages(){
         for(String url : mImageUrl){
             ImageView imageView = new ImageView(this);
             try{
@@ -50,34 +91,16 @@ public class ProjectDetailActivity extends ActionBarActivity {
 
             }
         }
-
         mDotViewPager.setAdapter(new ImageViewPagerAdapter());
     }
 
-    private void initView(){
-        mDotViewPager = (DotViewPager)findViewById(R.id.project_detail_dot_viewpager);
-    }
-
-    private void initData(){
-        mImageUrl = new ArrayList<>();
-
-        Intent intent = getIntent();
-        long projectId = intent.getLongExtra(InvestProjectActivity.EXTRA_PROJECT_ID, 1);
-
-        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
-        mProject = projectDao.load(projectId);
-        if( mProject == null ){
-            finish();
-            return;
-        }
-
-        ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
-        QueryBuilder queryBuilder = projectImageDao.queryBuilder();
-        queryBuilder.where(ProjectImageDao.Properties.ProjectId.eq(projectId));
-        List<ProjectImage> projectImages = queryBuilder.build().list();
-
-        for(ProjectImage projectImage : projectImages){
-            mImageUrl.add(projectImage.getImageUrl());
+    private void updateUIContent(){
+        if( mProject.getStatus() == ProjectStatusConfig.PROJECT_SUCCESS ){
+            mProgressBar.setProgress(100);
+            mTextViewProjectProgress.setText( String.format(getString(R.string.invest_project_project_progress), 100));
+        }else {
+            mProgressBar.setProgress(10);
+            mTextViewProjectProgress.setText(String.format(getString(R.string.invest_project_project_progress), 10));
         }
     }
 
@@ -140,10 +163,18 @@ public class ProjectDetailActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.menu_project_detail_cheat) {
+            onCheat();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onCheat(){
+        mProject.setStatus(ProjectStatusConfig.PROJECT_SUCCESS);
+        ProjectDao dao = MyDaoMaster.getDaoSession().getProjectDao();
+        dao.update(mProject);
+        updateUIContent();
     }
 }
