@@ -20,6 +20,49 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
     private GeneraDAO generaDAO;
 
     /**
+     *  设置项目大小R比例
+     */
+    public void setActivityInvestProportion(String activityId, float srProportion, float brProportion){
+        ActivityVerifyCompleteModel completeModel = (ActivityVerifyCompleteModel)generaDAO.load(ActivityVerifyCompleteModel.class, activityId);
+        if( completeModel == null ){
+            return;
+        }
+
+        completeModel.setSrInvestProportion(srProportion);
+        completeModel.setBrInvestProportion(brProportion);
+        generaDAO.update(completeModel);
+    }
+
+    public void splitActivityByStage(){
+
+        ActivityVerifyCompleteModel completeModel = (ActivityVerifyCompleteModel)generaDAO.load(ActivityVerifyCompleteModel.class, "4");
+
+        HashSet<ActivityDetailModel> activityDetailModels = new HashSet<ActivityDetailModel>();
+        HashSet<ActivityDynamicModel> activityDynamicModels = new HashSet<ActivityDynamicModel>();
+
+        for( int i = 0; i < 4; i++ ){
+            ActivityDetailModel activityDetailModel = new ActivityDetailModel();
+            ActivityDynamicModel activityDynamicModel = new ActivityDynamicModel();
+
+            activityDetailModel.setActivityStageId( completeModel.getActivityId() + "-" + String.valueOf(i));
+            activityDetailModel.setTargetFund( 25000 );
+            activityDetailModel.setActivityVerifyCompleteModel(completeModel);
+            activityDetailModel.setDynamicModel(activityDynamicModel);
+
+            activityDynamicModel.setActivityStageId( activityDetailModel.getActivityStageId() );
+            activityDynamicModel.setActivityDetailModel(activityDetailModel);
+            activityDynamicModel.setActivityVerifyCompleteModel(completeModel);
+
+            activityDetailModels.add(activityDetailModel);
+            activityDynamicModels.add(activityDynamicModel);
+        }
+
+        completeModel.setActivityDetailModels( activityDetailModels );
+        completeModel.setActivityDynamicModels( activityDynamicModels );
+        generaDAO.update(completeModel);
+    }
+
+    /**
      * 创建一个项目组
      * @param name
      * @return

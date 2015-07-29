@@ -4,6 +4,8 @@ import com.money.Service.AuditActivity.ServiceAuditActivity;
 import com.money.Service.GroupActivity.ServiceGroupActivity;
 import com.money.Service.ServiceFactory;
 import com.money.config.Config;
+import com.money.model.ActivityDetailModel;
+import com.money.model.ActivityDynamicModel;
 import com.money.model.ActivityVerifyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.util.HashSet;
 
 /**
  * 项目审核
@@ -26,6 +28,9 @@ public class AuditActivityController extends ControllerBase implements IControll
 
     @Autowired
     ServiceAuditActivity serviceAuditActivity;
+
+    @Autowired
+    ServiceGroupActivity serviceGroupActivity;
 
     /**
      * 获取未审批的项目列表
@@ -66,11 +71,19 @@ public class AuditActivityController extends ControllerBase implements IControll
             return Config.SERVICE_FAILED;
         }
 
-        if( serviceAuditActivity.setActivityAuditorResult(2l, ActivityVerifyModel.STATUS_AUDITOR_PASS, "") ){
+        if( serviceAuditActivity.setActivityAuditorResult(4l, ActivityVerifyModel.STATUS_AUDITOR_PASS, "") ){
             return Config.SERVICE_SUCCESS;
         }else {
             return Config.SERVICE_FAILED;
         }
+    }
+
+    @RequestMapping("splitActivity")
+    @ResponseBody
+    public String splitActivity(HttpServletRequest request, HttpServletResponse response){
+        serviceGroupActivity.splitActivityByStage();
+
+        return "";
     }
 
 }

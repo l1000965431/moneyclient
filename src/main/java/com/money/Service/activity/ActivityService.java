@@ -47,7 +47,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     }
 
     @SuppressWarnings("unchecked")
-    public List<ActivityDynamicModel> getAllActivityDetail(){
+    public List<ActivityDetailModel> getAllActivityDetail(){
         return activityDao.getActivityListActivity(0, 1000);
     }
 
