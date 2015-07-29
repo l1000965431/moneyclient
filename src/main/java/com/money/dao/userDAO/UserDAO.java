@@ -48,7 +48,7 @@ public class UserDAO extends BaseDao {
                 infoFlag = false;
         }
         //查看用户昵称是否合法
-        String user = map.get("user");
+        String user = map.get("userName");
         boolean userIsRight = userIsRight(user);
 
         if ((userIsRight) && (infoFlag)) {
@@ -311,7 +311,7 @@ public class UserDAO extends BaseDao {
         String tokenTime = MemCachService.GetMemCachMapByMapKey(userName, "time");
         Long tokenUpdTime = Long.parseLong(tokenTime);
         //在登录状态
-        if (time - tokenUpdTime < 5)
+        if ((time - tokenUpdTime)/1000 < 3600)
             return true;
         else
             return false;
@@ -344,7 +344,7 @@ public class UserDAO extends BaseDao {
 
     //获取用户类型
     public int getUserType(String userName) {
-        UserModel userModel = (UserModel) this.load(UserModel.class, userName);
+        UserModel userModel = this.getUSerModel( userName);
         int userType = userModel.getUserType();
         return userType;
 
@@ -353,9 +353,9 @@ public class UserDAO extends BaseDao {
     //信息完善，写数据库信息
     private void writeInfo(String userName, Map<String, String> map) {
 
-        UserInvestorModel userInvestorModel = (UserInvestorModel) this.load(UserInvestorModel.class, userName);
+        UserInvestorModel userInvestorModel = this.getUSerInfoModel(userName);
 
-        String user = map.get("user");
+        String user = map.get("userName");
         String mail = map.get("mail");
         int sex = Integer.valueOf(map.get("sex"));
         String location = map.get("location");
@@ -364,8 +364,9 @@ public class UserDAO extends BaseDao {
         userInvestorModel.setMail(mail);
         userInvestorModel.setSex(sex);
         userInvestorModel.setLocation(location);
-        userInvestorModel.setRealName(realName);
-        this.save(userInvestorModel);
+        userInvestorModel.setRealName("");
+        userInvestorModel.setIsPerfect(true);
+        this.update(userInvestorModel);
 
 
     }
@@ -396,7 +397,7 @@ public class UserDAO extends BaseDao {
         return true;
     }
 
-    UserModel getUSerModel( final String UserID ){
+    public UserModel getUSerModel( final String UserID ){
         final UserModel[] userModel = {null};
 
         this.excuteTransactionByCallback(new TransactionCallback() {
@@ -411,4 +412,19 @@ public class UserDAO extends BaseDao {
      return userModel[0];
     }
 
+
+    public UserInvestorModel getUSerInfoModel( final String UserID ){
+        final UserInvestorModel[] userInvestorModels = {null};
+
+        this.excuteTransactionByCallback(new TransactionCallback() {
+            public void callback(BaseDao basedao) throws Exception {
+                userInvestorModels[0] = (UserInvestorModel) basedao.getNewSession().createCriteria( UserInvestorModel.class )
+                        .setMaxResults( 1 )
+                        .add(Restrictions.eq( "userId",UserID ))
+                        .uniqueResult();
+            }
+        });
+
+        return userInvestorModels[0];
+    }
 }

@@ -7,7 +7,7 @@ package com.money.model;
  * <p>Version: 1.0
  */
 
-public class ActivityInstallmentModel {
+public class ActivityInstallmentModel extends BaseModel {
 
     /**
      * 项目分期ID

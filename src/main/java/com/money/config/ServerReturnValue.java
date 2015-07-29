@@ -94,4 +94,19 @@ public class ServerReturnValue {
      * 登录失败
      */
     public static final String LANDFAILED = "103";
+
+    /**
+     * 完善信息
+     */
+    public static final int PERFECTINFO = 101;
+
+    /**
+     * 购买成功
+     */
+    public static final int PERFECTSUCCESS = 100;
+
+    /**
+     * 购买失败
+     */
+    public static final int PERFECTFAILED = 102;
 }

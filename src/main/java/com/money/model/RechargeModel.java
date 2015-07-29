@@ -14,7 +14,7 @@ import java.util.Date;
 
 /*@Entity
 @Table(name = "recharge")*/
-public class RechargeModel {
+public class RechargeModel extends BaseModel{
 
     @Id
     String id;

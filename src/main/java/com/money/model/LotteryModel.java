@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by liumin on 15/7/17.
  */
-public class LotteryModel implements Serializable {
+public class LotteryModel extends BaseModel {
 
     int id;
 

@@ -86,7 +86,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
         }
 
         OrderService orderService = ServiceFactory.getService("OrderService");
-        if( orderService.createOrder(userID, activityID, activitylines, activitygroupId) == Config.SERVICE_SUCCESS ){
+        if( orderService.createOrder(userID, "2", activitylines, activitygroupId) == Config.SERVICE_SUCCESS ){
             //调用付款接口 并在付款接口中发送订单和项目修改消息 在付款完成接口中 调用订单提交
 
 
@@ -586,5 +586,26 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
         activityDao.update( activityVerifyModel );
 
         return null;
+    }
+
+    /**
+     * 获得项目剩余的期数
+     * @param ActivityID 父项目ID
+     * @return
+     */
+    public int getActivityRemainingInstallment( String ActivityID ) {
+
+        return 0;
+    }
+
+    /**
+     * 获得分期项目剩余的票数
+     * @param InstallmentActivityID 分期项目ID
+     * @return
+     */
+
+    public int getActivityRemainingTickets( String InstallmentActivityID ) {
+
+        return 0;
     }
 }

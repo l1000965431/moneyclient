@@ -5,8 +5,14 @@ import com.money.Service.ServiceInterface;
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import com.money.dao.userDAO.UserDAO;
+import com.money.model.UserInvestorModel;
+import com.money.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import until.GsonUntil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by fisher on 2015/7/6.
@@ -189,6 +195,16 @@ public class UserService extends ServiceBase implements ServiceInterface {
     public boolean IsPerfectInfo(String userID) {
 
         return true;
+    }
+
+    /**
+     * 获得用户信息
+     * @param UserID
+     * @return
+     */
+    public String getUserInfo( String UserID ){
+        UserInvestorModel userInvestorModel = userDAO.getUSerInfoModel( UserID );
+        return GsonUntil.JavaClassToJson( userInvestorModel );
     }
 
 }

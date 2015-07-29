@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "srearning")
-public class SREarningModel implements Serializable {
+public class SREarningModel extends BaseModel {
     /**
      *  ID
      */

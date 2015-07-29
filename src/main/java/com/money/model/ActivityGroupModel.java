@@ -11,9 +11,9 @@ import java.util.Set;
  * <p>Date: 15-7-8
  * <p>Version: 1.0
  */
-//@Entity
-//@Table(name = "activitygroup")
-public class ActivityGroupModel implements Serializable{
+/*@Entity
+@Table(name = "activitygroup")*/
+public class ActivityGroupModel extends BaseModel{
     /**
      *  项目组ID
      */

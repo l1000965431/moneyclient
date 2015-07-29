@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "activityverify")
-public class ActivityVerifyModel {
+public class ActivityVerifyModel extends BaseModel {
     /**
      * 初次审核
      */

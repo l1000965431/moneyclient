@@ -8,7 +8,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "UserInvestor")
-public class UserInvestorModel implements Serializable {
+public class UserInvestorModel extends BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +26,10 @@ public class UserInvestorModel implements Serializable {
     private String location;
     //真实姓名
     private String realName;
+    //是否完善过信息
+    private boolean IsPerfect;
+    //用户类型
+    private int userType;
 
     public String getUserId() {
         return userId;
@@ -83,4 +87,19 @@ public class UserInvestorModel implements Serializable {
         this.id = id;
     }
 
+    public boolean isPerfect() {
+        return IsPerfect;
+    }
+
+    public void setIsPerfect(boolean isPerfect) {
+        IsPerfect = isPerfect;
+    }
+
+    public int getUserType() {
+        return userType;
+    }
+
+    public void setUserType(int userType) {
+        this.userType = userType;
+    }
 }

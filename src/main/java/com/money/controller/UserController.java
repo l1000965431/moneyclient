@@ -1,6 +1,7 @@
 package com.money.controller;
 
 import com.money.Service.user.UserService;
+import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,7 @@ public class UserController extends ControllerBase implements IController
     @Autowired
     UserService userService;
 
-    @RequestMapping("passWordLogin")
+    @RequestMapping("/passWordLogin")
     @ResponseBody
     public String Login( HttpServletRequest request,
                               HttpServletResponse response )
@@ -33,15 +34,18 @@ public class UserController extends ControllerBase implements IController
 
         if( LoginResult.length() >= 8 ){
             response.setHeader( "LoginResult", ServerReturnValue.LANDSUCCESS );
+
+            response.setHeader( "UserResponse",userService.getUserInfo(UserName) );
         }else{
             response.setHeader( "LoginResult",LoginResult );
+            response.setHeader( "UserResponse","" );
             return null;
         }
 
         return LoginResult;
     }
 
-    @RequestMapping("tokenLogin")
+    @RequestMapping("/tokenLogin")
     @ResponseBody
     public int tokenLogin( HttpServletRequest request,
                               HttpServletResponse response )
@@ -51,18 +55,27 @@ public class UserController extends ControllerBase implements IController
         return userService.tokenLand(userId,token);
     }
 
-    @RequestMapping("perfectInfo")
+    @RequestMapping("/perfectInfo")
     @ResponseBody
     public int perfectInfo( HttpServletRequest request,
                                 HttpServletResponse response )
     {
+        String userID = request.getParameter( "userID" );
         String token = request.getParameter( "token" );
         String info = request.getParameter( "info" );
-        String userType=request.getParameter("userType");
-        return userService.perfectInfo(token, info, userType);
+        int userType= Integer.valueOf(request.getParameter("userType"));
+
+        switch ( userType ){
+            case Config.INVESTOR:
+                return userService.perfectInfo(userID,token, info);
+            case Config.BORROWER:
+                return 0;
+            default:
+                return 2;
+        }
     }
 
-    @RequestMapping("changeInfo")
+    @RequestMapping("/changeInfo")
     @ResponseBody
     public int changeInfo( HttpServletRequest request,
                             HttpServletResponse response )
@@ -73,7 +86,7 @@ public class UserController extends ControllerBase implements IController
         return userService.changeInfo(token, info, userType);
     }
 
-    @RequestMapping("quitLogin")
+    @RequestMapping("/quitLogin")
     @ResponseBody
     public boolean quitLogin( HttpServletRequest request,
                                 HttpServletResponse response )
@@ -82,7 +95,7 @@ public class UserController extends ControllerBase implements IController
         return userService.quitLand(userID);
     }
 
-    @RequestMapping("register")
+    @RequestMapping("/register")
     @ResponseBody
     public  int register(HttpServletRequest request,
                              HttpServletResponse response )
@@ -94,7 +107,7 @@ public class UserController extends ControllerBase implements IController
         return  userService.userRegister( userName, code,password,userType );
     }
 
-    @RequestMapping("submitTeleNum")
+    @RequestMapping("/submitTeleNum")
     @ResponseBody
     public  int submitTeleNum(HttpServletRequest request,
                              HttpServletResponse response )
@@ -103,7 +116,7 @@ public class UserController extends ControllerBase implements IController
         return  userService.submitTeleNum(userName,"");
     }
 
-    @RequestMapping("sendPasswordCode")
+    @RequestMapping("/sendPasswordCode")
     @ResponseBody
     public int sendPasswordCode(HttpServletRequest request,
                                   HttpServletResponse response )
@@ -113,7 +126,7 @@ public class UserController extends ControllerBase implements IController
         return  userService.sendPasswordCode(userName, password,"");
     }
 
-    @RequestMapping("changPassword")
+    @RequestMapping("/changPassword")
     @ResponseBody
     public  boolean sendPasswochangPasswordrdCode(HttpServletRequest request,
                                      HttpServletResponse response )
