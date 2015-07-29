@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -26,8 +27,22 @@ import com.dragoneye.money.dao.Project;
 import com.dragoneye.money.dao.ProjectDao;
 import com.dragoneye.money.dao.ProjectImage;
 import com.dragoneye.money.dao.ProjectImageDao;
+import com.dragoneye.money.http.HttpClient;
+import com.dragoneye.money.http.HttpParams;
+import com.dragoneye.money.model.OrderModel;
+import com.dragoneye.money.protocol.GetProjectListProtocol;
+import com.dragoneye.money.tool.ToolMaster;
+import com.dragoneye.money.tool.UIHelper;
+import com.dragoneye.money.user.CurrentUser;
 import com.dragoneye.money.view.RefreshableView;
 import com.dragoneye.money.view.TopTabButton;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,12 +56,13 @@ import de.greenrobot.dao.query.QueryBuilder;
  */
 public class HomeRecordFragment extends BaseFragment implements AdapterView.OnItemClickListener {
 
-    private TopTabButton mIncomingButton, mInvestmentButton, mBonusButton, mSearchButton, mCurrentSelectButton;
+    private TopTabButton mIncomingButton, mInvestmentButton, mCurrentSelectButton;
     private RefreshableView refreshableView;
     private ListView mListView;
     private HashMap<Long, Project> mProjects = new HashMap<>();
-    private ArrayList<InvestedProject> mInvestedProjects = new ArrayList<>();
+    private ArrayList<OrderModel> mInvestedProjects = new ArrayList<>();
     private InvestmentListViewAdapter mAdapter;
+    private Handler handler = new Handler();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,14 +94,6 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
                         mInvestmentButton.setChecked(true);
                         mCurrentSelectButton = mInvestmentButton;
                         break;
-                    case R.id.home_record_top_tab_ll_bonus:
-                        mBonusButton.setChecked(true);
-                        mCurrentSelectButton = mBonusButton;
-                        break;
-                    case R.id.home_record_top_tab_ll_search:
-                        mSearchButton.setChecked(true);
-                        mCurrentSelectButton = mSearchButton;
-                        break;
                 }
             }
         };
@@ -103,28 +111,11 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
         linearLayout = (LinearLayout)getActivity().findViewById(R.id.home_record_top_tab_ll_investment);
         linearLayout.setOnClickListener(tabButtonOnClickListener);
 
-        mBonusButton = new TopTabButton(getActivity());
-        mBonusButton.imageView = (ImageView)getActivity().findViewById(R.id.home_record_top_tab_ll_bonus_iv);
-        mBonusButton.textView = (TextView)getActivity().findViewById(R.id.home_record_top_tab_ll_bonus_tv);
-        linearLayout = (LinearLayout)getActivity().findViewById(R.id.home_record_top_tab_ll_bonus);
-        linearLayout.setOnClickListener(tabButtonOnClickListener);
-
-        mSearchButton = new TopTabButton(getActivity());
-        mSearchButton.imageView = (ImageView)getActivity().findViewById(R.id.home_record_top_tab_ll_search_iv);
-        mSearchButton.textView = (TextView)getActivity().findViewById(R.id.home_record_top_tab_ll_search_tv);
-        linearLayout = (LinearLayout)getActivity().findViewById(R.id.home_record_top_tab_ll_search);
-        linearLayout.setOnClickListener(tabButtonOnClickListener);
-
         refreshableView = (RefreshableView)getActivity().findViewById(R.id.home_record_refreshable_view);
         refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
             @Override
             public void onRefresh() {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                refreshableView.finishRefreshing();
+                handler.post(onUpdateOrderList_r);
             }
         }, PullRefreshConfig.FRAGMENT_HOME_RECORD);
 
@@ -138,12 +129,79 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
     }
 
     private void initData(){
-        InvestedProjectDao investedProjectDao = MyDaoMaster.getDaoSession().getInvestedProjectDao();
-        mInvestedProjects.addAll(investedProjectDao.loadAll());
+//        InvestedProjectDao investedProjectDao = MyDaoMaster.getDaoSession().getInvestedProjectDao();
+//        mInvestedProjects.addAll(investedProjectDao.loadAll());
 
 
 
         mAdapter.notifyDataSetChanged();
+    }
+
+    Runnable onUpdateOrderList_r = new Runnable() {
+        @Override
+        public void run() {
+            HttpParams httpParams = new HttpParams();
+
+            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_USER_ID, CurrentUser.getCurrentUser().getUserId());
+            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_FIRST_PAGE, 0);
+            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_TOKEN, CurrentUser.getToken());
+
+            HttpClient.post(GetProjectListProtocol.URL_GET_ORDER_LIST, httpParams, new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    UIHelper.toast(getActivity(), "网络异常");
+                    refreshableView.finishRefreshing();
+                }
+
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    if (s == null) {
+                        UIHelper.toast(getActivity(), "服务器异常");
+                        refreshableView.finishRefreshing();
+                        return;
+                    }
+                    onUpdateOrderResult(HttpClient.getValueFromHeader(headers, GetProjectListProtocol.GET_ORDER_RESULT_KEY), s);
+                }
+            });
+        }
+    };
+
+    private void onUpdateOrderResult(String result, String response){
+        switch (result){
+            case GetProjectListProtocol.GET_ORDER_RESULT_SUCCESS:
+                UIHelper.toast(getActivity(), "更新成功");
+                onUpdateOrderSuccess(response);
+                refreshableView.finishRefreshing();
+                break;
+            case GetProjectListProtocol.GET_ORDER_RESULT_NEED_LOGIN:
+                UIHelper.toast(getActivity(), "需要登录");
+                refreshableView.finishRefreshing();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void onUpdateOrderSuccess(String response){
+        ArrayList<OrderModel> orderModels = new ArrayList<>();
+        try{
+            JSONArray jsonArray = new JSONArray(response);
+            for(int i = 0; i < jsonArray.length(); i++){
+                JSONObject object = jsonArray.getJSONObject(i);
+                OrderModel orderModel = new OrderModel();
+                orderModel.setOrderState(object.getInt("orderState"));
+                orderModel.setPurchaseNum(object.getInt("PurchaseNum"));
+                orderModel.setAdvanceNum(object.getInt("AdvanceNum"));
+                orderModel.setProjectName(object.getString("ActivityName"));
+                orderModel.setProjectStatus(object.getInt("ActivityStatus"));
+                orderModels.add(orderModel);
+            }
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        mInvestedProjects.addAll(orderModels);
     }
 
     @Override
@@ -155,11 +213,11 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
     }
 
     public class InvestmentListViewAdapter extends BaseAdapter {
-        private List<InvestedProject> data;
+        private List<OrderModel> data;
         private Context context;
         private LayoutInflater mInflater;
 
-        public InvestmentListViewAdapter(Context context, List<InvestedProject> data){
+        public InvestmentListViewAdapter(Context context, List<OrderModel> data){
             this.context = context;
             this.data = data;
             mInflater = LayoutInflater.from(context);
@@ -192,10 +250,8 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
-            InvestedProject investedProject = (InvestedProject)getItem(position);
+            OrderModel investedProject = (OrderModel)getItem(position);
 
-            ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
-            Project project = projectDao.load(investedProject.getProjectId());
 
             ViewHolder viewHolder;
             if(convertView == null){
@@ -207,7 +263,6 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
                 viewHolder.tvDay = (TextView)convertView.findViewById(R.id.textView5);
                 viewHolder.tvHour = (TextView)convertView.findViewById(R.id.textView7);
                 viewHolder.tvMinute = (TextView)convertView.findViewById(R.id.textView9);
-                viewHolder.tvInvestInfo = (TextView)convertView.findViewById(R.id.textView12);
                 viewHolder.tvAwarding = (TextView)convertView.findViewById(R.id.textView2);
                 viewHolder.tvAwardTarget = (TextView)convertView.findViewById(R.id.textView3);
 
@@ -216,21 +271,21 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
                 viewHolder = (ViewHolder)convertView.getTag();
             }
 
-            ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
-            QueryBuilder queryBuilder = projectImageDao.queryBuilder();
-            queryBuilder.where(ProjectImageDao.Properties.ProjectId.eq(project.getId()));
-            ProjectImage projectImage = (ProjectImage)queryBuilder.build().list().get(0);
-            if(projectImage != null){
-                try{
-                    viewHolder.ivLogo.setImageBitmap( MediaStore.Images.Media.getBitmap(context.getContentResolver(),
-                            Uri.parse(projectImage.getImageUrl())));
-                }catch (IOException e){
-
-                }
-            }
-
-            String string = String.format(getString(R.string.invest_project_invested_price), investedProject.getPrice());
-            viewHolder.tvInvestInfo.setText(string);
+//            ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
+//            QueryBuilder queryBuilder = projectImageDao.queryBuilder();
+//            queryBuilder.where(ProjectImageDao.Properties.ProjectId.eq(project.getId()));
+//            ProjectImage projectImage = (ProjectImage)queryBuilder.build().list().get(0);
+//            if(projectImage != null){
+//                try{
+//                    viewHolder.ivLogo.setImageBitmap( MediaStore.Images.Media.getBitmap(context.getContentResolver(),
+//                            Uri.parse(projectImage.getImageUrl())));
+//                }catch (IOException e){
+//
+//                }
+//            }
+//
+//            String string = String.format(getString(R.string.invest_project_invested_price), investedProject.getPrice());
+//            viewHolder.tvInvestInfo.setText(string);
 
             return convertView;
         }
@@ -241,7 +296,9 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
             TextView tvDay;
             TextView tvHour;
             TextView tvMinute;
-            TextView tvInvestInfo;
+            TextView tvInvestAmout;
+            TextView tvInvestNum;
+            TextView tvInvestStageCount;
             TextView tvAwarding;
             TextView tvAwardTarget;
         }

@@ -4,15 +4,216 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.http.HttpClient;
+import com.dragoneye.money.http.HttpParams;
+import com.dragoneye.money.protocol.UserProtocol;
+import com.dragoneye.money.tool.ToolMaster;
+import com.dragoneye.money.tool.UIHelper;
+import com.dragoneye.money.user.CurrentUser;
+import com.dragoneye.money.user.UserBase;
+import com.loopj.android.http.TextHttpResponseHandler;
 
-public class ImproveUserInfoActivity extends ActionBarActivity {
+import org.apache.http.Header;
+
+import java.util.HashMap;
+
+public class ImproveUserInfoActivity extends ActionBarActivity implements View.OnClickListener{
+
+    private TextView mTVPhoneNumber;
+    private EditText mETUserName;
+    private EditText mETEmail;
+    private RadioGroup mRGSexuality;
+    private EditText mETAddress;
+    private EditText mETRealName;
+    private EditText mETIdentityId;
+    private EditText mETSelfIntroduction;
+    private EditText mETEduInfo;
+    private EditText mETCareer;
+    private TextView mTVConfirmButton;
+
+    private View mLLEntrepreneurInfo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_project_people_info);
+        initView();
+        initData();
+    }
+
+    private void initView(){
+        mTVPhoneNumber = (TextView)findViewById(R.id.improve_user_info_tv_tel);
+        mETUserName = (EditText)findViewById(R.id.improve_user_info_et_user_name);
+        mETEmail = (EditText)findViewById(R.id.improve_user_info_et_email);
+        mRGSexuality = (RadioGroup)findViewById(R.id.improve_user_info_rg_sexuality);
+        mETAddress = (EditText)findViewById(R.id.improve_user_info_et_address);
+        mETRealName = (EditText)findViewById(R.id.improve_user_info_et_realName);
+        mETIdentityId = (EditText)findViewById(R.id.improve_user_info_identityId);
+        mETSelfIntroduction = (EditText)findViewById(R.id.improve_user_info_selfIntroduction);
+        mETEduInfo = (EditText)findViewById(R.id.improve_user_info_et_eduInfo);
+        mETCareer = (EditText)findViewById(R.id.improve_user_info_et_career);
+        mTVConfirmButton = (TextView)findViewById(R.id.improve_user_info_tv_confirmButton);
+        mTVConfirmButton.setOnClickListener(this);
+
+        mLLEntrepreneurInfo = findViewById(R.id.inmprove_user_info_ll_entrepreneurInfo);
+
+        mTVPhoneNumber.setText(CurrentUser.getCurrentUser().getUserId());
+
+        setUIMode(CurrentUser.getCurrentUser().getUserType());
+    }
+
+    private void initData(){
+
+    }
+
+    private void setUIMode(int userType){
+        if(userType == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+            mLLEntrepreneurInfo.setVisibility(View.VISIBLE);
+        }else {
+            mLLEntrepreneurInfo.setVisibility(View.GONE);
+        }
+    }
+
+    private int getSexuality(){
+        switch (mRGSexuality.getCheckedRadioButtonId()){
+            case R.id.improve_user_info_rb_male:
+                return UserBase.SEXUALITY_MALE;
+            case R.id.improve_user_info_rb_female:
+                return UserBase.SEXUALITY_FEMALE;
+            case R.id.improve_user_info_rb_privacy:
+            default:
+                return UserBase.SEXUALITY_PRIVACY;
+        }
+    }
+
+    private boolean checkUserInput(){
+        if(mETUserName.getText().length() == 0){
+            UIHelper.toast(this, "请输入用户名");
+            return false;
+        }
+        if(mETEmail.getText().length() == 0){
+            UIHelper.toast(this, "请输入邮箱");
+            return false;
+        }
+        if(mETAddress.getText().length() == 0){
+            UIHelper.toast(this, "请输入地址");
+            return false;
+        }
+
+        if(CurrentUser.getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+            if(mETRealName.getText().length() == 0){
+                UIHelper.toast(this, "请输入真实姓名");
+                return false;
+            }
+            if(mETIdentityId.getText().length() == 0){
+                UIHelper.toast(this, "请输入身份证号");
+                return false;
+            }
+            if(mETSelfIntroduction.getText().length() == 0){
+                UIHelper.toast(this, "请输入个人介绍");
+                return false;
+            }
+            if(mETEduInfo.getText().length() == 0){
+                UIHelper.toast(this, "请输入教育经历");
+                return false;
+            }
+            if(mETCareer.getText().length() == 0){
+                UIHelper.toast(this, "请输入个人经历");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onClick(View v){
+        switch (v.getId()){
+            case R.id.improve_user_info_tv_confirmButton:
+                onConfirm();
+                break;
+        }
+    }
+
+    private void onConfirm(){
+        if( !checkUserInput() ){
+            return;
+        }
+
+        HttpParams params = new HttpParams();
+        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_TOKEN, CurrentUser.getToken());
+        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_TYPE, CurrentUser.getCurrentUser().getUserType());
+        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_INFO, ToolMaster.gsonInstance().toJson(getUserImproveInfo()) );
+        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_ID, CurrentUser.getCurrentUser().getUserId());
+
+        HttpClient.post(UserProtocol.URL_IMPROVE_USER_INFO, params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                UIHelper.toast(ImproveUserInfoActivity.this, "网络异常");
+            }
+
+            @Override
+            public void onSuccess(int i, Header[] headers, String s) {
+                if(s == null){
+                    UIHelper.toast(ImproveUserInfoActivity.this, "服务器异常");
+                    return;
+                }
+                onImproveResult(s);
+            }
+        });
+
+    }
+
+    private void onImproveResult(String result){
+        int resultCode = 0;
+        try{
+            resultCode = Integer.parseInt(result);
+        }catch (Exception e){
+            UIHelper.toast(this, "服务器异常");
+        }
+
+        switch (resultCode){
+            case UserProtocol.IMPROVE_USER_INFO_RESULT_NEED_LOGIN:
+                UIHelper.toast(this, "需要登录");
+                break;
+            case UserProtocol.IMPROVE_USER_INFO_RESULT_INFO_ERROR:
+                UIHelper.toast(this, "用户信息有误");
+                break;
+            case UserProtocol.IMPROVE_USER_INFO_RESULT_INFO_TOKEN_INCORRECT:
+                UIHelper.toast(this, "秘钥不正确");
+                break;
+            case UserProtocol.IMPROVE_USER_INFO_RESULT_INFO_USER_TYPE_ERROR:
+                UIHelper.toast(this, "用户类型错误");
+                break;
+            case UserProtocol.IMPROVE_USER_INFO_RESULT_SUCCESS:
+                UIHelper.toast(this, "更改成功");
+                break;
+        }
+    }
+
+    private HashMap<String, String> getUserImproveInfo(){
+        HashMap<String, String> userInfo = new HashMap<>();
+        userInfo.put("location", mETAddress.getText().toString());
+        userInfo.put("mail", mETEmail.getText().toString());
+        userInfo.put("sex", String.valueOf(getSexuality()));
+        userInfo.put("userName", mETUserName.getText().toString());
+
+        if(CurrentUser.getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+            userInfo.put("education", mETEduInfo.getText().toString());
+            userInfo.put("identity", mETIdentityId.getText().toString());
+            userInfo.put("personalProfile", mETCareer.getText().toString());
+            userInfo.put("selfintroduce", mETSelfIntroduction.getText().toString());
+            userInfo.put("goodAtField", "");
+        }
+
+        return userInfo;
     }
 
     @Override

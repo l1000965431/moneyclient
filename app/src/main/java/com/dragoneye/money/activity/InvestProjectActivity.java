@@ -1,5 +1,7 @@
 package com.dragoneye.money.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -10,13 +12,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.dragoneye.money.DemoDataModel;
 import com.dragoneye.money.R;
+import com.dragoneye.money.application.AppInfoManager;
+import com.dragoneye.money.application.MyApplication;
+import com.dragoneye.money.config.ProjectStatusConfig;
 import com.dragoneye.money.dao.InvestedProject;
 import com.dragoneye.money.dao.InvestedProjectDao;
 import com.dragoneye.money.dao.MyDaoMaster;
@@ -24,10 +30,19 @@ import com.dragoneye.money.dao.Project;
 import com.dragoneye.money.dao.ProjectDao;
 import com.dragoneye.money.dao.ProjectImage;
 import com.dragoneye.money.dao.ProjectImageDao;
+import com.dragoneye.money.http.HttpClient;
+import com.dragoneye.money.http.HttpParams;
+import com.dragoneye.money.protocol.InvestProjectProtocol;
+import com.dragoneye.money.tool.UIHelper;
+import com.dragoneye.money.user.CurrentUser;
 import com.dragoneye.money.view.DotViewPager;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
@@ -39,16 +54,27 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
     private DotViewPager mDotViewPager;
     private ArrayList<String> mImageUrl;
     ArrayList<View> viewContainer = new ArrayList<>();
-    private TextView mConfirmTextView;
+    private TextView mTextViewConfirm;
     private Project mProject;
     private InvestedProject mInvestedProject;
-    private TextView mInvestPriceTextView;
-    private Spinner mPriceSelectedSpinner;
-    private final int mPriceArr[] = {
-            2, 4, 10, 20, 100, 200, 500, 1000, 5000, 10000
-    };
-    private int mSelectedPrice;
+    //private TextView mTextViewInvestPrice;
+    private ProgressBar mProgressBar;
+    private TextView mTextViewProjectProgress;
+    private LinearLayout mLinearLayoutResultRoot;
+    private ArrayList<Integer> mPriceList = new ArrayList<>();
+    private DemoDataModel.ModeProjectGroup modeProjectGroup;
+    DemoDataModel.ModeProject mModeProject;
 
+    private View mIVLeadAdd;
+    private View mIVLeadSubtract;
+    private View mIVFallowAdd;
+    private View mIVFallowSubtract;
+    private TextView mTVLeadStage;
+    private TextView mTVFallowStage;
+    private EditText mETInvestPrice;
+    private int mProjectStageMaxNum = 20;
+    private int mSelectedLeadStageNum;
+    private int mSelectedFallowStageNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,18 +86,49 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
         initSpinnerItems();
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
+        mProject = projectDao.load(mProject.getId());
+        if( mProject == null ){
+            finish();
+            return;
+        }
+        updateUIContent();
+    }
+
     private void initView(){
         mDotViewPager = (DotViewPager)findViewById(R.id.investment_project_detail_dot_viewpager);
 
-        mConfirmTextView = (TextView)findViewById(R.id.textView27);
-        mConfirmTextView.setOnClickListener(this);
+        mTextViewConfirm = (TextView)findViewById(R.id.invest_project_tv_confirm);
+        mTextViewConfirm.setOnClickListener(this);
 
-        mInvestPriceTextView = (TextView)findViewById(R.id.invest_project_tv_invest_price);
+//        mTextViewInvestPrice = (TextView)findViewById(R.id.invest_project_tv_invest_price);
 
-        mPriceSelectedSpinner = (Spinner)findViewById(R.id.invest_project_spinner);
+        mProgressBar = (ProgressBar)findViewById(R.id.invest_project_progressbar);
+        mTextViewProjectProgress = (TextView)findViewById(R.id.invest_project_tv_project_progress);
+
+        mLinearLayoutResultRoot = (LinearLayout)findViewById(R.id.investment_ll_result_root);
+
+        mIVLeadAdd = findViewById(R.id.invest_project_iv_leadAdd);
+        mIVLeadAdd.setOnClickListener(this);
+        mIVLeadSubtract = findViewById(R.id.invest_project_iv_leadSubstract);
+        mIVLeadSubtract.setOnClickListener(this);
+        mIVFallowAdd = findViewById(R.id.invest_project_iv_fallowAdd);
+        mIVFallowAdd.setOnClickListener(this);
+        mIVFallowSubtract = findViewById(R.id.invest_project_iv_fallowSubtract);
+        mIVFallowSubtract.setOnClickListener(this);
+
+        mTVLeadStage = (TextView)findViewById(R.id.textView25);
+        mTVFallowStage = (TextView)findViewById(R.id.textView21);
+
+        mETInvestPrice = (EditText)findViewById(R.id.invest_project_et_price_num);
     }
 
     private void initData(){
+        modeProjectGroup = ((MyApplication)getApplication()).demoDataModel.modeProjectGroup;
         mImageUrl = new ArrayList<>();
 
         Intent intent = getIntent();
@@ -97,26 +154,108 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
         queryBuilder = investedProjectDao.queryBuilder();
         queryBuilder.where(InvestedProjectDao.Properties.ProjectId.eq(mProject.getId()));
         mInvestedProject = (InvestedProject)queryBuilder.unique();
-        updateInvestedPrice();
 
+        resetLead();
+        resetFallow();
+        setLeadStageNum(0);
+        setFallowStageNum(0);
+    }
+
+    private void updateUIContent(){
+        updateInvestedPrice();
+        if( mProject.getStatus() == ProjectStatusConfig.PROJECT_SUCCESS ){
+            mProgressBar.setProgress(100);
+            mTextViewProjectProgress.setText( String.format(getString(R.string.invest_project_project_progress), 100));
+        }else {
+            mProgressBar.setProgress(10);
+            mTextViewProjectProgress.setText(String.format(getString(R.string.invest_project_project_progress), 10));
+        }
     }
 
     private void updateInvestedPrice(){
         if( mInvestedProject == null ){
-            mInvestPriceTextView.setText(R.string.invest_project_no_invested_price);
+//            mTextViewInvestPrice.setText(R.string.invest_project_no_invested_price);
         }else {
             String string = String.format(getString(R.string.invest_project_invested_price), mInvestedProject.getPrice());
-            mInvestPriceTextView.setText(string);
+//            mTextViewInvestPrice.setText(string);
         }
     }
 
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.textView27:
+            case R.id.invest_project_tv_confirm:
                 onConfirm();
+                break;
+            case R.id.invest_project_iv_leadSubstract:
+                onLeadSubtract();
+                break;
+            case R.id.invest_project_iv_leadAdd:
+                onLeadAdd();
+                break;
+            case R.id.invest_project_iv_fallowAdd:
+                onFallowAdd();
+                break;
+            case R.id.invest_project_iv_fallowSubtract:
+                onFallowSubtract();
                 break;
         }
     }
+
+    private void onLeadAdd(){
+        resetFallow();
+        if( mSelectedLeadStageNum < mProjectStageMaxNum ){
+            mSelectedLeadStageNum++;
+            setLeadStageNum(mSelectedLeadStageNum);
+        }
+    }
+
+    private void onLeadSubtract(){
+        resetFallow();
+        if( mSelectedLeadStageNum > 0 ){
+            mSelectedLeadStageNum--;
+            setLeadStageNum(mSelectedLeadStageNum);
+        }
+    }
+
+    private void onFallowAdd(){
+        resetLead();
+        if( mSelectedFallowStageNum < mProjectStageMaxNum ){
+            mSelectedFallowStageNum++;
+            setFallowStageNum(mSelectedFallowStageNum);
+        }
+    }
+
+    private void onFallowSubtract(){
+        resetLead();
+        if( mSelectedFallowStageNum > 0 ){
+            mSelectedFallowStageNum--;
+            setFallowStageNum(mSelectedFallowStageNum);
+        }
+    }
+
+    private void resetLead(){
+        if( mSelectedLeadStageNum != 0 ){
+            setLeadStageNum(0);
+        }
+        mSelectedLeadStageNum = 0;
+    }
+
+    private void resetFallow(){
+        if( mSelectedFallowStageNum != 0 ){
+            setFallowStageNum(0);
+        }
+        mSelectedFallowStageNum = 0;
+    }
+
+    private void setLeadStageNum(int num){
+        mTVLeadStage.setText(String.format("%d/%d", num, mProjectStageMaxNum));
+    }
+
+    private void setFallowStageNum(int num){
+        mTVFallowStage.setText(String.format("%d/%d", num, mProjectStageMaxNum));
+    }
+
+
 
     private void initViewPagerImages(){
         for(String url : mImageUrl){
@@ -134,39 +273,168 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
 
     private void initSpinnerItems(){
 
-        ArrayList<String> spinnerItemStrings = new ArrayList<>();
-        for( int price : mPriceArr){
-            spinnerItemStrings.add( String.valueOf(price) + getString(R.string.monetary_unit_rmb));
+        for( int price : modeProjectGroup.sTicketsPrices){
+            mPriceList.add(price);
         }
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.invest_project_spinner_popup_item, spinnerItemStrings);
-        mPriceSelectedSpinner.setAdapter(arrayAdapter);
+        for(DemoDataModel.ModeProject modeProject : modeProjectGroup.projects){
+            if( modeProject.id == mProject.getId() ){
+                mModeProject = modeProject;
+                break;
+            }
+        }
 
-        mPriceSelectedSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        for( Integer price : mModeProject.bTicketsList ){
+            mPriceList.add(price);
+        }
+
+        ArrayList<String> spinnerItemStrings = new ArrayList<>();
+        for( int price : mPriceList){
+            spinnerItemStrings.add(String.valueOf(price) + getString(R.string.monetary_unit_rmb));
+        }
+    }
+
+    private void updateProbability(int price){
+        mLinearLayoutResultRoot.removeAllViews();
+
+        float factor = price / 2.0f;
+        Object[] key_arr = modeProjectGroup.bonusProbabilities.keySet().toArray();
+        Arrays.sort(key_arr);
+        for( Object key : key_arr ){
+            TextView textView = new TextView(this);
+            mLinearLayoutResultRoot.addView(textView);
+
+            int bonus = (Integer)key;
+            float probability = modeProjectGroup.bonusProbabilities.get(key) * factor * 100;
+            String str = String.format("%%%f\t\t     ￥%d", probability, bonus);
+            textView.setText(str);
+        }
+    }
+
+    private void onConfirm(){
+        if( !checkUserInput() ){
+            return;
+        }
+
+        int investType = 0;
+        int investStageNum = 0;
+        int investPriceNum = 0;
+        String tips = "您确定要";
+        if( isLeadInvest() ){
+            tips += "领投" + mSelectedLeadStageNum + "期，每期金额为￥"
+                    + 2000000 + "，共计￥" + 2000000 * mSelectedLeadStageNum + "。";
+            investType = InvestProjectProtocol.INVEST_TYPE_LEAD;
+            investStageNum = mSelectedLeadStageNum;
+        }else {
+            tips += "跟投" + mSelectedFallowStageNum + "期，每期金额为￥"
+                    + getFallowPriceNum() + "，共计￥" + getFallowPriceNum() * mSelectedFallowStageNum + "。";
+            investType = InvestProjectProtocol.INVEST_TYPE_FALLOW;
+            investPriceNum = getFallowPriceNum();
+            investStageNum = mSelectedFallowStageNum;
+        }
+
+        final int flInvestType = investType;
+        final int flInvestStageNum = investStageNum;
+        final int flInvestPriceNum = investPriceNum;
+
+        new AlertDialog.Builder(this).setTitle(AppInfoManager.getApplicationName(this))
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onInvest(flInvestType, flInvestStageNum, flInvestPriceNum);
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).setMessage(tips).show();
+
+    }
+
+    private void onInvest(int investType, int investStageNum, int investPriceNum){
+        HttpParams params = new HttpParams();
+
+        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_USER_ID, CurrentUser.getCurrentUser().getUserId());
+        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_ACTIVITY_STAGE_ID, "");
+        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_TYPE, investType);
+        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_STAGE_NUM, investStageNum);
+        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_PRICE_NUM, investPriceNum);
+
+        HttpClient.post(InvestProjectProtocol.URL_INVEST_PROJECT, params, new TextHttpResponseHandler() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mSelectedPrice = mPriceArr[position];
+            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                UIHelper.toast(InvestProjectActivity.this, "网络异常");
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onSuccess(int i, Header[] headers, String s) {
+                onInvestResult(s);
             }
         });
     }
 
-    private void onConfirm(){
-        if( mSelectedPrice > 0 ){
-            InvestedProjectDao dao = MyDaoMaster.getDaoSession().getInvestedProjectDao();
-            if( mInvestedProject == null ){
-                InvestedProject investedProject = new InvestedProject(null, mProject.getId(), (float)mSelectedPrice);
-                dao.insert(investedProject);
-            }else{
-                mInvestedProject.setPrice( mInvestedProject.getPrice() + mSelectedPrice );
-                dao.update(mInvestedProject);
-            }
-            finish();
+    private void onInvestResult(String s){
+        if( s == null ){
+            UIHelper.toast(this, "服务器异常");
+            return;
         }
+
+        int resultCode = 0;
+        try{
+            resultCode = Integer.parseInt(s);
+        }catch (Exception e){
+            UIHelper.toast(this, "服务器异常");
+            return;
+        }
+
+        switch (resultCode){
+            case InvestProjectProtocol.INVEST_RESULT_SUCCESS:
+                UIHelper.toast(this, "投资成功");
+                break;
+            case InvestProjectProtocol.INVEST_RESULT_IMPROVE_INFO:
+                UIHelper.toast(this, "需要完善个人信息");
+                break;
+            case InvestProjectProtocol.INVSET_RESULT_FAILED:
+                UIHelper.toast(this, "投资失败");
+                break;
+            default:
+                UIHelper.toast(this, "服务器异常");
+                break;
+        }
+    }
+
+    private boolean checkUserInput(){
+        if( isLeadInvest() ){
+            return true;
+        }else if( isFallowInvest() ){
+            if( mETInvestPrice.getText().length() == 0 ){
+                UIHelper.toast(this, "请输入要跟投的数量");
+                return false;
+            }
+        }else {
+            UIHelper.toast(this, "请选你的领投或跟投期数");
+            return false;
+        }
+
+        return true;
+    }
+
+    private int getFallowPriceNum(){
+        String num = mETInvestPrice.getText().toString();
+        if( num.isEmpty() )
+            return 0;
+
+        return Integer.parseInt(num);
+    }
+
+    private boolean isLeadInvest(){
+        return mSelectedLeadStageNum > 0;
+    }
+
+    private boolean isFallowInvest(){
+        return mSelectedFallowStageNum > 0;
     }
 
     private class ImageViewPagerAdapter extends PagerAdapter{

@@ -15,20 +15,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
-import com.dragoneye.money.activity.fragments.HomeInformationFragment;
 import com.dragoneye.money.activity.fragments.HomeInvestmentFragment;
 import com.dragoneye.money.activity.fragments.HomeMyselfFragment;
 import com.dragoneye.money.activity.fragments.HomeRecordFragment;
 
-
 public class MainActivity extends BaseActivity implements View.OnClickListener{
     public static final int TAB_INVESTMENT = 0;
     public static final int TAB_RECORD = 1;
-    public static final int TAB_INFORMATION = 2;
-    public static final int TAB_MYSELF = 3;
+    public static final int TAB_MYSELF = 2;
+
+    public static final int TAB_COUNT = 3;
 
     private class BottomButton{
         public ImageView imageView;
+        public ImageView dot;
         public TextView textView;
         public void setChecked(boolean checked){
             if(checked){
@@ -39,10 +39,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 textView.setTextColor(getResources().getColor(R.color.home_bottom_button_unselected));
             }
         }
+        public void setShowDot(boolean isShow){
+            if(isShow){
+                dot.setVisibility(View.VISIBLE);
+            }else {
+                dot.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
     private ViewPager viewPager;
-    private BottomButton investButton, recordButton, informationButton, myselfButton;
+    private BottomButton investButton, recordButton, myselfButton;
     private BottomButton currentCheckedButton;
 
     @Override
@@ -59,24 +66,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         investButton = new BottomButton();
         investButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_investment_imageView);
         investButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_investment_textView);
+        investButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_investment_red);
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_investment);
         linearLayout.setOnClickListener(this);
 
         recordButton = new BottomButton();
         recordButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_record_imageView);
         recordButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_record_textView);
+        recordButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_record_red);
         linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_record);
-        linearLayout.setOnClickListener(this);
-
-        informationButton = new BottomButton();
-        informationButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_news_imageView);
-        informationButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_news_textView);
-        linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_news);
         linearLayout.setOnClickListener(this);
 
         myselfButton = new BottomButton();
         myselfButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_me_imageView);
         myselfButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_me_textView);
+        myselfButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_me_red);
         linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_me);
         linearLayout.setOnClickListener(this);
 
@@ -105,10 +109,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                         recordButton.setChecked(true);
                         currentCheckedButton = recordButton;
                         break;
-                    case TAB_INFORMATION:
-                        informationButton.setChecked(true);
-                        currentCheckedButton = informationButton;
-                        break;
                     case TAB_MYSELF:
                         myselfButton.setChecked(true);
                         currentCheckedButton = myselfButton;
@@ -134,9 +134,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             case R.id.function_switch_bottom_button_record:
                 viewPager.setCurrentItem(TAB_RECORD);
                 break;
-            case R.id.function_switch_bottom_button_news:
-                viewPager.setCurrentItem(TAB_INFORMATION);
-                break;
             case R.id.function_switch_bottom_button_me:
                 viewPager.setCurrentItem(TAB_MYSELF);
                 break;
@@ -160,8 +157,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.main_menu_submit_project) {
             Intent intent = new Intent(this, ProjectEditActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
+        if(id == R.id.main_menu_project_detail){
+            Intent intent = new Intent(this, InvestProjectActivity.class);
             startActivity(intent);
             return true;
         }
@@ -170,7 +173,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private class FragmentAdapter extends FragmentPagerAdapter{
-        public final static int TAB_COUNT = 4;
         public FragmentAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -182,8 +184,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     return new HomeInvestmentFragment();
                 case TAB_RECORD:
                     return new HomeRecordFragment();
-                case TAB_INFORMATION:
-                    return new HomeInformationFragment();
                 case TAB_MYSELF:
                     return new HomeMyselfFragment();
 

@@ -6,12 +6,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
-import com.dragoneye.money.protocol.ServerProtocol;
+import com.dragoneye.money.protocol.UserProtocol;
 import com.dragoneye.money.tool.UIHelper;
 import com.loopj.android.http.TextHttpResponseHandler;
 
@@ -28,6 +29,9 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     EditText mUserPasswordTextField;
     EditText mUserPasswordConfirmTextFiled;
 
+    RadioGroup mRBUserType;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +47,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         mUserIdTextField = (EditText)findViewById(R.id.fragment_register_account);
         mUserPasswordTextField = (EditText)findViewById(R.id.fragment_register_Enter_password);
         mUserPasswordConfirmTextFiled = (EditText)findViewById(R.id.fragment_register_Enter_password_again);
+
+        mRBUserType = (RadioGroup)findViewById(R.id.fragment_register_Classification);
     }
 
     private void initData(){
@@ -62,10 +68,11 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
     private void onRegister(){
         HttpParams params = new HttpParams();
-        params.put(ServerProtocol.REGISTER_PARAM_USER_ID, mUserIdTextField.getText().toString());
-        params.put(ServerProtocol.REGISTER_PARAM_USER_PASSWORD, mUserPasswordTextField.getText().toString());
+        params.put(UserProtocol.REGISTER_PARAM_USER_ID, mUserIdTextField.getText().toString());
+        params.put(UserProtocol.REGISTER_PARAM_USER_PASSWORD, mUserPasswordTextField.getText().toString());
+        params.put(UserProtocol.REGISTER_PARAM_USER_TYPE, getUserType());
 
-        HttpClient.post(ServerProtocol.URL_REGISTER, params, new TextHttpResponseHandler() {
+        HttpClient.post(UserProtocol.URL_REGISTER, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                 UIHelper.toast(RegisterActivity.this, "网络异常");
@@ -73,31 +80,36 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
             @Override
             public void onSuccess(int i, Header[] headers, String s) {
+                if( s == null ){
+                    UIHelper.toast(RegisterActivity.this, "服务器异常，请稍后再试");
+                    return;
+                }
                 onRegisterResult(s);
             }
         });
     }
 
     private void onRegisterResult(String result){
-        int resultCode = 0;
-        try{
-            resultCode = Integer.parseInt(result);
-        }catch (NumberFormatException e){
-            UIHelper.toast(this, "服务器异常");
-            return;
-        }
-
-        switch (resultCode){
-            case ServerProtocol.REGISTER_RESULT_SUCCESS:
+        switch (result){
+            case UserProtocol.REGISTER_RESULT_SUCCESS:
                 UIHelper.toast(this, "注册成功");
+                finish();
                 break;
-            case ServerProtocol.REGISTER_RESULT_OCCUPIED:
+            case UserProtocol.REGISTER_RESULT_OCCUPIED:
                 UIHelper.toast(this, "用户名已被占用");
                 break;
-            case ServerProtocol.REGISTER_RESULT_FORMAT_INCORRECT:
+            case UserProtocol.REGISTER_RESULT_FORMAT_INCORRECT:
                 UIHelper.toast(this, "用户名格式错误");
                 break;
+            case UserProtocol.REGISTER_RESULT_CLOSED:
+                UIHelper.toast(this, "已关闭注册");
+                break;
+            case UserProtocol.REGISTER_RESULT_SECURITY_CODE_ERROR:
+                UIHelper.toast(this, "验证码错误");
+                break;
+            case UserProtocol.REGISTER_RESULT_FAILED:
             default:
+                UIHelper.toast(this, "注册失败");
                 break;
         }
     }
@@ -117,7 +129,21 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             return false;
         }
 
+        if( getUserType() == -1 ){
+            UIHelper.toast(this, "请选择用户类别");
+            return false;
+        }
         return true;
+    }
+
+    private int getUserType(){
+        int id = mRBUserType.getCheckedRadioButtonId();
+        if( id == R.id.fragment_register_Classification_Investment ){
+            return UserProtocol.PROTOCOL_USER_TYPE_INVESTOR;
+        }else if( id == R.id.fragment_register_Classification_Fundraising ){
+            return UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR;
+        }
+        return -1;
     }
 
     @Override

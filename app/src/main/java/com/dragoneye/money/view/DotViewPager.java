@@ -2,6 +2,7 @@ package com.dragoneye.money.view;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -21,11 +22,14 @@ import java.util.ArrayList;
  *
  */
 public class DotViewPager extends LinearLayout {
+    private static final int AUTO_SCROLL_PAGE_INTERVAL = 6000;
+
     private ViewPager mViewPager;
     private LinearLayout mDotsRoot;
     private ArrayList<ImageView> mDotsViewArray;
     private ImageView mSelectedDot;
     private PagerAdapter mAdapter;
+    private Handler mHandler;
 
     public DotViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -35,6 +39,7 @@ public class DotViewPager extends LinearLayout {
         mDotsRoot = (LinearLayout)rootView.findViewById(R.id.custom_dots_pager_view_dots_root);
         addView(rootView);
         initDots();
+        mHandler = new Handler();
 
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -52,7 +57,24 @@ public class DotViewPager extends LinearLayout {
 
             }
         });
+
+
+        mHandler.postDelayed(scrollPage, AUTO_SCROLL_PAGE_INTERVAL);
     }
+
+    final Runnable scrollPage = new Runnable() {
+        @Override
+        public void run() {
+            int count = mViewPager.getAdapter().getCount();
+            int currentIndex = mViewPager.getCurrentItem();
+            if( currentIndex + 1 == count ){
+                mViewPager.setCurrentItem(0);
+            }else {
+                mViewPager.setCurrentItem(currentIndex + 1);
+            }
+            mHandler.postDelayed(scrollPage, AUTO_SCROLL_PAGE_INTERVAL);
+        }
+    };
 
     public void setAdapter(PagerAdapter adapter){
         mViewPager.setAdapter(adapter);

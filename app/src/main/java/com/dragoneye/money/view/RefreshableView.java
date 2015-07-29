@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.View.OnTouchListener;
 import android.view.animation.RotateAnimation;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -18,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.tool.UIHelper;
 
 /**
  * 可进行下拉刷新的自定义控件。
@@ -50,7 +52,7 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 	/**
 	 * 下拉头部回滚的速度
 	 */
-	public static final int SCROLL_SPEED = -20;
+	public static final int SCROLL_SPEED = 20;
 
 	/**
 	 * 一分钟的毫秒值，用于判断上次的更新时间
@@ -100,7 +102,7 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 	/**
 	 * 需要去下拉刷新的ListView
 	 */
-	private ListView listView;
+	private AbsListView listView;
 
 	/**
 	 * 刷新时显示的进度条
@@ -125,7 +127,7 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 	/**
 	 * 下拉头的布局参数
 	 */
-	private MarginLayoutParams headerLayoutParams;
+	//private MarginLayoutParams headerLayoutParams;
 
 	/**
 	 * 上次更新时间的毫秒值
@@ -174,6 +176,21 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 	private boolean ableToPull;
 
 	/**
+	 * 控件初始scroll坐标
+	 */
+	private int scrollX, scrollY;
+
+	/**
+	 * 布局滚动偏移
+	 */
+	private int scrollYOffset;
+
+	/**
+	 * 下拉滑动距离与刷新头布局显示速度比例
+	 */
+	private static final float touchSpeedFactor = 0.5f;
+
+	/**
 	 * 下拉刷新控件的构造函数，会在运行时动态添加一个下拉头的布局。
 	 * 
 	 * @param context
@@ -188,6 +205,7 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 		description = (TextView) header.findViewById(R.id.description);
 		updateAt = (TextView) header.findViewById(R.id.updated_at);
 		touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+		scrollYOffset = 0;
 		refreshUpdatedAtValue();
 		setOrientation(VERTICAL);
 		addView(header, 0);
@@ -200,10 +218,13 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		super.onLayout(changed, l, t, r, b);
 		if (changed && !loadOnce) {
-			hideHeaderHeight = -header.getHeight();
-			headerLayoutParams = (MarginLayoutParams) header.getLayoutParams();
-			headerLayoutParams.topMargin = hideHeaderHeight;
-			listView = (ListView) getChildAt(1);
+			hideHeaderHeight = header.getHeight();
+			MarginLayoutParams headerLayoutParams = (MarginLayoutParams) header.getLayoutParams();
+			headerLayoutParams.topMargin = -hideHeaderHeight;
+			scrollY = getScrollY();
+			scrollX = getScrollX();
+
+			listView = (AbsListView) getChildAt(1);
 			listView.setOnTouchListener(this);
 			loadOnce = true;
 		}
@@ -223,22 +244,26 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 			case MotionEvent.ACTION_MOVE:
 				float yMove = event.getRawY();
 				int distance = (int) (yMove - yDown);
-				// 如果手指是下滑状态，并且下拉头是完全隐藏的，就屏蔽下拉事件
-				if (distance <= 0 && headerLayoutParams.topMargin <= hideHeaderHeight) {
+				// 如果手指是上滑状态，并且下拉头是完全隐藏的，就屏蔽下拉事件
+				//if (distance <= 0 && headerLayoutParams.topMargin <= hideHeaderHeight) {
+				if(distance <= 0 && scrollYOffset >= 0){
 					return false;
 				}
 				if (distance < touchSlop) {
 					return false;
 				}
 				if (currentStatus != STATUS_REFRESHING) {
-					if (headerLayoutParams.topMargin > 0) {
+					if (-scrollYOffset > hideHeaderHeight) {
 						currentStatus = STATUS_RELEASE_TO_REFRESH;
 					} else {
 						currentStatus = STATUS_PULL_TO_REFRESH;
 					}
-					// 通过偏移下拉头的topMargin值，来实现下拉效果
-					headerLayoutParams.topMargin = (distance / 2) + hideHeaderHeight;
-					header.setLayoutParams(headerLayoutParams);
+//					 通过偏移下拉头的topMargin值，来实现下拉效果
+//					headerLayoutParams.topMargin = (distance / 2) + hideHeaderHeight;
+//					header.setLayoutParams(headerLayoutParams);
+					float yOffset = UIHelper.dip2px(getContext() ,UIHelper.px2dip(getContext(), distance) * touchSpeedFactor);
+					scrollTo(scrollX, scrollY - (int)(yOffset));
+					scrollYOffset = getScrollY() - scrollY;
 				}
 				break;
 			case MotionEvent.ACTION_UP:
@@ -307,9 +332,9 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 				// 如果首个元素的上边缘，距离父布局值为0，就说明ListView滚动到了最顶部，此时应该允许下拉刷新
 				ableToPull = true;
 			} else {
-				if (headerLayoutParams.topMargin != hideHeaderHeight) {
-					headerLayoutParams.topMargin = hideHeaderHeight;
-					header.setLayoutParams(headerLayoutParams);
+				if (scrollYOffset > 0) {
+					scrollYOffset = 0;
+					scrollTo(scrollX, scrollY);
 				}
 				ableToPull = false;
 			}
@@ -413,14 +438,13 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			int topMargin = headerLayoutParams.topMargin;
 			while (true) {
-				topMargin = topMargin + SCROLL_SPEED;
-				if (topMargin <= 0) {
-					topMargin = 0;
+				scrollYOffset = scrollYOffset + SCROLL_SPEED;
+				if (-scrollYOffset <= hideHeaderHeight) {
+					scrollYOffset = -hideHeaderHeight;
 					break;
 				}
-				publishProgress(topMargin);
+				publishProgress(scrollYOffset);
 				sleep(10);
 			}
 			currentStatus = STATUS_REFRESHING;
@@ -434,8 +458,7 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 		@Override
 		protected void onProgressUpdate(Integer... topMargin) {
 			updateHeaderView();
-			headerLayoutParams.topMargin = topMargin[0];
-			header.setLayoutParams(headerLayoutParams);
+			scrollTo(scrollX, scrollYOffset);
 		}
 
 	}
@@ -449,29 +472,27 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 
 		@Override
 		protected Integer doInBackground(Void... params) {
-			int topMargin = headerLayoutParams.topMargin;
 			while (true) {
-				topMargin = topMargin + SCROLL_SPEED;
-				if (topMargin <= hideHeaderHeight) {
-					topMargin = hideHeaderHeight;
+				scrollYOffset = scrollYOffset + SCROLL_SPEED;
+				if (scrollYOffset >= 0) {
+					scrollYOffset = 0;
 					break;
 				}
-				publishProgress(topMargin);
+				publishProgress(scrollYOffset);
 				sleep(10);
 			}
-			return topMargin;
+			return scrollYOffset;
 		}
 
 		@Override
 		protected void onProgressUpdate(Integer... topMargin) {
-			headerLayoutParams.topMargin = topMargin[0];
-			header.setLayoutParams(headerLayoutParams);
+			scrollTo(scrollX, scrollYOffset);
 		}
 
 		@Override
 		protected void onPostExecute(Integer topMargin) {
-			headerLayoutParams.topMargin = topMargin;
-			header.setLayoutParams(headerLayoutParams);
+			int yOffset= topMargin;
+			scrollTo(scrollX, scrollY + yOffset);
 			currentStatus = STATUS_REFRESH_FINISHED;
 		}
 	}
