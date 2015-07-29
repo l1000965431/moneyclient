@@ -41,10 +41,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/fragment_login_button"
-        android:layout_above="@+id/fragment_login_orline"
         android:layout_alignRight="@+id/fragment_login_Enter_password"
         android:layout_alignEnd="@+id/fragment_login_Enter_password"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="20dp"
+        android:layout_centerVertical="true">
 
         <TextView
             android:layout_width="90dp"
@@ -92,85 +92,5 @@
             android:layout_alignRight="@+id/fragment_login_Enter_password"
             android:layout_alignEnd="@+id/fragment_login_Enter_password" />
     </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragment_login_orline"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:background="#ffe3e3e3"
-            android:layout_weight="0.8"
-            android:layout_gravity="center"
-            android:id="@+id/fragment_login_left_line"></LinearLayout>
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="or"
-            android:id="@+id/fragment_login_orltext"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:gravity="center_vertical|center_horizontal"
-            android:textColor="#ff8e8e8e" />
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:background="#ffe3e3e3"
-            android:layout_weight="0.8"
-            android:layout_gravity="center"
-            android:id="@+id/fragment_login_right_line" />
-    </LinearLayout>
-
-    <ImageView
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:id="@+id/fragment_login_weixin"
-        android:layout_gravity="center"
-        android:src="@mipmap/button_login_weixin"
-        android:scaleType="fitXY"
-        android:layout_below="@+id/fragment_login_orline"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="7dp"
-        android:layout_marginLeft="7dp" />
-
-    <ImageView
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:id="@+id/fragment_login_qq"
-        android:layout_gravity="center"
-        android:src="@mipmap/button_login_qq"
-        android:scaleType="fitXY"
-        android:layout_below="@+id/fragment_login_weixin"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp" />
-
-    <ImageView
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:id="@+id/fragment_login_weibo"
-        android:layout_gravity="center"
-        android:src="@mipmap/button_login_weibo"
-        android:scaleType="fitXY"
-        android:layout_below="@+id/fragment_login_qq"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp" />
 
 </RelativeLayout>
