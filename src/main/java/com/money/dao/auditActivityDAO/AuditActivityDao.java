@@ -49,7 +49,8 @@ public class AuditActivityDao extends BaseDao {
     public boolean setActivityPass(final ActivityVerifyModel verifyModel, final ActivityVerifyCompleteModel completeModel){
         String result = excuteTransactionByCallback(new TransactionSessionCallback() {
             public void callback(Session session) throws Exception {
-                session.delete(verifyModel);
+                //session.delete(verifyModel);
+                session.update(verifyModel);
                 session.save(completeModel);
             }
         });
@@ -68,6 +69,19 @@ public class AuditActivityDao extends BaseDao {
         session.flush();
         session.clear();
         session.close();
+        return activityVerifyModels;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ActivityVerifyModel> getActivityList(int status, int pageIndex, int pageNum){
+        Session session = getNewSession();
+        List<ActivityVerifyModel> activityVerifyModels = session.createCriteria(ActivityVerifyModel.class)
+                .addOrder(Order.asc("id"))
+                .add(Restrictions.eq("auditorStatus", status))
+                .setFirstResult(pageIndex * pageNum)
+                .setMaxResults(pageNum)
+                .list();
+
         return activityVerifyModels;
     }
 }

@@ -64,11 +64,6 @@ public class ActivityDynamicModel extends BaseModel {
     int activityState;
 
     /**
-     * 父项目ID
-     */
-    int activityParentId;
-
-    /**
      * 项目组ID
     */
     int activityGroup;
@@ -129,14 +124,6 @@ public class ActivityDynamicModel extends BaseModel {
 
     public void setActivityState(int activityState) {
         this.activityState = activityState;
-    }
-
-    public int getActivityParentId() {
-        return activityParentId;
-    }
-
-    public void setActivityParentId(int activityParentId) {
-        this.activityParentId = activityParentId;
     }
 
     public int getActivityGroup() {

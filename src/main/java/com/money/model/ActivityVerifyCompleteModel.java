@@ -273,7 +273,7 @@ public class ActivityVerifyCompleteModel extends BaseModel {
     }
 
     public void setActivityId(String activityID) {
-        activityID = activityID;
+        this.activityId = activityID;
     }
 
     public Set<ActivityDetailModel> getActivityDetailModels() {

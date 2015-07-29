@@ -23,14 +23,14 @@ public class GsonUntil {
     private static Gson gson = null;
 
     GsonUntil(){
-        gson = new GsonBuilder().registerTypeAdapter(ActivityDynamicModel.class, new JsonSerializer<ActivityDynamicModel>() {
-            public JsonElement serialize(ActivityDynamicModel src, Type typeOfSrc,
+        gson = new GsonBuilder().registerTypeAdapter(ActivityDetailModel.class, new JsonSerializer<ActivityDetailModel>() {
+            public JsonElement serialize(ActivityDetailModel src, Type typeOfSrc,
                                          JsonSerializationContext context) {
                 JsonObject o=new JsonObject();
                 o.addProperty("activityStageId", src.getActivityStageId());
-                o.addProperty("activityId", src.getActivityDetailModel().getActivityVerifyCompleteModel().getActivityId());
-                o.addProperty("activityName", src.getActivityDetailModel().getActivityVerifyCompleteModel().getName());
-                o.addProperty("activityIntroduce", src.getActivityDetailModel().getActivityVerifyCompleteModel().getActivityIntroduce());
+                o.addProperty("activityId", src.getActivityVerifyCompleteModel().getActivityId());
+                o.addProperty("activityName", src.getActivityVerifyCompleteModel().getName());
+                o.addProperty("activityIntroduce", src.getActivityVerifyCompleteModel().getActivityIntroduce());
                 return o;
             }
         }).create();

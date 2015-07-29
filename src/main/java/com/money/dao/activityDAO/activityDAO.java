@@ -8,6 +8,8 @@ import com.money.model.ActivityDynamicModel;
 import com.money.model.OrderModel;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import until.GsonUntil;
 
@@ -108,16 +110,23 @@ public class activityDAO extends BaseDao {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<ActivityDynamicModel> getActivityListActivity(int page, int pageNum){
-        String hql = "from " + ActivityDynamicModel.class.getName();
+    public List<ActivityDetailModel> getActivityListActivity(int page, int pageNum){
         Session session = getNewSession();
         Transaction t = session.beginTransaction();
-        List<ActivityDynamicModel> list =  session.createQuery(hql)
-                .setFirstResult(pageNum * page)
+        List<ActivityDetailModel> list = session.createCriteria(ActivityDetailModel.class)
+                .add(Restrictions.eq("status", 1))
+                .setFirstResult(page * pageNum)
                 .setMaxResults(pageNum)
                 .list();
-        for(ActivityDynamicModel activityDynamicModel : list){
-            activityDynamicModel.getActivityDetailModel().getActivityVerifyCompleteModel().getActivityId();
+
+//        String hql = "from " + ActivityDetailModel.class.getName();
+//        Session session = getNewSession();
+//        List<ActivityDetailModel> list =  session.createQuery(hql)
+//                .setFirstResult(pageNum * page)
+//                .setMaxResults(pageNum)
+//                .list();
+        for(ActivityDetailModel detailModel : list){
+            detailModel.getActivityVerifyCompleteModel().getActivityId();
         }
         t.commit();
 
