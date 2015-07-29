@@ -92,4 +92,11 @@ public class GsonUntil {
         String json = gson.toJson( list );
         return json;
     }
+
+    public static Gson getNewGsonByAdapter(Type type, Object typeAdapter){
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(type,typeAdapter ).create();
+
+        return gson;
+    }
 }

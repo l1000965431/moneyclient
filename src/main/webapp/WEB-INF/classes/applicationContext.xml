@@ -49,9 +49,13 @@
               </property>
        </bean>
 
+
+
        <!--<import resource="xml/Spring-*.xml"/>-->
        <import resource="xml/Spring-db-config.xml"/>
        <import resource="xml/Spring-MQ-Config.xml"/>
        <import resource="xml/Spring-Redis-Config.xml"/>
        <import resource="xml/Spring-Service-Config.xml"/>
+       <import resource="xml/Spring-Quartz-Config.xml"/>
+
 </beans>
