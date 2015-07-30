@@ -71,7 +71,7 @@ public class ActivityController extends ControllerBase implements IController {
             return "";
         } else {
             try {
-                ActivityDynamicModel activityModel = activityService.getActivityDynamic(1);
+                ActivityDynamicModel activityModel = activityService.getActivityDynamic("1");
                 String Json = GsonUntil.JavaClassToJson(activityModel);
                 return Json;
             } catch (Exception e) {
@@ -129,9 +129,9 @@ public class ActivityController extends ControllerBase implements IController {
             return Integer.toString(ServerReturnValue.USERNOTLAND);
         }
 
-        List ActivityHasEarnings = activityService.GetActivityHasInvestment("");
+        /*List ActivityHasEarnings = activityService.GetActivityHasInvestment("1");*/
 
-        String Json = GsonUntil.JavaClassToJson(ActivityHasEarnings);
+        String Json = null; //= GsonUntil.JavaClassToJson(ActivityHasEarnings);
 
         return Json;
     }
@@ -143,7 +143,7 @@ public class ActivityController extends ControllerBase implements IController {
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
-        if (activityService.CanelActivity(1) == Config.SERVICE_SUCCESS) {
+        if (activityService.CanelActivity("1") == Config.SERVICE_SUCCESS) {
             return Config.SERVICE_SUCCESS;
         } else {
             return Config.SERVICE_FAILED;

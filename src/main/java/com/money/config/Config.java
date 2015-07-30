@@ -62,10 +62,10 @@ public class Config {
     public static final int PROBABILITYAMPLIFICATION = 1000000;
 
     //项目票的辅助表名称前缀
-    public static final String ACTIVITYGROUPTICKETNAME = "Ticket_";
+    public static final String ACTIVITYGROUPTICKETNAME = "Auto_Ticket_";
 
     //项目预售的辅助表名称前缀
-    public static final String ACTIVITYPURCHASE = "Purchase_";
+    public static final String ACTIVITYPURCHASE = "Auto_Purchase_";
 
     /**
      * 项目状态

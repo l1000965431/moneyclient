@@ -1,10 +1,14 @@
 package com.money.dao;
 
 import com.money.config.Config;
+import com.money.model.UserInvestorModel;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.CallbackFunction;
@@ -511,6 +515,24 @@ public class BaseDao {
         Session session = getNewSession();
 
         return false;
+    }
+
+    /**
+     * 条件查询
+     */
+    public Object load ( Class var1,Criterion criterion ){
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
+        try{
+            Criteria criteria = session.createCriteria( var1 );
+            criteria.add( criterion );
+            t.commit();
+            return  criteria.uniqueResult();
+        }catch ( Exception e ){
+            t.rollback();
+            return null;
+        }
+
     }
 
 
