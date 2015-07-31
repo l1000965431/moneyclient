@@ -38,8 +38,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="市场"
-                    android:id="@+id/textView66"
+                    android:text="市场分析"
+                    android:id="@+id/project_detail_tv_marketAnalyze"
                     android:textSize="12dp"
                     android:textColor="#ff767676"
                     android:textIsSelectable="false"
@@ -53,8 +53,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="盈利"
-                    android:id="@+id/textView67"
+                    android:text="盈利模式"
+                    android:id="@+id/project_detail_tv_profitMode"
                     android:textSize="12dp"
                     android:textColor="#ff767676"
                     android:textIsSelectable="false"
@@ -68,8 +68,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="团队"
-                    android:id="@+id/textView68"
+                    android:text="团队介绍"
+                    android:id="@+id/project_detail_tv_teamIntroduction"
                     android:textSize="12dp"
                     android:textColor="#ff767676"
                     android:textIsSelectable="false"
@@ -79,50 +79,6 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:layout_weight="1" />
 
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="进展"
-                    android:id="@+id/textView69"
-                    android:textSize="12dp"
-                    android:textColor="#ff767676"
-                    android:textIsSelectable="false"
-                    android:textStyle="bold"
-                    android:visibility="visible"
-                    android:layout_gravity="center"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="投资"
-                    android:id="@+id/textView70"
-                    android:textSize="12dp"
-                    android:textColor="#ff767676"
-                    android:textIsSelectable="false"
-                    android:textStyle="bold"
-                    android:visibility="visible"
-                    android:layout_gravity="center"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="收益"
-                    android:id="@+id/textView71"
-                    android:textSize="12dp"
-                    android:textColor="#ff767676"
-                    android:textIsSelectable="false"
-                    android:textStyle="bold"
-                    android:visibility="visible"
-                    android:layout_gravity="center"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:layout_weight="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -137,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="这款 WESTERN BAR 是其中一款，它是以西部牛仔为主题的射击游戏；另外还有“Great Racer”以及“Space Attacker”款式."
-                    android:id="@+id/textView"
+                    android:id="@+id/project_detail_tv_summary"
                     android:textSize="13dp"
                     android:paddingLeft="8dp"
                     android:paddingTop="8dp"
@@ -165,7 +121,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceLarge"
                             android:text="所在城市：北京-海淀"
-                            android:id="@+id/textView72"
+                            android:id="@+id/project_detail_tv_address"
                             android:textSize="12dp"
                             android:textColor="#ff767676"
                             android:textIsSelectable="false"
@@ -493,7 +449,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="这款 WESTERN BAR 是其中一款，它是以西部牛仔为主题的射击游戏；另外还有“Great Racer”以及“Space Attacker”款式."
-                    android:id="@+id/textView64"
+                    android:id="@+id/project_detail_tv_projectIntroduction"
                     android:textSize="13dp"
                     android:padding="8dp" />
 
