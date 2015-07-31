@@ -33,6 +33,9 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
         generaDAO.update(completeModel);
     }
 
+    /**
+     *  项目分期操作
+     */
     public void splitActivityByStage(){
 
         ActivityVerifyCompleteModel completeModel = (ActivityVerifyCompleteModel)generaDAO.load(ActivityVerifyCompleteModel.class, "4");
