@@ -1,8 +1,6 @@
 package com.dragoneye.money.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
@@ -13,21 +11,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.dragoneye.money.R;
 import com.dragoneye.money.view.ZoomImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 
-public class ImageExplorerActivity extends ActionBarActivity {
+public class ImageExplorerActivity extends BaseActivity {
 
     public static final String EXTRA_URI_ARRAY = "EXTRA_URI_ARRAY";
-    public static final String EXTR_INDEX_TO_SHOW = "EXTRA_INDEX_TO_SHOW";
+    public static final String EXTRA_INDEX_TO_SHOW = "EXTRA_INDEX_TO_SHOW";
 
     ViewPager mViewPager;
 
@@ -38,7 +32,7 @@ public class ImageExplorerActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
         final ArrayList<Uri> uris = intent.getParcelableArrayListExtra(EXTRA_URI_ARRAY);
-        int indexToShow = intent.getIntExtra(EXTR_INDEX_TO_SHOW, 0);
+        int indexToShow = intent.getIntExtra(EXTRA_INDEX_TO_SHOW, 0);
         final ZoomImageView[] imageViews = new ZoomImageView[uris.size()];
 
         mViewPager = (ViewPager)findViewById(R.id.activity_image_explorer_view_pager);

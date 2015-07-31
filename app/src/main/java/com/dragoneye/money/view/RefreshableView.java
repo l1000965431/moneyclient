@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.config.PreferencesConfig;
 import com.dragoneye.money.tool.UIHelper;
 
 /**
@@ -78,11 +79,6 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 	 * 一年的毫秒值，用于判断上次的更新时间
 	 */
 	public static final long ONE_YEAR = 12 * ONE_MONTH;
-
-	/**
-	 * 上次更新时间的字符串常量，用于作为SharedPreferences的键值
-	 */
-	private static final String UPDATED_AT = "updated_at";
 
 	/**
 	 * 下拉刷新的回调接口
@@ -311,7 +307,7 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 	 */
 	public void finishRefreshing() {
 		currentStatus = STATUS_REFRESH_FINISHED;
-		preferences.edit().putLong(UPDATED_AT + mId, System.currentTimeMillis()).commit();
+		preferences.edit().putLong(PreferencesConfig.REFRESH_VIEW_UPDATE_AT + mId, System.currentTimeMillis()).commit();
 		new HideHeaderTask().execute();
 	}
 
@@ -394,7 +390,7 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 	 * 刷新下拉头中上次更新时间的文字描述。
 	 */
 	private void refreshUpdatedAtValue() {
-		lastUpdateTime = preferences.getLong(UPDATED_AT + mId, -1);
+		lastUpdateTime = preferences.getLong(PreferencesConfig.REFRESH_VIEW_UPDATE_AT + mId, -1);
 		long currentTime = System.currentTimeMillis();
 		long timePassed = currentTime - lastUpdateTime;
 		long timeIntoFormat;

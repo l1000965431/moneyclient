@@ -18,13 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.dragoneye.money.DemoDataModel;
 import com.dragoneye.money.R;
 import com.dragoneye.money.application.AppInfoManager;
-import com.dragoneye.money.application.MyApplication;
 import com.dragoneye.money.config.ProjectStatusConfig;
-import com.dragoneye.money.dao.InvestedProject;
-import com.dragoneye.money.dao.InvestedProjectDao;
 import com.dragoneye.money.dao.MyDaoMaster;
 import com.dragoneye.money.dao.Project;
 import com.dragoneye.money.dao.ProjectDao;
@@ -32,6 +28,7 @@ import com.dragoneye.money.dao.ProjectImage;
 import com.dragoneye.money.dao.ProjectImageDao;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
+import com.dragoneye.money.model.ProjectDetailModel;
 import com.dragoneye.money.protocol.InvestProjectProtocol;
 import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.user.CurrentUser;
@@ -42,28 +39,24 @@ import org.apache.http.Header;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
-public class InvestProjectActivity extends ActionBarActivity implements View.OnClickListener {
+public class InvestProjectActivity extends BaseActivity implements View.OnClickListener {
 
-    public static final String EXTRA_PROJECT_ID = "EXTRA_PROJECT_ID";
+    public static final String EXTRA_PROJECT_MODEL = "EXTRA_PROJECT_MODEL";
 
     private DotViewPager mDotViewPager;
     private ArrayList<String> mImageUrl;
     ArrayList<View> viewContainer = new ArrayList<>();
     private TextView mTextViewConfirm;
-    private Project mProject;
-    private InvestedProject mInvestedProject;
-    //private TextView mTextViewInvestPrice;
     private ProgressBar mProgressBar;
     private TextView mTextViewProjectProgress;
     private LinearLayout mLinearLayoutResultRoot;
-    private ArrayList<Integer> mPriceList = new ArrayList<>();
-    private DemoDataModel.ModeProjectGroup modeProjectGroup;
-    DemoDataModel.ModeProject mModeProject;
+    private ProjectDetailModel mProjectDetailModel;
+
+    Project mProject;
 
     private View mIVLeadAdd;
     private View mIVLeadSubtract;
@@ -76,6 +69,11 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
     private int mSelectedLeadStageNum;
     private int mSelectedFallowStageNum;
 
+    private View mLLLeadButton;
+    private View mLLLeadPanel;
+    private View mLLFallowButton;
+    private View mLLFallowPanel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +81,6 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
         initView();
         initData();
         initViewPagerImages();
-        initSpinnerItems();
     }
 
     @Override
@@ -100,39 +97,53 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
     }
 
     private void initView(){
+        // 图片浏览控件
         mDotViewPager = (DotViewPager)findViewById(R.id.investment_project_detail_dot_viewpager);
 
+        // 确认投资按钮
         mTextViewConfirm = (TextView)findViewById(R.id.invest_project_tv_confirm);
         mTextViewConfirm.setOnClickListener(this);
 
-//        mTextViewInvestPrice = (TextView)findViewById(R.id.invest_project_tv_invest_price);
-
+        // 投资进度条和标签
         mProgressBar = (ProgressBar)findViewById(R.id.invest_project_progressbar);
         mTextViewProjectProgress = (TextView)findViewById(R.id.invest_project_tv_project_progress);
 
+        // 投资收益几率显示
         mLinearLayoutResultRoot = (LinearLayout)findViewById(R.id.investment_ll_result_root);
 
+        // 投资期数显示标签
+        mTVLeadStage = (TextView)findViewById(R.id.invest_project_tv_leadStage);
+        mTVFallowStage = (TextView)findViewById(R.id.invest_project_tv_fallowStage);
+
+        // 跟投数量输入控件
+        mETInvestPrice = (EditText)findViewById(R.id.invest_project_et_price_num);
+
+        // 领投面板
+        mLLLeadButton = findViewById(R.id.investment_ll_leadButton);
+        mLLLeadButton.setOnClickListener(this);
+        mLLLeadPanel = findViewById(R.id.investment_ll_leadPanel);
         mIVLeadAdd = findViewById(R.id.invest_project_iv_leadAdd);
         mIVLeadAdd.setOnClickListener(this);
         mIVLeadSubtract = findViewById(R.id.invest_project_iv_leadSubstract);
         mIVLeadSubtract.setOnClickListener(this);
+
+        // 跟投面板
+        mLLFallowButton = findViewById(R.id.investment_ll_fallowButton);
+        mLLFallowButton.setOnClickListener(this);
+        mLLFallowPanel = findViewById(R.id.investment_ll_fallowPanel);
         mIVFallowAdd = findViewById(R.id.invest_project_iv_fallowAdd);
         mIVFallowAdd.setOnClickListener(this);
         mIVFallowSubtract = findViewById(R.id.invest_project_iv_fallowSubtract);
         mIVFallowSubtract.setOnClickListener(this);
-
-        mTVLeadStage = (TextView)findViewById(R.id.textView25);
-        mTVFallowStage = (TextView)findViewById(R.id.textView21);
-
-        mETInvestPrice = (EditText)findViewById(R.id.invest_project_et_price_num);
     }
 
     private void initData(){
-        modeProjectGroup = ((MyApplication)getApplication()).demoDataModel.modeProjectGroup;
+        Intent intent = getIntent();
+        mProjectDetailModel = (ProjectDetailModel)intent.getSerializableExtra(EXTRA_PROJECT_MODEL);
+
         mImageUrl = new ArrayList<>();
 
-        Intent intent = getIntent();
-        long projectId = intent.getLongExtra(EXTRA_PROJECT_ID, 1);
+        long projectId = 1;
 
         ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
         mProject = projectDao.load(projectId);
@@ -150,11 +161,6 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
             mImageUrl.add(projectImage.getImageUrl());
         }
 
-        InvestedProjectDao investedProjectDao = MyDaoMaster.getDaoSession().getInvestedProjectDao();
-        queryBuilder = investedProjectDao.queryBuilder();
-        queryBuilder.where(InvestedProjectDao.Properties.ProjectId.eq(mProject.getId()));
-        mInvestedProject = (InvestedProject)queryBuilder.unique();
-
         resetLead();
         resetFallow();
         setLeadStageNum(0);
@@ -162,22 +168,12 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
     }
 
     private void updateUIContent(){
-        updateInvestedPrice();
         if( mProject.getStatus() == ProjectStatusConfig.PROJECT_SUCCESS ){
             mProgressBar.setProgress(100);
             mTextViewProjectProgress.setText( String.format(getString(R.string.invest_project_project_progress), 100));
         }else {
             mProgressBar.setProgress(10);
             mTextViewProjectProgress.setText(String.format(getString(R.string.invest_project_project_progress), 10));
-        }
-    }
-
-    private void updateInvestedPrice(){
-        if( mInvestedProject == null ){
-//            mTextViewInvestPrice.setText(R.string.invest_project_no_invested_price);
-        }else {
-            String string = String.format(getString(R.string.invest_project_invested_price), mInvestedProject.getPrice());
-//            mTextViewInvestPrice.setText(string);
         }
     }
 
@@ -198,11 +194,26 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
             case R.id.invest_project_iv_fallowSubtract:
                 onFallowSubtract();
                 break;
+            case R.id.investment_ll_leadButton:
+                onLead();
+                break;
+            case R.id.investment_ll_fallowButton:
+                onFallow();
+                break;
         }
     }
 
-    private void onLeadAdd(){
+    private void onLead(){
+        mLLLeadPanel.setVisibility(View.VISIBLE);
         resetFallow();
+    }
+
+    private void onFallow(){
+        mLLFallowPanel.setVisibility(View.VISIBLE);
+        resetLead();
+    }
+
+    private void onLeadAdd(){
         if( mSelectedLeadStageNum < mProjectStageMaxNum ){
             mSelectedLeadStageNum++;
             setLeadStageNum(mSelectedLeadStageNum);
@@ -210,7 +221,6 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
     }
 
     private void onLeadSubtract(){
-        resetFallow();
         if( mSelectedLeadStageNum > 0 ){
             mSelectedLeadStageNum--;
             setLeadStageNum(mSelectedLeadStageNum);
@@ -218,7 +228,6 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
     }
 
     private void onFallowAdd(){
-        resetLead();
         if( mSelectedFallowStageNum < mProjectStageMaxNum ){
             mSelectedFallowStageNum++;
             setFallowStageNum(mSelectedFallowStageNum);
@@ -226,7 +235,6 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
     }
 
     private void onFallowSubtract(){
-        resetLead();
         if( mSelectedFallowStageNum > 0 ){
             mSelectedFallowStageNum--;
             setFallowStageNum(mSelectedFallowStageNum);
@@ -238,6 +246,7 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
             setLeadStageNum(0);
         }
         mSelectedLeadStageNum = 0;
+        mLLLeadPanel.setVisibility(View.GONE);
     }
 
     private void resetFallow(){
@@ -245,6 +254,7 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
             setFallowStageNum(0);
         }
         mSelectedFallowStageNum = 0;
+        mLLFallowPanel.setVisibility(View.GONE);
     }
 
     private void setLeadStageNum(int num){
@@ -271,45 +281,6 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
         mDotViewPager.setAdapter(new ImageViewPagerAdapter());
     }
 
-    private void initSpinnerItems(){
-
-        for( int price : modeProjectGroup.sTicketsPrices){
-            mPriceList.add(price);
-        }
-
-        for(DemoDataModel.ModeProject modeProject : modeProjectGroup.projects){
-            if( modeProject.id == mProject.getId() ){
-                mModeProject = modeProject;
-                break;
-            }
-        }
-
-        for( Integer price : mModeProject.bTicketsList ){
-            mPriceList.add(price);
-        }
-
-        ArrayList<String> spinnerItemStrings = new ArrayList<>();
-        for( int price : mPriceList){
-            spinnerItemStrings.add(String.valueOf(price) + getString(R.string.monetary_unit_rmb));
-        }
-    }
-
-    private void updateProbability(int price){
-        mLinearLayoutResultRoot.removeAllViews();
-
-        float factor = price / 2.0f;
-        Object[] key_arr = modeProjectGroup.bonusProbabilities.keySet().toArray();
-        Arrays.sort(key_arr);
-        for( Object key : key_arr ){
-            TextView textView = new TextView(this);
-            mLinearLayoutResultRoot.addView(textView);
-
-            int bonus = (Integer)key;
-            float probability = modeProjectGroup.bonusProbabilities.get(key) * factor * 100;
-            String str = String.format("%%%f\t\t     ￥%d", probability, bonus);
-            textView.setText(str);
-        }
-    }
 
     private void onConfirm(){
         if( !checkUserInput() ){
@@ -464,7 +435,7 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
                         uris.add(Uri.parse(url));
                     }
                     intent.putExtra(ImageExplorerActivity.EXTRA_URI_ARRAY, uris);
-                    intent.putExtra(ImageExplorerActivity.EXTR_INDEX_TO_SHOW, position);
+                    intent.putExtra(ImageExplorerActivity.EXTRA_INDEX_TO_SHOW, position);
                     startActivity(intent);
                 }
             });
@@ -499,7 +470,7 @@ public class InvestProjectActivity extends ActionBarActivity implements View.OnC
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_invest_project_detail) {
             Intent intent = new Intent(this, ProjectDetailActivity.class);
-            intent.putExtra(EXTRA_PROJECT_ID, mProject.getId());
+            intent.putExtra(ProjectDetailActivity.EXTRA_PROJECT_ID, mProjectDetailModel.getActivityId());
             startActivity(intent);
             return true;
         }

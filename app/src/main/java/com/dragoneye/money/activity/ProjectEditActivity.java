@@ -25,7 +25,7 @@ import org.apache.http.Header;
 import java.util.ArrayList;
 
 
-public class ProjectEditActivity extends ActionBarActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class ProjectEditActivity extends BaseActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
 
     private EditText mETProjectName;

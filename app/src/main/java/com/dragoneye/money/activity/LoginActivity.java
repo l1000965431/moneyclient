@@ -1,7 +1,9 @@
 package com.dragoneye.money.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.config.PreferencesConfig;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.protocol.UserProtocol;
@@ -21,6 +24,8 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.prefs.Preferences;
+
 public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -31,11 +36,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     EditText mETUserId;
     EditText mETUserPassword;
 
+    private SharedPreferences preferences;
+
+    private String mLoginUserId;
+    private String mLoginUserPassword;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_login);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         initView();
         initData();
     }
@@ -48,10 +59,29 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
         mETUserId = (EditText)findViewById(R.id.fragment_login_Enter_account);
         mETUserPassword = (EditText)findViewById(R.id.fragment_login_Enter_password);
+
+        mETUserId.setText(getLastLoginUserId());
+        mETUserPassword.setText(getLastLoginUserPassword());
     }
 
     private void initData(){
 
+    }
+
+    private String getLastLoginUserId(){
+        return preferences.getString(PreferencesConfig.LAST_LOGIN_USER_ID, "");
+    }
+
+    private String getLastLoginUserPassword(){
+        return preferences.getString(PreferencesConfig.LAST_LOGIN_USER_PASSWORD, "");
+    }
+
+    private void setLastLoginUserId(String userId){
+        preferences.edit().putString(PreferencesConfig.LAST_LOGIN_USER_ID, userId).apply();
+    }
+
+    private void setLastLoginUserPassword(String userPassword){
+        preferences.edit().putString(PreferencesConfig.LAST_LOGIN_USER_PASSWORD, userPassword).apply();
     }
 
     @Override
@@ -75,9 +105,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             return;
         }
 
+        mLoginUserId = mETUserId.getText().toString();
+        mLoginUserPassword = mETUserPassword.getText().toString();
+
         HttpParams params = new HttpParams();
-        params.put(UserProtocol.PASSWORD_LOGIN_PARAM_USER_ID, mETUserId.getText());
-        params.put(UserProtocol.PASSWORD_LOGIN_PARAM_USER_PASSWORD, mETUserPassword.getText());
+        params.put(UserProtocol.PASSWORD_LOGIN_PARAM_USER_ID, mLoginUserId);
+        params.put(UserProtocol.PASSWORD_LOGIN_PARAM_USER_PASSWORD, mLoginUserPassword);
 
         HttpClient.post(UserProtocol.URL_LOGIN, params, new TextHttpResponseHandler() {
             @Override
@@ -135,6 +168,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 }
                 CurrentUser.setCurrentUser(userInvestor);
                 CurrentUser.setToken(token);
+                setLastLoginUserId(mLoginUserId);
+                setLastLoginUserPassword(mLoginUserPassword);
             }else {
 
             }

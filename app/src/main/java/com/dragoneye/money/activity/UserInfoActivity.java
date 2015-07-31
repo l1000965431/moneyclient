@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.dragoneye.money.R;
 import com.dragoneye.money.user.CurrentUser;
 
-public class UserInfoActivity extends ActionBarActivity {
+public class UserInfoActivity extends BaseActivity {
 
     TextView mTVUserName;
     TextView mTVUserId;

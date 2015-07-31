@@ -1,11 +1,10 @@
 package com.dragoneye.money.activity.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,24 +18,17 @@ import android.widget.TextView;
 
 import com.dragoneye.money.R;
 import com.dragoneye.money.activity.InvestProjectActivity;
-import com.dragoneye.money.config.PullRefreshConfig;
-import com.dragoneye.money.dao.InvestedProject;
-import com.dragoneye.money.dao.InvestedProjectDao;
-import com.dragoneye.money.dao.MyDaoMaster;
+import com.dragoneye.money.activity.ProjectDetailActivity;
+import com.dragoneye.money.config.PreferencesConfig;
 import com.dragoneye.money.dao.Project;
-import com.dragoneye.money.dao.ProjectDao;
-import com.dragoneye.money.dao.ProjectImage;
-import com.dragoneye.money.dao.ProjectImageDao;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.model.OrderModel;
 import com.dragoneye.money.protocol.GetProjectListProtocol;
-import com.dragoneye.money.tool.ToolMaster;
 import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.user.CurrentUser;
 import com.dragoneye.money.view.RefreshableView;
 import com.dragoneye.money.view.TopTabButton;
-import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -44,17 +36,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import de.greenrobot.dao.query.QueryBuilder;
-
 /**
  * Created by happysky on 15-6-19.
  */
-public class HomeRecordFragment extends BaseFragment implements AdapterView.OnItemClickListener {
+public class HomeRecordFragment extends BaseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     private TopTabButton mIncomingButton, mInvestmentButton, mCurrentSelectButton;
     private RefreshableView refreshableView;
@@ -117,7 +106,7 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
             public void onRefresh() {
                 handler.post(onUpdateOrderList_r);
             }
-        }, PullRefreshConfig.FRAGMENT_HOME_RECORD);
+        }, PreferencesConfig.FRAGMENT_HOME_RECORD);
 
         mListView = (ListView)getActivity().findViewById(R.id.home_record_list_view);
         mListView.setDividerHeight(0);
@@ -135,6 +124,7 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
 
 
         mAdapter.notifyDataSetChanged();
+        handler.post(onUpdateOrderList_r);
     }
 
     Runnable onUpdateOrderList_r = new Runnable() {
@@ -202,14 +192,29 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
         }
 
         mInvestedProjects.addAll(orderModels);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-        InvestedProject investedProject = (InvestedProject)mListView.getItemAtPosition(position);
-        Intent intent = new Intent(getActivity(), InvestProjectActivity.class);
-        intent.putExtra(InvestProjectActivity.EXTRA_PROJECT_ID, investedProject.getProjectId());
+        Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View v){
+        switch (v.getId()){
+            case R.id.home_record_listview_tv_earning_proportion:
+                OrderModel orderModel = (OrderModel)v.getTag();
+                onShowProportion(orderModel);
+                break;
+        }
+    }
+
+    private void onShowProportion(OrderModel orderModel){
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+        alertDialog.setMessage("fdasfksa\nfdafasdf\nfdasfdasf\nfdasfsadfasdf");
+        alertDialog.show();
     }
 
     public class InvestmentListViewAdapter extends BaseAdapter {
@@ -250,7 +255,7 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
-            OrderModel investedProject = (OrderModel)getItem(position);
+            OrderModel orderModel = (OrderModel)getItem(position);
 
 
             ViewHolder viewHolder;
@@ -259,48 +264,36 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
 
                 convertView = mInflater.inflate(R.layout.home_investment_listview, parent, false);
                 viewHolder.ivLogo = (ImageView)convertView.findViewById(R.id.imageView);
-                viewHolder.tvDescription = (TextView)convertView.findViewById(R.id.textView);
-                viewHolder.tvDay = (TextView)convertView.findViewById(R.id.textView5);
-                viewHolder.tvHour = (TextView)convertView.findViewById(R.id.textView7);
-                viewHolder.tvMinute = (TextView)convertView.findViewById(R.id.textView9);
-                viewHolder.tvAwarding = (TextView)convertView.findViewById(R.id.textView2);
-                viewHolder.tvAwardTarget = (TextView)convertView.findViewById(R.id.textView3);
+                viewHolder.tvProjectName = (TextView)convertView.findViewById(R.id.home_record_listview_tv_project_name);
+                viewHolder.tvInvestAmount = (TextView)convertView.findViewById(R.id.home_record_listview_tv_invest_amount);
+                viewHolder.tvInvestPriceNum = (TextView)convertView.findViewById(R.id.home_record_listview_tv_invest_price_num);
+                viewHolder.tvInvestStageNum = (TextView)convertView.findViewById(R.id.home_record_listview_tv_invest_stage_num);
+                viewHolder.tvEarningProportion = (TextView)convertView.findViewById(R.id.home_record_listview_tv_earning_proportion);
+                viewHolder.tvEarningProportion.setOnClickListener(HomeRecordFragment.this);
 
                 convertView.setTag(viewHolder);
             }else{
                 viewHolder = (ViewHolder)convertView.getTag();
             }
 
-//            ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
-//            QueryBuilder queryBuilder = projectImageDao.queryBuilder();
-//            queryBuilder.where(ProjectImageDao.Properties.ProjectId.eq(project.getId()));
-//            ProjectImage projectImage = (ProjectImage)queryBuilder.build().list().get(0);
-//            if(projectImage != null){
-//                try{
-//                    viewHolder.ivLogo.setImageBitmap( MediaStore.Images.Media.getBitmap(context.getContentResolver(),
-//                            Uri.parse(projectImage.getImageUrl())));
-//                }catch (IOException e){
-//
-//                }
-//            }
-//
-//            String string = String.format(getString(R.string.invest_project_invested_price), investedProject.getPrice());
-//            viewHolder.tvInvestInfo.setText(string);
+            viewHolder.tvProjectName.setText(orderModel.getProjectName());
+            viewHolder.tvInvestAmount.setText(String.format(getString(R.string.invest_project_invested_price), orderModel.getOrderLines()));
+            viewHolder.tvInvestPriceNum.setText(String.format(getString(R.string.invest_project_invested_quantity), orderModel.getPurchaseNum()));
+            viewHolder.tvInvestStageNum.setText(String.format(getString(R.string.invest_project_invested_installments), orderModel.getAdvanceNum()));
+            viewHolder.tvEarningProportion.setTag(orderModel);
+
 
             return convertView;
         }
 
         private class ViewHolder{
             ImageView ivLogo;
-            TextView tvDescription;
-            TextView tvDay;
-            TextView tvHour;
-            TextView tvMinute;
-            TextView tvInvestAmout;
-            TextView tvInvestNum;
-            TextView tvInvestStageCount;
-            TextView tvAwarding;
-            TextView tvAwardTarget;
+            TextView tvProjectName;
+            TextView tvInvestAmount;
+            TextView tvInvestPriceNum;
+            TextView tvInvestStageNum;
+            TextView tvEarningProportion;
+
         }
     }
 }

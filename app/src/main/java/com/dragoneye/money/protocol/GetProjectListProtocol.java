@@ -30,4 +30,15 @@ public interface GetProjectListProtocol {
     String GET_ORDER_RESULT_SUCCESS = "100";
     String GET_ORDER_RESULT_NEED_LOGIN = "103";
     /*****************************************************************************************/
+
+
+    /******************************************************************************************
+     *  获取项目详情                                                                            *
+     ******************************************************************************************/
+    String URL_GET_PROJECT_INFO = HttpUrlConfig.URL_ROOT + "ActivityController/GetActivityInformation";
+
+    String GET_PROJECT_INFO_RESULT_KEY = "response";
+    String GET_PROJECT_INFO_SUCCESS = "100";
+    String GET_PROJECT_INFO_NO_PROJECT = "101";
+    /*****************************************************************************************/
 }
