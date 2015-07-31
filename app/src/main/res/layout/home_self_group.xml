@@ -153,19 +153,6 @@
             android:layout_gravity="center"
             android:layout_weight="0.8" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="9"
-            android:id="@+id/home_self_group_linearLayout2_num"
-            android:layout_row="0"
-            android:textColor="#7f000000"
-            android:textSize="12dp"
-            android:paddingLeft="7dp"
-            android:paddingRight="7dp"
-            android:layout_gravity="center"
-            android:textStyle="bold" />
-
         <ImageView
             android:layout_width="17dp"
             android:layout_height="17dp"
@@ -219,19 +206,6 @@
             android:paddingLeft="7dp"
             android:layout_gravity="center"
             android:layout_weight="0.8" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="9"
-            android:id="@+id/textView25"
-            android:layout_row="0"
-            android:textColor="#7f000000"
-            android:textSize="12dp"
-            android:paddingLeft="7dp"
-            android:paddingRight="7dp"
-            android:layout_gravity="center"
-            android:textStyle="bold" />
 
         <ImageView
             android:layout_width="17dp"
@@ -288,19 +262,6 @@
             android:layout_gravity="center"
             android:layout_weight="0.8" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="9"
-            android:id="@+id/home_self_group_linearLayout1_num"
-            android:layout_row="0"
-            android:textColor="#7f000000"
-            android:textSize="12dp"
-            android:paddingLeft="7dp"
-            android:paddingRight="7dp"
-            android:layout_gravity="center"
-            android:textStyle="bold" />
-
         <ImageView
             android:layout_width="17dp"
             android:layout_height="17dp"
@@ -356,19 +317,6 @@
             android:layout_gravity="center"
             android:layout_weight="0.8" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="9"
-            android:id="@+id/home_self_group_linearLayout3_num"
-            android:layout_row="0"
-            android:textColor="#7f000000"
-            android:textSize="12dp"
-            android:paddingLeft="7dp"
-            android:paddingRight="7dp"
-            android:layout_gravity="center"
-            android:textStyle="bold" />
-
         <ImageView
             android:layout_width="17dp"
             android:layout_height="17dp"
@@ -423,19 +371,6 @@
             android:paddingLeft="7dp"
             android:layout_gravity="center"
             android:layout_weight="0.8" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="9"
-            android:id="@+id/textView9"
-            android:layout_row="0"
-            android:textColor="#7f000000"
-            android:textSize="12dp"
-            android:paddingLeft="7dp"
-            android:paddingRight="7dp"
-            android:layout_gravity="center"
-            android:textStyle="bold" />
 
         <ImageView
             android:layout_width="17dp"
