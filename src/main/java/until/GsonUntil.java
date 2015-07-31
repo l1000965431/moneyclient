@@ -3,6 +3,7 @@ package until;
 import com.google.gson.*;
 import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityDynamicModel;
+import com.money.model.ActivityVerifyCompleteModel;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
@@ -31,6 +32,22 @@ public class GsonUntil {
                 o.addProperty("activityId", src.getActivityVerifyCompleteModel().getActivityId());
                 o.addProperty("activityName", src.getActivityVerifyCompleteModel().getName());
                 o.addProperty("activityIntroduce", src.getActivityVerifyCompleteModel().getActivityIntroduce());
+                o.addProperty("targetFund", src.getTargetFund());
+                o.addProperty("status", src.getStatus());
+                o.addProperty("currentFund", src.getDynamicModel().getActivityCurLines());
+                return o;
+            }
+        }).registerTypeAdapter(ActivityVerifyCompleteModel.class, new JsonSerializer<ActivityVerifyCompleteModel>() {
+            public JsonElement serialize(ActivityVerifyCompleteModel src, Type typeOfSrc,
+                                         JsonSerializationContext context) {
+                JsonObject o=new JsonObject();
+                o.addProperty("marketAnalysis", src.getMarketAnalysis());
+                o.addProperty("profitMode", src.getProfitMode());
+                o.addProperty("teamIntroduction", src.getTeamIntroduce());
+                o.addProperty("summary", src.getSummary());
+                o.addProperty("address", src.getAddress());
+                o.addProperty("category", src.getCategory());
+                o.addProperty("projectIntroduction", src.getActivityIntroduce());
                 return o;
             }
         }).create();

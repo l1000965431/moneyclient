@@ -328,6 +328,14 @@ public class ActivityVerifyCompleteModel extends BaseModel {
         this.brInvestProportion = brInvestProportion;
     }
 
+    public String getProfitMode() {
+        return profitMode;
+    }
+
+    public void setProfitMode(String profitMode) {
+        this.profitMode = profitMode;
+    }
+
     public int getTotalInstallmentNum() {
         return TotalInstallmentNum;
     }

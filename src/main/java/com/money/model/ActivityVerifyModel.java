@@ -110,6 +110,11 @@ public class ActivityVerifyModel extends BaseModel {
     String marketAnalysis;
 
     /**
+     * 盈利模式
+     */
+    String profitMode;
+
+    /**
      * 团队介绍
      */
     String teamIntroduce;
@@ -298,5 +303,13 @@ public class ActivityVerifyModel extends BaseModel {
 
     public void setRevampCount(int revampCount) {
         this.revampCount = revampCount;
+    }
+
+    public String getProfitMode() {
+        return profitMode;
+    }
+
+    public void setProfitMode(String profitMode) {
+        this.profitMode = profitMode;
     }
 }

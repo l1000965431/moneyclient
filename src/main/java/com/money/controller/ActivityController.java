@@ -7,6 +7,7 @@ import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityDynamicModel;
+import com.money.model.ActivityVerifyCompleteModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,7 +29,7 @@ import java.util.List;
 public class ActivityController extends ControllerBase implements IController {
 
     /**
-     * 获得项目详情
+     * 获得项目列表
      *
      * @param request
      * @param response
@@ -132,6 +133,34 @@ public class ActivityController extends ControllerBase implements IController {
         /*List ActivityHasEarnings = activityService.GetActivityHasInvestment("1");*/
 
         String Json = null; //= GsonUntil.JavaClassToJson(ActivityHasEarnings);
+
+        return Json;
+    }
+
+    /**
+     * 获取项目详情
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/GetActivityInformation")
+    @ResponseBody
+    public String getActivityInformation(HttpServletRequest request, HttpServletResponse response) {
+
+        //获取UserID;
+        String activityId = request.getParameter("activityId");
+
+        ActivityService activityService = ServiceFactory.getService("ActivityService");
+
+
+        ActivityVerifyCompleteModel completeModel = activityService.getActivityInformation(activityId);
+        if(completeModel == null){
+            response.setHeader("response", ServerReturnValue.ACTIVITY_INFO_NO_ACTIVITY);
+            return "";
+        }
+
+        String Json = GsonUntil.JavaClassToJson(completeModel);
+        response.setHeader("response", ServerReturnValue.ACTIVITY_INFO_SUCCESS);
 
         return Json;
     }
