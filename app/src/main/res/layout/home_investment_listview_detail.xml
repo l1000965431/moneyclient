@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content" android:layout_height="fill_parent"
     android:orientation="vertical"
     android:id="@+id/home_investment_listview_detail_late"
@@ -28,7 +28,7 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:background="#ffffffff">
 
                 <RelativeLayout
@@ -129,7 +129,9 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="fill_parent"
+                android:background="#ffbbbbbb"
+                android:paddingBottom="10dp">
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -137,10 +139,11 @@
                     android:layout_height="50dp"
                     android:background="#ff46d1ff"
                     android:paddingTop="3dp"
-                    android:paddingBottom="3dp" >
+                    android:paddingBottom="3dp"
+                    android:visibility="visible">
 
                     <TextView
-                        android:layout_width="fill_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="去领投（领投资金为：200万￥）"
@@ -149,7 +152,16 @@
                         android:textColor="#ffffffff"
                         android:textIsSelectable="false"
                         android:layout_gravity="center"
-                        android:gravity="center_vertical|center_horizontal" />
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/imageView12"
+                        android:src="@mipmap/icon_triangle2"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="10dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -158,7 +170,7 @@
                     android:layout_height="fill_parent"
                     android:paddingBottom="20dp"
                     android:background="#ff46d1ff"
-                    >
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:orientation="horizontal"
@@ -220,7 +232,7 @@
                     android:paddingBottom="3dp" >
 
                     <TextView
-                        android:layout_width="fill_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="去跟投"
@@ -229,7 +241,16 @@
                         android:textColor="#ffffffff"
                         android:textIsSelectable="false"
                         android:layout_gravity="center"
-                        android:gravity="center_vertical|center_horizontal" />
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/imageView13"
+                        android:src="@mipmap/icon_triangle2"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="10dp" />
 
                 </LinearLayout>
 
@@ -337,59 +358,60 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:orientation="horizontal"
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="70dp">
+
+                    <TextView
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="回报几率与金额："
+                        android:id="@+id/textView14"
+                        android:textSize="13dp"
+                        android:textColor="#ff221d0d"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:layout_marginLeft="70dp">
-
-                        <TextView
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="回报几率与金额："
-                            android:id="@+id/textView14"
-                            android:textSize="13dp"
-                            android:textColor="#ff221d0d"
-                            android:textIsSelectable="false"
-                            android:textStyle="bold"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="7dp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginLeft="70dp"
-                        android:id="@+id/investment_ll_result_root">
-
-                    </LinearLayout>
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="7dp" />
 
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="120dp"
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="确定"
-                    android:id="@+id/invest_project_tv_confirm"
-                    android:layout_gravity="center"
-                    android:textSize="15dp"
-                    android:background="@drawable/bg_rounded10blue"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginBottom="10dp"
-                    android:textColor="#ff2a2a2a" />
+                    android:layout_weight="1"
+                    android:layout_marginLeft="70dp"
+                    android:id="@+id/investment_ll_result_root">
+
+                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="确定"
+        android:id="@+id/invest_project_tv_confirm"
+        android:layout_gravity="center"
+        android:textSize="15dp"
+        android:background="#ff44ff0b"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="#ff2a2a2a"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>
