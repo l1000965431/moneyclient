@@ -2,10 +2,8 @@ package com.dragoneye.money.activity.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,27 +12,21 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
 import com.dragoneye.money.activity.InvestProjectActivity;
-import com.dragoneye.money.config.PullRefreshConfig;
-import com.dragoneye.money.dao.MyDaoMaster;
+import com.dragoneye.money.config.PreferencesConfig;
 import com.dragoneye.money.dao.Project;
-import com.dragoneye.money.dao.ProjectDao;
-import com.dragoneye.money.dao.ProjectImage;
-import com.dragoneye.money.dao.ProjectImageDao;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.model.ProjectDetailModel;
 import com.dragoneye.money.protocol.GetProjectListProtocol;
+import com.dragoneye.money.tool.ToolMaster;
 import com.dragoneye.money.view.GridViewWithHeaderAndFooter;
 import com.dragoneye.money.view.RefreshableView;
-import com.dragoneye.money.view.TopTabButton;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -42,7 +34,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -53,15 +44,15 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
     private static final String TAG = HomeInvestmentFragment.class.getSimpleName();
 
 
-    private TopTabButton mIncomingButton, mHotProjectButton, mSearchButton, mCurrentSelectedButton;
     private RefreshableView refreshableView;
     private GridViewWithHeaderAndFooter mGridView;
     private ArrayList<Project> mDataArrays = new ArrayList<>();
     private InvestmentListViewAdapter mAdapter;
-    private Handler handler = new Handler();
     private View mListViewFooter;
     private Boolean mIsLoadingMore;
     private ArrayList<ProjectDetailModel> mProjectList = new ArrayList<>();
+
+    private Handler handler = new Handler();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,60 +69,13 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
     }
 
     private void initView(){
-        View.OnClickListener tabButtonOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if( mCurrentSelectedButton != null ){
-                    mCurrentSelectedButton.setChecked(false);
-                }
-                switch (v.getId()){
-                    case R.id.function_switch_bottom_button_investment:
-                        mIncomingButton.setChecked(true);
-                        mCurrentSelectedButton = mIncomingButton;
-                        break;
-                    case R.id.linearLayout4:
-                        mHotProjectButton.setChecked(true);
-                        mCurrentSelectedButton = mHotProjectButton;
-                        break;
-                    case R.id.linearLayout5:
-                        mSearchButton.setChecked(true);
-                        mCurrentSelectedButton = mSearchButton;
-                        break;
-                }
-            }
-        };
-
-        mIncomingButton = new TopTabButton(getActivity());
-        mIncomingButton.imageView = (ImageView)getActivity().findViewById(R.id.function_switch_bottom_button_investment_imageView);
-        mIncomingButton.textView = (TextView)getActivity().findViewById(R.id.function_switch_bottom_button_investment_textView);
-        LinearLayout linearLayout = (LinearLayout)getActivity().findViewById(R.id.function_switch_bottom_button_investment);
-        linearLayout.setOnClickListener(tabButtonOnClickListener);
-        tabButtonOnClickListener.onClick(linearLayout);
-
-        mHotProjectButton = new TopTabButton(getActivity());
-        mHotProjectButton.imageView = (ImageView)getActivity().findViewById(R.id.imageView4);
-        mHotProjectButton.textView = (TextView)getActivity().findViewById(R.id.textView4);
-        linearLayout = (LinearLayout)getActivity().findViewById(R.id.linearLayout4);
-        linearLayout.setOnClickListener(tabButtonOnClickListener);
-
-        mSearchButton = new TopTabButton(getActivity());
-        mSearchButton.imageView = (ImageView)getActivity().findViewById(R.id.imageView5);
-        mSearchButton.textView = (TextView)getActivity().findViewById(R.id.textView5);
-        linearLayout = (LinearLayout)getActivity().findViewById(R.id.linearLayout5);
-        linearLayout.setOnClickListener(tabButtonOnClickListener);
-
         refreshableView = (RefreshableView)getActivity().findViewById(R.id.home_investment_refreshable_view);
         refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
             @Override
             public void onRefresh() {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                refreshableView.finishRefreshing();
+                handler.post(updateInvestmentList_r);
             }
-        }, PullRefreshConfig.FRAGMENT_HOME_INVESTMENT);
+        }, PreferencesConfig.FRAGMENT_HOME_INVESTMENT);
 
         mGridView = (GridViewWithHeaderAndFooter)getActivity().findViewById(R.id.home_investment_grid_view);
         mListViewFooter = LayoutInflater.from(getActivity()).inflate(R.layout.loading_list_view_item, null, false);
@@ -181,26 +125,31 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
 //        List<Project> list = queryBuilder.list();
 //        mDataArrays.addAll(list);
 
-        updateInvestmentList();
+        handler.post(updateInvestmentList_r);
     }
 
-    private void updateInvestmentList(){
-        HttpParams params = new HttpParams();
+    Runnable updateInvestmentList_r = new Runnable() {
+        @Override
+        public void run() {
+            HttpParams params = new HttpParams();
 
-        HttpClient.post(GetProjectListProtocol.URL_GET_PROJECT_LIST, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                Log.d(TAG, "update project list failure-> " + s);
-            }
+            HttpClient.post(GetProjectListProtocol.URL_GET_PROJECT_LIST, params, new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d(TAG, "update project list failure-> " + s);
+                    refreshableView.finishRefreshing();
+                }
 
-            @Override
-            public void onSuccess(int i, Header[] headers, String s) {
-                ArrayList<ProjectDetailModel> detailModels = jsonToProjectList(s);
-                addNewProjectToList(detailModels);
-                mAdapter.notifyDataSetChanged();
-            }
-        });
-    }
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    ArrayList<ProjectDetailModel> detailModels = jsonToProjectList(s);
+                    addNewProjectToList(detailModels);
+                    mAdapter.notifyDataSetChanged();
+                    refreshableView.finishRefreshing();
+                }
+            });
+        }
+    };
 
     private void addNewProjectToList(ArrayList<ProjectDetailModel> projectDetailModels){
         for( int i = 0; i < 8; i++ )
@@ -217,7 +166,11 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                 detailModel.setName( jsonObject.getString("activityName") );
                 detailModel.setActivityStageId(jsonObject.getString("activityStageId"));
                 detailModel.setActivityId(jsonObject.getString("activityId"));
-                detailModel.setActivityIntroduce(jsonObject.getString("activityIntroduce"));
+                detailModel.setSummary(jsonObject.getString("summary"));
+                detailModel.setTargetFund(jsonObject.getInt("targetFund"));
+                detailModel.setCurrentFund(jsonObject.getInt("currentFund"));
+                detailModel.setCurrentStage(jsonObject.getInt("currentStage"));
+                detailModel.setTotalStage(jsonObject.getInt("totalStage"));
                 projectDetailModels.add(detailModel);
             }
 
@@ -239,7 +192,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
         ProjectDetailModel project = (ProjectDetailModel) mGridView.getItemAtPosition(position);
         Intent intent = new Intent(getActivity(), InvestProjectActivity.class);
-        intent.putExtra(InvestProjectActivity.EXTRA_PROJECT_ID, project.getActivityId());
+        intent.putExtra(InvestProjectActivity.EXTRA_PROJECT_MODEL, project);
         startActivity(intent);
     }
 
@@ -280,6 +233,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public View getView(int position, View convertView, ViewGroup parent){
             ProjectDetailModel project = (ProjectDetailModel)getItem(position);
 
@@ -288,15 +242,14 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                 viewHolder = new ViewHolder();
 
                 convertView = mInflater.inflate(R.layout.home_investment_listview_first, parent, false);
-                viewHolder.ivLogo = (ImageView)convertView.findViewById(R.id.imageView);
-                viewHolder.tvDescription = (TextView)convertView.findViewById(R.id.textView);
-                viewHolder.tvDay = (TextView)convertView.findViewById(R.id.textView5);
-                viewHolder.tvHour = (TextView)convertView.findViewById(R.id.textView7);
-                viewHolder.tvMinute = (TextView)convertView.findViewById(R.id.textView9);
-                viewHolder.tvAwarding = (TextView)convertView.findViewById(R.id.textView2);
-                viewHolder.tvAwardTarget = (TextView)convertView.findViewById(R.id.textView3);
-                viewHolder.tvName = (TextView)convertView.findViewById(R.id.textView53);
+                viewHolder.ivLogo = (ImageView)convertView.findViewById(R.id.home_investment_list_view_item_iv_logo);
+                viewHolder.tvSummary = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_summary);
+                viewHolder.tvCurrentFund = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_currentFund);
+                viewHolder.tvTargetFund = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_targetFund);
+                viewHolder.tvName = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_projectName);
                 viewHolder.pbProjectProgress = (ProgressBar)convertView.findViewById(R.id.home_investment_list_view_item_pb_progress);
+                viewHolder.tvStageInfo = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_stageInfo);
+                viewHolder.tvProgress = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_progress);
 
                 convertView.setTag(viewHolder);
             }else{
@@ -315,20 +268,35 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
 //
 //                }
 //            }
-            viewHolder.tvDescription.setText(project.getActivityIntroduce());
+            viewHolder.tvSummary.setText(project.getSummary());
             viewHolder.tvName.setText(project.getName());
+
+            String strCurrentStage = String.format(getString(R.string.project_list_item_stage_info,
+                    project.getCurrentStage() + "/" + project.getTotalStage()));
+            viewHolder.tvStageInfo.setText( strCurrentStage );
+
+            String strTargetFund = String.format(getString(R.string.project_list_item_target_fund,
+                    ToolMaster.convertToPriceString(project.getTargetFund())));
+            viewHolder.tvTargetFund.setText(strTargetFund);
+
+            viewHolder.tvCurrentFund.setText(ToolMaster.convertToPriceString(project.getCurrentFund()));
+
+            int progress = (int)((float)project.getCurrentFund() / (float)project.getTargetFund() * 100);
+            viewHolder.pbProjectProgress.setProgress(progress);
+
+            String strProgress = getString(R.string.project_list_item_progress) + "%" + progress;
+            viewHolder.tvProgress.setText(strProgress);
 
             return convertView;
         }
 
         private class ViewHolder{
             ImageView ivLogo;
-            TextView tvDescription;
-            TextView tvDay;
-            TextView tvHour;
-            TextView tvMinute;
-            TextView tvAwarding;
-            TextView tvAwardTarget;
+            TextView tvSummary;
+            TextView tvCurrentFund;
+            TextView tvTargetFund;
+            TextView tvStageInfo;
+            TextView tvProgress;
             TextView tvName;
             ProgressBar pbProjectProgress;
         }

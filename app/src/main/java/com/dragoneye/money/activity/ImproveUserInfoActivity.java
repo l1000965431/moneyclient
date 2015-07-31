@@ -23,7 +23,7 @@ import org.apache.http.Header;
 
 import java.util.HashMap;
 
-public class ImproveUserInfoActivity extends ActionBarActivity implements View.OnClickListener{
+public class ImproveUserInfoActivity extends BaseActivity implements View.OnClickListener{
 
     private TextView mTVPhoneNumber;
     private EditText mETUserName;

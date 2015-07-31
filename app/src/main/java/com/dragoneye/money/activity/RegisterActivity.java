@@ -18,7 +18,7 @@ import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 
-public class RegisterActivity extends ActionBarActivity implements View.OnClickListener{
+public class RegisterActivity extends BaseActivity implements View.OnClickListener{
 
     private static final int USER_ID_LIMIT_MIN = 9;
     private static final int USER_ID_LIMIT_MAX = 16;
