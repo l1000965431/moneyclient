@@ -304,140 +304,135 @@
                     <RadioGroup
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/project_launched_rg_project_type">
-                    </RadioGroup>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:visibility="gone">
+                        android:id="@+id/project_launched_rg_project_type"
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:orientation="horizontal"
-                            android:layout_width="fill_parent"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="30dp"
-                                android:text="科技"
-                                android:id="@+id/textView35"
-                                android:textSize="10dp"
-                                android:gravity="center_vertical|center_horizontal"
-                                android:textColor="#ff727272"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginLeft="3dp"
-                                android:background="@drawable/edittext1" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="30dp"
-                                android:text="工艺"
-                                android:id="@+id/textView36"
-                                android:textSize="10dp"
-                                android:gravity="center_vertical|center_horizontal"
-                                android:textColor="#ff727272"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginLeft="3dp"
-                                android:background="@drawable/edittext1" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="30dp"
-                                android:text="出版"
-                                android:id="@+id/textView37"
-                                android:textSize="10dp"
-                                android:gravity="center_vertical|center_horizontal"
-                                android:textColor="#ff727272"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginLeft="3dp"
-                                android:background="@drawable/edittext1" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="30dp"
-                                android:text="娱乐"
-                                android:id="@+id/textView38"
-                                android:textSize="10dp"
-                                android:gravity="center_vertical|center_horizontal"
-                                android:textColor="#ff727272"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginLeft="3dp"
-                                android:background="@drawable/edittext1" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="30dp"
-                                android:text="艺术"
-                                android:id="@+id/textView39"
-                                android:textSize="10dp"
-                                android:gravity="center_vertical|center_horizontal"
-                                android:textColor="#ff727272"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginLeft="3dp"
-                                android:background="@drawable/edittext1" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="30dp"
-                                android:text="农业"
-                                android:id="@+id/textView40"
-                                android:textSize="10dp"
-                                android:gravity="center_vertical|center_horizontal"
-                                android:textColor="#ff727272"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginLeft="3dp"
-                                android:background="@drawable/edittext1" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="30dp"
-                                android:text="商铺"
-                                android:id="@+id/textView41"
-                                android:textSize="10dp"
-                                android:gravity="center_vertical|center_horizontal"
-                                android:textColor="#ff727272"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginLeft="3dp"
-                                android:background="@drawable/edittext1" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content" >
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="30dp"
-                                android:text="其他"
-                                android:id="@+id/textView42"
-                                android:textSize="10dp"
-                                android:gravity="center_vertical|center_horizontal"
-                                android:textColor="#ff727272"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginLeft="3dp"
-                                android:background="@drawable/edittext1" />
 
                             <RadioButton
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="New RadioButton"
-                                android:id="@+id/radioButton4"
-                                android:checked="false"/>
+                                android:text="科技"
+                                android:id="@+id/project_launched_rb_project_type_1"
+                                android:checked="false"
+                                android:background="@drawable/project_launched_project_type_radio"
+                                android:button="@null"
+                                android:textColor="#ff727272"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="3dp"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"/>
+
+                            <RadioButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="工艺"
+                                android:id="@+id/project_launched_rb_project_type_2"
+                                android:checked="false"
+                                android:background="@drawable/project_launched_project_type_radio"
+                                android:button="@null"
+                                android:textColor="#ff727272"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="3dp"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"/>
+
+                            <RadioButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="出版"
+                                android:id="@+id/project_launched_rb_project_type_3"
+                                android:checked="false"
+                                android:background="@drawable/project_launched_project_type_radio"
+                                android:button="@null"
+                                android:textColor="#ff727272"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="3dp"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"/>
+
+                            <RadioButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="娱乐"
+                                android:id="@+id/project_launched_rb_project_type_4"
+                                android:checked="false"
+                                android:background="@drawable/project_launched_project_type_radio"
+                                android:button="@null"
+                                android:textColor="#ff727272"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="3dp"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"/>
+
+                            <RadioButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="艺术"
+                                android:id="@+id/project_launched_rb_project_type_5"
+                                android:checked="false"
+                                android:background="@drawable/project_launched_project_type_radio"
+                                android:button="@null"
+                                android:textColor="#ff727272"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="3dp"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"/>
+
+                            <RadioButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="农业"
+                                android:id="@+id/project_launched_rb_project_type_6"
+                                android:checked="false"
+                                android:background="@drawable/project_launched_project_type_radio"
+                                android:button="@null"
+                                android:textColor="#ff727272"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="3dp"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"/>
+
+                            <RadioButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="商铺"
+                                android:id="@+id/project_launched_rb_project_type_7"
+                                android:checked="false"
+                                android:background="@drawable/project_launched_project_type_radio"
+                                android:button="@null"
+                                android:textColor="#ff727272"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="3dp"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            >
+
+                            <RadioButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="其他"
+                                android:id="@+id/project_launched_rb_project_type_8"
+                                android:checked="false"
+                                android:background="@drawable/project_launched_project_type_radio"
+                                android:button="@null"
+                                android:textColor="#ff727272"
+                                android:layout_marginLeft="3dp"
+                                android:textSize="10dp"
+                                android:gravity="center_vertical|center_horizontal"/>
 
                         </LinearLayout>
-                    </LinearLayout>
+
+                    </RadioGroup>
 
                 </LinearLayout>
 

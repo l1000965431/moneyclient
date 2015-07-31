@@ -118,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="@string/invest_project_invested_price"
-                    android:id="@+id/textView16"
+                    android:id="@+id/home_record_listview_tv_invest_amount"
                     android:textSize="13dp"
                     android:textColor="#ff767676"
                     android:textIsSelectable="false"

@@ -120,7 +120,7 @@
             android:layout_weight="1"
             android:layout_marginRight="10dp"
             android:textColor="#ff6a6a6a"
-            android:checked="false" />
+            android:checked="true" />
 
         <RadioButton
             android:layout_width="fill_parent"

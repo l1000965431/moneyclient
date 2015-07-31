@@ -34,7 +34,8 @@
         android:gravity="center_vertical|center_horizontal"
         android:layout_marginBottom="20dp"
         android:layout_above="@+id/fragment_login_button"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:inputType="textPassword"/>
 
     <LinearLayout
         android:orientation="horizontal"
