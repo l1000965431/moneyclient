@@ -12,32 +12,19 @@ public class TicketModel {
     /**
      * 票ID
      */
-    String TiceketID;
-
-    /**
-     * 项目ID
-     */
-    String ActivityID;
+    String TicketID;
 
     /**
      * 用户ID
      */
     String UserId;
 
-    public String getTiceketID() {
-        return TiceketID;
+    public String getTicketID() {
+        return TicketID;
     }
 
-    public void setTiceketID(String ticeketID) {
-        TiceketID = ticeketID;
-    }
-
-    public String getActivityID() {
-        return ActivityID;
-    }
-
-    public void setActivityID(String activityID) {
-        ActivityID = activityID;
+    public void setTicketID(String ticketID) {
+        TicketID = ticketID;
     }
 
     public String getUserId() {

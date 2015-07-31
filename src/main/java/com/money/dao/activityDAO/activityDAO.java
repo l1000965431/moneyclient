@@ -2,14 +2,16 @@ package com.money.dao.activityDAO;
 
 import com.money.config.Config;
 import com.money.dao.BaseDao;
+import com.money.dao.TransactionCallback;
+import com.money.dao.TransactionSessionCallback;
 import com.money.memcach.MemCachService;
-import com.money.model.ActivityDetailModel;
-import com.money.model.ActivityDynamicModel;
-import com.money.model.OrderModel;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import com.money.model.*;
+import org.hibernate.*;
+import org.hibernate.criterion.CriteriaQuery;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.engine.spi.TypedValue;
 import org.springframework.stereotype.Repository;
 import until.GsonUntil;
 
@@ -27,20 +29,19 @@ public class activityDAO extends BaseDao {
 
     /**
      * 获得项目详细内容
-     * @param activityID
+     * @param InstallmentActivityID 分期项目ID
      * @return
      */
-    public ActivityDetailModel getActivityDetails( int activityID ){
+    public ActivityDetailModel getActivityDetails( String InstallmentActivityID ){
 
-        String UserID = Long.toString( activityID );
-        if(MemCachService.KeyIsExists( UserID ) ){
-            String activityJson = MemCachService.MemCachgGet( UserID );
-            ActivityDetailModel activitymodel = GsonUntil.jsonToJavaClass( activityJson,OrderModel.class );
-            return activitymodel;
+        if(MemCachService.KeyIsExists( InstallmentActivityID ) ){
+            String activityJson = MemCachService.MemCachgGet( InstallmentActivityID );
+            ActivityDetailModel activityDetailModel = GsonUntil.jsonToJavaClass( activityJson,ActivityDetailModel.class );
+            return activityDetailModel;
         }else{
             try{
-                ActivityDetailModel activitymodel = (ActivityDetailModel)this.load(ActivityDetailModel.class, (long)activityID);
-                return activitymodel;
+                ActivityDetailModel activityDetailModel = getActivityDetail( InstallmentActivityID );
+                return activityDetailModel;
             }catch ( Exception e ){
                 return null;
             }
@@ -50,21 +51,18 @@ public class activityDAO extends BaseDao {
 
     /**
      * 获得项目动态内容:当前的投资的金额 投资的人数
-     * @param activityID
+     * @param InstallmentActivityID
      * @return
      */
-    public ActivityDynamicModel getActivityDynamic( int activityID ){
+    public ActivityDynamicModel getActivityDynamic( String InstallmentActivityID ){
 
-        String UserID = Long.toString( activityID );
-        if(MemCachService.KeyIsExists( UserID ) ){
-
-            String activityJson = MemCachService.MemCachgGet( UserID );
-
+        if(MemCachService.KeyIsExists( InstallmentActivityID ) ){
+            String activityJson = MemCachService.MemCachgGet( InstallmentActivityID );
             ActivityDynamicModel activitydynamicmodel = GsonUntil.jsonToJavaClass( activityJson,OrderModel.class );
             return activitydynamicmodel;
         }else{
             try{
-                ActivityDynamicModel activitydynamicmodel = (ActivityDynamicModel)this.load(ActivityDynamicModel.class, activityID);
+                ActivityDynamicModel activitydynamicmodel = this.getActivityDynamicModel( InstallmentActivityID );
                 return activitydynamicmodel;
             }catch ( Exception e ){
                 return null;
@@ -135,4 +133,100 @@ public class activityDAO extends BaseDao {
 
         return list;
     }
+
+    /**
+     * 根据分期ID获得项目信息
+     * @param InstallmentActivityID
+     * @return
+     */
+    public ActivityDetailModel getActivityDetail( final String InstallmentActivityID ){
+
+        final ActivityDetailModel[] activityDetailModels = {null};
+
+        this.excuteTransactionByCallback(new TransactionCallback() {
+            public void callback(BaseDao basedao) throws Exception {
+                activityDetailModels[0] = (ActivityDetailModel) basedao.getNewSession().createCriteria( ActivityDetailModel.class )
+                        .setMaxResults(1)
+                        .add(Restrictions.eq("activityStageId", InstallmentActivityID))
+                        .uniqueResult();
+            }
+        });
+
+        return activityDetailModels[0];
+    }
+
+    /**
+     * 根据过滤ID获得项目信息
+     * @param InstallmentActivityID
+     * @return
+     */
+    public ActivityDynamicModel getActivityDynamicModel( final String InstallmentActivityID ){
+
+        final ActivityDynamicModel[] activityDynamicModels = {null};
+
+        this.excuteTransactionByCallback(new TransactionCallback() {
+            public void callback(BaseDao basedao) throws Exception {
+                activityDynamicModels[0] = (ActivityDynamicModel) basedao.getNewSession().createCriteria( ActivityDynamicModel.class )
+                        .setMaxResults(1)
+                        .add(Restrictions.eq("activityStageId", InstallmentActivityID))
+                        .uniqueResult();
+            }
+        });
+
+        return activityDynamicModels[0];
+    }
+
+    /**
+     * 获取项目
+     * @param ActivityID
+     * @return
+     */
+    public ActivityVerifyCompleteModel getActivityVerifyCompleteModel( final String ActivityID ){
+        final ActivityVerifyCompleteModel[] activityVerifyCompleteModels = {null};
+
+        this.excuteTransactionByCallback(new TransactionCallback() {
+            public void callback(BaseDao basedao) throws Exception {
+                activityVerifyCompleteModels[0] = (ActivityVerifyCompleteModel) basedao.getNewSession().createCriteria( ActivityDynamicModel.class )
+                        .setMaxResults(1)
+                        .add(Restrictions.eq("activityId", ActivityID))
+                        .uniqueResult();
+            }
+        });
+
+        return activityVerifyCompleteModels[0];
+    }
+
+    /**
+     * 创建票表
+     * @param InstallmentActivityID
+     */
+    public void CreateTicketDB( final String InstallmentActivityID ){
+
+        this.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public void callback(Session session) throws Exception {
+                String DBName = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
+                String Sql = "CREATE TABLE ? ( TickID VARCHAR(45) NOT NULL,UserId VARCHAR(45) NULL DEFAULT 0,PRIMARY KEY (TickID));";
+                SQLQuery sqlQuery = session.createSQLQuery(Sql);
+                sqlQuery.setParameter( 0,DBName );
+                sqlQuery.executeUpdate();
+            }
+        });
+    }
+
+    /**
+     * 创建预购买表
+     * @param ActivityID
+     */
+    public void CreatePurchaseInAdvanceDB( final String ActivityID ){
+        this.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public void callback(Session session) throws Exception {
+                String DBName = Config.ACTIVITYPURCHASE + ActivityID;
+                String Sql = "CREATE TABLE ? ( UserID VARCHAR(45) NOT NULL,PurchaseInAdvanceNum INT(5) NOT NULL, CurPurchaseInAdvanceNum INT(5) NOT NULL,PurchaseNum INT(5) NOT NULL, PRIMARY KEY (UserID));";
+                SQLQuery sqlQuery = session.createSQLQuery(Sql);
+                sqlQuery.setParameter( 0,DBName );
+                sqlQuery.executeUpdate();
+            }
+        });
+    }
+
 }

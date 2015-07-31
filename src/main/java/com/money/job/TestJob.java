@@ -8,6 +8,8 @@ import until.ScheduleJob;
 /**
  * Created by liumin on 15/7/29.
  */
+
+
 public class TestJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         System.out.println("任务成功运行");
