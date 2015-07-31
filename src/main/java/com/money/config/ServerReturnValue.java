@@ -109,4 +109,14 @@ public class ServerReturnValue {
      * 购买失败
      */
     public static final int PERFECTFAILED = 102;
+
+    /**
+     * 获取项目详情成功
+     */
+    public static final String ACTIVITY_INFO_SUCCESS = "100";
+
+    /**
+     * 获取项目详情失败
+     */
+    public static final String ACTIVITY_INFO_NO_ACTIVITY = "101";
 }

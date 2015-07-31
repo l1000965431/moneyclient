@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/AdministrateController")
-@RequestMapping("/Administrate")
 public class AdministrateController extends ControllerBase implements IController {
 
     @Autowired

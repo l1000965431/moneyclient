@@ -44,7 +44,7 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
             ActivityDetailModel activityDetailModel = new ActivityDetailModel();
             ActivityDynamicModel activityDynamicModel = new ActivityDynamicModel();
 
-            activityDetailModel.setActivityStageId( completeModel.getActivityId() + "-" + String.valueOf(i));
+            activityDetailModel.setActivityStageId( completeModel.getActivityId() + "_" + String.valueOf(i));
             activityDetailModel.setTargetFund( 25000 );
             activityDetailModel.setActivityVerifyCompleteModel(completeModel);
             activityDetailModel.setDynamicModel(activityDynamicModel);

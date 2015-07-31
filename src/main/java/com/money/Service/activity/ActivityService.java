@@ -608,4 +608,8 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
         return 0;
     }
+
+    public ActivityVerifyCompleteModel getActivityInformation(String activityId){
+        return (ActivityVerifyCompleteModel)activityDao.load(ActivityVerifyCompleteModel.class, activityId);
+    }
 }
