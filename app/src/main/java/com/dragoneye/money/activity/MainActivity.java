@@ -169,6 +169,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             return true;
         }
 
+        if(id == R.id.main_menu_improve_user_info){
+            Intent intent = new Intent(this, ImproveUserInfoActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
