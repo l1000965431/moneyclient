@@ -31,10 +31,12 @@ public class GsonUntil {
                 o.addProperty("activityStageId", src.getActivityStageId());
                 o.addProperty("activityId", src.getActivityVerifyCompleteModel().getActivityId());
                 o.addProperty("activityName", src.getActivityVerifyCompleteModel().getName());
-                o.addProperty("activityIntroduce", src.getActivityVerifyCompleteModel().getActivityIntroduce());
+                o.addProperty("summary", src.getActivityVerifyCompleteModel().getSummary());
                 o.addProperty("targetFund", src.getTargetFund());
                 o.addProperty("status", src.getStatus());
                 o.addProperty("currentFund", src.getDynamicModel().getActivityCurLines());
+                o.addProperty("currentStage", src.getActivityVerifyCompleteModel().getCurInstallmentNum());
+                o.addProperty("totalStage", src.getActivityVerifyCompleteModel().getTotalInstallmentNum());
                 return o;
             }
         }).registerTypeAdapter(ActivityVerifyCompleteModel.class, new JsonSerializer<ActivityVerifyCompleteModel>() {

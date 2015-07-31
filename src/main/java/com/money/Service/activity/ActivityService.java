@@ -498,5 +498,13 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
     }
 
+    /**
+     * 获取项目详情
+     * @param activityId
+     * @return
+     */
+    public ActivityVerifyCompleteModel getActivityInformation(String activityId){
+        return (ActivityVerifyCompleteModel)activityDao.load(ActivityVerifyCompleteModel.class, activityId);
+    }
 
 }
