@@ -76,7 +76,7 @@
                     <TextView
                         android:layout_width="78dp"
                         android:layout_height="wrap_content"
-                        android:text="用户名："
+                        android:text="昵称："
                         android:id="@+id/textView28"
                         android:textSize="15dp"
                         android:gravity="center_vertical|right"

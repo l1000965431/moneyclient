@@ -13,35 +13,6 @@
         android:background="#fff9c273"
         android:id="@+id/home_selfui_group">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="JenniferLawrence"
-            android:id="@+id/home_selfui_name"
-            android:layout_gravity="left|center"
-            android:textColor="#ff332b38"
-            android:autoText="false"
-            android:textSize="17dp"
-            android:layout_marginBottom="50dp"
-            android:gravity="left"
-            android:layout_marginLeft="150dp"
-            android:layout_marginTop="17dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="您已收益：99999￥"
-            android:id="@+id/textView15"
-            android:layout_gravity="left|center"
-            android:textColor="#ff7e6b51"
-            android:autoText="false"
-            android:textSize="20dp"
-            android:layout_marginBottom="7dp"
-            android:gravity="left"
-            android:layout_marginLeft="150dp"
-            android:layout_marginTop="23dp"
-            android:textStyle="bold" />
-
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,6 +22,35 @@
             android:scaleType="fitXY"
             android:layout_marginTop="-7dp"
             android:layout_marginLeft="40dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="30dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="JenniferLawrence"
+                android:id="@+id/home_selfui_name"
+                android:layout_gravity="center"
+                android:textColor="#ff332b38"
+                android:autoText="false"
+                android:textSize="17dp"
+                android:gravity="left" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/imageView14"
+                android:src="@mipmap/icon_editor"
+                android:layout_gravity="center|right"
+                android:layout_marginLeft="7dp"
+                android:tint="#ff81ff00" />
+        </LinearLayout>
 
         <!--<ImageButton-->
             <!--android:layout_width="96dp"-->
@@ -186,9 +186,9 @@
             android:layout_height="30dp"
             android:id="@+id/home_self_group_linearLayout2_portrait"
             android:layout_gravity="center"
-            android:src="@mipmap/icon_collect"
+            android:src="@mipmap/icon_wallet"
             android:scaleType="fitXY"
-            android:tint="#ffff3f29" />
+            android:tint="#ffda8c15" />
 
         <ImageView
             android:layout_width="15dp"
@@ -204,7 +204,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="收藏"
+            android:text="钱包"
             android:id="@+id/home_self_group_linearLayout2_textView"
             android:textColor="#ff332b38"
             android:textSize="17dp"
@@ -309,7 +309,7 @@
         android:layout_height="57dp"
         android:orientation="horizontal"
         android:measureWithLargestChild="false"
-        android:id="@+id/home_self_group_linearLayout7"
+        android:id="@+id/linearLayout21"
         android:columnCount="10"
         android:rowCount="10"
         android:touchscreenBlocksFocus="false"
@@ -320,15 +320,16 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:id="@+id/home_self_group_linearLayout7_portrait"
+            android:id="@+id/imageView15"
             android:layout_gravity="center"
-            android:src="@mipmap/icon_mailbox"
-            android:scaleType="fitXY" />
+            android:src="@mipmap/button_investment"
+            android:scaleType="fitXY"
+            android:tint="#ff06adff" />
 
         <ImageView
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:id="@+id/home_self_group_linearLayout7_bg"
+            android:id="@+id/imageView16"
             android:layout_gravity="center"
             android:src="@mipmap/icon_point"
             android:tint="#ffff4330"
@@ -339,8 +340,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="消息"
-            android:id="@+id/home_self_group_linearLayout7_textView"
+            android:text="创建新项目"
+            android:id="@+id/textView8"
             android:textColor="#ff332b38"
             android:textSize="17dp"
             android:paddingRight="3dp"
@@ -352,7 +353,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="9"
-            android:id="@+id/home_self_group_linearLayout7_num"
+            android:id="@+id/textView9"
             android:layout_row="0"
             android:textColor="#7f000000"
             android:textSize="12dp"
@@ -364,7 +365,7 @@
         <ImageView
             android:layout_width="17dp"
             android:layout_height="17dp"
-            android:id="@+id/home_self_group_linearLayout7_arrow"
+            android:id="@+id/imageView17"
             android:layout_gravity="center"
             android:src="@mipmap/icon_triangle"
             android:scaleType="fitXY"
