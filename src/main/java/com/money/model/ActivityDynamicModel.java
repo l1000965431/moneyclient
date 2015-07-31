@@ -69,14 +69,24 @@ public class ActivityDynamicModel extends BaseModel {
     int activityGroup;
 
     /**
-     * 项目当前金额
+     * 小R项目当前金额
      */
     int activityCurLines;
 
     /**
-     * 项目当前金额的人数
+     * 小R的总金额
+     */
+    int activityTotalLines;
+
+    /**
+     * 大R当前的金额
      */
     int activityCurLinesPeoples;
+
+    /**
+     * 大R总金额
+     */
+    int activityTotalLinesPeoples;
 
     public ActivityDetailModel getActivityDetailModel() {
         return activityDetailModel;
@@ -86,13 +96,6 @@ public class ActivityDynamicModel extends BaseModel {
         this.activityDetailModel = activityDetailModel;
     }
 
-//    public ActivityGroupModel getActivityGroupModel() {
-//        return activityGroupModel;
-//    }
-//
-//    public void setActivityGroupModel(ActivityGroupModel activityGroupModel) {
-//        this.activityGroupModel = activityGroupModel;
-//    }
 
     public int getActivityCurLines() {
         return activityCurLines;
@@ -157,4 +160,41 @@ public class ActivityDynamicModel extends BaseModel {
     public void setGroupId(int groupId) {
         this.groupId = groupId;
     }
+
+    public int getActivityTotalLines() {
+        return activityTotalLines;
+    }
+
+    public void setActivityTotalLines(int activityTotalLines) {
+        this.activityTotalLines = activityTotalLines;
+    }
+
+    public int getActivityTotalLinesPeoples() {
+        return activityTotalLinesPeoples;
+    }
+
+    public void setActivityTotalLinesPeoples(int activityTotalLinesPeoples) {
+        this.activityTotalLinesPeoples = activityTotalLinesPeoples;
+    }
+
+    public boolean IsEnoughLines( int Lines ){
+        if( activityTotalLines - activityCurLines >= Lines ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean IsEnoughLinesPeoples( int Lines ){
+        if( activityTotalLinesPeoples - activityCurLinesPeoples >= Lines ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean IsEnough(){
+        return ( activityCurLines+activityCurLinesPeoples >= activityTotalAmount );
+    }
+
 }

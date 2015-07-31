@@ -417,4 +417,12 @@ public class TicketService extends ServiceBase implements ServiceInterface {
         }
     }
 
+    /**
+     * 创建票ID
+     * @param InstallmentActivityID  分期项目ID
+     */
+    public void CreateTickID( String InstallmentActivityID,int TotalLines ){
+       ticketDAO.CreateTicketID( InstallmentActivityID,TotalLines );
+    }
+
 }

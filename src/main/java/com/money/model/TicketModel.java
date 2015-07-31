@@ -19,6 +19,11 @@ public class TicketModel {
      */
     String UserId;
 
+    /**
+     * 票的类型
+     */
+    int PurchaseType;
+
     public String getTicketID() {
         return TicketID;
     }
@@ -33,5 +38,13 @@ public class TicketModel {
 
     public void setUserId(String userId) {
         UserId = userId;
+    }
+
+    public int getPurchaseType() {
+        return PurchaseType;
+    }
+
+    public void setPurchaseType(int purchaseType) {
+        PurchaseType = purchaseType;
     }
 }

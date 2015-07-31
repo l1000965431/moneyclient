@@ -132,6 +132,18 @@ public class ActivityVerifyCompleteModel extends BaseModel {
      */
     String activityLinesPeoples;
 
+    /**
+     * 总期数
+     */
+    @Column( nullable=false,columnDefinition="INT default 0" )
+    int TotalInstallmentNum;
+
+    /**
+     * 当前期数
+     */
+    @Column( nullable=false,columnDefinition="INT default 0" )
+    int CurInstallmentNum;
+
     public int getStatus() {
         return status;
     }
@@ -315,4 +327,33 @@ public class ActivityVerifyCompleteModel extends BaseModel {
     public void setBrInvestProportion(float brInvestProportion) {
         this.brInvestProportion = brInvestProportion;
     }
+
+    public int getTotalInstallmentNum() {
+        return TotalInstallmentNum;
+    }
+
+    public void setTotalInstallmentNum(int totalInstallmentNum) {
+        TotalInstallmentNum = totalInstallmentNum;
+    }
+
+    public int getCurInstallmentNum() {
+        return CurInstallmentNum;
+    }
+
+    public void setCurInstallmentNum(int curInstallmentNum) {
+        CurInstallmentNum = curInstallmentNum;
+    }
+
+    public boolean IsEnoughAdvance( int AdvanceNum ){
+        if( TotalInstallmentNum-CurInstallmentNum >= AdvanceNum ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean IsEnoughInstallmentNum(){
+        return ( CurInstallmentNum >= TotalInstallmentNum );
+    }
+
 }
