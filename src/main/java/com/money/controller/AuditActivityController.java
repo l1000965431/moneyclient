@@ -81,7 +81,7 @@ public class AuditActivityController extends ControllerBase implements IControll
     @RequestMapping("splitActivity")
     @ResponseBody
     public String splitActivity(HttpServletRequest request, HttpServletResponse response){
-        serviceGroupActivity.splitActivityByStage();
+        //serviceGroupActivity.splitActivityByStage();
 
         return "";
     }

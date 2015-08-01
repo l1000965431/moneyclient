@@ -84,9 +84,14 @@ public class ActivityDetailModel extends BaseModel {
     int raiseDay;
 
     /**
-     * 各金额总人数
+     * 小R各金额总人数
      */
     String activityLinesPeoples;
+
+    /**
+     * 大R中奖金额
+     */
+    int LocaltyrantsLotteryLines;
 
     /**
      * 发布时间
@@ -199,5 +204,13 @@ public class ActivityDetailModel extends BaseModel {
 
     public void setStageIndex(int stageIndex) {
         this.stageIndex = stageIndex;
+    }
+
+    public int getLocaltyrantsLotteryLines() {
+        return LocaltyrantsLotteryLines;
+    }
+
+    public void setLocaltyrantsLotteryLines(int localtyrantsLotteryLines) {
+        LocaltyrantsLotteryLines = localtyrantsLotteryLines;
     }
 }

@@ -36,19 +36,44 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
     /**
      *  项目分期操作
      */
-    public void splitActivityByStage(){
+    public void splitActivityByStage( String ActicityID,int AdcanceNum,int PurchaseNum ){
 
-        ActivityVerifyCompleteModel completeModel = (ActivityVerifyCompleteModel)generaDAO.load(ActivityVerifyCompleteModel.class, "4");
+        ActivityVerifyCompleteModel completeModel = (ActivityVerifyCompleteModel)generaDAO.load(ActivityVerifyCompleteModel.class, ActicityID);
+
+        int targetFund = completeModel.getTargetFund();
+        float srInvestProportion = completeModel.getSrInvestProportion();
+        float brInvestProportion = completeModel.getBrInvestProportion();
+
+        List list = CalculateActivityEarnings( targetFund,AdcanceNum*PurchaseNum,srInvestProportion,brInvestProportion );
 
         HashSet<ActivityDetailModel> activityDetailModels = new HashSet<ActivityDetailModel>();
         HashSet<ActivityDynamicModel> activityDynamicModels = new HashSet<ActivityDynamicModel>();
 
-        for( int i = 0; i < 4; i++ ){
+
+        for( int i = 0; i < AdcanceNum*PurchaseNum; i++ ){
             ActivityDetailModel activityDetailModel = new ActivityDetailModel();
             ActivityDynamicModel activityDynamicModel = new ActivityDynamicModel();
-
             activityDetailModel.setActivityStageId( completeModel.getActivityId() + "_" + String.valueOf(i));
-            activityDetailModel.setTargetFund( 25000 );
+
+            //最后一期
+            if( i == AdcanceNum*PurchaseNum-1 ){
+                //每期总金额
+                activityDetailModel.setTargetFund( (Integer)list.get(1)+(Integer)list.get(3) );
+                activityDynamicModel.setActivityTotalAmount((Integer) list.get(1) + (Integer) list.get(3));
+
+                //每期大R小R金额
+                activityDynamicModel.setActivityTotalLines((Integer) list.get(1));
+                activityDynamicModel.setActivityTotalLinesPeoples( (Integer) list.get(3) );
+            }else{ //平常期
+                //每期总金额
+                activityDetailModel.setTargetFund( (Integer)list.get(0)+(Integer)list.get(2) );
+                activityDynamicModel.setActivityTotalAmount((Integer) list.get(0) + (Integer) list.get(2));
+
+                //每期大R小R金额
+                activityDynamicModel.setActivityTotalLines((Integer) list.get(0));
+                activityDynamicModel.setActivityTotalLinesPeoples( (Integer) list.get(4) );
+            }
+
             activityDetailModel.setActivityVerifyCompleteModel(completeModel);
             activityDetailModel.setDynamicModel(activityDynamicModel);
 
@@ -83,7 +108,7 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
      */
     public void setGroupDefaultValue(ActivityGroupModel activityGroupModel){
         activityGroupModel.setInvestAmount( 100000 );
-        activityGroupModel.setEarningAmount( 40000 );
+        activityGroupModel.setEarningAmount(40000);
         activityGroupModel.rcSetSrInvestProportion(0.5f);
         activityGroupModel.rcSetBrEarningProportion(0.65f);
     }
@@ -108,7 +133,7 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
         // 投资每个层次金额列表
         HashSet<SRInvestTicketModel> ticketModels = calcInvestTicket(srInvestAmount, investLevelList, investProportionList);
 
-        activityGroupModel.setSrInvestTicketModels( ticketModels );
+        activityGroupModel.setSrInvestTicketModels(ticketModels);
 
         int ticketsNum = 0;
         for(SRInvestTicketModel model : ticketModels){
@@ -171,9 +196,8 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
         while (iterator.hasNext()){
             SREarningModel model = new SREarningModel();
             Map.Entry entry = (Map.Entry)iterator.next();
-            model.setEarningPrice((Integer)entry.getKey());
+            model.setEarningPrice((Integer) entry.getKey());
             model.setNum((Integer)entry.getValue());
-            model.setBaseProbability( (float)model.getNum() / ticketsNum );
             ticketModels.add(model);
         }
         return ticketModels;
@@ -227,6 +251,32 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
             return "";
         }
         return "";
+    }
+
+    /**
+     * 计算每期的项目收益
+     * @param InstallmentNum 期数
+     * @return 0:小R每期 1:小R最后一期 2:大R每期 3:大R 最后一期
+     */
+    public List CalculateActivityEarnings( int targetFund,int InstallmentNum,float srInvestProportion,float brInvestProportion ){
+        List list = new ArrayList();
+        int srInvestProportionLines = (int) (targetFund*srInvestProportion);
+        int brInvestProportionLines = (int) (targetFund*brInvestProportion);
+
+        int temp = targetFund-(srInvestProportionLines+brInvestProportionLines);
+        srInvestProportionLines+=temp;
+
+        int Balance = srInvestProportionLines%InstallmentNum;
+        int TerminallyLines = (srInvestProportionLines-Balance)/InstallmentNum;
+        list.add( TerminallyLines );
+        list.add( TerminallyLines+Balance );
+
+        int brBalance = brInvestProportionLines%InstallmentNum;
+        int brTerminallyLines = (brInvestProportionLines-Balance)/InstallmentNum;
+        list.add( brTerminallyLines );
+        list.add( brTerminallyLines+brBalance );
+
+        return list;
     }
 
 

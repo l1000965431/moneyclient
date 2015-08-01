@@ -255,4 +255,26 @@ public class activityDAO extends BaseDao {
         });
     }
 
+    /**
+     * 查找同组的分期项目
+     *
+     * @param ActivityID
+     */
+    public List<ActivityDetailModel> getActivityDetailByGroupID( String ActivityID,int GroupID ){
+        Session session = this.getNewSession();
+        Transaction t = session.beginTransaction();
+        List<ActivityDetailModel> list = null;
+        try{
+            list = session.createCriteria(ActivityDetailModel.class)
+                    .add(Restrictions.eq("parentActivityId", ActivityID))
+                    .add(Restrictions.eq("groupId", GroupID))
+                    .list();
+            t.commit();
+        } catch ( Exception e ){
+            t.rollback();
+        }
+        return list;
+    }
+
+
 }

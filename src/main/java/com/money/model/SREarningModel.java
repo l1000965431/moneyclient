@@ -39,7 +39,8 @@ public class SREarningModel extends BaseModel {
     /**
      *  当前收益金额基础中奖几率
      */
-    float baseProbability;
+    int earningType;
+
 
     public Long getId() {
         return id;
@@ -65,19 +66,19 @@ public class SREarningModel extends BaseModel {
         this.earningPrice = earningPrice;
     }
 
-    public float getBaseProbability() {
-        return baseProbability;
-    }
-
-    public void setBaseProbability(float baseProbability) {
-        this.baseProbability = baseProbability;
-    }
-
     public ActivityDetailModel getActivityDetailModel() {
         return activityDetailModel;
     }
 
     public void setActivityDetailModel(ActivityDetailModel activityDetailModel) {
         this.activityDetailModel = activityDetailModel;
+    }
+
+    public int getEarningType() {
+        return earningType;
+    }
+
+    public void setEarningType(int earningType) {
+        this.earningType = earningType;
     }
 }

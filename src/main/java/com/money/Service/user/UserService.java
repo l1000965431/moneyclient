@@ -176,12 +176,15 @@ public class UserService extends ServiceBase implements ServiceInterface {
     }
 
     //比对验证码，修改密码
-    public boolean changPassword(String userName, String code, String newPassWord,String oldPassWord) {
+    public int changPassword(String userName, String code, String newPassWord,String oldPassWord) {
         if (userDAO.checkTeleCode(userName, code) == true) {
-            boolean changeOK = userDAO.changePassword(userName, newPassWord,oldPassWord);
-            return changeOK;
+            if( userDAO.changePassword(userName, newPassWord,oldPassWord) ){
+                return 1;
+            }else{
+                return 0;
+            }
         } else
-            return false;
+            return 3;
     }
 
 
@@ -205,6 +208,14 @@ public class UserService extends ServiceBase implements ServiceInterface {
     public String getUserInfo( String UserID ){
         UserInvestorModel userInvestorModel = userDAO.getUSerInfoModel( UserID );
         return GsonUntil.JavaClassToJson( userInvestorModel );
+    }
+
+    /**
+     * 发送手机验证码
+     * @param UserID
+     */
+    public int SendCode( String UserID ){
+        return userDAO.teleCodeIsSend( UserID );
     }
 
 }

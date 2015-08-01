@@ -1,6 +1,5 @@
 package com.money.dao.userDAO;
 
-import com.cloopen.rest.sdk.CCPRestSmsSDK;
 import com.money.Service.user.Token;
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import until.Base32;
 import until.GsonUntil;
 import until.MoneySeverRandom;
+import until.PRestSmsSDKUntil;
 
 import java.util.*;
 
@@ -29,6 +29,8 @@ import java.util.*;
 public class UserDAO extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(UserDAO.class);
+
+
 
 
     //投资者完善个人信息,1，修改信息成功；2，信息不合法
@@ -212,7 +214,8 @@ public class UserDAO extends BaseDao {
     //验证短信验证码是否正确
     public boolean checkTeleCode(String userName, String code) {
         //根据userName,寻找缓存中的code，并判断是否相等
-        if (code == MemCachService.MemCachgGet(userName))
+        String UserCodeName = Config.CODE+userName;
+        if (code == MemCachService.MemCachgGet(UserCodeName))
             return true;
         else
             return true;
@@ -221,27 +224,14 @@ public class UserDAO extends BaseDao {
     //发送手机验证码，并验证手机短信是否发送成功 1为成功，0为失败............验证码内容待改，输出待改
     public int teleCodeIsSend(String userName) {
         HashMap<String, Object> result = null;
-        //初始化SDK
-        CCPRestSmsSDK restAPI = new CCPRestSmsSDK();
-        //******************************注释*********************************************
-        //*初始化服务器地址和端口                                                       *
-        //*沙盒环境（用于应用开发调试）：restAPI.init("sandboxapp.cloopen.com", "8883");*
-        //*生产环境（用户应用上线使用）：restAPI.init("app.cloopen.com", "8883");       *
-        //*******************************************************************************
-        restAPI.init("sandboxapp.cloopen.com", "8883");
-        restAPI.setAccount("aaf98f894e7826aa014e852a878f08a6", "86d1a1277811460bb4c4e7ec7520e490");
-        //******************************注释*********************************************
-        //*初始化应用ID                                                                 *
-        //*测试开发可使用“测试Demo”的APP ID，正式上线需要使用自己创建的应用的App ID     *
-        //*应用ID的获取：登陆官网，在“应用-应用列表”，点击应用名称，看应用详情获取APP ID*
-        //*******************************************************************************
-        restAPI.setAppId("8a48b5514e7c2193014e852b72d405c8");
+
         //获取一个随机数
         int random = MoneySeverRandom.getRandomNum(1, 10000);
         String code = String.valueOf(random);
         //将发送的验证码存入缓存
-        MemCachService.InsertValue(userName, code);
-        result = restAPI.sendTemplateSMS(userName, "1", new String[]{code, "5"});
+        String UserCodeName = Config.CODE+userName;
+        MemCachService.InsertValueWithTime(UserCodeName, Config.USERCODETIME, code);
+        result = PRestSmsSDKUntil.getRestAPI().sendTemplateSMS(userName, "1", new String[]{code, "5"});
         if ("000000".equals(result.get("statusCode"))) {
             //正常返回输出data包体信息（map）
             HashMap<String, Object> data = (HashMap<String, Object>) result.get("data");
@@ -359,7 +349,6 @@ public class UserDAO extends BaseDao {
         String mail = map.get("mail");
         int sex = Integer.valueOf(map.get("sex"));
         String location = map.get("location");
-        String realName = map.get("realName");
         userInvestorModel.setUserName(user);
         userInvestorModel.setMail(mail);
         userInvestorModel.setSex(sex);

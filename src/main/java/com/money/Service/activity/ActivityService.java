@@ -1,5 +1,6 @@
 package com.money.Service.activity;
 
+import com.money.Service.Lottery.LotteryService;
 import com.money.Service.PurchaseInAdvance.PurchaseInAdvance;
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
@@ -41,6 +42,9 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    LotteryService lotteryService;
 
     public ActivityDetailModel getActivityDetails(String InstallmentActivityID) {
         ActivityDetailModel activitymodel = activityDao.getActivityDetails(InstallmentActivityID);
@@ -491,11 +495,15 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
             int CurInstallmentNum = activityVerifyCompleteModel.getCurInstallmentNum();
             CurInstallmentNum++;
+            activityVerifyCompleteModel.setCurInstallmentNum(CurInstallmentNum);
             activityDao.update( activityVerifyCompleteModel );
 
             //发奖
-        }
+            lotteryService.StartLottery( InstallmentActivityID );
 
+            //如果所有分期项目完成  设置父项目完成
+            SetActivityEnd( activityDynamicModel.getActivityVerifyCompleteModel().getActivityId() );
+        }
     }
 
     /**

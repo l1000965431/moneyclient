@@ -128,7 +128,7 @@ public class UserController extends ControllerBase implements IController
 
     @RequestMapping("/changPassword")
     @ResponseBody
-    public  boolean sendPasswochangPasswordrdCode(HttpServletRequest request,
+    public  int sendPasswochangPasswordrdCode(HttpServletRequest request,
                                      HttpServletResponse response )
     {
         String userName = request.getParameter( "userId" );
@@ -136,5 +136,13 @@ public class UserController extends ControllerBase implements IController
         String newPassword = request.getParameter( "newPassword" );
         String oldPassword = request.getParameter( "oldPassword" );
         return  userService.changPassword(userName,code,newPassword,oldPassword);
+    }
+
+    @RequestMapping("/SendUserCode")
+    @ResponseBody
+    public int SendUserCode( HttpServletRequest request,
+                              HttpServletResponse response ){
+        String userID = request.getParameter( "userId" );
+        return userService.SendCode( userID );
     }
 }

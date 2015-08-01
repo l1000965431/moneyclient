@@ -67,6 +67,8 @@ public class Config {
     //项目预售的辅助表名称前缀
     public static final String ACTIVITYPURCHASE = "Auto_Purchase_";
 
+    //项目预售的辅助表名称前缀
+    public static final String CODE = "Code";
     /**
      * 项目状态
      */
@@ -115,4 +117,9 @@ public class Config {
      * 屌丝发奖
      */
     public static final int PURCHASEPRICKSILK = 2;
+
+    /**
+     * 短信验证码的超时时间
+     */
+    public static final int USERCODETIME = 120;
 }

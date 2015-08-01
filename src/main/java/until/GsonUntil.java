@@ -44,7 +44,7 @@ public class GsonUntil {
                                          JsonSerializationContext context) {
                 JsonObject o=new JsonObject();
                 o.addProperty("marketAnalysis", src.getMarketAnalysis());
-                o.addProperty("profitMode", src.getProfitMode());
+                //o.addProperty("profitMode", src.getProfitMode());
                 o.addProperty("teamIntroduction", src.getTeamIntroduce());
                 o.addProperty("summary", src.getSummary());
                 o.addProperty("address", src.getAddress());

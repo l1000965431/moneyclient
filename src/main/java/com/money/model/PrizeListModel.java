@@ -15,7 +15,7 @@ public class PrizeListModel extends BaseModel {
     int ID;
 
     /**
-     * 项目ID
+     * 分期项目ID
      */
     String ActivityIID;
 

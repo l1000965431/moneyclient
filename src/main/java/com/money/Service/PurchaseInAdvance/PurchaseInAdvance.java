@@ -34,14 +34,16 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
 
     /**
      * 项目预购
-     *
      * @param InstallmentActivityID 分期项目ID
-     * @param ActivityID            活动ID
      * @param UserID
      * @param PurchaseNum           单期购买的数量
      * @param AdvanceNum            预购期数
      */
-    public int PurchaseInAdvance(String InstallmentActivityID, String ActivityID, String UserID, int PurchaseNum, int AdvanceNum) {
+    public int PurchaseInAdvance(String InstallmentActivityID, String UserID, int PurchaseNum, int AdvanceNum) {
+
+        ActivityDetailModel activityDetailModel = activityInfoDAO.getActivityDetails( InstallmentActivityID );
+        String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
+
         if (!IsRemainingInstallment(ActivityID, AdvanceNum)) {
             return 0;
         }
@@ -60,7 +62,6 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
 
     /**
      * 单次购买项目购买
-     *
      * @param InstallmentActivityID 项目ID
      * @param UserID
      * @param PurchaseNum           购买票的数量
@@ -191,7 +192,10 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
      * @param AdvanceNum            购买的期数
      * @return
      */
-    public int LocalTyrantsPurchaseActivity(String InstallmentActivityID, String ActivityID, String UserID, int AdvanceNum) {
+    public int LocalTyrantsPurchaseActivity(String InstallmentActivityID, String UserID, int AdvanceNum) {
+        ActivityDetailModel activityDetailModel = activityInfoDAO.getActivityDetails( InstallmentActivityID );
+        String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
+
         if (!IsRemainingLocalTyrantsInstallment(InstallmentActivityID, AdvanceNum) || !IsRemainingLocalTyrantsTickets(InstallmentActivityID)) {
             return 0;
         }

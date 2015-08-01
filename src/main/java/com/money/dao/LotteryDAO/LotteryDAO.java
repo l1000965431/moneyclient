@@ -1,5 +1,6 @@
 package com.money.dao.LotteryDAO;
 
+import com.money.config.Config;
 import com.money.dao.BaseDao;
 import com.money.model.LotteryPeoples;
 import org.springframework.stereotype.Repository;
@@ -22,11 +23,15 @@ public class LotteryDAO extends BaseDao {
      * @return
      */
     public List GetRandNotLottery( String activityID,int Peoples ){
-
-        String sql = "SELECT * FROM sqlrandtset order by rand() limit "+Integer.toString( Peoples );
-
+        String DBName = Config.ACTIVITYGROUPTICKETNAME+activityID;
+        //小R中奖查询
+        String sql = "SELECT * FROM "+DBName+" where PurchaseType = 2 order by rand() limit "+Integer.toString( Peoples )+";";
+        //大R中奖查询
+        String sql1 = "SELECT * FROM "+DBName+" where PurchaseType = 1;";
         try{
             List list = this.getListClassBySQL(sql, LotteryPeoples.class );
+            List list1 = this.getListClassBySQL(sql1, LotteryPeoples.class );
+            list.addAll( list1 );
             return list;
         }catch ( Exception e ){
          return null;

@@ -3,7 +3,6 @@ package com.money.dao.PurchaseInAdvanceDAO;
 import com.money.config.Config;
 import com.money.dao.BaseDao;
 import com.money.dao.activityDAO.activityDAO;
-import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityDynamicModel;
 import com.money.model.ActivityVerifyCompleteModel;
 import com.money.model.PurchaseInAdvanceModel;
