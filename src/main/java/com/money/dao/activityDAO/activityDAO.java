@@ -133,7 +133,7 @@ public class activityDAO extends BaseDao {
         }
 //        ActivityDetailModel activityDynamicModel = (ActivityDetailModel)session.get(ActivityDetailModel.class, "4_0");
 //        activityDynamicModel.getDynamicModel().getActivityCurLines();
-//        t.commit();
+        t.commit();
 
         return list;
     }
