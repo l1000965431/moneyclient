@@ -25,8 +25,8 @@ public class MoneyServerMQManager {
     static Consumer consumer;
 
     public MoneyServerMQManager( List<MoneyServerListener> ListMoneyServerListener ){
-        InitMoneyServerMQManager();
-        RegisteredListener( ListMoneyServerListener );
+        //InitMoneyServerMQManager();
+        //RegisteredListener( ListMoneyServerListener );
     }
 
 
