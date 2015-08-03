@@ -71,4 +71,38 @@ public interface UserProtocol {
     int IMPROVE_USER_INFO_RESULT_INFO_TOKEN_INCORRECT = 3;  // token不一致
     int IMPROVE_USER_INFO_RESULT_INFO_USER_TYPE_ERROR = 4;  // 用户类型错误
     /*****************************************************************************************/
+
+    /******************************************************************************************
+     *  发送注册验证码                                                                          *
+     ******************************************************************************************/
+    String URL_SEND_CODE = HttpUrlConfig.URL_ROOT + "User/SendUserCode";
+
+    String SEND_CODE_PARAM_USER_ID = "userId";
+
+    int SEND_CODE_RESULT_SUCCESS = 1;
+    int SEND_CODE_RESULT_FAILED = 0;
+    /*****************************************************************************************/
+
+    /******************************************************************************************
+     *  修改密码                                                                               *
+     ******************************************************************************************/
+    String URL_CHANGE_PASSWORD = HttpUrlConfig.URL_ROOT + "User/changPassword";
+
+    String CHANGE_PASSWORD_PARAM_USER_ID = "userId";
+    String CHANGE_PASSWORD_PARAM_OLD_PASSWORD = "oldPassword";
+    String CHANGE_PASSWORD_PARAM_NEW_PASSWORD = "newPassword";
+    String CHANGE_PASSWORD_PARAM_CODE = "code";
+
+    int CHANGE_PASSWORD_RESULT_SUCCESS = 1;
+    int CHANGE_PASSWORD_RESULT_FAILED = 0;
+    int CHANGE_PASSWORD_RESULT_CODE_INCORRECT = 3;
+    /*****************************************************************************************/
+
+    /******************************************************************************************
+     *  钱包余额                                                                               *
+     ******************************************************************************************/
+    String URL_GET_WALLET_BALANCE = HttpUrlConfig.URL_ROOT + "Wallet/getWalletBalance";
+
+
+    /*****************************************************************************************/
 }

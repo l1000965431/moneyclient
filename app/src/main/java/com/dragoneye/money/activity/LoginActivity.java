@@ -112,19 +112,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         params.put(UserProtocol.PASSWORD_LOGIN_PARAM_USER_ID, mLoginUserId);
         params.put(UserProtocol.PASSWORD_LOGIN_PARAM_USER_PASSWORD, mLoginUserPassword);
 
-        HttpClient.post(UserProtocol.URL_LOGIN, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                UIHelper.toast(LoginActivity.this, "网络异常");
-            }
-
+        HttpClient.atomicPost(this, UserProtocol.URL_LOGIN, params, new HttpClient.MyHttpHandler() {
             @Override
             public void onSuccess(int i, Header[] headers, String s) {
-//                Log.d(TAG, "login success- " + headers[0].getName());
                 String result = HttpClient.getValueFromHeader(headers, UserProtocol.PASSWORD_LOGIN_RESULT_KEY);
                 String response = HttpClient.getValueFromHeader(headers, UserProtocol.PASSWORD_LOGIN_RESULT_INFO_KEY);
                 String token = s;
-                if( result == null || s == null ){
+                if (result == null || s == null) {
                     UIHelper.toast(LoginActivity.this, "服务器异常");
                     return;
                 }

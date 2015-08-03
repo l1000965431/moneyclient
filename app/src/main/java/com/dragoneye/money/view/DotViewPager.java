@@ -117,6 +117,9 @@ public class DotViewPager extends LinearLayout {
     }
 
     private void setDotSelected(int position){
+        if( position >= mDotsViewArray.size() ){
+            return;
+        }
         ImageView imageView = (ImageView)mDotsViewArray.get(position);
 
         if( mSelectedDot != null ){
