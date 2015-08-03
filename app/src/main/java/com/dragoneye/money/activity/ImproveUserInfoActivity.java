@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -21,6 +23,7 @@ import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ImproveUserInfoActivity extends BaseActivity implements View.OnClickListener{
@@ -39,6 +42,15 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
 
     private View mLLEntrepreneurInfo;
 
+    /**
+     *
+     * 擅长领域控件
+     */
+    private ArrayList<CheckBox> mCBExpertise = new ArrayList<>();
+    private EditText mETCustomExpertise;
+    private TextView mTVAddCustomExpertise;
+    private LinearLayout mLLExpertiseRootLeft;
+    private LinearLayout mLLExpertiseRootRight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +78,22 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
 
         mTVPhoneNumber.setText(CurrentUser.getCurrentUser().getUserId());
 
-        setUIMode(CurrentUser.getCurrentUser().getUserType());
+        mLLExpertiseRootLeft = (LinearLayout)findViewById(R.id.improve_user_info_ll_expertise_rootL);
+        mLLExpertiseRootRight = (LinearLayout)findViewById(R.id.improve_user_info_ll_expertise_rootR);
+        mETCustomExpertise = (EditText)findViewById(R.id.improve_user_info_et_customExpertise);
+        mTVAddCustomExpertise = (TextView)findViewById(R.id.improve_user_info_tv_addCustomExpertise);
+        mTVAddCustomExpertise.setOnClickListener(this);
+
+        mCBExpertise.add((CheckBox) findViewById(R.id.checkBox));
+        mCBExpertise.add((CheckBox)findViewById(R.id.checkBox2));
+        mCBExpertise.add((CheckBox)findViewById(R.id.checkBox3));
+        mCBExpertise.add((CheckBox)findViewById(R.id.checkBox4));
+        mCBExpertise.add((CheckBox)findViewById(R.id.checkBox5));
+        mCBExpertise.add((CheckBox)findViewById(R.id.checkBox6));
+        mCBExpertise.add((CheckBox)findViewById(R.id.checkBox7));
+        mCBExpertise.add((CheckBox)findViewById(R.id.checkBox8));
+
+//        setUIMode(CurrentUser.getCurrentUser().getUserType());
     }
 
     private void initData(){
@@ -139,7 +166,30 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
             case R.id.improve_user_info_tv_confirmButton:
                 onConfirm();
                 break;
+            case R.id.improve_user_info_tv_addCustomExpertise:
+                onAddCustomExpertise();
+                break;
         }
+    }
+
+    private void onAddCustomExpertise(){
+        String customExpertise = mETCustomExpertise.getText().toString();
+        if( customExpertise.isEmpty() ){
+            return;
+        }
+
+        CheckBox checkBox = new CheckBox(this);
+        checkBox.setText(customExpertise);
+        checkBox.setTextSize(13);
+        checkBox.setTextColor(0xff999999);
+        mCBExpertise.add(checkBox);
+        if (mCBExpertise.size() % 2 == 0) {
+            mLLExpertiseRootRight.addView(checkBox);
+        }else {
+            mLLExpertiseRootLeft.addView(checkBox);
+        }
+        checkBox.setChecked(true);
+        mETCustomExpertise.setText("");
     }
 
     private void onConfirm(){
