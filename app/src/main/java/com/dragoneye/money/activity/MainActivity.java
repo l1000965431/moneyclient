@@ -1,7 +1,6 @@
 package com.dragoneye.money.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.activity.base.BaseActivity;
 import com.dragoneye.money.activity.fragments.HomeInvestmentFragment;
 import com.dragoneye.money.activity.fragments.HomeMyselfFragment;
 import com.dragoneye.money.activity.fragments.HomeRecordFragment;

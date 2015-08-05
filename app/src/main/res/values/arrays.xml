@@ -11,4 +11,9 @@
         <item>商铺</item>
         <item>其他</item>
     </array>
+
+    <array name="image_select_source">
+        <item>"从图库中选择"</item>
+        <item>"拍一张"</item>
+    </array>
 </resources>

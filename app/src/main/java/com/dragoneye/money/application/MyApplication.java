@@ -12,8 +12,6 @@ import com.dragoneye.money.dao.ProjectDao;
 import com.dragoneye.money.dao.ProjectImage;
 import com.dragoneye.money.dao.ProjectImageDao;
 import com.dragoneye.money.http.HttpClient;
-import com.dragoneye.money.user.CurrentUser;
-import com.dragoneye.money.user.UserEntrepreneur;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -43,9 +41,12 @@ public class MyApplication extends Application {
         createTestData();
         initImageLoader();
 
-        UserEntrepreneur entrepreneur = new UserEntrepreneur();
-        entrepreneur.setUserId("test");
-        CurrentUser.setCurrentUser(entrepreneur);
+//        UserEntrepreneur entrepreneur = new UserEntrepreneur();
+//        entrepreneur.setUserId("test");
+//        CurrentUser.setCurrentUser(entrepreneur);
+
+        // 阿里云存储初始化
+        initOssService();
 
         images.add(R.mipmap.projects_display001_0);
         images.add(R.mipmap.projects_display002_0);
@@ -54,6 +55,10 @@ public class MyApplication extends Application {
         images.add(R.mipmap.projects_display005_0);
         images.add(R.mipmap.projects_display006_0);
         images.add(R.mipmap.projects_display007_0);
+    }
+
+    private void initOssService(){
+
     }
 
     public static void createTestData(){

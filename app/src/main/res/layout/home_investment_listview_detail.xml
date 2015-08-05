@@ -8,13 +8,13 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_above="@+id/invest_project_tv_confirm"
         android:id="@+id/scrollView" >
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:paddingTop="17dp"
             android:paddingBottom="17dp"
             android:background="#ff1e1e1e">
 
@@ -28,7 +28,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:background="#ffffffff"
-                android:visibility="gone">
+                >
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -146,7 +146,7 @@
                         android:layout_height="30dp"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="去领投（领投资金为：200万￥）"
-                        android:id="@+id/textView24"
+                        android:id="@+id/invest_project_tv_leadInvestInfo"
                         android:textSize="18dp"
                         android:textColor="#ff2a2a2a"
                         android:textIsSelectable="false"
@@ -157,7 +157,7 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:id="@+id/imageView12"
+                        android:id="@+id/invest_project_iv_leadArrow"
                         android:src="@mipmap/icon_triangle2"
                         android:layout_gravity="center"
                         android:layout_marginRight="10dp"
@@ -256,7 +256,7 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:id="@+id/imageView13"
+                        android:id="@+id/invest_project_iv_fallowArrow"
                         android:src="@mipmap/icon_triangle2"
                         android:layout_gravity="center"
                         android:layout_marginRight="10dp"
@@ -375,30 +375,12 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="70dp"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="7dp" />
-
-                </LinearLayout>
-
-                <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginLeft="70dp"
                     android:id="@+id/investment_ll_result_root"
-                    android:visibility="gone"
                     android:paddingBottom="10dp">
 
                 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.dragoneye.money.activity;
+package com.dragoneye.money.activity.base;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;

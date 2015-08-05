@@ -7,5 +7,5 @@ package com.dragoneye.money.config;
 public interface HttpUrlConfig {
     String URL_ROOT = "http://192.168.0.125:8080/";
 
-    String URL_SUBMIT_PROJECT = URL_ROOT + "SubmitActivity/submitActivity";
+    String URL_AGREEMENT = URL_ROOT + "project/protocol.jsp";
 }

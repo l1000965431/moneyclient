@@ -4,13 +4,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v4.view.PagerAdapter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,30 +16,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.activity.base.DotViewPagerActivity;
 import com.dragoneye.money.application.AppInfoManager;
-import com.dragoneye.money.config.ProjectStatusConfig;
-import com.dragoneye.money.dao.MyDaoMaster;
-import com.dragoneye.money.dao.Project;
-import com.dragoneye.money.dao.ProjectDao;
-import com.dragoneye.money.dao.ProjectImage;
-import com.dragoneye.money.dao.ProjectImageDao;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.model.ProjectDetailModel;
+import com.dragoneye.money.model.SrEarningModel;
 import com.dragoneye.money.protocol.InvestProjectProtocol;
 import com.dragoneye.money.tool.ToolMaster;
 import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.user.CurrentUser;
 import com.dragoneye.money.view.DotViewPager;
-import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-
-import de.greenrobot.dao.query.QueryBuilder;
 
 public class InvestProjectActivity extends DotViewPagerActivity implements View.OnClickListener {
 
@@ -57,8 +48,6 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     private TextView mTVTargetFund;
     private TextView mTVTargetFundNum;
 
-    Project mProject;
-
     private View mIVLeadAdd;
     private View mIVLeadSubtract;
     private View mIVFallowAdd;
@@ -69,13 +58,19 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     private int mProjectStageMaxNum;
     private int mSelectedLeadStageNum;
     private int mSelectedFallowStageNum;
+    private int mLeadInvestPrice;
 
     private View mLLLeadButton;
     private View mLLLeadPanel;
+    private TextView mTVLeadInvestInfo;
     private ImageView mIVLeadArrow;
     private View mLLFallowButton;
     private View mLLFallowPanel;
     private ImageView mIVFallowArrow;
+
+    private ArrayList<SrEarningModel> mSrEarningModels = new ArrayList<>();
+
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,13 +84,6 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     protected void onResume(){
         super.onResume();
 
-//        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
-//        mProject = projectDao.load(mProject.getId());
-//        if( mProject == null ){
-//            finish();
-//            return;
-//        }
-        updateUIContent();
     }
 
     @Override
@@ -112,23 +100,6 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_2).toString());
         mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_3).toString());
 
-//        long projectId = 1;
-//
-//        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
-//        mProject = projectDao.load(projectId);
-//        if( mProject == null ){
-//            finish();
-//            return;
-//        }
-//
-//        ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
-//        QueryBuilder queryBuilder = projectImageDao.queryBuilder();
-//        queryBuilder.where(ProjectImageDao.Properties.ProjectId.eq(projectId));
-//        List<ProjectImage> projectImages = queryBuilder.build().list();
-//
-//        for(ProjectImage projectImage : projectImages){
-//            mImageUrl.add(projectImage.getImageUrl());
-//        }
     }
 
     private void initView(){
@@ -165,6 +136,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mIVLeadSubtract = findViewById(R.id.invest_project_iv_leadSubstract);
         mIVLeadSubtract.setOnClickListener(this);
         mIVLeadArrow = (ImageView)findViewById(R.id.invest_project_iv_leadArrow);
+        mTVLeadInvestInfo = (TextView)findViewById(R.id.invest_project_tv_leadInvestInfo);
 
         // 跟投面板
         mLLFallowButton = findViewById(R.id.investment_ll_fallowButton);
@@ -197,16 +169,13 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         resetFallow();
         setLeadStageNum(0);
         setFallowStageNum(0);
-    }
 
-    private void updateUIContent(){
-//        if( mProject.getStatus() == ProjectStatusConfig.PROJECT_SUCCESS ){
-//            mProgressBar.setProgress(100);
-//            mTextViewProjectProgress.setText( String.format(getString(R.string.invest_project_project_progress), 100));
-//        }else {
-//            mProgressBar.setProgress(10);
-//            mTextViewProjectProgress.setText(String.format(getString(R.string.invest_project_project_progress), 10));
-//        }
+        handler.post(getInvestInfo_r);
+
+        int progress = (int)(mProjectDetailModel.getCurrentFund() / (float)mProjectDetailModel.getTargetFund());
+        String strProgress = getString(R.string.project_list_item_progress) + "%" + progress;
+        mTextViewProjectProgress.setText(strProgress);
+        mProgressBar.setProgress( progress );
     }
 
     public void onClick(View v){
@@ -315,8 +284,70 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mTVFallowStage.setText(String.format("%d/%d", num, mProjectStageMaxNum));
     }
 
+    Runnable getInvestInfo_r = new Runnable() {
+        @Override
+        public void run() {
+            HttpParams httpParams = new HttpParams();
+            httpParams.put(InvestProjectProtocol.GET_INVEST_INFO_PARAM_ACTIVITY_STAGE_ID, mProjectDetailModel.getActivityStageId());
 
+            HttpClient.atomicPost(InvestProjectActivity.this, InvestProjectProtocol.URL_GET_INVEST_INFO,
+                    httpParams, new HttpClient.MyHttpHandler() {
+                        @Override
+                        public void onSuccess(int i, Header[] headers, String s) {
+                            String response = HttpClient.getValueFromHeader(headers, "response");
+                            onGetInvestInfoResult(response, s);
+                        }
+                    });
+        }
+    };
 
+    private void onGetInvestInfoResult(String response, String result){
+        if( response == null || result == null ){
+            UIHelper.toast(this, "服务器繁忙，请稍后再试");
+            finish();
+            return;
+        }
+
+        switch (response){
+            case InvestProjectProtocol.GET_INVEST_INFO_SUCCESS:
+                try{
+                    JSONObject object = new JSONObject(result);
+                    mLeadInvestPrice = object.getInt("brInvestPrice");
+                    JSONArray srEarnings = object.getJSONArray("srEarningInfo");
+                    for(int i = 0; i < srEarnings.length(); i++){
+                        SrEarningModel srEarningModel = new SrEarningModel();
+                        srEarningModel.setNum( srEarnings.getJSONObject(i).getInt("srEarningNum"));
+                        srEarningModel.setPrice(srEarnings.getJSONObject(i).getInt("srEarningPrice"));
+                        mSrEarningModels.add(srEarningModel);
+                    }
+                    updateLeadInvestText();
+                    updateEarningProportion();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            case InvestProjectProtocol.GET_INVEST_INFO_FAILED:
+                UIHelper.toast(this, "此项目已过期");
+                finish();
+                break;
+        }
+    }
+
+    private void updateLeadInvestText(){
+        String leadInvestInfo = String.format(getString(R.string.invest_project_lead_invest_info),
+                ToolMaster.convertToPriceString(mLeadInvestPrice));
+        mTVLeadInvestInfo.setText(leadInvestInfo);
+    }
+
+    private void updateEarningProportion(){
+        for(SrEarningModel model : mSrEarningModels){
+            TextView textView = new TextView(this);
+            mLinearLayoutResultRoot.addView(textView);
+
+            String text = String.format("%f几率获得%s", 0.0f, model.getPrice());
+            textView.setText(text);
+        }
+    }
 
 
 
@@ -331,10 +362,10 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         String tips = "您确定要";
         if( isLeadInvest() ){
             tips += "领投" + mSelectedLeadStageNum + "期，每期金额为￥"
-                    + 2000000 + "，共计￥" + 2000000 * mSelectedLeadStageNum + "。";
+                    + mLeadInvestPrice + "，共计￥" + mLeadInvestPrice * mSelectedLeadStageNum + "。";
             investType = InvestProjectProtocol.INVEST_TYPE_LEAD;
             investStageNum = mSelectedLeadStageNum;
-            investPriceNum = 200000;
+            investPriceNum = mLeadInvestPrice;
         }else {
             tips += "跟投" + mSelectedFallowStageNum + "期，每期金额为￥"
                     + getFallowPriceNum() + "，共计￥" + getFallowPriceNum() * mSelectedFallowStageNum + "。";
@@ -407,7 +438,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             case InvestProjectProtocol.INVEST_RESULT_IMPROVE_INFO:
                 UIHelper.toast(this, "需要完善个人信息");
                 break;
-            case InvestProjectProtocol.INVSET_RESULT_FAILED:
+            case InvestProjectProtocol.INVEST_RESULT_FAILED:
                 UIHelper.toast(this, "投资失败");
                 break;
             default:

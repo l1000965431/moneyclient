@@ -1,4 +1,4 @@
-package com.dragoneye.money.activity;
+package com.dragoneye.money.activity.base;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.dragoneye.money.activity.ImageExplorerActivity;
 import com.dragoneye.money.view.DotViewPager;
 
 import java.io.IOException;

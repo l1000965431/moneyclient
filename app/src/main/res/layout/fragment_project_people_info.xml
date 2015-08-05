@@ -13,7 +13,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:orientation="vertical"
@@ -21,17 +21,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:id="@+id/fragment_register_Enter"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
                 >
 
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/fragment_login_Enter_password"
-                    android:layout_centerHorizontal="true"
                     android:id="@+id/fragment_register_Enter_SecurityCode"
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="26dp">
@@ -44,8 +39,6 @@
                         android:textSize="15dp"
                         android:gravity="center_vertical|right"
                         android:textColor="#ff727272"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
                         android:layout_gravity="center" />
 
                     <TextView
@@ -66,8 +59,6 @@
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/fragment_login_Enter_password"
-                    android:layout_centerHorizontal="true"
                     android:id="@+id/linearLayout2"
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="15dp"
@@ -81,8 +72,6 @@
                         android:textSize="15dp"
                         android:gravity="center_vertical|right"
                         android:textColor="#ff727272"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
                         android:layout_gravity="center" />
 
                     <EditText
@@ -95,9 +84,6 @@
                         android:background="@drawable/bg_rounded10"
                         android:backgroundTint="#ffffffff"
                         android:gravity="center_vertical"
-                        android:layout_above="@+id/fragment_register_Enter_password_again"
-                        android:layout_alignLeft="@+id/fragment_login_account"
-                        android:layout_alignStart="@+id/fragment_login_account"
                         android:textSize="13dp"
                         android:paddingLeft="10dp"
                         android:layout_weight="1"
@@ -109,8 +95,6 @@
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/fragment_login_Enter_password"
-                    android:layout_centerHorizontal="true"
                     android:id="@+id/linearLayout3"
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="15dp"
@@ -124,8 +108,6 @@
                         android:textSize="15dp"
                         android:gravity="center_vertical|right"
                         android:textColor="#ff727272"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
                         android:layout_gravity="center" />
 
                     <EditText
@@ -138,9 +120,6 @@
                         android:background="@drawable/bg_rounded10"
                         android:backgroundTint="#ffffffff"
                         android:gravity="center_vertical"
-                        android:layout_above="@+id/fragment_register_Enter_password_again"
-                        android:layout_alignLeft="@+id/fragment_login_account"
-                        android:layout_alignStart="@+id/fragment_login_account"
                         android:textSize="13dp"
                         android:paddingLeft="10dp"
                         android:layout_weight="1"
@@ -216,8 +195,6 @@
                         android:orientation="horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_above="@+id/fragment_login_Enter_password"
-                        android:layout_centerHorizontal="true"
                         android:id="@+id/linearLayout16"
                         android:layout_marginLeft="25dp"
                         android:layout_marginRight="15dp"
@@ -231,8 +208,6 @@
                             android:textSize="15dp"
                             android:gravity="center_vertical|right"
                             android:textColor="#ff727272"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
                             android:layout_gravity="center" />
 
                         <EditText
@@ -245,9 +220,6 @@
                             android:background="@drawable/bg_rounded10"
                             android:backgroundTint="#ffffffff"
                             android:gravity="center_vertical"
-                            android:layout_above="@+id/fragment_register_Enter_password_again"
-                            android:layout_alignLeft="@+id/fragment_login_account"
-                            android:layout_alignStart="@+id/fragment_login_account"
                             android:textSize="13dp"
                             android:paddingLeft="10dp"
                             android:layout_weight="1"
@@ -274,8 +246,6 @@
                             android:textSize="15dp"
                             android:gravity="center_vertical|right"
                             android:textColor="#ff727272"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
                             android:layout_marginTop="6dp" />
 
                         <LinearLayout
@@ -385,26 +355,22 @@
                                     android:background="@drawable/bg_rounded10"
                                     android:backgroundTint="#ffffffff"
                                     android:gravity="center_vertical"
-                                    android:layout_above="@+id/fragment_register_Enter_password_again"
-                                    android:layout_alignLeft="@+id/fragment_login_account"
-                                    android:layout_alignStart="@+id/fragment_login_account"
                                     android:textSize="13dp"
                                     android:paddingLeft="10dp"
                                     android:layout_weight="1"
                                     android:layout_gravity="center" />
 
                                 <TextView
-                                    android:layout_width="50dp"
-                                    android:layout_height="25dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
                                     android:text="添加"
                                     android:id="@+id/improve_user_info_tv_addCustomExpertise"
-                                    android:textSize="13dp"
+                                    android:textSize="13sp"
                                     android:background="@drawable/bg_rounded12"
                                     android:gravity="center_vertical|center_horizontal"
                                     android:textColor="#ffffffff"
-                                    android:layout_alignParentBottom="true"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_gravity="center" />
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="10dp"/>
                             </LinearLayout>
 
                         </LinearLayout>
@@ -415,8 +381,6 @@
                         android:orientation="horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_above="@+id/fragment_login_Enter_password"
-                        android:layout_centerHorizontal="true"
                         android:id="@+id/linearLayout8"
                         android:layout_marginLeft="25dp"
                         android:layout_marginRight="15dp"
@@ -430,8 +394,6 @@
                             android:textSize="15dp"
                             android:gravity="center_vertical|right"
                             android:textColor="#ff727272"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
                             android:layout_gravity="center" />
 
                         <EditText
@@ -444,9 +406,6 @@
                             android:background="@drawable/bg_rounded10"
                             android:backgroundTint="#ffffffff"
                             android:gravity="center_vertical"
-                            android:layout_above="@+id/fragment_register_Enter_password_again"
-                            android:layout_alignLeft="@+id/fragment_login_account"
-                            android:layout_alignStart="@+id/fragment_login_account"
                             android:textSize="13dp"
                             android:paddingLeft="10dp"
                             android:layout_weight="1"
@@ -458,8 +417,6 @@
                         android:orientation="horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_above="@+id/fragment_login_Enter_password"
-                        android:layout_centerHorizontal="true"
                         android:id="@+id/linearLayout9"
                         android:layout_marginLeft="25dp"
                         android:layout_marginRight="15dp"
@@ -473,8 +430,6 @@
                             android:textSize="15dp"
                             android:gravity="center_vertical|right"
                             android:textColor="#ff727272"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
                             android:layout_gravity="center" />
 
                         <EditText
@@ -487,9 +442,6 @@
                             android:background="@drawable/bg_rounded10"
                             android:backgroundTint="#ffffffff"
                             android:gravity="center_vertical"
-                            android:layout_above="@+id/fragment_register_Enter_password_again"
-                            android:layout_alignLeft="@+id/fragment_login_account"
-                            android:layout_alignStart="@+id/fragment_login_account"
                             android:textSize="13dp"
                             android:paddingLeft="10dp"
                             android:layout_weight="1"
@@ -500,8 +452,6 @@
                         android:orientation="horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_above="@+id/fragment_login_Enter_password"
-                        android:layout_centerHorizontal="true"
                         android:id="@+id/linearLayout10"
                         android:layout_marginLeft="25dp"
                         android:layout_marginRight="15dp"
@@ -529,9 +479,6 @@
                             android:background="@drawable/bg_rounded10"
                             android:backgroundTint="#ffffffff"
                             android:gravity="center_vertical"
-                            android:layout_above="@+id/fragment_register_Enter_password_again"
-                            android:layout_alignLeft="@+id/fragment_login_account"
-                            android:layout_alignStart="@+id/fragment_login_account"
                             android:textSize="13dp"
                             android:paddingLeft="10dp"
                             android:layout_weight="1"
@@ -542,8 +489,6 @@
                         android:orientation="horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_above="@+id/fragment_login_Enter_password"
-                        android:layout_centerHorizontal="true"
                         android:id="@+id/linearLayout11"
                         android:layout_marginLeft="25dp"
                         android:layout_marginRight="15dp"
@@ -557,8 +502,6 @@
                             android:textSize="15dp"
                             android:gravity="center_vertical|right"
                             android:textColor="#ff727272"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
                             android:layout_gravity="center" />
 
                         <EditText
@@ -571,9 +514,6 @@
                             android:background="@drawable/bg_rounded10"
                             android:backgroundTint="#ffffffff"
                             android:gravity="center_vertical"
-                            android:layout_above="@+id/fragment_register_Enter_password_again"
-                            android:layout_alignLeft="@+id/fragment_login_account"
-                            android:layout_alignStart="@+id/fragment_login_account"
                             android:textSize="13dp"
                             android:paddingLeft="10dp"
                             android:layout_weight="1"
@@ -584,8 +524,6 @@
                         android:orientation="horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_above="@+id/fragment_login_Enter_password"
-                        android:layout_centerHorizontal="true"
                         android:id="@+id/linearLayout12"
                         android:layout_marginLeft="25dp"
                         android:layout_marginRight="15dp"
@@ -599,8 +537,6 @@
                             android:textSize="15dp"
                             android:gravity="center_vertical|right"
                             android:textColor="#ff727272"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
                             android:layout_gravity="center" />
 
                         <EditText
@@ -613,9 +549,6 @@
                             android:background="@drawable/bg_rounded10"
                             android:backgroundTint="#ffffffff"
                             android:gravity="center_vertical"
-                            android:layout_above="@+id/fragment_register_Enter_password_again"
-                            android:layout_alignLeft="@+id/fragment_login_account"
-                            android:layout_alignStart="@+id/fragment_login_account"
                             android:textSize="13dp"
                             android:paddingLeft="10dp"
                             android:layout_weight="1"
@@ -678,9 +611,7 @@
                 android:background="@drawable/bg_rounded10blue"
                 android:gravity="center_vertical|center_horizontal"
                 android:textColor="#ffffffff"
-                android:layout_marginTop="20dp"
-                android:layout_below="@+id/fragment_register_Agreement"
-                android:layout_centerHorizontal="true" />
+                android:layout_marginTop="20dp"/>
         </LinearLayout>
     </ScrollView>
 

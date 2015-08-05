@@ -1,11 +1,11 @@
 package com.dragoneye.money.activity;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.activity.base.BaseActivity;
 
 public class ChargeActivity extends BaseActivity {
 

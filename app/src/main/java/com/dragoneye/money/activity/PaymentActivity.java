@@ -9,11 +9,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.activity.base.DotViewPagerActivity;
 import com.dragoneye.money.model.ProjectDetailModel;
 import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.view.DotViewPager;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
