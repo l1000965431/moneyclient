@@ -136,8 +136,7 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
             httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_FIRST_PAGE, 0);
             httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_TOKEN, CurrentUser.getToken());
 
-            HttpClient.post(GetProjectListProtocol.URL_GET_ORDER_LIST, httpParams, new TextHttpResponseHandler() {
-                @Override
+            HttpClient.atomicPost(getActivity(), GetProjectListProtocol.URL_GET_ORDER_LIST, httpParams, new HttpClient.MyHttpHandler() {
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     UIHelper.toast(getActivity(), "网络异常");
                     refreshableView.finishRefreshing();

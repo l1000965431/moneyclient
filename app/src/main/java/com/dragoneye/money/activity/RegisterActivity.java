@@ -1,6 +1,7 @@
 package com.dragoneye.money.activity;
 
-import android.support.v7.app.ActionBarActivity;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,10 +19,16 @@ import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 
+import java.lang.ref.WeakReference;
+
 public class RegisterActivity extends BaseActivity implements View.OnClickListener{
 
     private static final int USER_ID_LIMIT_MIN = 9;
     private static final int USER_ID_LIMIT_MAX = 16;
+
+    private static final int SEND_CODE_INTERVAL = 60;
+
+    private static final int MESSAGE_TICK = 1;
 
     TextView mConfirmRegisterTextView;
 
@@ -31,6 +38,34 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     RadioGroup mRBUserType;
 
+    TextView mTVSendSecurityCode;
+
+    private static class MyHandler extends Handler{
+        private final WeakReference<RegisterActivity> mRef;
+
+        public MyHandler(RegisterActivity ref){
+            mRef = new WeakReference<>(ref);
+        }
+
+        @Override
+        public void handleMessage(Message msg){
+            switch (msg.what){
+                case MESSAGE_TICK:
+                    mRef.get().tick--;
+                    if( mRef.get().tick < 0 ){
+                        mRef.get().mTVSendSecurityCode.setText("发送验证码");
+                        mRef.get().mTVSendSecurityCode.setOnClickListener(mRef.get());
+                    }else {
+                        mRef.get().mTVSendSecurityCode.setText(mRef.get().tick + "秒后再次发送");
+                        mRef.get().handler.sendMessageDelayed(mRef.get().handler.obtainMessage(MESSAGE_TICK), 1000);
+                    }
+                    break;
+            }
+        }
+    }
+
+    private MyHandler handler = new MyHandler(this);
+    private int tick = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +81,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
         mUserIdTextField = (EditText)findViewById(R.id.fragment_register_account);
         mUserPasswordTextField = (EditText)findViewById(R.id.fragment_register_Enter_password);
-        mUserPasswordConfirmTextFiled = (EditText)findViewById(R.id.fragment_register_Enter_password_again);
+        mUserPasswordConfirmTextFiled = (EditText)findViewById(R.id.change_password_et_newPassword);
 
         mRBUserType = (RadioGroup)findViewById(R.id.fragment_register_Classification);
+
+        mTVSendSecurityCode = (TextView)findViewById(R.id.fragment_register_Enter_SecurityCode_button);
+        mTVSendSecurityCode.setOnClickListener(this);
     }
 
     private void initData(){
@@ -63,7 +101,72 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     onRegister();
                 }
                 break;
+            case R.id.fragment_register_Enter_SecurityCode_button:
+                onSendCode();
+                break;
         }
+    }
+
+    private void onSendCode(){
+        if( mUserIdTextField.getText().length() < 11){
+            UIHelper.toast(this, "请输入一个正确的手机号码!");
+            return;
+        }
+        onSendCodeSuccess();
+
+        //handler.post(sendRequestCode_r);
+    }
+
+    /**
+     * 向服务器发送请求
+     */
+    Runnable sendRequestCode_r = new Runnable() {
+        @Override
+        public void run() {
+            String phoneNumber = mUserIdTextField.getText().toString();
+
+            HttpParams params = new HttpParams();
+            params.put(UserProtocol.SEND_CODE_PARAM_USER_ID, phoneNumber);
+
+            HttpClient.atomicPost(RegisterActivity.this, UserProtocol.URL_SEND_CODE, params, new HttpClient.MyHttpHandler() {
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    if (s == null) {
+                        UIHelper.toast(RegisterActivity.this, "服务器繁忙");
+                        return;
+                    }
+                    onSendCodeResult(s);
+                }
+            });
+
+        }
+    };
+
+    /**
+     * 请求发送验证码结果
+     * @param result
+     */
+    private void onSendCodeResult(String result){
+        try{
+            int resultCode = Integer.parseInt(result);
+            switch (resultCode){
+                case UserProtocol.SEND_CODE_RESULT_SUCCESS:
+                    UIHelper.toast(this, "验证码发送成功!");
+                    onSendCodeSuccess();
+                    break;
+                case UserProtocol.SEND_CODE_RESULT_FAILED:
+                default:
+                    throw new Exception();
+            }
+        }catch (Exception e){
+            UIHelper.toast(this, "服务器繁忙");
+        }
+    }
+
+    private void onSendCodeSuccess(){
+        mTVSendSecurityCode.setOnClickListener(null);
+        tick = SEND_CODE_INTERVAL;
+        handler.sendMessage(handler.obtainMessage(MESSAGE_TICK));
     }
 
     private void onRegister(){
@@ -72,7 +175,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         params.put(UserProtocol.REGISTER_PARAM_USER_PASSWORD, mUserPasswordTextField.getText().toString());
         params.put(UserProtocol.REGISTER_PARAM_USER_TYPE, getUserType());
 
-        HttpClient.post(UserProtocol.URL_REGISTER, params, new TextHttpResponseHandler() {
+        HttpClient.atomicPost(this, UserProtocol.URL_REGISTER, params, new HttpClient.MyHttpHandler() {
             @Override
             public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                 UIHelper.toast(RegisterActivity.this, "网络异常");
@@ -80,7 +183,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
             @Override
             public void onSuccess(int i, Header[] headers, String s) {
-                if( s == null ){
+                if (s == null) {
                     UIHelper.toast(RegisterActivity.this, "服务器异常，请稍后再试");
                     return;
                 }

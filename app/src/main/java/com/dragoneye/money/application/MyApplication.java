@@ -1,9 +1,9 @@
 package com.dragoneye.money.application;
 
+import android.app.Activity;
 import android.app.Application;
 import android.net.Uri;
 
-import com.dragoneye.money.DemoDataModel;
 import com.dragoneye.money.R;
 import com.dragoneye.money.config.ProjectStatusConfig;
 import com.dragoneye.money.dao.MyDaoMaster;
@@ -14,7 +14,6 @@ import com.dragoneye.money.dao.ProjectImageDao;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.user.CurrentUser;
 import com.dragoneye.money.user.UserEntrepreneur;
-import com.dragoneye.money.user.UserInvestor;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -26,11 +25,16 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by happysky on 15-6-30.
  */
 public class MyApplication extends Application {
+    public ArrayList<Integer> images = new ArrayList<>();
+
     @Override
     public void onCreate(){
         super.onCreate();
@@ -38,14 +42,19 @@ public class MyApplication extends Application {
         HttpClient.initHttpClient(this);
         createTestData();
         initImageLoader();
-        initTestData();
 
         UserEntrepreneur entrepreneur = new UserEntrepreneur();
         entrepreneur.setUserId("test");
         CurrentUser.setCurrentUser(entrepreneur);
-    }
 
-    public DemoDataModel demoDataModel;
+        images.add(R.mipmap.projects_display001_0);
+        images.add(R.mipmap.projects_display002_0);
+        images.add(R.mipmap.projects_display003_0);
+        images.add(R.mipmap.projects_display004_0);
+        images.add(R.mipmap.projects_display005_0);
+        images.add(R.mipmap.projects_display006_0);
+        images.add(R.mipmap.projects_display007_0);
+    }
 
     public static void createTestData(){
         ProjectDao dao = MyDaoMaster.getDaoSession().getProjectDao();
@@ -111,8 +120,31 @@ public class MyApplication extends Application {
         ImageLoader.getInstance().init(configuration);
     }
 
-    private void initTestData(){
-        demoDataModel = new DemoDataModel();
-        demoDataModel.initTestData();
+
+    //运用list来保存们每一个activity是关键
+    private static List<Activity> mList = new LinkedList<Activity>();
+
+    // add Activity
+    public static void addActivity(Activity activity) {
+        mList.add(activity);
+    }
+
+    public static void removeActivity(Activity a){
+        mList.remove(a);
+    }
+
+    //关闭每一个list内的activity
+    public static void exit() {
+        try {
+            for (Activity activity:mList) {
+                if (activity != null)
+                    activity.finish();
+            }
+            mList.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            System.exit(0);
+        }
     }
 }

@@ -93,7 +93,7 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         mCBExpertise.add((CheckBox)findViewById(R.id.checkBox7));
         mCBExpertise.add((CheckBox)findViewById(R.id.checkBox8));
 
-//        setUIMode(CurrentUser.getCurrentUser().getUserType());
+        setUIMode(CurrentUser.getCurrentUser().getUserType());
     }
 
     private void initData(){
@@ -192,6 +192,17 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         mETCustomExpertise.setText("");
     }
 
+    private String getExpertiseString(){
+        String expertise = "";
+        for(CheckBox checkBox : mCBExpertise){
+            if(checkBox.isChecked()){
+                expertise = checkBox.getText().toString() + ";";
+            }
+        }
+
+        return expertise;
+    }
+
     private void onConfirm(){
         if( !checkUserInput() ){
             return;
@@ -203,15 +214,10 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_INFO, ToolMaster.gsonInstance().toJson(getUserImproveInfo()) );
         params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_ID, CurrentUser.getCurrentUser().getUserId());
 
-        HttpClient.post(UserProtocol.URL_IMPROVE_USER_INFO, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                UIHelper.toast(ImproveUserInfoActivity.this, "网络异常");
-            }
-
+        HttpClient.atomicPost(this, UserProtocol.URL_IMPROVE_USER_INFO, params, new HttpClient.MyHttpHandler() {
             @Override
             public void onSuccess(int i, Header[] headers, String s) {
-                if(s == null){
+                if (s == null) {
                     UIHelper.toast(ImproveUserInfoActivity.this, "服务器异常");
                     return;
                 }
@@ -260,7 +266,7 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
             userInfo.put("identity", mETIdentityId.getText().toString());
             userInfo.put("personalProfile", mETCareer.getText().toString());
             userInfo.put("selfintroduce", mETSelfIntroduction.getText().toString());
-            userInfo.put("goodAtField", "");
+            userInfo.put("goodAtField", getExpertiseString());
         }
 
         return userInfo;

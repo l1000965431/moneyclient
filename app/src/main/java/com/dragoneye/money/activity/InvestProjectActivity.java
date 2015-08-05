@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +29,7 @@ import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.model.ProjectDetailModel;
 import com.dragoneye.money.protocol.InvestProjectProtocol;
+import com.dragoneye.money.tool.ToolMaster;
 import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.user.CurrentUser;
 import com.dragoneye.money.view.DotViewPager;
@@ -43,18 +43,19 @@ import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
-public class InvestProjectActivity extends BaseActivity implements View.OnClickListener {
+public class InvestProjectActivity extends DotViewPagerActivity implements View.OnClickListener {
 
     public static final String EXTRA_PROJECT_MODEL = "EXTRA_PROJECT_MODEL";
 
-    private DotViewPager mDotViewPager;
-    private ArrayList<String> mImageUrl;
-    ArrayList<View> viewContainer = new ArrayList<>();
     private TextView mTextViewConfirm;
     private ProgressBar mProgressBar;
     private TextView mTextViewProjectProgress;
     private LinearLayout mLinearLayoutResultRoot;
     private ProjectDetailModel mProjectDetailModel;
+
+    private TextView mTVStageInfo;
+    private TextView mTVTargetFund;
+    private TextView mTVTargetFundNum;
 
     Project mProject;
 
@@ -65,14 +66,16 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
     private TextView mTVLeadStage;
     private TextView mTVFallowStage;
     private EditText mETInvestPrice;
-    private int mProjectStageMaxNum = 20;
+    private int mProjectStageMaxNum;
     private int mSelectedLeadStageNum;
     private int mSelectedFallowStageNum;
 
     private View mLLLeadButton;
     private View mLLLeadPanel;
+    private ImageView mIVLeadArrow;
     private View mLLFallowButton;
     private View mLLFallowPanel;
+    private ImageView mIVFallowArrow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,25 +83,60 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
         setContentView(R.layout.home_investment_listview_detail);
         initView();
         initData();
-        initViewPagerImages();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
 
-        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
-        mProject = projectDao.load(mProject.getId());
-        if( mProject == null ){
-            finish();
-            return;
-        }
+//        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
+//        mProject = projectDao.load(mProject.getId());
+//        if( mProject == null ){
+//            finish();
+//            return;
+//        }
         updateUIContent();
     }
 
-    private void initView(){
+    @Override
+    protected void initViewPager(){
         // 图片浏览控件
         mDotViewPager = (DotViewPager)findViewById(R.id.investment_project_detail_dot_viewpager);
+    }
+
+    @Override
+    protected void initImageUrl(){
+        mImageUrl = new ArrayList<>();
+
+        mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_1).toString());
+        mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_2).toString());
+        mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_3).toString());
+
+//        long projectId = 1;
+//
+//        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
+//        mProject = projectDao.load(projectId);
+//        if( mProject == null ){
+//            finish();
+//            return;
+//        }
+//
+//        ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
+//        QueryBuilder queryBuilder = projectImageDao.queryBuilder();
+//        queryBuilder.where(ProjectImageDao.Properties.ProjectId.eq(projectId));
+//        List<ProjectImage> projectImages = queryBuilder.build().list();
+//
+//        for(ProjectImage projectImage : projectImages){
+//            mImageUrl.add(projectImage.getImageUrl());
+//        }
+    }
+
+    private void initView(){
+
+
+        mTVStageInfo = (TextView)findViewById(R.id.textView2);
+        mTVTargetFund = (TextView)findViewById(R.id.textView3);
+        mTVTargetFundNum = (TextView)findViewById(R.id.textView5);
 
         // 确认投资按钮
         mTextViewConfirm = (TextView)findViewById(R.id.invest_project_tv_confirm);
@@ -126,6 +164,7 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
         mIVLeadAdd.setOnClickListener(this);
         mIVLeadSubtract = findViewById(R.id.invest_project_iv_leadSubstract);
         mIVLeadSubtract.setOnClickListener(this);
+        mIVLeadArrow = (ImageView)findViewById(R.id.invest_project_iv_leadArrow);
 
         // 跟投面板
         mLLFallowButton = findViewById(R.id.investment_ll_fallowButton);
@@ -135,31 +174,24 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
         mIVFallowAdd.setOnClickListener(this);
         mIVFallowSubtract = findViewById(R.id.invest_project_iv_fallowSubtract);
         mIVFallowSubtract.setOnClickListener(this);
+        mIVFallowArrow = (ImageView)findViewById(R.id.invest_project_iv_fallowArrow);
     }
 
     private void initData(){
         Intent intent = getIntent();
         mProjectDetailModel = (ProjectDetailModel)intent.getSerializableExtra(EXTRA_PROJECT_MODEL);
 
-        mImageUrl = new ArrayList<>();
+        mProjectStageMaxNum = mProjectDetailModel.getTotalStage() - mProjectDetailModel.getCurrentStage() + 1;
 
-        long projectId = 1;
 
-        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
-        mProject = projectDao.load(projectId);
-        if( mProject == null ){
-            finish();
-            return;
-        }
+        String strCurrentStage = String.format(getString(R.string.project_list_item_stage_info,
+                mProjectDetailModel.getCurrentStage() + "/" + mProjectDetailModel.getTotalStage()));
+        mTVStageInfo.setText( strCurrentStage );
 
-        ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
-        QueryBuilder queryBuilder = projectImageDao.queryBuilder();
-        queryBuilder.where(ProjectImageDao.Properties.ProjectId.eq(projectId));
-        List<ProjectImage> projectImages = queryBuilder.build().list();
+        String strTargetFund = getString(R.string.project_list_item_target_fund);
+        mTVTargetFund.setText(strTargetFund);
 
-        for(ProjectImage projectImage : projectImages){
-            mImageUrl.add(projectImage.getImageUrl());
-        }
+        mTVTargetFundNum.setText(ToolMaster.convertToPriceString(mProjectDetailModel.getTargetFund()));
 
         resetLead();
         resetFallow();
@@ -168,13 +200,13 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
     }
 
     private void updateUIContent(){
-        if( mProject.getStatus() == ProjectStatusConfig.PROJECT_SUCCESS ){
-            mProgressBar.setProgress(100);
-            mTextViewProjectProgress.setText( String.format(getString(R.string.invest_project_project_progress), 100));
-        }else {
-            mProgressBar.setProgress(10);
-            mTextViewProjectProgress.setText(String.format(getString(R.string.invest_project_project_progress), 10));
-        }
+//        if( mProject.getStatus() == ProjectStatusConfig.PROJECT_SUCCESS ){
+//            mProgressBar.setProgress(100);
+//            mTextViewProjectProgress.setText( String.format(getString(R.string.invest_project_project_progress), 100));
+//        }else {
+//            mProgressBar.setProgress(10);
+//            mTextViewProjectProgress.setText(String.format(getString(R.string.invest_project_project_progress), 10));
+//        }
     }
 
     public void onClick(View v){
@@ -204,12 +236,28 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
     }
 
     private void onLead(){
-        mLLLeadPanel.setVisibility(View.VISIBLE);
+        if( mLLLeadPanel.getVisibility() == View.VISIBLE ){
+            mLLLeadPanel.setVisibility(View.GONE);
+            mIVLeadArrow.setRotation(-90.0f);
+        }else {
+            mLLLeadPanel.setVisibility(View.VISIBLE);
+            mIVLeadArrow.setRotation(0);
+            mSelectedLeadStageNum = 1;
+            setLeadStageNum(mSelectedLeadStageNum);
+        }
         resetFallow();
     }
 
     private void onFallow(){
-        mLLFallowPanel.setVisibility(View.VISIBLE);
+        if( mLLFallowPanel.getVisibility() == View.VISIBLE ){
+            mLLFallowPanel.setVisibility(View.GONE);
+            mIVFallowArrow.setRotation(-90.0f);
+        }else {
+            mLLFallowPanel.setVisibility(View.VISIBLE);
+            mIVFallowArrow.setRotation(0);
+            mSelectedFallowStageNum = 1;
+            setFallowStageNum(mSelectedFallowStageNum);
+        }
         resetLead();
     }
 
@@ -247,6 +295,7 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
         }
         mSelectedLeadStageNum = 0;
         mLLLeadPanel.setVisibility(View.GONE);
+        mIVLeadArrow.setRotation(-90.0f);
     }
 
     private void resetFallow(){
@@ -255,6 +304,7 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
         }
         mSelectedFallowStageNum = 0;
         mLLFallowPanel.setVisibility(View.GONE);
+        mIVFallowArrow.setRotation(-90.0f);
     }
 
     private void setLeadStageNum(int num){
@@ -267,19 +317,7 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
 
 
 
-    private void initViewPagerImages(){
-        for(String url : mImageUrl){
-            ImageView imageView = new ImageView(this);
-            try{
-                imageView.setImageBitmap( MediaStore.Images.Media.getBitmap(getContentResolver(),
-                        Uri.parse(url) ) );
-                viewContainer.add(imageView);
-            }catch (IOException e){
 
-            }
-        }
-        mDotViewPager.setAdapter(new ImageViewPagerAdapter());
-    }
 
 
     private void onConfirm(){
@@ -296,6 +334,7 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
                     + 2000000 + "，共计￥" + 2000000 * mSelectedLeadStageNum + "。";
             investType = InvestProjectProtocol.INVEST_TYPE_LEAD;
             investStageNum = mSelectedLeadStageNum;
+            investPriceNum = 200000;
         }else {
             tips += "跟投" + mSelectedFallowStageNum + "期，每期金额为￥"
                     + getFallowPriceNum() + "，共计￥" + getFallowPriceNum() * mSelectedFallowStageNum + "。";
@@ -312,7 +351,13 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        onInvest(flInvestType, flInvestStageNum, flInvestPriceNum);
+                        Intent intent = new Intent(InvestProjectActivity.this, PaymentActivity.class);
+                        intent.putExtra(EXTRA_PROJECT_MODEL, mProjectDetailModel);
+                        intent.putExtra(PaymentActivity.EXTRA_INVEST_TYPE, flInvestType);
+                        intent.putExtra(PaymentActivity.EXTRA_INVEST_STAGE_NUM, flInvestStageNum);
+                        intent.putExtra(PaymentActivity.EXTRA_INVEST_PRICE_NUM, flInvestPriceNum);
+                        startActivity(intent);
+//                        onInvest(flInvestType, flInvestStageNum, flInvestPriceNum);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -328,17 +373,12 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
         HttpParams params = new HttpParams();
 
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_USER_ID, CurrentUser.getCurrentUser().getUserId());
-        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_ACTIVITY_STAGE_ID, "");
+        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_ACTIVITY_STAGE_ID, mProjectDetailModel.getActivityStageId());
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_TYPE, investType);
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_STAGE_NUM, investStageNum);
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_PRICE_NUM, investPriceNum);
 
-        HttpClient.post(InvestProjectProtocol.URL_INVEST_PROJECT, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                UIHelper.toast(InvestProjectActivity.this, "网络异常");
-            }
-
+        HttpClient.atomicPost(this, InvestProjectProtocol.URL_INVEST_PROJECT, params, new HttpClient.MyHttpHandler() {
             @Override
             public void onSuccess(int i, Header[] headers, String s) {
                 onInvestResult(s);
@@ -408,50 +448,7 @@ public class InvestProjectActivity extends BaseActivity implements View.OnClickL
         return mSelectedFallowStageNum > 0;
     }
 
-    private class ImageViewPagerAdapter extends PagerAdapter{
 
-
-        //viewpager中的组件数量
-        @Override
-        public int getCount() {
-            return viewContainer.size();
-        }
-        //滑动切换的时候销毁当前的组件
-        @Override
-        public void destroyItem(ViewGroup container, int position,
-                                Object object) {
-            container.removeView(viewContainer.get(position));
-        }
-        //每次滑动的时候生成的组件
-        @Override
-        public Object instantiateItem(ViewGroup container, final int position) {
-            container.addView(viewContainer.get(position));
-            viewContainer.get(position).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(InvestProjectActivity.this, ImageExplorerActivity.class);
-                    ArrayList<Uri> uris = new ArrayList<>();
-                    for (String url : mImageUrl) {
-                        uris.add(Uri.parse(url));
-                    }
-                    intent.putExtra(ImageExplorerActivity.EXTRA_URI_ARRAY, uris);
-                    intent.putExtra(ImageExplorerActivity.EXTRA_INDEX_TO_SHOW, position);
-                    startActivity(intent);
-                }
-            });
-            return viewContainer.get(position);
-        }
-
-        @Override
-        public boolean isViewFromObject(View arg0, Object arg1) {
-            return arg0 == arg1;
-        }
-
-        @Override
-        public int getItemPosition(Object object) {
-            return super.getItemPosition(object);
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

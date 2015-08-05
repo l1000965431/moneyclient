@@ -2,6 +2,7 @@ package com.dragoneye.money.activity.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.dragoneye.money.R;
 import com.dragoneye.money.activity.InvestProjectActivity;
+import com.dragoneye.money.application.MyApplication;
 import com.dragoneye.money.config.PreferencesConfig;
 import com.dragoneye.money.dao.Project;
 import com.dragoneye.money.http.HttpClient;
@@ -133,7 +135,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         public void run() {
             HttpParams params = new HttpParams();
 
-            HttpClient.post(GetProjectListProtocol.URL_GET_PROJECT_LIST, params, new TextHttpResponseHandler() {
+            HttpClient.atomicPost(getActivity(), GetProjectListProtocol.URL_GET_PROJECT_LIST, params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d(TAG, "update project list failure-> " + s);
@@ -244,7 +246,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                 convertView = mInflater.inflate(R.layout.home_investment_listview_first, parent, false);
                 viewHolder.ivLogo = (ImageView)convertView.findViewById(R.id.home_investment_list_view_item_iv_logo);
                 viewHolder.tvSummary = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_summary);
-                viewHolder.tvCurrentFund = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_currentFund);
+                viewHolder.tvTargetFundNum = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_currentFund);
                 viewHolder.tvTargetFund = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_targetFund);
                 viewHolder.tvName = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_projectName);
                 viewHolder.pbProjectProgress = (ProgressBar)convertView.findViewById(R.id.home_investment_list_view_item_pb_progress);
@@ -275,11 +277,10 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                     project.getCurrentStage() + "/" + project.getTotalStage()));
             viewHolder.tvStageInfo.setText( strCurrentStage );
 
-            String strTargetFund = String.format(getString(R.string.project_list_item_target_fund,
-                    ToolMaster.convertToPriceString(project.getTargetFund())));
+            String strTargetFund = getString(R.string.project_list_item_target_fund);
             viewHolder.tvTargetFund.setText(strTargetFund);
 
-            viewHolder.tvCurrentFund.setText(ToolMaster.convertToPriceString(project.getCurrentFund()));
+            viewHolder.tvTargetFundNum.setText(ToolMaster.convertToPriceString(project.getTargetFund()));
 
             int progress = (int)((float)project.getCurrentFund() / (float)project.getTargetFund() * 100);
             viewHolder.pbProjectProgress.setProgress(progress);
@@ -287,13 +288,16 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
             String strProgress = getString(R.string.project_list_item_progress) + "%" + progress;
             viewHolder.tvProgress.setText(strProgress);
 
+            viewHolder.ivLogo.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+                    ((MyApplication)(context.getApplicationContext())).images.get(position % 7)));
+
             return convertView;
         }
 
         private class ViewHolder{
             ImageView ivLogo;
             TextView tvSummary;
-            TextView tvCurrentFund;
+            TextView tvTargetFundNum;
             TextView tvTargetFund;
             TextView tvStageInfo;
             TextView tvProgress;
