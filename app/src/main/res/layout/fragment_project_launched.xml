@@ -53,7 +53,7 @@
                         android:id="@+id/project_launched_et_project_name"
                         android:textColor="#ff999999"
                         android:textColorHint="#ff999999"
-                        android:hint="项目名称不能不能拆过15个字"
+                        android:hint="项目名称不能不能超过15个字"
                         android:background="@drawable/bg_rounded10"
                         android:backgroundTint="#ffffffff"
                         android:gravity="center_vertical"
@@ -437,8 +437,8 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/fragment_login_Enter_password"
                     android:layout_centerHorizontal="true"
@@ -446,46 +446,149 @@
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="10dp">
 
-                    <TextView
-                        android:layout_width="78dp"
-                        android:layout_height="wrap_content"
-                        android:text="项目图片："
-                        android:id="@+id/textView43"
-                        android:textSize="15dp"
-                        android:gravity="center_vertical|right"
-                        android:textColor="#ff727272"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center" />
-
-                    <TextView
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:text="上传图片"
-                        android:id="@+id/textView44"
-                        android:textSize="10dp"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:textColor="#ff727272"
-                        android:layout_alignParentBottom="true"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/fragment_login_Enter_password"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginLeft="3dp"
-                        android:background="@drawable/edittext1"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:layout_gravity="center" />
+                        android:id="@+id/linearLayout5">
 
-                    <TextView
+                        <TextView
+                            android:layout_width="78dp"
+                            android:layout_height="wrap_content"
+                            android:text="项目图片："
+                            android:id="@+id/textView9"
+                            android:textSize="15dp"
+                            android:gravity="center_vertical|right"
+                            android:textColor="#ff727272"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:text="上传图片"
+                            android:id="@+id/textView25"
+                            android:textSize="10dp"
+                            android:gravity="center_vertical|center_horizontal"
+                            android:textColor="#ff727272"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="3dp"
+                            android:background="@drawable/edittext1"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:layout_gravity="center" />
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="50dp"
+                            android:text="支持jpg,png,jpeg每张大小不超过500K，推荐尺寸：630*260，上传的第一张会默认为封面图。最多不要超过8张"
+                            android:id="@+id/textView30"
+                            android:textSize="10dp"
+                            android:gravity="center_vertical"
+                            android:textColor="#ff727272"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="3dp"
+                            android:layout_gravity="center" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="fill_parent"
-                        android:layout_height="50dp"
-                        android:text="支持jpg,png,jpeg每张大小不超过500K，推荐尺寸：630*260，上传的第一张会默认为封面图。最多不要超过8张"
-                        android:id="@+id/textView45"
-                        android:textSize="10dp"
-                        android:gravity="center_vertical"
-                        android:textColor="#ff727272"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginLeft="3dp"
-                        android:layout_gravity="center" />
+                        android:layout_height="fill_parent"
+                        android:layout_marginLeft="80dp">
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:id="@+id/imageView18"
+                            android:src="@mipmap/icon_albums"
+                            android:tint="#ff969696"
+                            android:layout_margin="1dp" />
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:id="@+id/imageView19"
+                            android:src="@mipmap/icon_albums"
+                            android:tint="#ff969696"
+                            android:layout_margin="1dp" />
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:id="@+id/imageView20"
+                            android:src="@mipmap/icon_albums"
+                            android:tint="#ff969696"
+                            android:layout_margin="1dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginLeft="80dp" >
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:id="@+id/imageView21"
+                            android:src="@mipmap/icon_albums"
+                            android:tint="#ff969696"
+                            android:layout_margin="1dp" />
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:id="@+id/imageView22"
+                            android:src="@mipmap/icon_albums"
+                            android:tint="#ff969696"
+                            android:layout_margin="1dp" />
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:id="@+id/imageView23"
+                            android:src="@mipmap/icon_albums"
+                            android:tint="#ff969696"
+                            android:layout_margin="1dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginLeft="80dp" >
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:id="@+id/imageView24"
+                            android:src="@mipmap/icon_albums"
+                            android:tint="#ff969696"
+                            android:layout_margin="1dp" />
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:id="@+id/imageView25"
+                            android:src="@mipmap/icon_albums"
+                            android:tint="#ff969696"
+                            android:layout_margin="1dp" />
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:id="@+id/imageView26"
+                            android:src="@mipmap/icon_albums"
+                            android:tint="#ff969696"
+                            android:layout_margin="1dp" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
