@@ -1,5 +1,7 @@
 package com.dragoneye.money.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
@@ -11,11 +13,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.activity.base.BaseActivity;
+import com.dragoneye.money.config.HttpUrlConfig;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.protocol.UserProtocol;
 import com.dragoneye.money.tool.UIHelper;
-import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 
@@ -39,6 +42,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     RadioGroup mRBUserType;
 
     TextView mTVSendSecurityCode;
+
+    TextView mTVAgreement;
 
     private static class MyHandler extends Handler{
         private final WeakReference<RegisterActivity> mRef;
@@ -87,6 +92,9 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
         mTVSendSecurityCode = (TextView)findViewById(R.id.fragment_register_Enter_SecurityCode_button);
         mTVSendSecurityCode.setOnClickListener(this);
+
+        mTVAgreement = (TextView)findViewById(R.id.fragment_register_Agreement_text);
+        mTVAgreement.setOnClickListener(this);
     }
 
     private void initData(){
@@ -104,7 +112,17 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             case R.id.fragment_register_Enter_SecurityCode_button:
                 onSendCode();
                 break;
+            case R.id.fragment_register_Agreement_text:
+                onAgreement();
+                break;
         }
+    }
+
+    private void onAgreement(){
+        Uri uri = Uri.parse(HttpUrlConfig.URL_AGREEMENT);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
     }
 
     private void onSendCode(){

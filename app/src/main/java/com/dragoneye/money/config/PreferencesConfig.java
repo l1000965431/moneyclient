@@ -18,4 +18,9 @@ public interface PreferencesConfig {
      */
     String LAST_LOGIN_USER_ID = "LAST_LOGIN_USER_ID";
     String LAST_LOGIN_USER_PASSWORD = "LAST_LOGIN_USER_PASSWORD";
+
+    /**
+     * 记录是否显示过特性页
+     */
+    String IS_SHOWED_FEATURE = "IS_SHOWED_FEATURE";
 }

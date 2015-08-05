@@ -28,7 +28,19 @@ public interface InvestProjectProtocol {
     /** 返回值 **/
     int INVEST_RESULT_SUCCESS = 100;   // 投资成功
     int INVEST_RESULT_IMPROVE_INFO = 101;     // 需完善个人信息
-    int INVSET_RESULT_FAILED = 102;    // 投资失败
+    int INVEST_RESULT_FAILED = 102;    // 投资失败
 
+    /*****************************************************************************************/
+
+    /******************************************************************************************
+     *  投资项目                                                                               *
+     ******************************************************************************************/
+    String URL_GET_INVEST_INFO = HttpUrlConfig.URL_ROOT + "/ActivityController/getActivityInvestInfo";
+
+    String GET_INVEST_INFO_PARAM_USER_ID = "UserId";
+    String GET_INVEST_INFO_PARAM_ACTIVITY_STAGE_ID = "ActivityStageId";
+
+    String GET_INVEST_INFO_SUCCESS = "100";
+    String GET_INVEST_INFO_FAILED = "101";
     /*****************************************************************************************/
 }

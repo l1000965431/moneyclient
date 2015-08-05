@@ -125,7 +125,7 @@
             android:layout_width="fill_parent"
             android:layout_height="100dp"
             android:background="#ffffffff"
-            android:layout_above="@+id/textView27"
+            android:layout_above="@+id/payment_tv_goToPay"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:id="@+id/linearLayout22">
@@ -209,7 +209,7 @@
             android:layout_height="50dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="去支付"
-            android:id="@+id/textView27"
+            android:id="@+id/payment_tv_goToPay"
             android:layout_gravity="center"
             android:textSize="15dp"
             android:background="#ff44ff0b"

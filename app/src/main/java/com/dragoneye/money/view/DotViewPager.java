@@ -30,6 +30,8 @@ public class DotViewPager extends LinearLayout {
     private ImageView mSelectedDot;
     private PagerAdapter mAdapter;
     private Handler mHandler;
+    private boolean autoScroll = true;
+    private int autoScrollInterval = AUTO_SCROLL_PAGE_INTERVAL;
 
     public DotViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -59,20 +61,22 @@ public class DotViewPager extends LinearLayout {
         });
 
 
-        mHandler.postDelayed(scrollPage, AUTO_SCROLL_PAGE_INTERVAL);
+        mHandler.postDelayed(scrollPage, autoScrollInterval);
     }
 
     final Runnable scrollPage = new Runnable() {
         @Override
         public void run() {
-            int count = mViewPager.getAdapter().getCount();
-            int currentIndex = mViewPager.getCurrentItem();
-            if( currentIndex + 1 == count ){
-                mViewPager.setCurrentItem(0);
-            }else {
-                mViewPager.setCurrentItem(currentIndex + 1);
+            if( isAutoScroll() ){
+                int count = mViewPager.getAdapter().getCount();
+                int currentIndex = mViewPager.getCurrentItem();
+                if( currentIndex + 1 == count ){
+                    mViewPager.setCurrentItem(0);
+                }else {
+                    mViewPager.setCurrentItem(currentIndex + 1);
+                }
+                mHandler.postDelayed(scrollPage, autoScrollInterval);
             }
-            mHandler.postDelayed(scrollPage, AUTO_SCROLL_PAGE_INTERVAL);
         }
     };
 
@@ -134,5 +138,21 @@ public class DotViewPager extends LinearLayout {
 
     private int getDotsCount(){
         return mDotsViewArray.size();
+    }
+
+    public boolean isAutoScroll() {
+        return autoScroll;
+    }
+
+    public void setAutoScroll(boolean autoScroll) {
+        this.autoScroll = autoScroll;
+    }
+
+    public int getAutoScrollInterval() {
+        return autoScrollInterval;
+    }
+
+    public void setAutoScrollInterval(int autoScrollInterval) {
+        this.autoScrollInterval = autoScrollInterval;
     }
 }

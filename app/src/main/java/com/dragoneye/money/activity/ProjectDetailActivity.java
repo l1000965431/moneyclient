@@ -2,20 +2,13 @@ package com.dragoneye.money.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v4.view.PagerAdapter;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.activity.base.DotViewPagerActivity;
 import com.dragoneye.money.dao.MyDaoMaster;
 import com.dragoneye.money.dao.ProjectImage;
 import com.dragoneye.money.dao.ProjectImageDao;
@@ -24,13 +17,11 @@ import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.protocol.GetProjectListProtocol;
 import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.view.DotViewPager;
-import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

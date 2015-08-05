@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.activity.base.BaseActivity;
 import com.dragoneye.money.view.ZoomImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 

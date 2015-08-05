@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.activity.base.BaseActivity;
 import com.dragoneye.money.config.PreferencesConfig;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
@@ -18,13 +19,10 @@ import com.dragoneye.money.protocol.UserProtocol;
 import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.user.CurrentUser;
 import com.dragoneye.money.user.UserInvestor;
-import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.prefs.Preferences;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener{
 

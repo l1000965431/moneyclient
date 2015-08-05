@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.activity.base.BaseActivity;
 import com.dragoneye.money.application.AppInfoManager;
 import com.dragoneye.money.application.MyApplication;
 

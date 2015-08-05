@@ -1,12 +1,12 @@
 package com.dragoneye.money.activity;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.activity.base.BaseActivity;
 import com.dragoneye.money.user.CurrentUser;
 
 public class UserInfoActivity extends BaseActivity {

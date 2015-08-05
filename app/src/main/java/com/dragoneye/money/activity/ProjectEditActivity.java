@@ -1,6 +1,7 @@
 package com.dragoneye.money.activity;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,21 +13,32 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.activity.base.BaseActivity;
+import com.dragoneye.money.activity.base.ImageMulSelectedActivity;
+import com.dragoneye.money.activity.base.ImageSelectedActivity;
 import com.dragoneye.money.config.HttpUrlConfig;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.model.ProjectDetailModel;
+import com.dragoneye.money.protocol.UploadProjectProtocol;
+import com.dragoneye.money.tool.ToolMaster;
 import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.user.CurrentUser;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
 
 import org.apache.http.Header;
+import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
-public class ProjectEditActivity extends BaseActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-
+public class ProjectEditActivity extends ImageSelectedActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+    private static final long MAX_IMAGE_SIZE = 500 * 1024;
+    private static final int MAX_IMAGE_NUM = 8;
 
     private EditText mETProjectName;
     private EditText mETProjectTargetPrice;
@@ -42,6 +54,10 @@ public class ProjectEditActivity extends BaseActivity implements View.OnClickLis
     private EditText mETProfitModel;
 
     private TextView mTVSaveProject;
+    private TextView mTVSelectedImage;
+
+    private ArrayList<File> mImageFile = new ArrayList<>();
+    private String mUploadToken;
 
     private ArrayList<RadioButton> mRBProjectTypeList = new ArrayList<>();
     private CompoundButton mRBSelectedProjectType;
@@ -53,6 +69,7 @@ public class ProjectEditActivity extends BaseActivity implements View.OnClickLis
         setContentView(R.layout.fragment_project_launched);
         initView();
         initData();
+        test();
     }
 
     private void initView(){
@@ -71,6 +88,8 @@ public class ProjectEditActivity extends BaseActivity implements View.OnClickLis
 
         mTVSaveProject = (TextView)findViewById(R.id.fragment_register_buttonlogin);
         mTVSaveProject.setOnClickListener(this);
+        mTVSelectedImage = (TextView)findViewById(R.id.project_launched_tv_selected_image);
+        mTVSelectedImage.setOnClickListener(this);
 
         // 创建项目类别radio按钮
         mRBProjectTypeList.add((RadioButton)findViewById(R.id.project_launched_rb_project_type_1));
@@ -103,23 +122,76 @@ public class ProjectEditActivity extends BaseActivity implements View.OnClickLis
             case R.id.fragment_register_buttonlogin:
                 onSave();
                 break;
+            case R.id.project_launched_tv_selected_image:
+                onSelectedImage();
+                break;
         }
     }
 
-    private void onSave(){
-        ProjectDetailModel projectDetail = new ProjectDetailModel();
-        if( !getProjectInput(projectDetail) ){
+    private void onSelectedImage(){
+        goToPortraitSelect();
+//        Intent intent = new Intent(this, ImageMulSelectedActivity.class);
+//        startActivity(intent);
+    }
+
+    @Override
+    protected void onSelectedFromGalleryFinish(Uri uri){
+        String filePath = ToolMaster.getRealPathFromURI(this, uri);
+        if( filePath == null ){
+            UIHelper.toast(this, "错误的图片路径");
             return;
         }
 
-        startUploadProject(projectDetail);
+        File file = new File(filePath);
+        if(file.length() > MAX_IMAGE_SIZE){
+            UIHelper.toast(this, "图片太大!");
+            return;
+        }
+        mImageFile.add(file);
+
+        UIHelper.toast(this, "选择成功");
+    }
+
+    private void onSave(){
+//        ProjectDetailModel projectDetail = new ProjectDetailModel();
+//        if( !getProjectInput(projectDetail) ){
+//            return;
+//        }
+
+//        startUploadProject(projectDetail);
+        onUploadTest();
+    }
+
+    private void test(){
+        HttpClient.atomicPost(this, HttpUrlConfig.URL_ROOT + "ImageUploadController/getUploadToken",
+                null, new HttpClient.MyHttpHandler() {
+                    @Override
+                    public void onSuccess(int i, Header[] headers, String s) {
+                        UIHelper.toast(ProjectEditActivity.this, s);
+                        mUploadToken = s;
+                    }
+                });
+    }
+
+    private void onUploadTest(){
+        UploadManager uploadManager = new UploadManager();
+
+        File file = mImageFile.get(0);
+
+        uploadManager.put(file, "moneyImageUploadTest", mUploadToken, new UpCompletionHandler() {
+            @Override
+            public void complete(String s, ResponseInfo responseInfo, JSONObject jsonObject) {
+                UIHelper.toast(ProjectEditActivity.this, "上传成功");
+                Log.i("upload", responseInfo.toString());
+            }
+        }, null);
     }
 
     private void startUploadProject(ProjectDetailModel projectDetail){
         HttpParams httpParams = new HttpParams();
         httpParams.putGsonData(projectDetail);
 
-        HttpClient.get(HttpUrlConfig.URL_SUBMIT_PROJECT, httpParams, new TextHttpResponseHandler() {
+        HttpClient.get(UploadProjectProtocol.URL_SUBMIT_PROJECT, httpParams, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                 Log.d("SubmitProject Failure", s);

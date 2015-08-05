@@ -46,9 +46,9 @@ public class HttpClient {
         client.get(strHttpUrl, params, res);
     }
 
-//    public static void post( String strHttpUrl, HttpParams params, AsyncHttpResponseHandler res ){
-//        client.post(strHttpUrl, params, res);
-//    }
+    public static void post( String strHttpUrl, HttpParams params, AsyncHttpResponseHandler res ){
+        client.post(strHttpUrl, params, res);
+    }
 
     private static ArrayList<String> mPostingUrl = new ArrayList<>();
 
@@ -88,14 +88,12 @@ public class HttpClient {
         handler.postDelayed(clearTimeOutUrl_r, 100000);
     }
 
-    public static class MyHttpHandler{
+    public static abstract class MyHttpHandler{
         public void onFailure(int i, Header[] headers, String s, Throwable throwable){
 
         }
 
-        public void onSuccess(int i, Header[] headers, String s){
-
-        }
+        public abstract void onSuccess(int i, Header[] headers, String s);
     }
 
     public static String getValueFromHeader(Header[] headers, String key){

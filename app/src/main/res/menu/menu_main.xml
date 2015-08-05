@@ -10,4 +10,9 @@
             android:title="项目详情"
             android:orderInCategory="100"
             app:showAsAction="never"/>
+      <item android:id="@+id/main_menu_improve_user_info"
+            android:title="完善资料"
+            android:orderInCategory="100"
+            app:showAsAction="never"
+            />
 </menu>

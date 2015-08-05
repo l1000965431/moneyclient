@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.happysky.self.demo.activity.ImageSelectActivity">
+    <item android:id="@+id/menu_image_select_finish"
+          android:title="完成"
+          android:orderInCategory="100"
+          app:showAsAction="ifRoom"/>
+</menu>
