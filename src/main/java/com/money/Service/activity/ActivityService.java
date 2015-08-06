@@ -298,4 +298,13 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
         return (ActivityVerifyCompleteModel)activityDao.load(ActivityVerifyCompleteModel.class, activityId);
     }
 
+    /**
+     * 获取项目投资详情（领投金额、收益层次等)
+     * @param activityStageId
+     * @return
+     */
+    public ActivityDetailModel getActivityInvestInfo(String activityStageId){
+        return activityDao.getActivityInvestInfo(activityStageId);
+    }
+
 }

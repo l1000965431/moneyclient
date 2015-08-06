@@ -119,4 +119,14 @@ public class ServerReturnValue {
      * 获取项目详情失败
      */
     public static final String ACTIVITY_INFO_NO_ACTIVITY = "101";
+
+    /**
+     * 获取项目投资详情成功
+     */
+    public static final String ACTIVITY_INVEST_INFO_SUCCESS = "100";
+
+    /**
+     * 获取项目投资详情失败
+     */
+    public static final String ACTIVITY_INVEST_INFO_FAILED = "101";
 }

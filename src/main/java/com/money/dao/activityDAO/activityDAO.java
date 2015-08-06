@@ -303,5 +303,16 @@ public class activityDAO extends BaseDao {
         return list;
     }
 
+    public ActivityDetailModel getActivityInvestInfo(String activityStageId){
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
+        ActivityDetailModel detailModel = (ActivityDetailModel)session.get(ActivityDetailModel.class, activityStageId);
+        detailModel.getSrEarningModels().size();
+        detailModel.getDynamicModel().getActivityTotalLinesPeoples();
+        t.commit();
+
+        return detailModel;
+    }
+
 
 }

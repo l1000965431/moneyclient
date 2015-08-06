@@ -366,4 +366,11 @@ public class ActivityVerifyCompleteModel extends BaseModel {
         return ( CurInstallmentNum >= TotalInstallmentNum );
     }
 
+    public String getProfitMode() {
+        return profitMode;
+    }
+
+    public void setProfitMode(String profitMode) {
+        this.profitMode = profitMode;
+    }
 }

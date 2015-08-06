@@ -87,6 +87,7 @@ public class ActivityVerifyModel extends BaseModel {
     /**
      * 项目图片
      */
+    @Column(columnDefinition = "TEXT")
     String imageUrl;
 
     /**

@@ -34,6 +34,7 @@ public class GsonUntil {
                 o.addProperty("summary", src.getActivityVerifyCompleteModel().getSummary());
                 o.addProperty("targetFund", src.getTargetFund());
                 o.addProperty("status", src.getStatus());
+                o.addProperty("imageUrl", src.getActivityVerifyCompleteModel().getImageUrl());
                 o.addProperty("currentFund", src.getDynamicModel().getActivityCurLines());
                 o.addProperty("currentStage", src.getActivityVerifyCompleteModel().getCurInstallmentNum());
                 o.addProperty("totalStage", src.getActivityVerifyCompleteModel().getTotalInstallmentNum());
