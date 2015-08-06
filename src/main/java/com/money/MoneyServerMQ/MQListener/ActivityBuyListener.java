@@ -31,19 +31,19 @@ public class ActivityBuyListener extends MoneyServerListener {
 
         try {
             String messageBody = BodyToString(message.getBody());
-            Map<String,Object> map;
-            map = GsonUntil.jsonToJavaClass(messageBody, new TypeToken<Map<String, Object>>() {
+            Map<String,String> map;
+            map = GsonUntil.jsonToJavaClass(messageBody, new TypeToken<Map<String, String>>() {
             }.getType());
 
             if( map == null ){
                 return Action.CommitMessage;
             }
 
-            final String InstallmentActivityID = (String)map.get( "InstallmentActivityID" );
-            final String UserID = (String)map.get( "UserID" );
-            int PurchaseNum = (Integer)map.get( "PurchaseNum" );
-            int AdvanceNum = (Integer)map.get( "AdvanceNum" );
-            int PurchaseType = (Integer)map.get( "PurchaseType" );
+            final String InstallmentActivityID = map.get( "InstallmentActivityID" );
+            final String UserID = map.get( "UserID" );
+            int PurchaseNum = Integer.valueOf( map.get( "PurchaseNum" ));
+            int AdvanceNum = Integer.valueOf( map.get( "AdvanceNum" ));
+            int PurchaseType = Integer.valueOf( map.get( "PurchaseType" ) );
             //String OrderID = (String)map.get( "OrderID" );
 
             //修改订单状态 修改项目参与人数 修改项目当前金额
@@ -65,10 +65,12 @@ public class ActivityBuyListener extends MoneyServerListener {
      */
     public void ActivityBuy( String InstallmentActivityID,String UserID,int PurchaseNum ,int AdvanceNum,int PurchaseType,String OrderID ) throws Exception {
         switch( PurchaseType ){
-            case Config.PURCHASELOCALTYRANTS:
-                purchaseInAdvance.PurchaseInAdvance( InstallmentActivityID, UserID,PurchaseNum,AdvanceNum );
             case Config.PURCHASEPRICKSILK:
+                purchaseInAdvance.PurchaseInAdvance( InstallmentActivityID, UserID,PurchaseNum,AdvanceNum );
+                break;
+            case Config.PURCHASELOCALTYRANTS:
                 purchaseInAdvance.LocalTyrantsPurchaseActivity( InstallmentActivityID,UserID,AdvanceNum );
+                break;
         }
 
         //项目购买完成 开始计算开奖

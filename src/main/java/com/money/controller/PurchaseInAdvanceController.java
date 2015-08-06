@@ -63,8 +63,8 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
             map.put("UserID", UserID);
             map.put("PurchaseType", PurchaseType);
             String messageBody = GsonUntil.JavaClassToJson(map);
-            MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TOPIC,
-                    MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TAG, messageBody, "1"));
+            MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_ACTIVITYBUY_TOPIC,
+                    MoneyServerMQ_Topic.MONEYSERVERMQ_ACTIVITYBUY_TAG, messageBody, "1"));
 
             return ServerReturnValue.PERFECTSUCCESS;
 

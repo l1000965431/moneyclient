@@ -14,8 +14,8 @@ import com.money.model.PrizeListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.GsonUntil;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 给客户发奖打钱到客户钱包
@@ -45,7 +45,9 @@ public class SomeFarmListener extends MoneyServerListener {
             String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
             int GroupID = activityDetailModel.getGroupId();
 
-            List<ActivityDetailModel> list = activityDAO.getActivityDetailByGroupID( ActivityID,GroupID );
+            List<ActivityDetailModel> list = new ArrayList<ActivityDetailModel>();  //activityDAO.getActivityDetailByGroupID( ActivityID,GroupID );
+            list.add( activityDetailModel );
+
 
             if( list == null ){
                 return Action.CommitMessage;
@@ -77,7 +79,7 @@ public class SomeFarmListener extends MoneyServerListener {
             }
 
             for( LotteryPeoples Peoples:LotteryPeoplesList ){
-                walletService.RechargeWallet( Peoples.getUserID(),Peoples.getLotteryLines() );
+                walletService.RechargeWallet( Peoples.getUserId(),Peoples.getLotteryLines() );
             }
 
         }

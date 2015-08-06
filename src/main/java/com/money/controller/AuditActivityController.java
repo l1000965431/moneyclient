@@ -3,6 +3,7 @@ package com.money.controller;
 import com.money.Service.AuditActivity.ServiceAuditActivity;
 import com.money.Service.GroupActivity.ServiceGroupActivity;
 import com.money.Service.ServiceFactory;
+import com.money.Service.activity.ActivityService;
 import com.money.config.Config;
 import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityDynamicModel;
@@ -31,6 +32,9 @@ public class AuditActivityController extends ControllerBase implements IControll
 
     @Autowired
     ServiceGroupActivity serviceGroupActivity;
+
+    @Autowired
+    ActivityService activityService;
 
     /**
      * 获取未审批的项目列表
@@ -81,9 +85,19 @@ public class AuditActivityController extends ControllerBase implements IControll
     @RequestMapping("splitActivity")
     @ResponseBody
     public String splitActivity(HttpServletRequest request, HttpServletResponse response){
-        //serviceGroupActivity.splitActivityByStage();
+        String ActivityID = request.getParameter( "ActivityID" );
+        int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
+        int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
+        serviceGroupActivity.splitActivityByStage( ActivityID,AdvanceNum,PurchaseNum );
+        return "1";
+    }
 
-        return "";
+    @RequestMapping("ActivityStart")
+    @ResponseBody
+    public String ActivityStart(HttpServletRequest request, HttpServletResponse response){
+        String ActivityID = request.getParameter( "ActivityID" );
+        activityService.ActivityCompleteStart( ActivityID );
+        return "1";
     }
 
 }

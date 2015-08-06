@@ -100,7 +100,7 @@ public class TicketService extends ServiceBase implements ServiceInterface {
         LotteryService lotteryService = ServiceFactory.getService("LotteryService");
 
         //创建项目组中奖表
-        if (!lotteryService.CreateLotteryDB(ActivityGroupID)) {
+        if ( false ) {
             return null;
         }
 
@@ -269,7 +269,7 @@ public class TicketService extends ServiceBase implements ServiceInterface {
      */
     boolean IsAllLinesLotteryConpelete() {
 
-        if(LotteryGradation == null){
+        if (LotteryGradation == null) {
             return false;
         }
 
@@ -419,10 +419,13 @@ public class TicketService extends ServiceBase implements ServiceInterface {
 
     /**
      * 创建票ID
-     * @param InstallmentActivityID  分期项目ID
+     *
+     * @param InstallmentActivityID 分期项目ID
      */
-    public void CreateTickID( String InstallmentActivityID,int TotalLines ){
-       ticketDAO.CreateTicketID( InstallmentActivityID,TotalLines );
+    public void CreateTickID(String InstallmentActivityID, int TotalLines) {
+        ticketDAO.CreateTicketID(InstallmentActivityID, TotalLines, 2);
+        //创建大R的票
+        ticketDAO.CreateTicketID(InstallmentActivityID, 1, 1);
     }
 
 }

@@ -48,8 +48,9 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         if( walletModel == null ){
             return 0;
         }
-
-        walletModel.setWalletLines( Lines );
+        int WalletLines = walletModel.getWalletLines();
+        WalletLines+=Lines;
+        walletModel.setWalletLines( WalletLines );
         generaDAO.update( walletModel );
 
         return 0;
@@ -61,7 +62,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
      * @return
      */
     public boolean CostLines( String UserID,int CostLines ){
-        WalletModel walletModel = (WalletModel)generaDAO.load( WalletModel.class,UserID );
+        WalletModel walletModel = (WalletModel)generaDAO.loadNoTransaction(WalletModel.class, UserID);
 
         if( walletModel == null ){
             return false;
@@ -75,7 +76,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
 
         walletModel.setWalletLines( CurLinse-CostLines );
 
-        generaDAO.update( walletModel );
+        generaDAO.updateNoTransaction( walletModel );
 
         return true;
     }

@@ -6,10 +6,7 @@ import com.money.config.ServerReturnValue;
 import com.money.dao.BaseDao;
 import com.money.dao.TransactionCallback;
 import com.money.memcach.MemCachService;
-import com.money.model.UserBorrowModel;
-import com.money.model.UserInvestorModel;
 import com.money.model.UserModel;
-import com.money.model.WalletModel;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +26,6 @@ import java.util.*;
 public class UserDAO extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(UserDAO.class);
-
-
 
 
     //投资者完善个人信息,1，修改信息成功；2，信息不合法
@@ -62,34 +57,6 @@ public class UserDAO extends BaseDao {
 
     }
 
-    //借贷者完善个人信息
-    public int modifyBorrowerInfo(String userName, String info) {
-        //将信息转换为map形式
-        Map<String, String> map = new HashMap<String, String>();
-        map = GsonUntil.jsonToJavaClass(info, map.getClass());
-        //有空信息标志位
-        boolean infoFlag = true;
-        //获取MAP的第一个值，开始遍历，判断信息是否为空
-        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, String> entry = it.next();
-            String value = entry.getValue();
-            if (value == null)
-                infoFlag = false;
-
-        }
-        //查看用户昵称是否合法
-        String user = map.get("user");
-        boolean userIsRight = userIsRight(user);
-
-        if ((userIsRight) && (infoFlag)) {
-            //写数据库信息
-            writeBorrowInfo(userName, map);
-            return Config.MODIFYINFO_SUCCESS;
-        } else
-            return Config.MODIFYINFO_FAILED;
-    }
-
     //投资者修改个人信息
     public int changeInvestorInfo(String userName, String info) {
         //将信息转换为map形式
@@ -118,48 +85,20 @@ public class UserDAO extends BaseDao {
             return Config.MODIFYINFO_FAILED;
     }
 
-    //借贷者修改个人信息
-    public int changeBorrowerInfo(String userName, String info) {
-        //将信息转换为map形式
-        Map<String, String> map = new HashMap<String, String>();
-        map = GsonUntil.jsonToJavaClass(info, map.getClass());
-        //有空信息标志位
-        boolean infoFlag = true;
-        //获取MAP的第一个值，开始遍历，判断信息是否为空
-        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, String> entry = it.next();
-            String value = entry.getValue();
-            if (value == null)
-                infoFlag = false;
-
-        }
-        //查看用户昵称是否合法
-        String user = map.get("user");
-        boolean userIsRight = userIsRight(user);
-
-        if ((userIsRight) && (infoFlag)) {
-            //写数据库信息
-            writeBorrowInfo(userName, map);
-            return Config.MODIFYINFO_SUCCESS;
-        } else
-            return Config.MODIFYINFO_FAILED;
-    }
-
     //修改密码
-    public boolean changePassword(String userID, String newPassWord,String oldPassWord) {
+    public boolean changePassword(String userID, String newPassWord, String oldPassWord) {
         UserModel userModel = this.getUSerModel(userID);
 
-        if( userModel == null ){
+        if (userModel == null) {
             return false;
         }
 
         String CurPassWord = userModel.getPassword();
 
-        String decodePassword = new String(Base32.decode( CurPassWord ));
+        String decodePassword = new String(Base32.decode(CurPassWord));
 
-        if( !oldPassWord.equals( decodePassword ) ){
-            return  false;
+        if (!oldPassWord.equals(decodePassword)) {
+            return false;
         }
 
         userModel.setPassword(newPassWord);
@@ -169,7 +108,7 @@ public class UserDAO extends BaseDao {
 
     //注册
     public int registered(final String userID, final String passWord, final int userType) {
-       if (this.excuteTransactionByCallback(new TransactionCallback() {
+        if (this.excuteTransactionByCallback(new TransactionCallback() {
             public void callback(BaseDao basedao) throws Exception {
                 UserModel userModel = new UserModel();
                 //用户注册，存入数据库
@@ -177,32 +116,12 @@ public class UserDAO extends BaseDao {
                 userModel.setPassword(passWord);
                 userModel.setUserType(userType);
                 basedao.getNewSession().save(userModel);
-                switch (userType) {
-                    //发起人
-                    case Config.BORROWER:
-                        UserBorrowModel userBorrowModel = new UserBorrowModel();
-                        userBorrowModel.setUserId( userID );
-                        basedao.getNewSession().save(userBorrowModel);
-                        break;
-                    //投资者
-                    case Config.INVESTOR:
-                        UserInvestorModel userInvestorModel = new UserInvestorModel();
-                        userInvestorModel.setUserId( userID );
-                        basedao.getNewSession().save(userInvestorModel);
-
-                        WalletModel walletModel = new WalletModel();
-                        walletModel.setUserID( userID );
-                        basedao.getNewSession().save(walletModel);
-                        break;
-                    default:
-                        throw new Exception();
-                }
             }
-        })==Config.SERVICE_SUCCESS){
-           return ServerReturnValue.REQISTEREDSUCCESS;
-       }else {
-           return ServerReturnValue.REQISTEREDFAILED;
-       }
+        }) == Config.SERVICE_SUCCESS) {
+            return ServerReturnValue.REQISTEREDSUCCESS;
+        } else {
+            return ServerReturnValue.REQISTEREDFAILED;
+        }
     }
 
     //验证用户名是否已注册
@@ -214,7 +133,7 @@ public class UserDAO extends BaseDao {
     //验证短信验证码是否正确
     public boolean checkTeleCode(String userName, String code) {
         //根据userName,寻找缓存中的code，并判断是否相等
-        String UserCodeName = Config.CODE+userName;
+        String UserCodeName = Config.CODE + userName;
         if (code == MemCachService.MemCachgGet(UserCodeName))
             return true;
         else
@@ -229,7 +148,7 @@ public class UserDAO extends BaseDao {
         int random = MoneySeverRandom.getRandomNum(1, 10000);
         String code = String.valueOf(random);
         //将发送的验证码存入缓存
-        String UserCodeName = Config.CODE+userName;
+        String UserCodeName = Config.CODE + userName;
         MemCachService.InsertValueWithTime(UserCodeName, Config.USERCODETIME, code);
         result = PRestSmsSDKUntil.getRestAPI().sendTemplateSMS(userName, "1", new String[]{code, "5"});
         if ("000000".equals(result.get("statusCode"))) {
@@ -265,7 +184,7 @@ public class UserDAO extends BaseDao {
 
     //查询用户名是否存在
     public boolean userIsExist(String userID) {
-        UserModel userModel = getUSerModel( userID );
+        UserModel userModel = getUSerModel(userID);
         if (userModel != null)
             return true;
         else
@@ -279,7 +198,7 @@ public class UserDAO extends BaseDao {
 
         String decodePassWord = new String(Base32.decode(passWordSql));
 
-        if (passWord.equals(decodePassWord) )
+        if (passWord.equals(decodePassWord))
             return true;
         else
             return false;
@@ -301,7 +220,7 @@ public class UserDAO extends BaseDao {
         String tokenTime = MemCachService.GetMemCachMapByMapKey(userName, "time");
         Long tokenUpdTime = Long.parseLong(tokenTime);
         //在登录状态
-        if ((time - tokenUpdTime)/1000 < 3600)
+        if ((time - tokenUpdTime) / 1000 < 3600)
             return true;
         else
             return false;
@@ -312,7 +231,7 @@ public class UserDAO extends BaseDao {
     public boolean isTokenExist(String userID, String token) {
         boolean tokenIsExist = MemCachService.KeyIsExists(userID);
 
-        Map map = MemCachService.GetMemCachMap( userID );
+        Map map = MemCachService.GetMemCachMap(userID);
 
         //若存在
         if (tokenIsExist) {
@@ -334,7 +253,7 @@ public class UserDAO extends BaseDao {
 
     //获取用户类型
     public int getUserType(String userName) {
-        UserModel userModel = this.getUSerModel( userName);
+        UserModel userModel = this.getUSerModel(userName);
         int userType = userModel.getUserType();
         return userType;
 
@@ -343,42 +262,26 @@ public class UserDAO extends BaseDao {
     //信息完善，写数据库信息
     private void writeInfo(String userName, Map<String, String> map) {
 
-        UserInvestorModel userInvestorModel = this.getUSerInfoModel(userName);
+        UserModel userModel = this.getUSerModel(userName);
 
         String user = map.get("userName");
         String mail = map.get("mail");
         int sex = Integer.valueOf(map.get("sex"));
         String location = map.get("location");
-        userInvestorModel.setUserName(user);
-        userInvestorModel.setMail(mail);
-        userInvestorModel.setSex(sex);
-        userInvestorModel.setLocation(location);
-        userInvestorModel.setRealName("");
-        userInvestorModel.setIsPerfect(true);
-        this.update(userInvestorModel);
+        userModel.setUserName(user);
+        userModel.setMail(mail);
+        userModel.setSex(sex);
+        userModel.setLocation(location);
+        userModel.setRealName("");
+        userModel.setIsPerfect(true);
+        this.update(userModel);
 
 
-    }
-
-    private void writeBorrowInfo(String userName, Map<String, String> map) {
-        writeInfo(userName, map);
-        UserBorrowModel userBorrowModel = (UserBorrowModel) this.load(UserBorrowModel.class, userName);
-        String identity = map.get("identity");
-        String selfIntroduce = map.get("selfIntroduce");
-        String goodAtField = map.get("goodAtField");
-        String education = map.get("education");
-        String personalProfile = map.get("personalProfile");
-        userBorrowModel.setIdentity(identity);
-        userBorrowModel.setSelfIntroduce(selfIntroduce);
-        userBorrowModel.setGoodAtField(goodAtField);
-        userBorrowModel.setEducation(education);
-        userBorrowModel.setPersonalProfile(personalProfile);
-        this.save(userBorrowModel);
     }
 
     //查看用户昵称是否合法
     public boolean userIsRight(String user) {
-       return true;
+        return true;
     }
 
     //检查登录密码是否合法
@@ -386,34 +289,18 @@ public class UserDAO extends BaseDao {
         return true;
     }
 
-    public UserModel getUSerModel( final String UserID ){
+    public UserModel getUSerModel(final String UserID) {
         final UserModel[] userModel = {null};
 
         this.excuteTransactionByCallback(new TransactionCallback() {
             public void callback(BaseDao basedao) throws Exception {
-                userModel[0] = (UserModel) basedao.getNewSession().createCriteria( UserModel.class )
-                        .setMaxResults( 1 )
-                        .add(Restrictions.eq( "userId",UserID ))
+                userModel[0] = (UserModel) basedao.getNewSession().createCriteria(UserModel.class)
+                        .setMaxResults(1)
+                        .add(Restrictions.eq("userId", UserID))
                         .uniqueResult();
             }
         });
 
-     return userModel[0];
-    }
-
-
-    public UserInvestorModel getUSerInfoModel( final String UserID ){
-        final UserInvestorModel[] userInvestorModels = {null};
-
-        this.excuteTransactionByCallback(new TransactionCallback() {
-            public void callback(BaseDao basedao) throws Exception {
-                userInvestorModels[0] = (UserInvestorModel) basedao.getNewSession().createCriteria( UserInvestorModel.class )
-                        .setMaxResults( 1 )
-                        .add(Restrictions.eq( "userId",UserID ))
-                        .uniqueResult();
-            }
-        });
-
-        return userInvestorModels[0];
+        return userModel[0];
     }
 }

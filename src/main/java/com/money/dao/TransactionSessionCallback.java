@@ -4,5 +4,5 @@ import org.hibernate.Session;
 
 public interface TransactionSessionCallback {
 
-        void callback(Session session) throws Exception;
+        boolean callback(Session session) throws Exception;
 }

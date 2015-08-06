@@ -5,10 +5,12 @@ package com.money.model;
  */
 public class LotteryPeoples extends BaseModel {
 
+    String TickID;
+
     /**
      * 中奖用户ID
      */
-    String UserID;
+    String UserId;
 
     /**
      * 中奖金额
@@ -23,14 +25,14 @@ public class LotteryPeoples extends BaseModel {
     /**
      * 中奖类型
      */
-    int LotteryType;
+    int PurchaseType;
 
-    public String getUserID() {
-        return UserID;
+    public String getUserId() {
+        return UserId;
     }
 
-    public void setUserID(String userID) {
-        UserID = userID;
+    public void setUserId(String userId) {
+        UserId = userId;
     }
 
     public int getLotteryLines() {
@@ -49,11 +51,19 @@ public class LotteryPeoples extends BaseModel {
         ActivityID = activityID;
     }
 
-    public int getLotteryType() {
-        return LotteryType;
+    public int getPurchaseType() {
+        return PurchaseType;
     }
 
-    public void setLotteryType(int lotteryType) {
-        LotteryType = lotteryType;
+    public void setPurchaseType(int purchaseType) {
+        PurchaseType = purchaseType;
+    }
+
+    public String getTickID() {
+        return TickID;
+    }
+
+    public void setTickID(String tickID) {
+        TickID = tickID;
     }
 }

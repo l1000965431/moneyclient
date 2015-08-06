@@ -3,7 +3,6 @@ package com.money.dao.orderDAO;
 import com.money.dao.BaseDao;
 import com.money.dao.TransactionCallback;
 import com.money.model.OrderModel;
-import com.money.model.UserInvestorModel;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 

@@ -1,9 +1,6 @@
 package com.money.model;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 项目动态
@@ -33,13 +30,6 @@ public class ActivityDynamicModel extends BaseModel {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = ActivityDetailModel.class)
     ActivityDetailModel activityDetailModel;
-
-//    /**
-//     *  项目组ID
-//     */
-//    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "groupId", referencedColumnName = "id")
-//    ActivityGroupModel activityGroupModel;
 
     /**
      * 父项目
@@ -175,6 +165,10 @@ public class ActivityDynamicModel extends BaseModel {
 
     public void setActivityTotalLinesPeoples(int activityTotalLinesPeoples) {
         this.activityTotalLinesPeoples = activityTotalLinesPeoples;
+    }
+
+    public int getRemainingTicket(){
+        return activityTotalLines - activityTotalLines;
     }
 
     public boolean IsEnoughLines( int Lines ){

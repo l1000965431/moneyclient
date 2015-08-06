@@ -24,7 +24,16 @@ public class UserModel extends BaseModel {
     private int userType;
     //用户名
     private String userName;
-
+    //邮箱
+    private String mail;
+    //性别
+    private int sex;
+    //所在地
+    private String location;
+    //真实姓名
+    private String realName;
+    //是否完善过信息
+    private boolean IsPerfect;
 
     public String getUserId() {
         return userId;
@@ -65,5 +74,45 @@ public class UserModel extends BaseModel {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public boolean isPerfect() {
+        return IsPerfect;
+    }
+
+    public void setIsPerfect(boolean isPerfect) {
+        IsPerfect = isPerfect;
     }
 }

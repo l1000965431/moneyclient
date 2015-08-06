@@ -22,7 +22,7 @@ public class SREarningModel extends BaseModel {
     /**
      *  项目组ID
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.EAGER)
     @JoinColumn( name = "activityStageId",referencedColumnName = "activityStageId")
     ActivityDetailModel activityDetailModel;
 

@@ -1,5 +1,7 @@
 package com.money.model;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -11,6 +13,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "globalconfig")
+@org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
 public class GlobalConfigModel extends BaseModel{
     /**
      * 键
