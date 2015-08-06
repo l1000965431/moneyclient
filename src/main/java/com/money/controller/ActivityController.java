@@ -1,5 +1,6 @@
 package com.money.controller;
 
+import com.google.gson.GsonBuilder;
 import com.money.Service.ServiceFactory;
 import com.money.Service.activity.ActivityService;
 import com.money.Service.user.UserService;
@@ -11,6 +12,7 @@ import com.money.model.ActivityVerifyCompleteModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import until.Adapter.InvestInfoAdapter;
 import until.GsonUntil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -147,7 +149,7 @@ public class ActivityController extends ControllerBase implements IController {
     @ResponseBody
     public String getActivityInformation(HttpServletRequest request, HttpServletResponse response) {
 
-        //获取UserID;
+        // 项目分期id
         String activityId = request.getParameter("activityId");
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
@@ -163,6 +165,24 @@ public class ActivityController extends ControllerBase implements IController {
         response.setHeader("response", ServerReturnValue.ACTIVITY_INFO_SUCCESS);
 
         return Json;
+    }
+
+    @RequestMapping("/getActivityInvestInfo")
+    @ResponseBody
+    public String getActivityInvestInfo(HttpServletRequest request, HttpServletResponse response) {
+        String activityStageId = request.getParameter("ActivityStageId");
+        ActivityService activityService = ServiceFactory.getService("ActivityService");
+
+        ActivityDetailModel activityDetailModel = activityService.getActivityInvestInfo(activityStageId);
+        if(activityDetailModel == null){
+            response.setHeader("response", ServerReturnValue.ACTIVITY_INVEST_INFO_FAILED);
+            return "";
+        }
+
+        String json = new GsonBuilder().registerTypeAdapter(ActivityDetailModel.class, new InvestInfoAdapter()).create()
+                .toJson(activityDetailModel);
+        response.setHeader("response", ServerReturnValue.ACTIVITY_INVEST_INFO_SUCCESS);
+        return json;
     }
 
 
