@@ -11,15 +11,12 @@
 
     <!-- 获取数据源/使用数据源连接池 -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-
-        <property value="com.mysql.jdbc.Driver" name="driverClassName"/><!--driverClassName指定了JDBC驱动类的全限定类名 -->
-
-        <property value="jdbc:mysql://moneyserver.mysql.rds.aliyuncs.com:3306/moneyserver" name="url"/><!-- 数据库所在IP地址和数据库名-->
-
+        <property value= "com.mysql.jdbc.Driver" name="driverClassName"/>
+        <!--driverClassName指定了JDBC驱动类的全限定类名 -->
+        <property value="jdbc:mysql://moneyserver.mysql.rds.aliyuncs.com:3306/moneyserver" name="url"/>
+        <!-- 数据库所在IP地址和数据库名-->
         <property value="money" name="username"/>
-
         <property value="123456" name="password"/>
-
     </bean>
 
 
@@ -30,42 +27,34 @@
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 
         <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="com.money.model"/> <!-- 使用应用程序管理类型的JPA  值为包路径-->
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
-                <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.format_sql">true</prop>
-                <prop key="hibernate.current_session_context_class">thread</prop>
-                <prop key="connection.autocommit">false</prop>
-            </props>
-        </property>
+        <property name="packagesToScan" value="com.money.model"/>
+        <!-- 使用应用程序管理类型的JPA  值为包路径-->
+        <property name="configLocation" value = "WEB-INF/classes/xml/hibernate.cfg.xml" />
     </bean>
 
     <bean id="txManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory" />
+        <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
     <tx:advice id="txAdvice" transaction-manager="txManager">
         <tx:attributes>
             <tx:method name="get*" read-only="false" propagation="NOT_SUPPORTED"/>
             <tx:method name="find*" read-only="false" propagation="NOT_SUPPORTED"/>
-            <tx:method name="save*" propagation="REQUIRED" />
+            <tx:method name="save*" propagation="REQUIRED"/>
             <tx:method name="update*" propagation="REQUIRED"/>
             <tx:method name="delete*" propagation="REQUIRED"/>
         </tx:attributes>
     </tx:advice>
 
     <aop:config>
-    <aop:pointcut id="bussinessService"
-    expression="execution(* com.money.dao.*.*(..))" />
-    <aop:advisor pointcut-ref="bussinessService"
-    advice-ref="txAdvice" />
+        <aop:pointcut id="bussinessService"
+                      expression="execution(* com.money.dao.*.*(..))"/>
+        <aop:advisor pointcut-ref="bussinessService"
+                     advice-ref="txAdvice"/>
     </aop:config>
 
-    <bean id="DaoFactory" class="com.money.dao.DaoFactory" ></bean>
+    <bean id="DaoFactory" class="com.money.dao.DaoFactory"></bean>
 
     <!--<bean id="hedao"-->
     <!--class="until.Hibernate.HibernateEntityDao" scope="prototype">-->

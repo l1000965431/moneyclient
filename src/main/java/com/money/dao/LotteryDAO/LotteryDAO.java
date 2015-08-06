@@ -29,8 +29,8 @@ public class LotteryDAO extends BaseDao {
         //大R中奖查询
         String sql1 = "SELECT * FROM "+DBName+" where PurchaseType = 1;";
         try{
-            List list = this.getListClassBySQL(sql, LotteryPeoples.class );
-            List list1 = this.getListClassBySQL(sql1, LotteryPeoples.class );
+            List list = this.getListClassBySQLNoTransaction(sql, LotteryPeoples.class);
+            List list1 = this.getListClassBySQLNoTransaction(sql1, LotteryPeoples.class );
             list.addAll( list1 );
             return list;
         }catch ( Exception e ){

@@ -1,8 +1,10 @@
 package com.money.model;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +17,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "activitydetails")
+@org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ActivityDetailModel extends BaseModel {
 
     //上线项目未开始
@@ -74,7 +77,7 @@ public class ActivityDetailModel extends BaseModel {
     int groupId;
 
     /**
-     * 筹资金额
+     * 小R的筹资金额
      */
     int targetFund;
 
@@ -82,11 +85,6 @@ public class ActivityDetailModel extends BaseModel {
      * 筹资天数
      */
     int raiseDay;
-
-    /**
-     * 小R各金额总人数
-     */
-    String activityLinesPeoples;
 
     /**
      * 大R中奖金额
@@ -128,14 +126,6 @@ public class ActivityDetailModel extends BaseModel {
 
     public void setRaiseDay(int raiseDay) {
         this.raiseDay = raiseDay;
-    }
-
-    public String getActivityLinesPeoples() {
-        return activityLinesPeoples;
-    }
-
-    public void setActivityLinesPeoples(String activitylinespeoples) {
-        this.activityLinesPeoples = activitylinespeoples;
     }
 
     public void setFatherActivityID(String fatherActivityID) {

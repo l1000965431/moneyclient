@@ -2,14 +2,18 @@ package com.money.Service.PurchaseInAdvance;
 
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
+import com.money.Service.Wallet.WalletService;
 import com.money.Service.activity.ActivityService;
+import com.money.Service.order.OrderService;
 import com.money.config.Config;
 import com.money.dao.PurchaseInAdvanceDAO.PurchaseInAdvanceDAO;
+import com.money.dao.TransactionSessionCallback;
 import com.money.dao.activityDAO.activityDAO;
 import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityDynamicModel;
 import com.money.model.ActivityVerifyCompleteModel;
 import com.money.model.PurchaseInAdvanceModel;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,44 +35,75 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
     @Autowired
     activityDAO activityInfoDAO;
 
+    @Autowired
+    WalletService walletService;
+
+    @Autowired
+    private OrderService orderService;
 
     /**
      * 项目预购
+     *
      * @param InstallmentActivityID 分期项目ID
      * @param UserID
      * @param PurchaseNum           单期购买的数量
      * @param AdvanceNum            预购期数
      */
-    public int PurchaseInAdvance(String InstallmentActivityID, String UserID, int PurchaseNum, int AdvanceNum) {
+    public int PurchaseInAdvance(final String InstallmentActivityID, final String UserID, final int PurchaseNum, final int AdvanceNum) {
 
-        ActivityDetailModel activityDetailModel = activityInfoDAO.getActivityDetails( InstallmentActivityID );
-        String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
+        activityInfoDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                ActivityDetailModel activityDetailModel = activityInfoDAO.getActivityDetaillNoTransaction(InstallmentActivityID);
+                String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
 
-        if (!IsRemainingInstallment(ActivityID, AdvanceNum)) {
-            return 0;
-        }
-        //购买当前期
-        PurchaseActivity(InstallmentActivityID, UserID, PurchaseNum);
+                if (!IsRemainingInstallment(ActivityID, AdvanceNum) || !IsRemainingTickets(ActivityID, PurchaseNum * AdvanceNum)) {
+                    return false;
+                }
 
-        //减去购买当前期的次数  才是预购的次数
-        int PurchaseInAdvanceNum = PurchaseNum - 1;
+                int remainingNum = getInstallmentActivityRemainingTicket(InstallmentActivityID);
 
-        if (PurchaseInAdvanceNum > 0) {
-            purchaseInAdvanceDAO.InsertPurchaseInAdvance(ActivityID, UserID, PurchaseInAdvanceNum, AdvanceNum, Config.PURCHASEPRICKSILK);
-        }
+                if (remainingNum == 0) {
+                    return false;
+                }
+
+                int tempPurchaseNum = remainingNum < PurchaseNum ? remainingNum : PurchaseNum;
+
+                //改为同一个事务
+                if (!walletService.CostLines(UserID, (tempPurchaseNum + (PurchaseNum * AdvanceNum - 1)))) {
+                    return false;
+                }
+
+
+                orderService.createOrder( UserID,InstallmentActivityID,AdvanceNum*PurchaseNum,PurchaseNum,AdvanceNum );
+
+                //购买当前期
+                PurchaseActivity(InstallmentActivityID, UserID, PurchaseNum);
+
+                //减去购买当前期的次数  才是预购的次数
+                int PurchaseInAdvanceNum = AdvanceNum - 1;
+
+                if (PurchaseInAdvanceNum > 0) {
+                    purchaseInAdvanceDAO.InsertPurchaseInAdvance(ActivityID, UserID, PurchaseNum, PurchaseInAdvanceNum, Config.PURCHASEPRICKSILK);
+                }
+
+                return true;
+            }
+        });
 
         return 0;
     }
 
     /**
      * 单次购买项目购买
+     *
      * @param InstallmentActivityID 项目ID
      * @param UserID
      * @param PurchaseNum           购买票的数量
      * @return
      */
-    public int PurchaseActivity(String InstallmentActivityID, String UserID, int PurchaseNum) {
-        if(!IsRemainingTickets(InstallmentActivityID, PurchaseNum)){
+
+    public int PurchaseActivity(String InstallmentActivityID, String UserID, int PurchaseNum) throws Exception {
+        if (!IsRemainingTickets(InstallmentActivityID, PurchaseNum)) {
             return 0;
         }
 
@@ -83,7 +118,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
      * @param UserID
      * @return
      */
-    public int LocalTyrantsPurchase(String InstallmentActivityID, String UserID) {
+    public int LocalTyrantsPurchase(String InstallmentActivityID, String UserID) throws Exception {
         purchaseInAdvanceDAO.PurchaseActivity(InstallmentActivityID, UserID, 1, Config.PURCHASELOCALTYRANTS);
         return 0;
     }
@@ -94,22 +129,29 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
      * @param list 购买人员列表
      * @return
      */
-    public int BatchPurchaseActivity(List<PurchaseInAdvanceModel> list, String InstallmentActivityID, String ActivityID) {
+    public int BatchPurchaseActivity(final List<PurchaseInAdvanceModel> list, final String InstallmentActivityID, final String ActivityID) {
         if (list == null) {
             return 0;
         }
 
-        for (PurchaseInAdvanceModel it : list) {
+        activityInfoDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
 
-            int PurchaseNum = it.getPurchaseNum();
-            int CurPurchaseActivityNum = it.getCurPurchaseInAdvanceNum();
-            //单词购买
-            PurchaseActivity(InstallmentActivityID, it.getUserID(), PurchaseNum);
+                for (PurchaseInAdvanceModel it : list) {
 
-            //刷新预购次数
-            CurPurchaseActivityNum++;
-            purchaseInAdvanceDAO.UpdatePurchaseActivityNum(it.getUserID(), ActivityID, CurPurchaseActivityNum);
-        }
+                    int PurchaseNum = it.getPurchaseNum();
+                    int CurPurchaseActivityNum = it.getCurPurchaseInAdvanceNum();
+                    //单词购买
+                    PurchaseActivity(InstallmentActivityID, it.getUserID(), PurchaseNum);
+
+                    //刷新预购次数
+                    CurPurchaseActivityNum++;
+                    purchaseInAdvanceDAO.UpdatePurchaseActivityNum(it.getUserID(), ActivityID, CurPurchaseActivityNum);
+                }
+
+                return true;
+            }
+        });
 
         return 0;
     }
@@ -143,22 +185,32 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
      * @return
      */
     public boolean IsRemainingInstallment(String ActivityID, int AdvanceNum) {
-        ActivityVerifyCompleteModel activityVerifyCompleteModel = activityInfoDAO.getActivityVerifyCompleteModel(ActivityID);
+        ActivityVerifyCompleteModel activityVerifyCompleteModel = activityInfoDAO.getActivityVerifyCompleteModelNoTransaction(ActivityID);
         return activityVerifyCompleteModel.IsEnoughAdvance(AdvanceNum);
     }
 
     /**
      * 跟投是否还有剩余的票数
      *
-     * @param InstallmentActivityID 分期项目ID
-     * @param PurchaseNum           购买的票数
+     * @param ActivityID  项目ID
+     * @param PurchaseNum 购买的票数
      * @return
      */
-    public boolean IsRemainingTickets(String InstallmentActivityID, int PurchaseNum) {
-        ActivityDynamicModel activityDynamicModel = activityInfoDAO.getActivityDynamic(InstallmentActivityID);
-        return activityDynamicModel.IsEnoughLines(PurchaseNum);
+    public boolean IsRemainingTickets(String ActivityID, int PurchaseNum) {
+        ActivityVerifyCompleteModel activityVerifyCompleteModel = activityInfoDAO.getActivityVerifyCompleteModelNoTransaction(ActivityID);
+        return activityVerifyCompleteModel.IsEnouthFund(PurchaseNum);
     }
 
+    /**
+     * 获得分期项目剩余票数
+     *
+     * @param InstallmentActivityID
+     * @return
+     */
+    public int getInstallmentActivityRemainingTicket(String InstallmentActivityID) {
+        ActivityDynamicModel activityDynamicModel = activityInfoDAO.getActivityDynamicModelNoTransaction(InstallmentActivityID);
+        return activityDynamicModel.getRemainingTicket();
+    }
 
     /**
      * 领投是否还有剩余的期
@@ -179,7 +231,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
      * @return
      */
     public boolean IsRemainingLocalTyrantsTickets(String InstallmentActivityID) {
-        ActivityDynamicModel activityDynamicModel = activityInfoDAO.getActivityDynamic(InstallmentActivityID);
+        ActivityDynamicModel activityDynamicModel = activityInfoDAO.getActivityDynamicModelNoTransaction(InstallmentActivityID);
         return activityDynamicModel.IsEnoughLinesPeoples(activityDynamicModel.getActivityTotalLinesPeoples());
     }
 
@@ -192,19 +244,35 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
      * @param AdvanceNum            购买的期数
      * @return
      */
-    public int LocalTyrantsPurchaseActivity(String InstallmentActivityID, String UserID, int AdvanceNum) {
-        ActivityDetailModel activityDetailModel = activityInfoDAO.getActivityDetails( InstallmentActivityID );
-        String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
+    public int LocalTyrantsPurchaseActivity(final String InstallmentActivityID, final String UserID, final int AdvanceNum) {
 
-        if (!IsRemainingLocalTyrantsInstallment(InstallmentActivityID, AdvanceNum) || !IsRemainingLocalTyrantsTickets(InstallmentActivityID)) {
-            return 0;
-        }
+        activityInfoDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                ActivityDynamicModel activityDynamicModel = activityInfoDAO.getActivityDynamicModel(InstallmentActivityID);
+                String ActivityID = activityDynamicModel.getActivityVerifyCompleteModel().getActivityId();
 
-        LocalTyrantsPurchase(InstallmentActivityID, UserID);
-        int TempAdvanceNum = AdvanceNum - 1;
-        if (TempAdvanceNum > 0) {
-            purchaseInAdvanceDAO.InsertPurchaseInAdvance(ActivityID, UserID, 1, AdvanceNum, Config.PURCHASELOCALTYRANTS);
-        }
+                if (!IsRemainingLocalTyrantsInstallment(InstallmentActivityID, AdvanceNum) || !IsRemainingLocalTyrantsTickets(InstallmentActivityID)) {
+                    return false;
+                }
+
+                int Lines = activityDynamicModel.getActivityTotalLinesPeoples() * AdvanceNum;
+
+                //钱包花费
+                if (!walletService.CostLines(UserID,Lines )) {
+                    return false;
+                }
+
+                orderService.createOrder( UserID,InstallmentActivityID,Lines,1,AdvanceNum );
+
+                LocalTyrantsPurchase(InstallmentActivityID, UserID);
+                int TempAdvanceNum = AdvanceNum - 1;
+                if (TempAdvanceNum > 0) {
+                    purchaseInAdvanceDAO.InsertPurchaseInAdvance(ActivityID, UserID, 1, AdvanceNum, Config.PURCHASELOCALTYRANTS);
+                }
+
+                return true;
+            }
+        });
 
         return 0;
     }

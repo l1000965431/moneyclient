@@ -63,8 +63,8 @@ public class OrderModel extends BaseModel {
      * 项目信息
      */
     @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.EAGER)
-    @JoinColumn( name = "activityId", referencedColumnName = "activityId")
-    private ActivityVerifyCompleteModel activityVerifyCompleteModel;
+    @JoinColumn( name = "activityId", referencedColumnName = "activityStageId")
+    private ActivityDetailModel activityDetailModel;
 
 
     public long getId() {
@@ -125,12 +125,12 @@ public class OrderModel extends BaseModel {
         this.orderLines = orderLines;
     }
 
-    public ActivityVerifyCompleteModel getActivityVerifyCompleteModel() {
-        return activityVerifyCompleteModel;
+    public ActivityDetailModel getActivityDetailModel() {
+        return activityDetailModel;
     }
 
-    public void setActivityVerifyCompleteModel(ActivityVerifyCompleteModel activityVerifyCompleteModel) {
-        this.activityVerifyCompleteModel = activityVerifyCompleteModel;
+    public void setActivityDetailModel(ActivityDetailModel activityDetailModel) {
+        this.activityDetailModel = activityDetailModel;
     }
 
     public int getOrderState() {

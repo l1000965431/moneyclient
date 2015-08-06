@@ -48,7 +48,7 @@
               <property name="locations">
                      <list>
                             <value>WEB-INF/classes/conf/redis.properties</value>
-                            <value>WEB-INF/classes/conf/mycat.properties</value>
+                            <value>WEB-INF/classes/conf/dataSource.properties</value>
                      </list>
               </property>
        </bean>

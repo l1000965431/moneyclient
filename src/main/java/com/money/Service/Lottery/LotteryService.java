@@ -5,17 +5,20 @@ import com.money.MoneyServerMQ.MoneyServerMQManager;
 import com.money.MoneyServerMQ.MoneyServerMessage;
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
+import com.money.Service.Wallet.WalletService;
 import com.money.Service.activity.ActivityService;
 import com.money.config.Config;
 import com.money.config.MoneyServerMQ_Topic;
 import com.money.dao.LotteryDAO.LotteryDAO;
+import com.money.dao.PrizeListDAO.PrizeListDAO;
 import com.money.dao.TicketDAO.TicketDAO;
+import com.money.dao.TransactionSessionCallback;
 import com.money.dao.activityDAO.activityDAO;
 import com.money.model.*;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
-import until.MoneySeverRandom;
 
 import java.util.*;
 
@@ -27,16 +30,6 @@ import java.util.*;
 
 @Service("LotteryService")
 public class LotteryService extends ServiceBase implements ServiceInterface {
-
-    /**
-     * 土豪发奖
-     */
-    public static final int LOTTERYLOCALTYRANTS = 1;
-
-    /**
-     * 屌丝发奖
-     */
-    public static final int LOTTERYPRICKSILK = 2;
 
     @Autowired
     LotteryDAO lotteryDAO;
@@ -50,40 +43,12 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
     @Autowired
     activityDAO activityDAO;
 
-    //基础的中奖几率
-    Map<Integer, Map<Integer, Integer>> MapLinesLotteryProbability;
-
-    //基础的中奖区间
-    Map<Integer, Map<Integer, Integer>> MapLinesLotteryInterval;
-
-    ActivityGroupModel activityGroupModel;
-
-    /**
-     * 记录当前中奖的人数
-     */
-    Map<Integer, Integer> mapCurLotteryPeoples;
-
-    /**
-     * 基础投资金额
-     */
-    int baseLines = 0;
-
-    /**
-     * 发奖类型
-     */
-    int lotteryType = LOTTERYPRICKSILK;
+    @Autowired
+    WalletService walletService;
 
 
-    /**
-     * 创建中奖列表
-     *
-     * @param ActivityGroupID
-     * @return
-     */
-    public boolean CreateLotteryDB(int ActivityGroupID) {
-
-        return false;
-    }
+    @Autowired
+    PrizeListDAO prizeListDAO;
 
     /**
      * 根据项目组的中奖列表发奖
@@ -91,49 +56,38 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
      * @param InstallmentActivityID
      * @return
      */
-    public String StartLottery(String InstallmentActivityID) {
-        ActivityDetailModel activityDetailModel = activityService.getActivityDetails(InstallmentActivityID);
-        if (activityDetailModel == null) {
-            return null;
-        }
+    public String StartLottery(final String InstallmentActivityID) {
 
-        Set<SREarningModel> srEarningModelSet = activityDetailModel.getSrEarningModels();
-        //计算总共多少人中奖
-        int TotalPeople = 0;
-        Iterator<SREarningModel> it = srEarningModelSet.iterator();
-        while (it.hasNext()) {
-            SREarningModel str = it.next();
-            TotalPeople += str.getNum();
+        lotteryDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
 
-        }
+                ActivityDetailModel activityDetailModel = activityService.getActivityDetailsNoTran(InstallmentActivityID);
+                if (activityDetailModel == null) {
+                    return false;
+                }
 
+                Set<SREarningModel> srEarningModelSet = activityDetailModel.getSrEarningModels();
+                //计算总共多少人中奖
+                int TotalPeople = 0;
+                Iterator<SREarningModel> it = srEarningModelSet.iterator();
+                while (it.hasNext()) {
+                    SREarningModel str = it.next();
+                    TotalPeople += str.getNum();
 
-        StartLottery(InstallmentActivityID, TotalPeople, srEarningModelSet);
+                }
 
-        //同组完成后 给人打钱
-        if( IsGroupCompelete( activityDetailModel ) ){
-            MoneyServerMQManager.SendMessage( new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TOPIC,
-                            MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TAG,InstallmentActivityID,"1")
-            );
-        }
+                StartLottery(InstallmentActivityID, TotalPeople, srEarningModelSet);
+
+                //同组完成后 给人打钱
+                if( IsGroupCompelete( activityDetailModel ) ){
+                    SomeFarmByPrizeList(InstallmentActivityID);
+                }
+
+                return false;
+            }
+        });
 
         return null;
-    }
-
-    /**
-     * 跟据票的序列号查看是否中奖
-     *
-     * @param ActivityID
-     * @param TicketNumber
-     * @return
-     */
-    public boolean IsLotteryWithTicketNumber(int ActivityID, long TicketNumber) {
-
-        if (ticketDAO.IsLotteryTicket(ActivityID, TicketNumber)) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -158,7 +112,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
 
             if( str.getEarningType() == Config.PURCHASELOCALTYRANTS ){
                 for( LotteryPeoples TempListPeople:listPeoples ){
-                     if( TempListPeople.getLotteryType() == Config.PURCHASELOCALTYRANTS ){
+                     if( TempListPeople.getPurchaseType() == Config.PURCHASELOCALTYRANTS ){
                          TempListPeople.setLotteryLines( PeoplesLines );
                      }
                 }
@@ -168,7 +122,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
                         return null;
                     }
 
-                    if( listPeoples.get(Index).getLotteryType() == Config.PURCHASELOCALTYRANTS ){
+                    if( listPeoples.get(Index).getPurchaseType() == Config.PURCHASELOCALTYRANTS ){
                         continue;
                     }
 
@@ -185,7 +139,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
         prizeListModel.setActivityIID(InstallmentActivityID);
         prizeListModel.setIsPrize(false);
         prizeListModel.setPrizeSituation(json);
-        lotteryDAO.save(prizeListModel);
+        lotteryDAO.saveNoTransaction(prizeListModel);
 
         return json;
     }
@@ -209,4 +163,36 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
     }
 
 
+    /**
+     * 给人钱包充值
+     * @param InstallmentActivityID
+     */
+    void SomeFarmByPrizeList( String InstallmentActivityID ){
+        ActivityDetailModel activityDetailModel = activityDAO.getActivityDetails( InstallmentActivityID );
+
+        String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
+        int GroupID = activityDetailModel.getGroupId();
+
+        List<ActivityDetailModel> list = activityDAO.getActivityDetailByGroupID( ActivityID,GroupID );
+        list.add( activityDetailModel );
+
+
+        for( ActivityDetailModel it : list ){
+            String ActivityStageId = it.getActivityStageId();
+
+            PrizeListModel prizeListModel = prizeListDAO.getListPrizeListModel(ActivityStageId);
+
+            String json = prizeListModel.getPrizeSituation();
+            List<LotteryPeoples> LotteryPeoplesList = GsonUntil.jsonToJavaClass( json,new TypeToken<List<LotteryPeoples>>(){}.getType() );
+
+            if( LotteryPeoplesList == null ){
+                continue;
+            }
+
+            for( LotteryPeoples Peoples:LotteryPeoplesList ){
+                walletService.RechargeWallet( Peoples.getUserId(),Peoples.getLotteryLines() );
+            }
+
+        }
+    }
 }

@@ -86,7 +86,7 @@ public class TicketDAO extends BaseDao {
      * @param InstallmentActivityID
      * @param TotalNum
      */
-    public void CreateTicketID(String InstallmentActivityID, int TotalNum) {
+    public void CreateTicketID(String InstallmentActivityID, int TotalNum,int TickType) {
         String DBName = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
         Session session = this.getNewSession();
         Transaction t = session.beginTransaction();
@@ -113,7 +113,7 @@ public class TicketDAO extends BaseDao {
 
                 String ValueSql = new String();
                 for( int j = 0; j < index; ++j ){
-                    ValueSql+= "('"+ TicketID[j] + "',2),";
+                    ValueSql+= "('"+ TicketID[j] + "'," +Integer.toString( TickType )+ "),";
                 }
 
                 ValueSql = ValueSql.substring( 0,ValueSql.lastIndexOf( "," ) );

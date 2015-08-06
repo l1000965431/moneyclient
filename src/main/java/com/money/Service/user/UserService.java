@@ -5,14 +5,10 @@ import com.money.Service.ServiceInterface;
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import com.money.dao.userDAO.UserDAO;
-import com.money.model.UserInvestorModel;
 import com.money.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by fisher on 2015/7/6.
@@ -28,11 +24,11 @@ public class UserService extends ServiceBase implements ServiceInterface {
     public int userRegister(String username, String code, String password, int userType) {
 
         //用户名 密码合法性
-        if( !userDAO.userIsRight( username ) || !userDAO.passwordIsRight( password ) ){
+        if (!userDAO.userIsRight(username) || !userDAO.passwordIsRight(password)) {
             return ServerReturnValue.REQISTEREDUSERNAMEERROR;
         }
 
-        if( userDAO.checkUserName( username ) ){
+        if (userDAO.checkUserName(username)) {
             return ServerReturnValue.REQISTEREDUSERNAMEREPEAT;
         }
 
@@ -72,9 +68,9 @@ public class UserService extends ServiceBase implements ServiceInterface {
         boolean userIsExist = userDAO.checkPassWord(username, password);
         if (userIsExist) {
             String tokenData = userDAO.landing(username, password);
-            if( tokenData == null ){
+            if (tokenData == null) {
                 return ServerReturnValue.LANDFAILED;
-            }else{
+            } else {
                 return tokenData;
             }
         } else
@@ -117,13 +113,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
             boolean landFlag = userDAO.tokenTime(username, timeLong);
             if (landFlag) {
                 //根据username,查找用户类型
-                int userType = userDAO.getUserType(username);
-                if (userType == Config.INVESTOR)
-                    return userDAO.modifyInvestorInfo(username, info);
-                if (userType == Config.BORROWER)
-                    return userDAO.modifyBorrowerInfo(username, info);
-                else
-                    return 4;
+                return userDAO.modifyInvestorInfo(username, info);
             } else
                 return 0;
         } else
@@ -143,13 +133,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
             boolean landFlag = userDAO.tokenTime(userName, timeLong);
             if (landFlag) {
                 //根据username,查找用户类型
-                int userType = userDAO.getUserType(userName);
-                if (userType == Config.INVESTOR)
-                    return userDAO.changeInvestorInfo(userName, info);
-                if (userType == Config.BORROWER)
-                    return userDAO.changeBorrowerInfo(userName, info);
-                else
-                    return Config.USERTYPE_FAILED;
+                return userDAO.changeInvestorInfo(userName, info);
             } else
                 return Config.NOT_LAND;
         } else
@@ -176,11 +160,11 @@ public class UserService extends ServiceBase implements ServiceInterface {
     }
 
     //比对验证码，修改密码
-    public int changPassword(String userName, String code, String newPassWord,String oldPassWord) {
+    public int changPassword(String userName, String code, String newPassWord, String oldPassWord) {
         if (userDAO.checkTeleCode(userName, code) == true) {
-            if( userDAO.changePassword(userName, newPassWord,oldPassWord) ){
+            if (userDAO.changePassword(userName, newPassWord, oldPassWord)) {
                 return 1;
-            }else{
+            } else {
                 return 0;
             }
         } else
@@ -196,26 +180,28 @@ public class UserService extends ServiceBase implements ServiceInterface {
      */
 
     public boolean IsPerfectInfo(String userID) {
-
-        return true;
+        UserModel userModel = userDAO.getUSerModel( userID );
+        return userModel.isPerfect();
     }
 
     /**
      * 获得用户信息
+     *
      * @param UserID
      * @return
      */
-    public String getUserInfo( String UserID ){
-        UserInvestorModel userInvestorModel = userDAO.getUSerInfoModel( UserID );
-        return GsonUntil.JavaClassToJson( userInvestorModel );
+    public String getUserInfo(String UserID) {
+        UserModel userModel = userDAO.getUSerModel(UserID);
+        return GsonUntil.JavaClassToJson(userModel);
     }
 
     /**
      * 发送手机验证码
+     *
      * @param UserID
      */
-    public int SendCode( String UserID ){
-        return userDAO.teleCodeIsSend( UserID );
+    public int SendCode(String UserID) {
+        return userDAO.teleCodeIsSend(UserID);
     }
 
 }

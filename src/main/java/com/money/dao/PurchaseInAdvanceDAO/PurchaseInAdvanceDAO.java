@@ -1,5 +1,6 @@
 package com.money.dao.PurchaseInAdvanceDAO;
 
+import com.money.Service.order.OrderService;
 import com.money.config.Config;
 import com.money.dao.BaseDao;
 import com.money.dao.activityDAO.activityDAO;
@@ -32,24 +33,19 @@ public class PurchaseInAdvanceDAO extends BaseDao {
      * @param PurchaseNum
      * @param AdvanceNum
      */
-    public void InsertPurchaseInAdvance(String ActivityID, String UserID, int PurchaseNum, int AdvanceNum,int PurchaseType ) {
+    public void InsertPurchaseInAdvance(String ActivityID, String UserID, int PurchaseNum, int AdvanceNum, int PurchaseType) {
         String DBName = Config.ACTIVITYPURCHASE + ActivityID;
 
         String sql = "insert into " + DBName +
-                " ( UserID,PurchaseInAdvanceNum,CurPurchaseInAdvanceNum,PurchaseNum,PurchaseType ) values ( ?,?,?,?,?,? )";
-
+                " ( UserID,PurchaseInAdvanceNum,CurPurchaseInAdvanceNum,PurchaseNum,PurchaseType ) values ( ?,?,?,?,? )";
         Session session = this.getNewSession();
-        Transaction t = session.beginTransaction();
         SQLQuery query = session.createSQLQuery(sql);
-        query.setParameter(0, ActivityID);
-        query.setParameter(1, UserID);
-        query.setParameter(2, PurchaseNum);
-        query.setParameter(3, 0);
-        query.setParameter(4, AdvanceNum);
-        query.setParameter(5, PurchaseType);
-
+        query.setParameter(0, UserID);
+        query.setParameter(1, AdvanceNum);
+        query.setParameter(2, 0);
+        query.setParameter(3, PurchaseNum);
+        query.setParameter(4, PurchaseType);
         query.executeUpdate();
-        t.commit();
     }
 
     /**
@@ -59,19 +55,26 @@ public class PurchaseInAdvanceDAO extends BaseDao {
      * @param findnum    查找的数量
      * @param page       页数
      */
-    public List<PurchaseInAdvanceModel> PurchaseInAdvanceCompelete( String ActivityID, int findnum, int page ) {
-        String DBNmae = Config.ACTIVITYPURCHASE+ActivityID;
+    public List<PurchaseInAdvanceModel> PurchaseInAdvanceCompelete(String ActivityID, int findnum, int page) {
+        String DBNmae = Config.ACTIVITYPURCHASE + ActivityID;
         String sql = "select * from " + DBNmae + " where PurchaseInAdvanceNum>CurPurchaseInAdvanceNum limit ?,?";
 
         Session session = this.getNewSession();
         Transaction t = session.beginTransaction();
-        SQLQuery query = session.createSQLQuery(sql).addEntity(PurchaseInAdvanceModel.class);
 
-        query.setParameter(0, page);
-        query.setParameter(1, findnum);
-        List<PurchaseInAdvanceModel> list = query.list();
-        t.commit();
-        return list;
+        try {
+            SQLQuery query = session.createSQLQuery(sql).addEntity(PurchaseInAdvanceModel.class);
+
+            query.setParameter(0, page);
+            query.setParameter(1, findnum);
+            List<PurchaseInAdvanceModel> list = query.list();
+            t.commit();
+            return list;
+        } catch (Exception e) {
+            t.rollback();
+            return null;
+        }
+
     }
 
     /**
@@ -83,18 +86,23 @@ public class PurchaseInAdvanceDAO extends BaseDao {
      * @return
      */
     public int UpdatePurchaseActivityNum(String UserID, String ActivityID, int curPurchaseActivityNum) {
-        String DBNmae = Config.ACTIVITYPURCHASE+ActivityID;
+        String DBNmae = Config.ACTIVITYPURCHASE + ActivityID;
         String sql = "update " + DBNmae + " set CurPurchaseInAdvanceNum=? where UserID=?";
 
         Session session = this.getNewSession();
         Transaction t = session.beginTransaction();
-        SQLQuery query = session.createSQLQuery(sql);
+        try {
+            SQLQuery query = session.createSQLQuery(sql);
 
-        query.setParameter(0, curPurchaseActivityNum);
-        query.setParameter(1, UserID);
+            query.setParameter(0, curPurchaseActivityNum);
+            query.setParameter(1, UserID);
 
-        query.executeUpdate();
-        t.commit();
+            query.executeUpdate();
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+        }
+
 
         return 0;
     }
@@ -107,13 +115,11 @@ public class PurchaseInAdvanceDAO extends BaseDao {
      * @param PurchaseNum 当前的次数
      * @return
      */
-    public void PurchaseActivity(String ActivityID, String UserID, int PurchaseNum,int PurchaseType ) {
+    public void PurchaseActivity(String ActivityID, String UserID, int PurchaseNum, int PurchaseType) throws Exception {
         //刷新项目票的表 票的所有者
-        PurchaseType = 1;
         String DBNmae = Config.ACTIVITYGROUPTICKETNAME + ActivityID;
         String sql = "update " + DBNmae + " set userId=? where userId='0' and PurchaseType=? limit ?";
         Session session = this.getNewSession();
-        Transaction t = session.beginTransaction();
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, UserID);
         query.setParameter(1, PurchaseType);
@@ -123,32 +129,29 @@ public class PurchaseInAdvanceDAO extends BaseDao {
         ActivityDynamicModel activityDynamicModel = activityDAO.getActivityDynamicModelNoTransaction(ActivityID);
         ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDynamicModel.getActivityVerifyCompleteModel();
 
-        if( activityDynamicModel == null || activityVerifyCompleteModel == null ){
-            t.commit();
+        if (activityDynamicModel == null || activityVerifyCompleteModel == null) {
             return;
         }
 
-        switch ( PurchaseType ) {
+        switch (PurchaseType) {
             case Config.PURCHASELOCALTYRANTS:
                 int totalPeoples = activityDynamicModel.getActivityTotalLinesPeoples();
                 activityDynamicModel.setActivityCurLinesPeoples(totalPeoples);
                 int curLines = activityVerifyCompleteModel.getCurFund();
                 curLines += totalPeoples;
                 activityVerifyCompleteModel.setCurFund(curLines);
+                break;
             case Config.PURCHASEPRICKSILK:
                 activityDynamicModel.setActivityCurLines(PurchaseNum);
                 int curLines1 = activityVerifyCompleteModel.getCurFund();
                 curLines1 += PurchaseNum;
                 activityVerifyCompleteModel.setCurFund(curLines1);
+                break;
         }
 
-        try {
-            query.executeUpdate();
-            session.update( activityDynamicModel );
-            session.update( activityVerifyCompleteModel );
-            t.commit();
-        } catch (Exception e) {
-            t.rollback();
-        }
+        query.executeUpdate();
+        session.update(activityDynamicModel);
+        session.update(activityVerifyCompleteModel);
+
     }
 }

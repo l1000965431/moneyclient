@@ -1,6 +1,11 @@
 package com.money.model;
 
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +17,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "activityVerifyComplete")
+@org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ActivityVerifyCompleteModel extends BaseModel {
 
     /**
@@ -101,11 +107,6 @@ public class ActivityVerifyCompleteModel extends BaseModel {
      * 市场分析
      */
     String marketAnalysis;
-
-    /**
-     * 盈利模式
-     */
-    String profitMode;
 
     /**
      * 团队介绍
@@ -355,6 +356,10 @@ public class ActivityVerifyCompleteModel extends BaseModel {
         }else{
             return false;
         }
+    }
+
+    public boolean IsEnouthFund( int Fund ){
+        return curFund+Fund>=targetFund;
     }
 
     public boolean IsEnoughInstallmentNum(){

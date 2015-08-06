@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+    <!-- 默认cache：如果没有对应的特定区域的缓存，就使用默认缓存 -->
+    <defaultCache maxElementsInMemory="10000"
+                  maxElementsOnDisk="1000"
+                  eternal="false"
+                  timeToIdleSeconds="300"
+                  timeToLiveSeconds="600"
+                  overflowToDisk="false"/>
+</ehcache>

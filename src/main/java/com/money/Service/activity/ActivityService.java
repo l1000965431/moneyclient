@@ -35,9 +35,6 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     private activityDAO activityDao;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private PurchaseInAdvance purchaseInAdvance;
 
     @Autowired
@@ -56,64 +53,20 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
         return activityDynamicModel;
     }
 
+    public ActivityDetailModel getActivityDetailsNoTran(String InstallmentActivityID) {
+        ActivityDetailModel activitymodel = activityDao.getActivityDetaillNoTransaction(InstallmentActivityID);
+        return activitymodel;
+    }
+
+    public ActivityDynamicModel getActivityDynamicNoTran(String InstallmentActivityID) {
+        ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamicModelNoTransaction(InstallmentActivityID);
+        return activityDynamicModel;
+    }
+
+
     @SuppressWarnings("unchecked")
     public List<ActivityDetailModel> getAllActivityDetail() {
         return activityDao.getActivityListActivity(0, 1000);
-    }
-
-    public List<ActivityDetailModel> getOrderDetailsList(int minpage, int maxpage) {
-        try {
-            return null;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-
-    /**
-     * 项目是否存在
-     *
-     * @param InstallmentActivityID 项目ID
-     * @return
-     */
-    public boolean IsActivityExist(String InstallmentActivityID) {
-
-        ActivityDetailModel activityModel = activityDao.getActivityDetails(InstallmentActivityID);
-
-        if (activityModel == null) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * 项目ID是否合法
-     *
-     * @param activityID
-     * @return
-     */
-    public boolean IsActivityIDLegal(int activityID) {
-
-        return true;
-    }
-
-    /**
-     * 设置项目的当前金额
-     *
-     * @param InstallmentActivityID 项目ID
-     * @param addlines              投资金额
-     * @return
-     */
-    public String SetActivityCurLines(String InstallmentActivityID, int addlines) {
-        try {
-            ActivityDynamicModel activitydynamicmodel = activityDao.getActivityDynamic(InstallmentActivityID);
-            SetActivityCurLines(activitydynamicmodel, addlines);
-            activityDao.update(activitydynamicmodel);
-            return Config.SERVICE_SUCCESS;
-        } catch (Exception e) {
-            return Config.SERVICE_FAILED;
-        }
     }
 
     /**
@@ -125,18 +78,6 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     public void SetActivityCurLines(ActivityDynamicModel activitydynamicmodel, int addlines) {
         int activitycurlines = activitydynamicmodel.getActivityState();
         activitydynamicmodel.setActivityCurLines(activitycurlines + addlines);
-    }
-
-
-    /**
-     * 检测分期项目是否完成并设置项目完成
-     *
-     * @param InstallmentActivityID 项目ID
-     * @return
-     */
-    private boolean IsActivityComplete(String InstallmentActivityID) {
-        ActivityDynamicModel activitydynamicmodel = activityDao.getActivityDynamic(InstallmentActivityID);
-        return IsActivityComplete(activitydynamicmodel);
     }
 
 
@@ -183,131 +124,6 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
 
     /**
-     * 获得金额对应的当前人数
-     *
-     * @param
-     * @param Lines
-     * @return
-     */
-    public int GetActivityLinesCurPeoples(ActivityDynamicModel activitydynamicmodel, int Lines) {
-        try {
-            int activitycurlines = activitydynamicmodel.getActivityCurLinesPeoples();
-            Map<String, Integer> mappeoples = GsonUntil.jsonToJavaClass("", new TypeToken<Map<String, Integer>>() {
-            }.getType());
-            int peoples = mappeoples.get(Integer.toString(Lines));
-            return peoples;
-        } catch (Exception e) {
-            return Config.RETURNERROR;
-        }
-    }
-
-    /**
-     * 获得对应金额的总人数
-     *
-     * @param
-     * @param Lines 金额
-     * @return
-     */
-    public int GetActivityLinesTotalPeoples(ActivityDetailModel activityDetailModel, int Lines) {
-        try {
-            String activitycurlines = activityDetailModel.getActivityLinesPeoples();
-            Map<String, Integer> mappeoples = GsonUntil.jsonToJavaClass(activitycurlines, new TypeToken<Map<String, Integer>>() {
-            }.getType());
-            int peoples = mappeoples.get(Integer.toString(Lines));
-            return peoples;
-        } catch (Exception e) {
-            return Config.RETURNERROR;
-        }
-    }
-
-
-    /**
-     * 检测当前金额的人数是否已满
-     *
-     * @param Lines 金额
-     * @return
-     */
-    public boolean IsActivityLinesPeoplesFull(ActivityDetailModel activityDetailModel, ActivityDynamicModel activitydynamicmodel, int Lines) {
-        int curLinesPeoples = GetActivityLinesCurPeoples(activitydynamicmodel, Lines);
-        int totalLinesPeoples = GetActivityLinesTotalPeoples(activityDetailModel, Lines);
-
-        if (curLinesPeoples != Config.RETURNERROR && totalLinesPeoples != Config.RETURNERROR && curLinesPeoples >= totalLinesPeoples) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 增加当前金额
-     *
-     * @param InstallmentActivityID 项目ID
-     * @param addLines              增加的金额
-     * @return
-     */
-    public String AddActivityLines(String InstallmentActivityID, int addLines) {
-        try {
-            ActivityDynamicModel activitydynamicmodel = activityDao.getActivityDynamic(InstallmentActivityID);
-            AddActivityLines(activitydynamicmodel, addLines);
-            activityDao.update(activitydynamicmodel);
-            return Config.SERVICE_SUCCESS;
-        } catch (Exception e) {
-            return Config.SERVICE_FAILED;
-        }
-    }
-
-    /**
-     * 增加当前金额
-     *
-     * @param addLines 增加的金额
-     * @return
-     */
-    public String AddActivityLines(ActivityDynamicModel activitydynamicmodel, int addLines) {
-        try {
-            int curLines = activitydynamicmodel.getActivityCurLines();
-            curLines += addLines;
-            activitydynamicmodel.setActivityCurLines(curLines);
-            return Config.SERVICE_SUCCESS;
-        } catch (Exception e) {
-            return Config.SERVICE_FAILED;
-        }
-    }
-
-
-    /**
-     * 设置活动完成
-     *
-     * @return
-     */
-    public String SetActivityCompelete(ActivityDetailModel activityDetailModel, ActivityDynamicModel activitydynamicmodel) {
-        try {
-            int curactivitylines = activitydynamicmodel.getActivityCurLines();
-            int totalactivitylines = activitydynamicmodel.getActivityTotalAmount();
-
-            if (curactivitylines >= totalactivitylines) {
-                activityDetailModel.setStatus(ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE);
-            }
-            return Config.SERVICE_SUCCESS;
-        } catch (Exception e) {
-            return Config.SERVICE_FAILED;
-        }
-    }
-
-
-    /**
-     * 分页查找项目详情
-     *
-     * @param pagenumber 每页显示多少条信息
-     * @param page       显示第几页
-     * @return
-     */
-    public List GetActivityDetailsWithPage(int pagenumber, int page) {
-
-        return null;
-    }
-
-
-    /**
      * 用户已经收益的项目
      *
      * @param UserID
@@ -316,43 +132,6 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     public List GetActivityHasEarnings(String UserID) {
 
         return null;
-    }
-
-    /**
-     * 后台修改项目的状态
-     */
-    public String SetActivityState(int State, String ActivityID) {
-
-        ActivityVerifyModel activityVerifyModel = (ActivityVerifyModel) activityDao.load(ActivityVerifyModel.class, ActivityID);
-
-        activityVerifyModel.setAuditorStatus(State);
-
-        activityDao.update(activityVerifyModel);
-
-        return null;
-    }
-
-    /**
-     * 获得项目剩余的期数
-     *
-     * @param ActivityID 父项目ID
-     * @return
-     */
-    public int getActivityRemainingInstallment(String ActivityID) {
-
-        return 0;
-    }
-
-    /**
-     * 获得分期项目剩余的票数
-     *
-     * @param InstallmentActivityID 分期项目ID
-     * @return
-     */
-
-    public int getActivityRemainingTickets(String InstallmentActivityID) {
-
-        return 0;
     }
 
     /**
@@ -370,12 +149,14 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
         }
 
         activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
-            public void callback(Session session) throws Exception {
+            public boolean callback(Session session) throws Exception {
                 activityDetailModel.setStatus(Status);
                 activityDynamicModel.setActivityState(Status);
 
                 session.update(activityDetailModel);
                 session.update(activityDynamicModel);
+
+                return true;
             }
         });
 
@@ -395,9 +176,11 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
         }
 
         activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
-            public void callback(Session session) throws Exception {
+            public boolean callback(Session session) throws Exception {
                 activityVerifyCompleteModel.setStatus(Status);
                 session.update(activityVerifyCompleteModel);
+
+                return true;
             }
         });
     }

@@ -48,10 +48,11 @@ public class AuditActivityDao extends BaseDao {
 
     public boolean setActivityPass(final ActivityVerifyModel verifyModel, final ActivityVerifyCompleteModel completeModel){
         String result = excuteTransactionByCallback(new TransactionSessionCallback() {
-            public void callback(Session session) throws Exception {
+            public boolean callback(Session session) throws Exception {
                 //session.delete(verifyModel);
                 session.update(verifyModel);
                 session.save(completeModel);
+                return true;
             }
         });
 

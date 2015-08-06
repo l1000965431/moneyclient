@@ -72,6 +72,7 @@ public class activityDAO extends BaseDao {
         }
     }
 
+
     /**
      * 插入项目购买人
      *
@@ -154,9 +155,25 @@ public class activityDAO extends BaseDao {
                         .setMaxResults(1)
                         .add(Restrictions.eq("activityStageId", InstallmentActivityID))
                         .uniqueResult();
+
             }
         });
 
+        return activityDetailModels[0];
+    }
+
+    /**
+     * 根据分期ID获得项目信息
+     *
+     * @param InstallmentActivityID
+     * @return
+     */
+    public ActivityDetailModel getActivityDetaillNoTransaction(String InstallmentActivityID) {
+        final ActivityDetailModel[] activityDetailModels = {null};
+        activityDetailModels[0] = (ActivityDetailModel) this.getNewSession().createCriteria(ActivityDetailModel.class)
+                .setMaxResults(1)
+                .add(Restrictions.eq("activityStageId", InstallmentActivityID))
+                .uniqueResult();
         return activityDetailModels[0];
     }
 
@@ -220,6 +237,16 @@ public class activityDAO extends BaseDao {
         return activityVerifyCompleteModels[0];
     }
 
+    public ActivityVerifyCompleteModel getActivityVerifyCompleteModelNoTransaction(final String ActivityID) {
+        final ActivityVerifyCompleteModel[] activityVerifyCompleteModels = {null};
+
+        activityVerifyCompleteModels[0] = (ActivityVerifyCompleteModel) this.getNewSession().createCriteria(ActivityVerifyCompleteModel.class)
+                .setMaxResults(1)
+                .add(Restrictions.eq("activityId", ActivityID))
+                .uniqueResult();
+        return activityVerifyCompleteModels[0];
+    }
+
     /**
      * 创建票表
      *
@@ -228,12 +255,13 @@ public class activityDAO extends BaseDao {
     public void CreateTicketDB(final String InstallmentActivityID) {
 
         this.excuteTransactionByCallback(new TransactionSessionCallback() {
-            public void callback(Session session) throws Exception {
+            public boolean callback(Session session) throws Exception {
                 String DBName = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
                 String Sql = "CREATE TABLE " + DBName + " ( TickID VARCHAR(45) NOT NULL,UserId VARCHAR(45) NULL DEFAULT 0,PurchaseType INT(2) NOT NULL,PRIMARY KEY (TickID));";
                 SQLQuery sqlQuery = session.createSQLQuery(Sql);
 
                 sqlQuery.executeUpdate();
+                return true;
             }
         });
     }
@@ -245,12 +273,14 @@ public class activityDAO extends BaseDao {
      */
     public void CreatePurchaseInAdvanceDB(final String ActivityID) {
         this.excuteTransactionByCallback(new TransactionSessionCallback() {
-            public void callback(Session session) throws Exception {
+            public boolean callback(Session session) throws Exception {
                 String DBName = Config.ACTIVITYPURCHASE + ActivityID;
-                String Sql = "CREATE TABLE " + DBName + " ( UserID VARCHAR(45) NOT NULL,PurchaseInAdvanceNum INT(5) NOT NULL, CurPurchaseInAdvanceNum INT(5) NOT NULL,PurchaseNum INT(5) NOT NULL,PurchaseType INT(5) NOT NULL, PRIMARY KEY (UserID));";
+                String Sql = "CREATE TABLE " + DBName + " ( Id INT NOT NULL AUTO_INCREMENT,UserID VARCHAR(45) NOT NULL,PurchaseInAdvanceNum INT(5) NOT NULL, " +
+                        "CurPurchaseInAdvanceNum INT(5) NOT NULL,PurchaseNum INT(5) NOT NULL,PurchaseType INT(5) NOT NULL, PRIMARY KEY (Id));";
                 SQLQuery sqlQuery = session.createSQLQuery(Sql);
 
                 sqlQuery.executeUpdate();
+                return true;
             }
         });
     }
@@ -260,19 +290,16 @@ public class activityDAO extends BaseDao {
      *
      * @param ActivityID
      */
-    public List<ActivityDetailModel> getActivityDetailByGroupID( String ActivityID,int GroupID ){
+    public List<ActivityDetailModel> getActivityDetailByGroupID(String ActivityID, int GroupID) {
         Session session = this.getNewSession();
-        Transaction t = session.beginTransaction();
         List<ActivityDetailModel> list = null;
-        try{
-            list = session.createCriteria(ActivityDetailModel.class)
-                    .add(Restrictions.eq("parentActivityId", ActivityID))
-                    .add(Restrictions.eq("groupId", GroupID))
-                    .list();
-            t.commit();
-        } catch ( Exception e ){
-            t.rollback();
-        }
+        String sql = "select * from activitydetails where parentActivityId=? and groupId=?;";
+
+        SQLQuery sqlQuery = session.createSQLQuery(sql).addEntity(ActivityDetailModel.class);
+        sqlQuery.setParameter(0, ActivityID);
+        sqlQuery.setParameter(1, GroupID);
+        list = sqlQuery.list();
+
         return list;
     }
 
