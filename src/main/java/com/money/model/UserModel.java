@@ -32,6 +32,16 @@ public class UserModel extends BaseModel {
     private String location;
     //真实姓名
     private String realName;
+    //身份证号
+    private String identityId;
+    //擅长领域
+    private String expertise;
+    //个人介绍
+    private String introduction;
+    //教育经历
+    private String eduInfo;
+    //职业生涯
+    private String career;
     //是否完善过信息
     private boolean IsPerfect;
 
@@ -114,5 +124,45 @@ public class UserModel extends BaseModel {
 
     public void setIsPerfect(boolean isPerfect) {
         IsPerfect = isPerfect;
+    }
+
+    public String getIdentityId() {
+        return identityId;
+    }
+
+    public void setIdentityId(String identityId) {
+        this.identityId = identityId;
+    }
+
+    public String getExpertise() {
+        return expertise;
+    }
+
+    public void setExpertise(String expertise) {
+        this.expertise = expertise;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public String getEduInfo() {
+        return eduInfo;
+    }
+
+    public void setEduInfo(String eduInfo) {
+        this.eduInfo = eduInfo;
+    }
+
+    public String getCareer() {
+        return career;
+    }
+
+    public void setCareer(String career) {
+        this.career = career;
     }
 }
