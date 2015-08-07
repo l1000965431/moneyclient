@@ -109,6 +109,11 @@ public class ActivityVerifyCompleteModel extends BaseModel {
     String marketAnalysis;
 
     /**
+     * 盈利模式
+     */
+    String profitMode;
+
+    /**
      * 团队介绍
      */
     String teamIntroduce;
