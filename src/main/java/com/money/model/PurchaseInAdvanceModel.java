@@ -1,7 +1,5 @@
 package com.money.model;
 
-import javax.persistence.Id;
-
 /**
  *
  */
@@ -10,7 +8,8 @@ public class PurchaseInAdvanceModel extends BaseModel {
     /**
      *
      */
-    @Id
+    int Id;
+
     String UserID;
 
     /**
@@ -27,6 +26,16 @@ public class PurchaseInAdvanceModel extends BaseModel {
      * 购买次数
      */
     int PurchaseNum;
+
+    int PurchaseType;
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
 
     public String getUserID() {
         return UserID;
@@ -58,5 +67,13 @@ public class PurchaseInAdvanceModel extends BaseModel {
 
     public void setPurchaseNum(int purchaseNum) {
         PurchaseNum = purchaseNum;
+    }
+
+    public int getPurchaseType() {
+        return PurchaseType;
+    }
+
+    public void setPurchaseType(int purchaseType) {
+        PurchaseType = purchaseType;
     }
 }

@@ -7,10 +7,12 @@ import com.google.gson.reflect.TypeToken;
 import com.money.MoneyServerMQ.MoneyServerListener;
 import com.money.Service.Wallet.WalletService;
 import com.money.dao.PrizeListDAO.PrizeListDAO;
+import com.money.dao.TransactionSessionCallback;
 import com.money.dao.activityDAO.activityDAO;
 import com.money.model.ActivityDetailModel;
 import com.money.model.LotteryPeoples;
 import com.money.model.PrizeListModel;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.GsonUntil;
 
@@ -38,48 +40,61 @@ public class SomeFarmListener extends MoneyServerListener {
 
     @Override
     public Action consume(Message message, ConsumeContext consumeContext) {
+        final String InstallmentActivityID;
         try {
-            String InstallmentActivityID = BodyToString( message.getBody() );
-            ActivityDetailModel activityDetailModel = activityDAO.getActivityDetails( InstallmentActivityID );
-
-            String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
-            int GroupID = activityDetailModel.getGroupId();
-
-            List<ActivityDetailModel> list = new ArrayList<ActivityDetailModel>();  //activityDAO.getActivityDetailByGroupID( ActivityID,GroupID );
-            list.add( activityDetailModel );
-
-
-            if( list == null ){
-                return Action.CommitMessage;
-            }
-
-            SomeFarmByPrizeList( list );
-
-            return Action.CommitMessage;
+            InstallmentActivityID = BodyToString(message.getBody());
         } catch (Exception e) {
             return Action.CommitMessage;
         }
+
+        prizeListDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                ActivityDetailModel activityDetailModel = activityDAO.getActivityDetaillNoTransaction(InstallmentActivityID);
+                String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
+                int GroupID = activityDetailModel.getGroupId();
+                List<ActivityDetailModel> list = activityDAO.getActivityDetailByGroupID(ActivityID, GroupID);
+
+                if (list == null) {
+                    return false;
+                }
+
+                SomeFarmByPrizeList(list);
+                return true;
+            }
+        });
+        return Action.CommitMessage;
     }
 
     /**
      * 给人钱包充值
+     *
      * @param list
      */
-    void SomeFarmByPrizeList( List<ActivityDetailModel> list ){
-        for( ActivityDetailModel it : list ){
+    void SomeFarmByPrizeList(List<ActivityDetailModel> list) {
+        for (ActivityDetailModel it : list) {
+
             String ActivityStageId = it.getActivityStageId();
 
             PrizeListModel prizeListModel = prizeListDAO.getListPrizeListModel(ActivityStageId);
 
-            String json = prizeListModel.getPrizeSituation();
-            List<LotteryPeoples> LotteryPeoplesList = GsonUntil.jsonToJavaClass( json,new TypeToken<List<LotteryPeoples>>(){}.getType() );
-
-            if( LotteryPeoplesList == null ){
+            if (prizeListModel == null) {
                 continue;
             }
 
-            for( LotteryPeoples Peoples:LotteryPeoplesList ){
-                walletService.RechargeWallet( Peoples.getUserId(),Peoples.getLotteryLines() );
+            if (prizeListModel.isPrize()) {
+                continue;
+            }
+
+            String json = prizeListModel.getPrizeSituation();
+            List<LotteryPeoples> LotteryPeoplesList = GsonUntil.jsonToJavaClass(json, new TypeToken<List<LotteryPeoples>>() {
+            }.getType());
+
+            if (LotteryPeoplesList == null) {
+                continue;
+            }
+
+            for (LotteryPeoples Peoples : LotteryPeoplesList) {
+                walletService.RechargeWallet(Peoples.getUserId(), Peoples.getLotteryLines());
             }
 
         }

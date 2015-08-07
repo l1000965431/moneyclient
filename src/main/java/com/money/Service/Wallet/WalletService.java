@@ -43,7 +43,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
      * @return
      */
     public int RechargeWallet( String UserID,int Lines ){
-        WalletModel walletModel = (WalletModel)generaDAO.load( WalletModel.class,UserID );
+        WalletModel walletModel = (WalletModel)generaDAO.loadNoTransaction( WalletModel.class,UserID );
 
         if( walletModel == null ){
             return 0;
@@ -51,7 +51,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         int WalletLines = walletModel.getWalletLines();
         WalletLines+=Lines;
         walletModel.setWalletLines( WalletLines );
-        generaDAO.update( walletModel );
+        generaDAO.updateNoTransaction( walletModel );
 
         return 0;
     }

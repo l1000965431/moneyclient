@@ -22,15 +22,10 @@ public class PrizeListDAO extends BaseDao {
     public PrizeListModel getListPrizeListModel( String InstallmentActivityID ){
 
         PrizeListModel prizeListModel = null;
-
         Session session = getNewSession();
-        Transaction t = session.beginTransaction();
-
         prizeListModel = (PrizeListModel) session.createCriteria( PrizeListModel.class )
                 .add( Restrictions.eq( "ActivityIID",InstallmentActivityID ) )
                 .uniqueResult();
-
-        t.commit();
         return prizeListModel;
 
     }

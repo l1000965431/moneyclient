@@ -80,22 +80,24 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
                     }
 
                     activityDetailModel.setActivityVerifyCompleteModel(completeModel);
-                    activityDetailModel.setGroupId((i % PurchaseNum) + 1);
+                    activityDetailModel.setGroupId((i / PurchaseNum) + 1);
                     activityDetailModel.setActivityStartTime(MoneyServerDate.getDateCurDate());
+                    activityDetailModel.setStageIndex( i+1 );
 
                     activityDynamicModel.setActivityStageId(activityDetailModel.getActivityStageId());
                     activityDynamicModel.setActivityVerifyCompleteModel(completeModel);
-                    activityDynamicModel.setGroupId((i % PurchaseNum) + 1);
+                    activityDynamicModel.setGroupId((i / PurchaseNum) + 1);
 
                     activityDynamicModel.setActivityDetailModel(activityDetailModel);
                     activityDetailModel.setDynamicModel(activityDynamicModel);
-
                     generaDAO.saveNoTransaction( activityDetailModel );
                 }
                 return true;
             }
         });
 
+        completeModel.setTotalInstallmentNum( AdvanceNum * PurchaseNum );
+        generaDAO.update(completeModel);
         //completeModel.setActivityDetailModels( activityDetailModels );
         //completeModel.setActivityDynamicModels( activityDynamicModels );
         //generaDAO.update(completeModel);

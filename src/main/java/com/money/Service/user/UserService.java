@@ -192,6 +192,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
      */
     public String getUserInfo(String UserID) {
         UserModel userModel = userDAO.getUSerModel(UserID);
+        String a = GsonUntil.JavaClassToJson(userModel);
         return GsonUntil.JavaClassToJson(userModel);
     }
 
@@ -202,6 +203,26 @@ public class UserService extends ServiceBase implements ServiceInterface {
      */
     public int SendCode(String UserID) {
         return userDAO.teleCodeIsSend(UserID);
+    }
+
+    /**
+     * 更改用户头像
+     * @param UserID
+     * @param Url
+     * @return
+     */
+    public int ChangeUserHeadPortrait( String UserID,String Url ){
+        UserModel userModel = userDAO.getUSerModel(UserID);
+
+        if( userModel == null ){
+            return ServerReturnValue.SERVERRETURNERROR;
+        }
+
+        userModel.setUserHeadPortrait( Url );
+
+        userDAO.update( userModel );
+
+        return ServerReturnValue.SERVERRETURNCOMPELETE;
     }
 
 }

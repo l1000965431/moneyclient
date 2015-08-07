@@ -54,11 +54,6 @@ public class ActivityDynamicModel extends BaseModel {
     int activityState;
 
     /**
-     * 项目组ID
-    */
-    int activityGroup;
-
-    /**
      * 小R项目当前金额
      */
     int activityCurLines;
@@ -119,14 +114,6 @@ public class ActivityDynamicModel extends BaseModel {
         this.activityState = activityState;
     }
 
-    public int getActivityGroup() {
-        return activityGroup;
-    }
-
-    public void setActivityGroup(int activityGroup) {
-        this.activityGroup = activityGroup;
-    }
-
     public int getActivityCurLinesPeoples() {
         return activityCurLinesPeoples;
     }
@@ -168,7 +155,7 @@ public class ActivityDynamicModel extends BaseModel {
     }
 
     public int getRemainingTicket(){
-        return activityTotalLines - activityTotalLines;
+        return activityTotalLines - activityCurLines;
     }
 
     public boolean IsEnoughLines( int Lines ){

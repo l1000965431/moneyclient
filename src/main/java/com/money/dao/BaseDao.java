@@ -197,7 +197,7 @@ public class BaseDao {
         Serializable result = null;
         Session session = getNewSession();
         result = session.save(bean);
-        session.flush();
+        //session.flush();
         return result;
     }
 
@@ -231,7 +231,7 @@ public class BaseDao {
     public void updateNoTransaction(Object bean) {
         Session session = getNewSession();
         session.update(bean);
-        session.flush();
+        //session.flush();
     }
 
     /**

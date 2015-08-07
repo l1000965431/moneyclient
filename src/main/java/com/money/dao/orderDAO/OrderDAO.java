@@ -2,10 +2,14 @@ package com.money.dao.orderDAO;
 
 import com.money.dao.BaseDao;
 import com.money.dao.TransactionCallback;
+import com.money.dao.TransactionSessionCallback;
+import com.money.model.ActivityDetailModel;
 import com.money.model.OrderModel;
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,22 +19,31 @@ import java.util.List;
 @Repository
 public class OrderDAO extends BaseDao {
 
-    public List<OrderModel> getOrderByUserID( final String UserID, final int firstPage, final int Num ){
+    public List<OrderModel> getOrderByUserID(final String UserID, final int firstPage, final int Num) {
 
         final List[] list = {null};
 
-        this.excuteTransactionByCallback(new TransactionCallback() {
-            public void callback(BaseDao basedao) throws Exception {
-                list[0] = basedao.getNewSession().createCriteria( OrderModel.class )
-                        .setMaxResults( Num )
-                        .setFirstResult( firstPage*Num )
+        this.excuteTransactionByCallback(new TransactionSessionCallback() {
+
+            public boolean callback(Session session) throws Exception {
+
+                list[0] = session.createCriteria(OrderModel.class)
+                        .setMaxResults(Num)
+                        .setFirstResult(firstPage * Num)
                         .add(Restrictions.eq("userId", UserID))
                         .list();
+
+                for( Object o: list[0] ){
+                    OrderModel orderModel = (OrderModel)o;
+                    orderModel.getActivityDetailModel().getActivityVerifyCompleteModel().getStatus();
+                    orderModel.getActivityDetailModel().getDynamicModel().getActivityState();
+                }
+
+                return true;
             }
         });
 
         return list[0];
     }
-
 
 }

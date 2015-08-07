@@ -37,11 +37,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
     @ResponseBody
     public void Test() {
         PurchaseInAdvance purchaseInAdvance = ServiceFactory.getService("PurchaseInAdvance");
-        if (purchaseInAdvance == null) {
 
-        } else {
-            purchaseInAdvance.PurchaseActivityFromPurchaseInAdvance("1", "1");
-        }
     }
 
     @RequestMapping("/PurchaseActivity")

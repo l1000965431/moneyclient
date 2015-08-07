@@ -20,6 +20,11 @@ public class ServerReturnValue {
     public static final int SERVERRETURNCOMPELETE = 0;
 
     /**
+     * 条件退出
+     */
+    public static final int SERVERRETURNCONDITIONS = 0;
+
+    /**
      * 用户登录失败
      */
     public static final int USERLANDERROR = 1;

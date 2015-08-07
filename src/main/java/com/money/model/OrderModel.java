@@ -63,7 +63,7 @@ public class OrderModel extends BaseModel {
      * 项目信息
      */
     @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.EAGER)
-    @JoinColumn( name = "activityId", referencedColumnName = "activityStageId")
+    @JoinColumn( name = "orderactivityId", referencedColumnName = "activityStageId")
     private ActivityDetailModel activityDetailModel;
 
 

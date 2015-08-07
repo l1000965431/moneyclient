@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.money.Service.Ticket.TicketService;
 import com.money.Service.user.UserService;
 import com.money.config.Config;
+import com.money.config.ServerReturnValue;
 import com.money.dao.BaseDao;
 import com.money.dao.TransactionCallback;
 import com.money.dao.TransactionSessionCallback;
@@ -141,25 +142,17 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      * @param Status
      */
     public void SetInstallmentActivityStatus(String InstallmentActivityID, final int Status) {
-        final ActivityDetailModel activityDetailModel = activityDao.getActivityDetails(InstallmentActivityID);
-        final ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamic(InstallmentActivityID);
+        final ActivityDetailModel activityDetailModel = activityDao.getActivityDetaillNoTransaction(InstallmentActivityID);
+        final ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamicModelNoTransaction(InstallmentActivityID);
 
         if (activityDetailModel == null || activityDynamicModel == null) {
             return;
         }
+        activityDetailModel.setStatus(Status);
+        activityDynamicModel.setActivityState(Status);
 
-        activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
-            public boolean callback(Session session) throws Exception {
-                activityDetailModel.setStatus(Status);
-                activityDynamicModel.setActivityState(Status);
-
-                session.update(activityDetailModel);
-                session.update(activityDynamicModel);
-
-                return true;
-            }
-        });
-
+        activityDao.updateNoTransaction(activityDetailModel);
+        activityDao.updateNoTransaction(activityDynamicModel);
     }
 
     /**
@@ -169,20 +162,15 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      * @param Status
      */
     public void SetActivityStatus(String ActivityID, final int Status) {
-        final ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDao.getActivityVerifyCompleteModel(ActivityID);
+        final ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDao.getActivityVerifyCompleteModelNoTransaction(ActivityID);
 
         if (activityVerifyCompleteModel == null) {
             return;
         }
 
-        activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
-            public boolean callback(Session session) throws Exception {
-                activityVerifyCompleteModel.setStatus(Status);
-                session.update(activityVerifyCompleteModel);
+        activityVerifyCompleteModel.setStatus(Status);
+        activityDao.updateNoTransaction(activityVerifyCompleteModel);
 
-                return true;
-            }
-        });
     }
 
 
@@ -194,7 +182,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      * @return
      */
 
-    public boolean InstallmentActivityIDStart(String ActivityID, int Installment) {
+    private boolean InstallmentActivityIDStart(String ActivityID, int Installment) throws Exception {
         String InstallmentActivityID = ActivityID + "_" + Integer.toString(Installment);
 
         //创建分期项目票表
@@ -213,20 +201,34 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     }
 
 
+    public void InstallmentActivityStart(final String ActivityID, final int Installment) throws Exception {
+        activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                return InstallmentActivityIDStart( ActivityID,Installment );
+            }
+        });
+
+    }
+
+
     /**
      * 总项目项目开始
      *
      * @param ActivityID 项目ID
      * @return
      */
-    public boolean ActivityCompleteStart(String ActivityID) {
-        //创建预购项目表
-        activityDao.CreatePurchaseInAdvanceDB(ActivityID);
-
-        //设置项目开始
-        SetActivityStatus(ActivityID, ActivityDetailModel.ONLINE_ACTIVITY_START);
-        //设置第一期开始
-        InstallmentActivityIDStart(ActivityID, 1);
+    public boolean ActivityCompleteStart(final String ActivityID) {
+        activityDao.excuteTransactionByCallback(new TransactionCallback() {
+            public void callback(BaseDao basedao) throws Exception {
+                //创建预购项目表
+                activityDao.CreatePurchaseInAdvanceDB(ActivityID);
+                //设置项目开始
+                SetActivityStatus(ActivityID, ActivityDetailModel.ONLINE_ACTIVITY_START);
+                //设置第一期开始
+                InstallmentActivityIDStart(ActivityID, 1);
+                return;
+            }
+        });
         return true;
     }
 
@@ -237,17 +239,17 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      * @param InstallmentActivityID
      */
     public void ActivityCreateTicketID(String InstallmentActivityID) {
-        ActivityDetailModel activityDetailModel = getActivityDetails(InstallmentActivityID);
+        ActivityDynamicModel activityDynamic = getActivityDynamicNoTran(InstallmentActivityID);
 
-        if (activityDetailModel == null) {
+        if (activityDynamic == null) {
             return;
         }
 
-        if( activityDetailModel.getStatus() != ActivityDetailModel.ONLINE_ACTIVITY_NOSTART ){
+        if( activityDynamic.getActivityState() != ActivityDetailModel.ONLINE_ACTIVITY_NOSTART ){
             return;
         }
 
-        int TotalLines = activityDetailModel.getTargetFund();
+        int TotalLines = activityDynamic.getActivityTotalLines();
 
         ticketService.CreateTickID(InstallmentActivityID, TotalLines);
     }
@@ -258,7 +260,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      * @param ActivityID
      */
     public void SetActivityEnd( String ActivityID ){
-        ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDao.getActivityVerifyCompleteModel( ActivityID );
+        ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDao.getActivityVerifyCompleteModelNoTransaction( ActivityID );
         if( activityVerifyCompleteModel.IsEnoughInstallmentNum() ){
             SetActivityStatus(ActivityID, ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE);
         }
@@ -268,25 +270,32 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      * 设置分期项目完成
      * @param InstallmentActivityID
      */
-    public void SetInstallmentActivityEnd( String InstallmentActivityID ){
+    public void SetInstallmentActivityEnd( final String InstallmentActivityID ){
 
-        ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamic( InstallmentActivityID );
-        if(activityDynamicModel.IsEnough() ){
-            SetInstallmentActivityStatus(InstallmentActivityID, ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE);
+        activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamicModelNoTransaction( InstallmentActivityID );
+                if(activityDynamicModel.IsEnough() ){
+                    SetInstallmentActivityStatus(InstallmentActivityID, ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE);
 
-            ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDynamicModel.getActivityVerifyCompleteModel();
+                    ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDynamicModel.getActivityVerifyCompleteModel();
 
-            int CurInstallmentNum = activityVerifyCompleteModel.getCurInstallmentNum();
-            CurInstallmentNum++;
-            activityVerifyCompleteModel.setCurInstallmentNum(CurInstallmentNum);
-            activityDao.update( activityVerifyCompleteModel );
+                    int CurInstallmentNum = activityVerifyCompleteModel.getCurInstallmentNum();
+                    CurInstallmentNum++;
+                    activityVerifyCompleteModel.setCurInstallmentNum(CurInstallmentNum);
+                    activityDao.updateNoTransaction( activityVerifyCompleteModel );
 
-            //发奖
-            lotteryService.StartLottery( InstallmentActivityID );
+                    //发奖
+                    if(lotteryService.StartLottery( InstallmentActivityID ) == null){
+                        return false;
+                    }
 
-            //如果所有分期项目完成  设置父项目完成
-            SetActivityEnd( activityDynamicModel.getActivityVerifyCompleteModel().getActivityId() );
-        }
+                    //如果所有分期项目完成  设置父项目完成
+                    SetActivityEnd( activityDynamicModel.getActivityVerifyCompleteModel().getActivityId() );
+                }
+                return true;
+            }
+        });
     }
 
     /**
