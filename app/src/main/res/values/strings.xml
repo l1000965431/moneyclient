@@ -67,5 +67,5 @@
     <string name="title_activity_image_selected">ImageSelectedActivity</string>
     <string name="title_activity_image_mul_selected">ImageMulSelectedActivity</string>
     <string name="title_activity_progress_action_bar">ProgressActionBarActivity</string>
-    <string name="title_activity_agreement">AgreementActivity</string>
+    <string name="title_activity_agreement">用户服务协议</string>
 </resources>
