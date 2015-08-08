@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.dragoneye.money.R;
 import com.dragoneye.money.activity.base.BaseActivity;
+import com.dragoneye.money.application.MyApplication;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.protocol.UserProtocol;
@@ -107,7 +108,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
     Runnable sendRequestCode_r = new Runnable() {
         @Override
         public void run() {
-            String phoneNumber = CurrentUser.getCurrentUser().getUserId();
+            String phoneNumber = ((MyApplication)getApplication()).getCurrentUser().getUserId();
 
             HttpParams params = new HttpParams();
             params.put(UserProtocol.SEND_CODE_PARAM_USER_ID, phoneNumber);
@@ -166,7 +167,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
         public void run() {
             HttpParams params = new HttpParams();
 
-            params.put(UserProtocol.CHANGE_PASSWORD_PARAM_USER_ID, CurrentUser.getCurrentUser().getUserId());
+            params.put(UserProtocol.CHANGE_PASSWORD_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser().getUserId());
             params.put(UserProtocol.CHANGE_PASSWORD_PARAM_OLD_PASSWORD, mETOldPassword.getText());
             params.put(UserProtocol.CHANGE_PASSWORD_PARAM_NEW_PASSWORD, mETNewPassword.getText());
             params.put(UserProtocol.CHANGE_PASSWORD_PARAM_CODE, mETCode.getText());
@@ -224,27 +225,5 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
         }
 
         return true;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_change_password, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

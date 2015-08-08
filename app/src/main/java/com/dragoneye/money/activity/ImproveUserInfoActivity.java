@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.dragoneye.money.R;
 import com.dragoneye.money.activity.base.BaseActivity;
+import com.dragoneye.money.application.MyApplication;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.protocol.UserProtocol;
@@ -75,7 +76,7 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
 
         mLLEntrepreneurInfo = findViewById(R.id.inmprove_user_info_ll_entrepreneurInfo);
 
-        mTVPhoneNumber.setText(CurrentUser.getCurrentUser().getUserId());
+        mTVPhoneNumber.setText(((MyApplication)getApplication()).getCurrentUser().getUserId());
 
         mLLExpertiseRootLeft = (LinearLayout)findViewById(R.id.improve_user_info_ll_expertise_rootL);
         mLLExpertiseRootRight = (LinearLayout)findViewById(R.id.improve_user_info_ll_expertise_rootR);
@@ -92,7 +93,7 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         mCBExpertise.add((CheckBox)findViewById(R.id.checkBox7));
         mCBExpertise.add((CheckBox)findViewById(R.id.checkBox8));
 
-        setUIMode(CurrentUser.getCurrentUser().getUserType());
+        setUIMode(((MyApplication)getApplication()).getCurrentUser().getUserType());
     }
 
     private void initData(){
@@ -133,7 +134,7 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
             return false;
         }
 
-        if(CurrentUser.getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+        if(((MyApplication)getApplication()).getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
             if(mETRealName.getText().length() == 0){
                 UIHelper.toast(this, "请输入真实姓名");
                 return false;
@@ -208,10 +209,10 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         }
 
         HttpParams params = new HttpParams();
-        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_TOKEN, CurrentUser.getToken());
-        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_TYPE, CurrentUser.getCurrentUser().getUserType());
+        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_TOKEN, ((MyApplication)getApplication()).getToken());
+        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_TYPE, ((MyApplication)getApplication()).getCurrentUser().getUserType());
         params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_INFO, ToolMaster.gsonInstance().toJson(getUserImproveInfo()) );
-        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_ID, CurrentUser.getCurrentUser().getUserId());
+        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser().getUserId());
 
         HttpClient.atomicPost(this, UserProtocol.URL_IMPROVE_USER_INFO, params, new HttpClient.MyHttpHandler() {
             @Override
@@ -260,7 +261,7 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         userInfo.put("sex", String.valueOf(getSexuality()));
         userInfo.put("userName", mETUserName.getText().toString());
 
-        if(CurrentUser.getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+        if(((MyApplication)getApplication()).getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
             userInfo.put("education", mETEduInfo.getText().toString());
             userInfo.put("identity", mETIdentityId.getText().toString());
             userInfo.put("personalProfile", mETCareer.getText().toString());
@@ -269,27 +270,5 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         }
 
         return userInfo;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_improve_user_info, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

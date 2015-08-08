@@ -36,7 +36,7 @@ public class LogoActivity extends BaseActivity {
             if(preferences.getBoolean(PreferencesConfig.IS_SHOWED_FEATURE, false)){
                 intent = new Intent(LogoActivity.this, LoginActivity.class);
             }else {
-                intent = new Intent(LogoActivity.this, LoginActivity.class);
+                intent = new Intent(LogoActivity.this, FeatureActivity.class);
             }
             startActivity(intent);
             finish();

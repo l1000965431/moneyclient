@@ -12,13 +12,14 @@ import android.widget.TextView;
 
 import com.dragoneye.money.R;
 import com.dragoneye.money.activity.base.BaseActivity;
+import com.dragoneye.money.application.MyApplication;
 import com.dragoneye.money.config.PreferencesConfig;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.protocol.UserProtocol;
+import com.dragoneye.money.tool.ToolMaster;
 import com.dragoneye.money.tool.UIHelper;
-import com.dragoneye.money.user.CurrentUser;
-import com.dragoneye.money.user.UserInvestor;
+import com.dragoneye.money.user.UserBase;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -149,32 +150,36 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             JSONObject jsonObject = new JSONObject(response);
             int userType = jsonObject.getInt("userType");
             boolean isPerfectInfo = jsonObject.getBoolean("IsPerfect");
-            if(userType == UserProtocol.PROTOCOL_USER_TYPE_INVESTOR){
-                UserInvestor userInvestor = new UserInvestor();
-                userInvestor.setUserId(jsonObject.getString("userId"));
-                userInvestor.setIsPerfectInfo(isPerfectInfo);
-                if( isPerfectInfo ){
-                    userInvestor.setUserName(jsonObject.getString("userName"));
-                    userInvestor.setEmail(jsonObject.getString("mail"));
-                    userInvestor.setAddress(jsonObject.getString("location"));
+            UserBase userBase = new UserBase();
+            userBase.setUserType(userType);
+            userBase.setUserId(jsonObject.getString("userId"));
+            userBase.setIsPerfectInfo(isPerfectInfo);
+            if( isPerfectInfo ){
+                userBase.setUserName(jsonObject.getString("userName"));
+                userBase.setEmail(jsonObject.getString("mail"));
+                userBase.setAddress(jsonObject.getString("location"));
+                userBase.setRealName(jsonObject.getString("realName"));
+                userBase.setIdentityId(jsonObject.getString("identityId"));
+                userBase.setUserHeadPortrait(jsonObject.getString("userHeadPortrait"));
+                if(userType == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+                    userBase.setIntroduction(jsonObject.getString("introduction"));
+                    userBase.setExpertise(jsonObject.getString("expertise"));
+                    userBase.setEduInfo(jsonObject.getString("eduInfo"));
+                    userBase.setCareer(jsonObject.getString("career"));
                 }
-                CurrentUser.setCurrentUser(userInvestor);
-                CurrentUser.setToken(token);
-                setLastLoginUserId(mLoginUserId);
-                setLastLoginUserPassword(mLoginUserPassword);
-            }else {
-
             }
+            ((MyApplication) getApplication()).setCurrentUser(userBase);
+            ((MyApplication)getApplication()).setToken(token);
+            setLastLoginUserId(mLoginUserId);
+            setLastLoginUserPassword(mLoginUserPassword);
 
         }catch (JSONException e){
             e.printStackTrace();
+            UIHelper.toast(this, "登录失败");
+            return;
         }
 
-//        UserEntrepreneur userEntrepreneur = new UserEntrepreneur();
-//        userEntrepreneur.setUserId("test");
-//        CurrentUser.setCurrentUser(userEntrepreneur);
         startMainActivity();
-
     }
 
     private void startMainActivity(){
@@ -196,27 +201,5 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private void onRegister(){
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_login, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -2,9 +2,14 @@ package com.dragoneye.money.application;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.config.PreferencesConfig;
 import com.dragoneye.money.config.ProjectStatusConfig;
 import com.dragoneye.money.dao.MyDaoMaster;
 import com.dragoneye.money.dao.Project;
@@ -12,15 +17,21 @@ import com.dragoneye.money.dao.ProjectDao;
 import com.dragoneye.money.dao.ProjectImage;
 import com.dragoneye.money.dao.ProjectImageDao;
 import com.dragoneye.money.http.HttpClient;
+import com.dragoneye.money.tool.ToolMaster;
+import com.dragoneye.money.user.UserBase;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+import com.umeng.analytics.AnalyticsConfig;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,13 +51,10 @@ public class MyApplication extends Application {
         HttpClient.initHttpClient(this);
         createTestData();
         initImageLoader();
+        AnalyticsConfig.enableEncrypt(true);
+        MobclickAgent.updateOnlineConfig(this);
+        Log.d("UMENG TEST", getDeviceInfo(this));
 
-//        UserEntrepreneur entrepreneur = new UserEntrepreneur();
-//        entrepreneur.setUserId("test");
-//        CurrentUser.setCurrentUser(entrepreneur);
-
-        // 阿里云存储初始化
-        initOssService();
 
         images.add(R.mipmap.projects_display001_0);
         images.add(R.mipmap.projects_display002_0);
@@ -57,8 +65,34 @@ public class MyApplication extends Application {
         images.add(R.mipmap.projects_display007_0);
     }
 
-    private void initOssService(){
+    public static String getDeviceInfo(Context context) {
+        try{
+            org.json.JSONObject json = new org.json.JSONObject();
+            android.telephony.TelephonyManager tm = (android.telephony.TelephonyManager) context
+                    .getSystemService(Context.TELEPHONY_SERVICE);
 
+            String device_id = tm.getDeviceId();
+
+            android.net.wifi.WifiManager wifi = (android.net.wifi.WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+
+            String mac = wifi.getConnectionInfo().getMacAddress();
+            json.put("mac", mac);
+
+            if( TextUtils.isEmpty(device_id) ){
+                device_id = mac;
+            }
+
+            if( TextUtils.isEmpty(device_id) ){
+                device_id = android.provider.Settings.Secure.getString(context.getContentResolver(),android.provider.Settings.Secure.ANDROID_ID);
+            }
+
+            json.put("device_id", device_id);
+
+            return json.toString();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static void createTestData(){
@@ -105,6 +139,12 @@ public class MyApplication extends Application {
 
     private void initImageLoader(){
         File cacheDir = StorageUtils.getOwnCacheDirectory(getApplicationContext(), "imageLoader/Cache");
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheOnDisk(true)
+                .showImageOnLoading(R.mipmap.icon_albums)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .displayer(new FadeInBitmapDisplayer(300))
+                .build();
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this)
                 .memoryCacheExtraOptions(480, 800)
                 .diskCacheExtraOptions(480, 800, null)
@@ -121,6 +161,7 @@ public class MyApplication extends Application {
                 .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
                 .imageDownloader(new BaseImageDownloader(this, 5 * 1000, 30 * 1000))
                 .writeDebugLogs()
+                .defaultDisplayImageOptions(options)
                 .build();
         ImageLoader.getInstance().init(configuration);
     }
@@ -152,4 +193,32 @@ public class MyApplication extends Application {
             System.exit(0);
         }
     }
+
+    public  UserBase getCurrentUser() {
+        if( currentUser == null ){
+            String json = PreferenceManager.getDefaultSharedPreferences(this).getString(
+                    PreferencesConfig.LAST_LOGIN_USER_DATA, "");
+            UserBase userBase = ToolMaster.gsonInstance().fromJson(json, UserBase.class);
+            currentUser = userBase;
+        }
+        return currentUser;
+    }
+
+    public void setCurrentUser(UserBase currentUser) {
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PreferencesConfig.LAST_LOGIN_USER_DATA,
+                ToolMaster.gsonInstance().toJson(currentUser)).apply();
+        this.currentUser = currentUser;
+    }
+
+    private UserBase currentUser;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    private String token;
 }

@@ -521,4 +521,19 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 
 	}
 
+	/**
+	 * 设置文字颜色
+	 */
+	public void setTextColor(int color){
+		description.setTextColor(color);
+		updateAt.setTextColor(color);
+	}
+
+	/**
+	 * 设置箭头颜色
+	 */
+	public void setArrowColor(int color){
+		arrow.setColorFilter(color);
+	}
+
 }

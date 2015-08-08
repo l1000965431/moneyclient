@@ -3,8 +3,13 @@ package com.dragoneye.money.activity.base;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.dragoneye.money.application.MyApplication;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by happysky on 15-6-16.
@@ -25,6 +30,22 @@ public class BaseActivity extends ActionBarActivity {
     protected void onDestroy() {
         super.onDestroy();
         MyApplication.removeActivity(this);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        // 友盟统计
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        // 友盟统计
+        MobclickAgent.onPause(this);
     }
 
     @Override

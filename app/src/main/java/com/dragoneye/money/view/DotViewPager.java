@@ -33,6 +33,20 @@ public class DotViewPager extends LinearLayout {
     private boolean autoScroll = true;
     private int autoScrollInterval = AUTO_SCROLL_PAGE_INTERVAL;
 
+    public static abstract class OnViewPageChangeListener{
+        public abstract void onPageScrolled(int position);
+    }
+
+    public OnViewPageChangeListener getPageChangeListener() {
+        return pageChangeListener;
+    }
+
+    public void setPageChangeListener(OnViewPageChangeListener pageChangeListener) {
+        this.pageChangeListener = pageChangeListener;
+    }
+
+    OnViewPageChangeListener pageChangeListener;
+
     public DotViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         setOrientation(VERTICAL);
@@ -43,10 +57,13 @@ public class DotViewPager extends LinearLayout {
         initDots();
         mHandler = new Handler();
 
+
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                if(pageChangeListener != null){
+                    pageChangeListener.onPageScrolled(position);
+                }
             }
 
             @Override

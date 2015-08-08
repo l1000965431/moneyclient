@@ -20,15 +20,13 @@ public interface GetProjectListProtocol {
     /******************************************************************************************
      *  获取投资过的项目列表                                                                     *
      ******************************************************************************************/
-    String URL_GET_ORDER_LIST = HttpUrlConfig.URL_ROOT + "ActivityOrder/getOrderByUserID";
+    String URL_GET_ORDER_LIST = HttpUrlConfig.URL_ROOT + "ActivityController/GetActivityHasInvestment";
 
-    String GET_ORDER_PARAM_USER_ID = "userID";
-    String GET_ORDER_PARAM_TOKEN = "token";
-    String GET_ORDER_PARAM_FIRST_PAGE = "firstPage";
+    String GET_ORDER_PARAM_USER_ID = "UserID";
+    String GET_ORDER_PARAM_TOKEN = "Token";
+    String GET_ORDER_PARAM_PAGE_INDEX = "Page";
+    String GET_ORDER_PARAM_NUM_PER_PAGE = "findNum";
 
-    String GET_ORDER_RESULT_KEY = "response";
-    String GET_ORDER_RESULT_SUCCESS = "100";
-    String GET_ORDER_RESULT_NEED_LOGIN = "103";
     /*****************************************************************************************/
 
 

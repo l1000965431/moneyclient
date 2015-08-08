@@ -10,9 +10,17 @@ import android.widget.TextView;
 
 import com.dragoneye.money.R;
 import com.dragoneye.money.activity.base.DotViewPagerActivity;
+import com.dragoneye.money.application.MyApplication;
+import com.dragoneye.money.http.HttpClient;
+import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.model.ProjectDetailModel;
+import com.dragoneye.money.protocol.InvestProjectProtocol;
+import com.dragoneye.money.tool.ToolMaster;
 import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.view.DotViewPager;
+import com.google.gson.reflect.TypeToken;
+
+import org.apache.http.Header;
 
 import java.util.ArrayList;
 
@@ -65,8 +73,8 @@ public class PaymentActivity extends DotViewPagerActivity implements View.OnClic
                 mProjectDetailModel.getCurrentStage() + "/" + mProjectDetailModel.getTotalStage()));
         mTVStageInfo.setText(strCurrentStage);
 
-        mTVTotalPriceNum.setText( String.valueOf(mInvestPriceNum) );
-        mTVStageNum.setText( String.valueOf(mInvestStageNum) );
+        mTVTotalPriceNum.setText(String.valueOf(mInvestPriceNum));
+        mTVStageNum.setText(String.valueOf(mInvestStageNum));
     }
 
     @Override
@@ -77,9 +85,16 @@ public class PaymentActivity extends DotViewPagerActivity implements View.OnClic
     @Override
     protected void initImageUrl(){
         mImageUrl = new ArrayList<>();
-        mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_1).toString());
-        mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_2).toString());
-        mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_3).toString());
+        ArrayList<String> imageUrl = ToolMaster.gsonInstance().fromJson(mProjectDetailModel.getImageUrl(),
+                new TypeToken<ArrayList<String>>(){}.getType());
+        if( imageUrl != null && imageUrl.size() > 0 ){
+            mImageUrl = imageUrl;
+        }else {
+            mImageUrl = new ArrayList<>();
+            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_1).toString());
+            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_2).toString());
+            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_3).toString());
+        }
     }
 
     @Override
@@ -92,28 +107,53 @@ public class PaymentActivity extends DotViewPagerActivity implements View.OnClic
     }
 
     private void onPay(){
-
+        onInvest(mInvestType, mInvestStageNum, mInvestPriceNum);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_payment, menu);
-        return true;
+    private void onInvest(int investType, int investStageNum, int investPriceNum){
+        HttpParams params = new HttpParams();
+
+        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser().getUserId());
+        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_ACTIVITY_STAGE_ID, mProjectDetailModel.getActivityStageId());
+        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_TYPE, investType);
+        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_STAGE_NUM, investStageNum);
+        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_PRICE_NUM, investPriceNum);
+
+        HttpClient.atomicPost(this, InvestProjectProtocol.URL_INVEST_PROJECT, params, new HttpClient.MyHttpHandler() {
+            @Override
+            public void onSuccess(int i, Header[] headers, String s) {
+                onInvestResult(s);
+            }
+        });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private void onInvestResult(String s){
+        if( s == null ){
+            UIHelper.toast(this, "服务器异常");
+            return;
         }
 
-        return super.onOptionsItemSelected(item);
+        int resultCode = 0;
+        try{
+            resultCode = Integer.parseInt(s);
+        }catch (Exception e){
+            UIHelper.toast(this, "服务器异常");
+            return;
+        }
+
+        switch (resultCode){
+            case InvestProjectProtocol.INVEST_RESULT_SUCCESS:
+                UIHelper.toast(this, "投资成功");
+                break;
+            case InvestProjectProtocol.INVEST_RESULT_IMPROVE_INFO:
+                UIHelper.toast(this, "需要完善个人信息");
+                break;
+            case InvestProjectProtocol.INVEST_RESULT_FAILED:
+                UIHelper.toast(this, "投资失败");
+                break;
+            default:
+                UIHelper.toast(this, "服务器异常");
+                break;
+        }
     }
 }

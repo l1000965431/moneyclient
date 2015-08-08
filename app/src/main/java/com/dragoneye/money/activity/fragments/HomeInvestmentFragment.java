@@ -3,6 +3,7 @@ package com.dragoneye.money.activity.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -29,7 +30,9 @@ import com.dragoneye.money.protocol.GetProjectListProtocol;
 import com.dragoneye.money.tool.ToolMaster;
 import com.dragoneye.money.view.GridViewWithHeaderAndFooter;
 import com.dragoneye.money.view.RefreshableView;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -78,6 +81,8 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                 handler.post(updateInvestmentList_r);
             }
         }, PreferencesConfig.FRAGMENT_HOME_INVESTMENT);
+        refreshableView.setTextColor(Color.WHITE);
+        refreshableView.setArrowColor(Color.WHITE);
 
         mGridView = (GridViewWithHeaderAndFooter)getActivity().findViewById(R.id.home_investment_grid_view);
         mListViewFooter = LayoutInflater.from(getActivity()).inflate(R.layout.loading_list_view_item, null, false);
@@ -99,14 +104,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                     if (!mIsLoadingMore && view.getLastVisiblePosition() == view.getCount() - 1) {
                         mIsLoadingMore = true;
                         mListViewFooter.setVisibility(View.VISIBLE);
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mAdapter.notifyDataSetChanged();
-                                mIsLoadingMore = false;
-                                mListViewFooter.setVisibility(View.GONE);
-                            }
-                        }, 2000);
+                        handler.post(updateInvestmentList_r);
                     }
                 }
             }
@@ -140,6 +138,10 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d(TAG, "update project list failure-> " + s);
                     refreshableView.finishRefreshing();
+                    if (mIsLoadingMore) {
+                        mIsLoadingMore = false;
+                        mListViewFooter.setVisibility(View.GONE);
+                    }
                 }
 
                 @Override
@@ -148,13 +150,16 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                     addNewProjectToList(detailModels);
                     mAdapter.notifyDataSetChanged();
                     refreshableView.finishRefreshing();
+                    if (mIsLoadingMore) {
+                        mIsLoadingMore = false;
+                        mListViewFooter.setVisibility(View.GONE);
+                    }
                 }
             });
         }
     };
 
     private void addNewProjectToList(ArrayList<ProjectDetailModel> projectDetailModels){
-        for( int i = 0; i < 8; i++ )
         mProjectList.addAll(projectDetailModels);
     }
 
@@ -173,6 +178,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                 detailModel.setCurrentFund(jsonObject.getInt("currentFund"));
                 detailModel.setCurrentStage(jsonObject.getInt("currentStage"));
                 detailModel.setTotalStage(jsonObject.getInt("totalStage"));
+                detailModel.setImageUrl(jsonObject.getString("imageUrl"));
                 projectDetailModels.add(detailModel);
             }
 
@@ -258,24 +264,13 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                 viewHolder = (ViewHolder)convertView.getTag();
             }
 
-//            ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
-//            QueryBuilder queryBuilder = projectImageDao.queryBuilder();
-//            queryBuilder.where(ProjectImageDao.Properties.ProjectId.eq(project.getId()));
-//            ProjectImage projectImage = (ProjectImage)queryBuilder.build().list().get(0);
-//            if(projectImage != null){
-//                try{
-//                    viewHolder.ivLogo.setImageBitmap( MediaStore.Images.Media.getBitmap(context.getContentResolver(),
-//                            Uri.parse(projectImage.getImageUrl())));
-//                }catch (IOException e){
-//
-//                }
-//            }
             viewHolder.tvSummary.setText(project.getSummary());
             viewHolder.tvName.setText(project.getName());
 
             String strCurrentStage = String.format(getString(R.string.project_list_item_stage_info,
-                    project.getCurrentStage() + "/" + project.getTotalStage()));
-            viewHolder.tvStageInfo.setText( strCurrentStage );
+                    (String.valueOf(project.getCurrentStage()) + "/" + project.getTotalStage())));
+            viewHolder.tvStageInfo.setText(strCurrentStage);
+
 
             String strTargetFund = getString(R.string.project_list_item_target_fund);
             viewHolder.tvTargetFund.setText(strTargetFund);
@@ -288,8 +283,28 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
             String strProgress = getString(R.string.project_list_item_progress) + "%" + progress;
             viewHolder.tvProgress.setText(strProgress);
 
-            viewHolder.ivLogo.setImageBitmap(BitmapFactory.decodeResource(getResources(),
-                    ((MyApplication)(context.getApplicationContext())).images.get(position % 7)));
+            try{
+                JSONArray jsonArray = new JSONArray(project.getImageUrl());
+                if( jsonArray.length() > 0 ){
+                    String url = jsonArray.getString(0);
+                    do{
+                        if( viewHolder.ivLogo.getTag() != null &&
+                                ((String)viewHolder.ivLogo.getTag()).compareTo(url) == 0 ){
+                            break;
+                        }
+                        ImageLoader.getInstance().displayImage(url, viewHolder.ivLogo);
+                        viewHolder.ivLogo.setTag(url);
+                    }while (false);
+                }else {
+                    viewHolder.ivLogo.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+                            ((MyApplication)(context.getApplicationContext())).images.get(position % 7)));
+                }
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+
+
+
 
             return convertView;
         }

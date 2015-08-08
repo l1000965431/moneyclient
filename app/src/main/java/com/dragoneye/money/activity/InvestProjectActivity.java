@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.dragoneye.money.R;
 import com.dragoneye.money.activity.base.DotViewPagerActivity;
 import com.dragoneye.money.application.AppInfoManager;
+import com.dragoneye.money.application.MyApplication;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.model.ProjectDetailModel;
@@ -27,6 +28,8 @@ import com.dragoneye.money.tool.ToolMaster;
 import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.user.CurrentUser;
 import com.dragoneye.money.view.DotViewPager;
+import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -75,15 +78,11 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        mProjectDetailModel = (ProjectDetailModel)intent.getSerializableExtra(EXTRA_PROJECT_MODEL);
         setContentView(R.layout.home_investment_listview_detail);
         initView();
         initData();
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-
     }
 
     @Override
@@ -96,10 +95,16 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     protected void initImageUrl(){
         mImageUrl = new ArrayList<>();
 
-        mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_1).toString());
-        mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_2).toString());
-        mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_3).toString());
-
+        ArrayList<String> imageUrl = ToolMaster.gsonInstance().fromJson(mProjectDetailModel.getImageUrl(),
+                new TypeToken<ArrayList<String>>(){}.getType());
+        if( imageUrl != null && imageUrl.size() > 0 ){
+            mImageUrl = imageUrl;
+        }else {
+            mImageUrl = new ArrayList<>();
+            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_1).toString());
+            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_2).toString());
+            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_3).toString());
+        }
     }
 
     private void initView(){
@@ -150,8 +155,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     }
 
     private void initData(){
-        Intent intent = getIntent();
-        mProjectDetailModel = (ProjectDetailModel)intent.getSerializableExtra(EXTRA_PROJECT_MODEL);
+
 
         mProjectStageMaxNum = mProjectDetailModel.getTotalStage() - mProjectDetailModel.getCurrentStage() + 1;
 
@@ -400,52 +404,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
 
     }
 
-    private void onInvest(int investType, int investStageNum, int investPriceNum){
-        HttpParams params = new HttpParams();
 
-        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_USER_ID, CurrentUser.getCurrentUser().getUserId());
-        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_ACTIVITY_STAGE_ID, mProjectDetailModel.getActivityStageId());
-        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_TYPE, investType);
-        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_STAGE_NUM, investStageNum);
-        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_PRICE_NUM, investPriceNum);
-
-        HttpClient.atomicPost(this, InvestProjectProtocol.URL_INVEST_PROJECT, params, new HttpClient.MyHttpHandler() {
-            @Override
-            public void onSuccess(int i, Header[] headers, String s) {
-                onInvestResult(s);
-            }
-        });
-    }
-
-    private void onInvestResult(String s){
-        if( s == null ){
-            UIHelper.toast(this, "服务器异常");
-            return;
-        }
-
-        int resultCode = 0;
-        try{
-            resultCode = Integer.parseInt(s);
-        }catch (Exception e){
-            UIHelper.toast(this, "服务器异常");
-            return;
-        }
-
-        switch (resultCode){
-            case InvestProjectProtocol.INVEST_RESULT_SUCCESS:
-                UIHelper.toast(this, "投资成功");
-                break;
-            case InvestProjectProtocol.INVEST_RESULT_IMPROVE_INFO:
-                UIHelper.toast(this, "需要完善个人信息");
-                break;
-            case InvestProjectProtocol.INVEST_RESULT_FAILED:
-                UIHelper.toast(this, "投资失败");
-                break;
-            default:
-                UIHelper.toast(this, "服务器异常");
-                break;
-        }
-    }
 
     private boolean checkUserInput(){
         if( isLeadInvest() ){
@@ -498,7 +457,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_invest_project_detail) {
             Intent intent = new Intent(this, ProjectDetailActivity.class);
-            intent.putExtra(ProjectDetailActivity.EXTRA_PROJECT_ID, mProjectDetailModel.getActivityId());
+            intent.putExtra(EXTRA_PROJECT_MODEL, mProjectDetailModel);
             startActivity(intent);
             return true;
         }

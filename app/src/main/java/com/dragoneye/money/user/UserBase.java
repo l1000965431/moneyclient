@@ -3,7 +3,7 @@ package com.dragoneye.money.user;
 /**
  * Created by happysky on 15-7-22.
  */
-public abstract class UserBase {
+public class UserBase {
     /**
      * 用户名
      */
@@ -30,6 +30,26 @@ public abstract class UserBase {
     private String email;
 
     /**
+     * 真实姓名
+     */
+    private String realName;
+
+    /**
+     * 身份证号码
+     */
+    private String identityId;
+
+    /**
+     * 擅长领域
+     */
+    private String expertise;
+
+    /**
+     * 头像url
+     */
+    private String userHeadPortrait;
+
+    /**
      * 性别
      */
     public static final int SEXUALITY_MALE = 0;
@@ -46,12 +66,6 @@ public abstract class UserBase {
      * 是否完善过信息
      */
     private boolean isPerfectInfo;
-
-    UserBase(){
-        initUserType();
-    }
-
-    protected abstract void initUserType();
 
     public String getUserId() {
         return userId;
@@ -127,5 +141,76 @@ public abstract class UserBase {
 
     public void setIsPerfectInfo(boolean isPerfectInfo) {
         this.isPerfectInfo = isPerfectInfo;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getIdentityId() {
+        return identityId;
+    }
+
+    public void setIdentityId(String identityId) {
+        this.identityId = identityId;
+    }
+
+    /**
+     * 个人简介
+     */
+    private String introduction;
+
+    /**
+     * 教育经历
+     */
+    private String eduInfo;
+
+    /**
+     * 事业经历
+     */
+    private String career;
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public String getCareer() {
+        return career;
+    }
+
+    public void setCareer(String career) {
+        this.career = career;
+    }
+
+    public String getEduInfo() {
+        return eduInfo;
+    }
+
+    public void setEduInfo(String eduInfo) {
+        this.eduInfo = eduInfo;
+    }
+
+    public String getUserHeadPortrait() {
+        return userHeadPortrait;
+    }
+
+    public void setUserHeadPortrait(String userHeadPortrait) {
+        this.userHeadPortrait = userHeadPortrait;
+    }
+
+    public String getExpertise() {
+        return expertise;
+    }
+
+    public void setExpertise(String expertise) {
+        this.expertise = expertise;
     }
 }

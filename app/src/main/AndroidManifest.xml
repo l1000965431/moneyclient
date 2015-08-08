@@ -99,6 +99,20 @@
             android:name=".activity.base.ImageMulSelectedActivity"
             android:label="@string/title_activity_image_mul_selected" >
         </activity>
+        <activity
+            android:name=".activity.base.ProgressActionBarActivity"
+            android:label="@string/title_activity_progress_action_bar" >
+        </activity>
+        <activity
+            android:name=".activity.AgreementActivity"
+            android:label="@string/title_activity_agreement" >
+        </activity>
+
+        <!-- 友盟统计 -->
+        <meta-data android:value="55c5affbe0f55a4474006226" android:name="UMENG_APPKEY"/>
+        <meta-data android:value="999" android:name="UMENG_CHANNEL"/>
+
+
     </application>
 
 </manifest>

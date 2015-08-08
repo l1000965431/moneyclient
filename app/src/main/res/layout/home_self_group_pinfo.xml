@@ -32,7 +32,8 @@
             android:layout_gravity="left|center_vertical"
             android:background="#00ffffff"
             android:scaleType="fitXY"
-            android:layout_marginLeft="52dp" />
+            android:layout_marginLeft="52dp"
+            android:src="@mipmap/icon_headportrait"/>
         <!--<com.happysky.self.demo.view.RoundCornerImageView-->
             <!--android:layout_width="93dp"-->
             <!--android:layout_height="93dp"-->

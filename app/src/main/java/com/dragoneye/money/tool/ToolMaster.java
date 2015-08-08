@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -13,6 +14,10 @@ import android.provider.MediaStore;
 
 import com.google.gson.Gson;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -183,5 +188,60 @@ public class ToolMaster {
             listOfAllImages.add(absolutePathOfImage);
         }
         return listOfAllImages;
+    }
+
+    public static Bitmap getBitmapFromUri(Context context, Uri uri){
+        try{
+            return MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static File SavePicInLocal(Bitmap bitmap, String path) {
+        FileOutputStream fos = null;
+        BufferedOutputStream bos = null;
+        ByteArrayOutputStream baos = null; // 字节数组输出流
+        File file = null;
+        try {
+            baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] byteArray = baos.toByteArray();// 字节数组输出流转换成字节数组
+            file = new File(path);
+            // 将字节数组写入到刚创建的图片文件中
+            fos = new FileOutputStream(file);
+            bos = new BufferedOutputStream(fos);
+            bos.write(byteArray);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } finally {
+            if (baos != null) {
+                try {
+                    baos.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (bos != null) {
+                try {
+                    bos.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return file;
+
     }
 }

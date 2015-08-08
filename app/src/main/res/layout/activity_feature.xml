@@ -11,12 +11,13 @@
 
     </com.dragoneye.money.view.DotViewPager>
 
-    <Button
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button"
+        android:id="@+id/feature_iv_start"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/skip_button"
+        android:layout_marginBottom="30dp"/>
 
 </RelativeLayout>

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.dragoneye.money.activity.ImageExplorerActivity;
 import com.dragoneye.money.view.DotViewPager;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +21,15 @@ public abstract class DotViewPagerActivity extends BaseActivity {
     protected DotViewPager mDotViewPager;
     protected ArrayList<String> mImageUrl;
     protected ArrayList<View> viewContainer = new ArrayList<>();
+    private boolean isUseImageLoader = true;
+
+    public boolean isUseImageLoader() {
+        return isUseImageLoader;
+    }
+
+    public void setIsUseImageLoader(boolean isUseImageLoader) {
+        this.isUseImageLoader = isUseImageLoader;
+    }
 
     private class ImageViewPagerAdapter extends PagerAdapter {
         //viewpager中的组件数量
@@ -40,14 +50,7 @@ public abstract class DotViewPagerActivity extends BaseActivity {
             viewContainer.get(position).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(DotViewPagerActivity.this, ImageExplorerActivity.class);
-                    ArrayList<Uri> uris = new ArrayList<>();
-                    for (String url : mImageUrl) {
-                        uris.add(Uri.parse(url));
-                    }
-                    intent.putExtra(ImageExplorerActivity.EXTRA_URI_ARRAY, uris);
-                    intent.putExtra(ImageExplorerActivity.EXTRA_INDEX_TO_SHOW, position);
-                    startActivity(intent);
+                    onViewClick(position);
                 }
             });
             return viewContainer.get(position);
@@ -67,19 +70,41 @@ public abstract class DotViewPagerActivity extends BaseActivity {
     private void initViewPagerImages(){
         for(String url : mImageUrl){
             ImageView imageView = new ImageView(this);
-            try{
-                imageView.setImageBitmap( MediaStore.Images.Media.getBitmap(getContentResolver(),
-                        Uri.parse(url) ) );
-                viewContainer.add(imageView);
-            }catch (IOException e){
-
+            if( isUseImageLoader ){
+                ImageLoader.getInstance().displayImage(url, imageView);
+            }else {
+                try{
+                    imageView.setImageBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(),
+                            Uri.parse(url)));
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
             }
+            viewContainer.add(imageView);
         }
         mDotViewPager.setAdapter(new ImageViewPagerAdapter());
     }
 
+    protected void setImageScaleType(ImageView.ScaleType type){
+        for( View view : viewContainer ){
+            if( view instanceof ImageView ){
+                ((ImageView)view).setScaleType(type);
+            }
+        }
+    }
+
     protected abstract void initViewPager();
     protected abstract void initImageUrl();
+    protected void onViewClick(int position){
+        Intent intent = new Intent(DotViewPagerActivity.this, ImageExplorerActivity.class);
+        ArrayList<Uri> uris = new ArrayList<>();
+        for (String url : mImageUrl) {
+            uris.add(Uri.parse(url));
+        }
+        intent.putExtra(ImageExplorerActivity.EXTRA_URI_ARRAY, uris);
+        intent.putExtra(ImageExplorerActivity.EXTRA_INDEX_TO_SHOW, position);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

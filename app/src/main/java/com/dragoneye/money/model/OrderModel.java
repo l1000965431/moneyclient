@@ -24,15 +24,26 @@ public class OrderModel {
      */
     private int orderLines;
 
-    /**
-     * 项目名称
-     */
-    private String projectName;
+    private String activityStageId;
 
-    /**
-     * 项目状态
-     */
-    private int projectStatus;
+    private String activityId;
+
+    private String activityName;
+
+    private String summary;
+
+    private int targetFund;
+
+    private int status;
+
+    private String imageUrl;
+
+    private int currentFund;
+
+    private int currentStage;
+
+    private int totalStage;
+
 
     public int getOrderState() {
         return orderState;
@@ -66,19 +77,83 @@ public class OrderModel {
         this.orderLines = orderLines;
     }
 
-    public int getProjectStatus() {
-        return projectStatus;
+    public String getActivityStageId() {
+        return activityStageId;
     }
 
-    public void setProjectStatus(int projectStatus) {
-        this.projectStatus = projectStatus;
+    public void setActivityStageId(String activityStageId) {
+        this.activityStageId = activityStageId;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getActivityId() {
+        return activityId;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
+
+    public String getActivityName() {
+        return activityName;
+    }
+
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public int getTargetFund() {
+        return targetFund;
+    }
+
+    public void setTargetFund(int targetFund) {
+        this.targetFund = targetFund;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getCurrentFund() {
+        return currentFund;
+    }
+
+    public void setCurrentFund(int currentFund) {
+        this.currentFund = currentFund;
+    }
+
+    public int getCurrentStage() {
+        return currentStage;
+    }
+
+    public void setCurrentStage(int currentStage) {
+        this.currentStage = currentStage;
+    }
+
+    public int getTotalStage() {
+        return totalStage;
+    }
+
+    public void setTotalStage(int totalStage) {
+        this.totalStage = totalStage;
     }
 }

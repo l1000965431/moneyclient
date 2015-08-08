@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
@@ -15,6 +16,7 @@ import com.dragoneye.money.activity.ImproveUserInfoActivity;
 import com.dragoneye.money.activity.ProjectEditActivity;
 import com.dragoneye.money.activity.SettingsActivity;
 import com.dragoneye.money.activity.UserInfoActivity;
+import com.dragoneye.money.application.MyApplication;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.protocol.UserProtocol;
@@ -22,6 +24,7 @@ import com.dragoneye.money.tool.ToolMaster;
 import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.user.CurrentUser;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 
@@ -31,6 +34,7 @@ import org.apache.http.Header;
 public class HomeMyselfFragment extends BaseFragment implements View.OnClickListener{
     private TextView mTVUserName;
     private TextView mTVWalletBalance;
+    private ImageView mIVPortrait;
 
     Handler handler = new Handler();
 
@@ -53,6 +57,12 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 
         mTVWalletBalance = (TextView)getActivity().findViewById(R.id.textView17);
 
+        mIVPortrait = (ImageView)getActivity().findViewById(R.id.home_self_group_iv_portrait);
+        String userPortrait = ((MyApplication)getActivity().getApplication()).getCurrentUser().getUserHeadPortrait();
+        if( userPortrait != null && userPortrait.length() > 0 ){
+            ImageLoader.getInstance().displayImage(userPortrait, mIVPortrait);
+        }
+
         // 充值
         View chargeButton = getActivity().findViewById(R.id.home_self_group_linearLayout2);
         chargeButton.setOnClickListener(this);
@@ -72,11 +82,11 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         // 创建新项目
         View submitProjectButton = getActivity().findViewById(R.id.linearLayout21);
         submitProjectButton.setOnClickListener(this);
-        if(CurrentUser.getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_INVESTOR){
+        if(((MyApplication)getActivity().getApplication()).getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_INVESTOR){
             submitProjectButton.setVisibility(View.GONE);
         }
 
-        mTVUserName.setText(CurrentUser.getCurrentUser().getUserName());
+        mTVUserName.setText(((MyApplication)getActivity().getApplication()).getCurrentUser().getUserName());
 
         handler.post(getWalletBalance_r);
     }
@@ -90,7 +100,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         public void run() {
             HttpParams params = new HttpParams();
 
-            params.put("userId", CurrentUser.getCurrentUser().getUserId());
+            params.put("userId", ((MyApplication)getActivity().getApplication()).getCurrentUser().getUserId());
 
             HttpClient.atomicPost(getActivity(), UserProtocol.URL_GET_WALLET_BALANCE, params, new HttpClient.MyHttpHandler() {
                 @Override
@@ -108,7 +118,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 
     @Override
     public void onClick(View v){
-        Intent intent = null;
+        Intent intent;
         switch (v.getId()){
             case R.id.home_self_group_linearLayout1: // 设置
                 intent = new Intent(getActivity(), SettingsActivity.class);
@@ -126,11 +136,18 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                 intent = new Intent(getActivity(), ProjectEditActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.home_self_group_iv_portrait:
+                onChangePortrait();
+                break;
         }
     }
 
+    private void onChangePortrait(){
+
+    }
+
     private void onUserInfo(){
-        if( CurrentUser.getCurrentUser().isPerfectInfo() ){
+        if( ((MyApplication)getActivity().getApplication()).getCurrentUser().isPerfectInfo() ){
             Intent intent = new Intent(getActivity(), UserInfoActivity.class);
             startActivity(intent);
         }else {

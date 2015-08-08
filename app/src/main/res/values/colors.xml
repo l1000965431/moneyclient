@@ -11,4 +11,7 @@
     <!-- 项目进度条底色 -->
     <color name="project_progress_bar_background">#ffffdb90</color>
     <color name="project_progress_bar_progress">#1aff25</color>
+
+    <!-- ProgressActionBarActivity 刷新控件颜色 -->
+    <color name="progress_action_bar_progress">#ffffffff</color>
 </resources>

@@ -127,6 +127,77 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/linearLayout8"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="7dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="真实姓名："
+                        android:id="@+id/textView46"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/improve_user_info_et_realName"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="请输入您的真实姓名"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/linearLayout9"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="7dp">
+
+                    <TextView
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:text="身份证号："
+                        android:id="@+id/textView47"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical|right"
+                        android:textColor="#ff727272"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/improve_user_info_identityId"
+                        android:textColor="#ff999999"
+                        android:textColorHint="#ff999999"
+                        android:hint="输入有效证件号"
+                        android:background="@drawable/bg_rounded10"
+                        android:backgroundTint="#ffffffff"
+                        android:gravity="center_vertical"
+                        android:textSize="13dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
                 <RadioGroup
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
@@ -375,77 +446,6 @@
 
                         </LinearLayout>
 
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/linearLayout8"
-                        android:layout_marginLeft="25dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginTop="7dp">
-
-                        <TextView
-                            android:layout_width="78dp"
-                            android:layout_height="wrap_content"
-                            android:text="真实姓名："
-                            android:id="@+id/textView46"
-                            android:textSize="15dp"
-                            android:gravity="center_vertical|right"
-                            android:textColor="#ff727272"
-                            android:layout_gravity="center" />
-
-                        <EditText
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/improve_user_info_et_realName"
-                            android:textColor="#ff999999"
-                            android:textColorHint="#ff999999"
-                            android:hint="请输入您的真实姓名"
-                            android:background="@drawable/bg_rounded10"
-                            android:backgroundTint="#ffffffff"
-                            android:gravity="center_vertical"
-                            android:textSize="13dp"
-                            android:paddingLeft="10dp"
-                            android:layout_weight="1"
-                            android:layout_gravity="center" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/linearLayout9"
-                        android:layout_marginLeft="25dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginTop="7dp">
-
-                        <TextView
-                            android:layout_width="78dp"
-                            android:layout_height="wrap_content"
-                            android:text="身份证号："
-                            android:id="@+id/textView47"
-                            android:textSize="15dp"
-                            android:gravity="center_vertical|right"
-                            android:textColor="#ff727272"
-                            android:layout_gravity="center" />
-
-                        <EditText
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/improve_user_info_identityId"
-                            android:textColor="#ff999999"
-                            android:textColorHint="#ff999999"
-                            android:hint="输入有效证件号"
-                            android:background="@drawable/bg_rounded10"
-                            android:backgroundTint="#ffffffff"
-                            android:gravity="center_vertical"
-                            android:textSize="13dp"
-                            android:paddingLeft="10dp"
-                            android:layout_weight="1"
-                            android:layout_gravity="center" />
                     </LinearLayout>
 
                     <LinearLayout

@@ -2,6 +2,7 @@ package com.dragoneye.money.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -14,9 +15,12 @@ import com.dragoneye.money.dao.ProjectImage;
 import com.dragoneye.money.dao.ProjectImageDao;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
+import com.dragoneye.money.model.ProjectDetailModel;
 import com.dragoneye.money.protocol.GetProjectListProtocol;
+import com.dragoneye.money.tool.ToolMaster;
 import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.view.DotViewPager;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -28,10 +32,8 @@ import java.util.List;
 import de.greenrobot.dao.query.QueryBuilder;
 
 public class ProjectDetailActivity extends DotViewPagerActivity implements View.OnClickListener{
-    public static final String EXTRA_PROJECT_ID = "EXTRA_PROJECT_ID";
+    private ProjectDetailModel mProjectDetailModel;
 
-
-    private String mProjectId;
     private ProgressBar mProgressBar;
     private TextView mTextViewProjectProgress;
 
@@ -42,14 +44,11 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
     private TextView mTVProjectSummary;
     private TextView mTVAddress;
 
-    private String mMarketAnalyze;
-    private String mProfitMode;
-    private String mTeamIntroduction;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        mProjectDetailModel = (ProjectDetailModel)intent.getSerializableExtra(InvestProjectActivity.EXTRA_PROJECT_MODEL);
         setContentView(R.layout.home_investment_detail);
         initView();
         initData();
@@ -65,16 +64,16 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
     protected void initImageUrl(){
         mImageUrl = new ArrayList<>();
 
-        Intent intent = getIntent();
-        mProjectId = intent.getStringExtra(EXTRA_PROJECT_ID);
-
-        ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
-        QueryBuilder queryBuilder = projectImageDao.queryBuilder();
-        queryBuilder.where(ProjectImageDao.Properties.ProjectId.eq(1));
-        List<ProjectImage> projectImages = queryBuilder.build().list();
-
-        for(ProjectImage projectImage : projectImages){
-            mImageUrl.add(projectImage.getImageUrl());
+        ArrayList<String> imageUrl = ToolMaster.gsonInstance().fromJson(mProjectDetailModel.getImageUrl(),
+                new TypeToken<ArrayList<String>>() {
+                }.getType());
+        if( imageUrl != null && imageUrl.size() > 0 ){
+            mImageUrl = imageUrl;
+        }else {
+            mImageUrl = new ArrayList<>();
+            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_1).toString());
+            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_2).toString());
+            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_3).toString());
         }
     }
 
@@ -96,12 +95,13 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
     }
 
     private void initData(){
+
         onUpdateProjectDetail();
     }
 
     private void onUpdateProjectDetail(){
         HttpParams params = new HttpParams();
-        params.put("activityId", mProjectId);
+        params.put("activityId", mProjectDetailModel.getActivityId());
 
         HttpClient.atomicPost(this, GetProjectListProtocol.URL_GET_PROJECT_INFO, params, new HttpClient.MyHttpHandler() {
             @Override
@@ -121,12 +121,14 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
             case GetProjectListProtocol.GET_PROJECT_INFO_SUCCESS:
                 try{
                     JSONObject jsonObject = new JSONObject(response);
-                    mMarketAnalyze = jsonObject.getString("marketAnalysis");
-                    mProfitMode = jsonObject.getString("profitMode");
-                    mTeamIntroduction = jsonObject.getString("teamIntroduction");
-                    mTVProjectSummary.setText(jsonObject.getString("summary"));
-                    mTVAddress.setText(jsonObject.getString("address"));
-                    mTVProjectIntroduction.setText(jsonObject.getString("projectIntroduction"));
+                    mProjectDetailModel.setMarketAnalysis(jsonObject.getString("marketAnalysis"));
+                    mProjectDetailModel.setProfitMode(jsonObject.getString("profitMode"));
+                    mProjectDetailModel.setTeamIntroduce(jsonObject.getString("teamIntroduction"));
+                    mProjectDetailModel.setSummary(jsonObject.getString("summary"));
+
+                    mTVProjectSummary.setText(mProjectDetailModel.getSummary());
+                    mTVAddress.setText(mProjectDetailModel.getAddress());
+                    mTVProjectIntroduction.setText(mProjectDetailModel.getActivityIntroduce());
                 }catch (JSONException e){
                     e.printStackTrace();
                 }
@@ -163,13 +165,13 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
 
         switch (id){
             case R.id.project_detail_tv_marketAnalyze:
-                alertDialog.setMessage(mMarketAnalyze);
+                alertDialog.setMessage(mProjectDetailModel.getMarketAnalysis());
                 break;
             case R.id.project_detail_tv_profitMode:
-                alertDialog.setMessage(mProfitMode);
+                alertDialog.setMessage(mProjectDetailModel.getProfitMode());
                 break;
             case R.id.project_detail_tv_teamIntroduction:
-                alertDialog.setMessage(mTeamIntroduction);
+                alertDialog.setMessage(mProjectDetailModel.getTeamIntroduce());
                 break;
         }
 

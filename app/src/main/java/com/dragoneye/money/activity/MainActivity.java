@@ -86,6 +86,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(3);
     }
 
     private void addListener(){

@@ -3,6 +3,7 @@ package com.dragoneye.money.activity.base;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -12,10 +13,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.dragoneye.money.R;
+import com.dragoneye.money.tool.ToolMaster;
 
 import java.io.File;
 
-public class ImageSelectedActivity extends BaseActivity {
+public class ImageSelectedActivity extends ProgressActionBarActivity {
     public static final int REQUEST_CODE_SELECT_IN_GALLERY = 0;
     public static final int REQUEST_CODE_FROM_CAMERA = 1;
     public static final int REQUEST_USER_INTERNAL = 2;
@@ -26,6 +28,12 @@ public class ImageSelectedActivity extends BaseActivity {
     protected Uri selectedImageUri;
 
     protected Handler handler;
+
+    private boolean isNeedCropImage = false;
+    private int cropAspectX = 1;
+    private int cropAspectY = 1;
+    private int cropWidth = 96;
+    private int cropHeight = 96;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,11 +61,7 @@ public class ImageSelectedActivity extends BaseActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0: //  从图库中选择
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType("image/*");
-                        intent.putExtra("return-data", true);
-                        startActivityForResult(intent, REQUEST_CODE_SELECT_IN_GALLERY);
+                        goToGallerySelect();
                         break;
                     case 1: //  拍照
                         String state = Environment.getExternalStorageState();
@@ -79,6 +83,14 @@ public class ImageSelectedActivity extends BaseActivity {
         ad.show();
     }
 
+    protected void goToGallerySelect(){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, REQUEST_CODE_SELECT_IN_GALLERY);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
@@ -98,8 +110,11 @@ public class ImageSelectedActivity extends BaseActivity {
 
     private void onSelectInGalleryResult(int resultCode, Intent data){
         if( resultCode == RESULT_OK ){
-            //tartPhotoZoom(data.getData());
-            onSelectedFromGalleryFinish(data.getData());
+            if( isNeedCropImage() ){
+                startPhotoZoom(data.getData());
+            }else {
+                onSelectedFromGalleryFinish(data.getData());
+            }
         }
     }
 
@@ -107,30 +122,39 @@ public class ImageSelectedActivity extends BaseActivity {
 
     }
 
-    private void onFromCamera(int resultCode, Intent data){
+    protected void onSelectedFromCameraFinish(Uri uri){
 
-        if( resultCode == RESULT_OK ){
-//            Uri uri = data.getData();
-//            if(uri == null) {
-//                //use bundle to get data
-//                Bundle bundle = data.getExtras();
-//                if (bundle != null) {
-//                    Bitmap photo = (Bitmap) bundle.get("data"); //get bitmap
-//                    uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), photo, null, null));
-//                    //mIBPortrait.setImageBitmap(photo);
-//
-//                }
-//
-//
-//            }
-            startPhotoZoom(selectedImageUri);
+    }
 
-        }
+    protected void onSelectedCropFinish(Bitmap bitmap, File file){
 
     }
 
     protected void onCorpImageResult(int resultCode, Intent data){
+        if( resultCode == RESULT_OK ){
+            Bundle extras = data.getExtras();
+            if(extras != null){
+                Bitmap bitmap = extras.getParcelable("data");
+                String path = getCacheDir() + "tempCropImage.jpg";
+                File file = ToolMaster.SavePicInLocal(bitmap, path);
+                onSelectedCropFinish(bitmap, file);
+            }
+        }
     }
+
+    private void onFromCamera(int resultCode, Intent data){
+
+        if( resultCode == RESULT_OK ){
+            if( isNeedCropImage() ){
+                startPhotoZoom(selectedImageUri);
+            }else {
+                onSelectedFromCameraFinish(selectedImageUri);
+            }
+        }
+
+    }
+
+
 
     private void startPhotoZoom(final Uri uri){
         handler.post(new Runnable() {
@@ -140,14 +164,54 @@ public class ImageSelectedActivity extends BaseActivity {
                 Intent intent = new Intent("com.android.camera.action.CROP");
                 intent.setDataAndType(uri, "image/*");
                 intent.putExtra("crop", "true");
-                intent.putExtra("aspectX", 1);
-                intent.putExtra("aspectY", 1);
-                intent.putExtra("outputX", 96);
-                intent.putExtra("outputY", 96);
+                intent.putExtra("aspectX", cropAspectX);
+                intent.putExtra("aspectY", cropAspectY);
+                intent.putExtra("outputX", cropWidth);
+                intent.putExtra("outputY", cropHeight);
                 intent.putExtra("return-data", true);
                 startActivityForResult(intent, REQUEST_CROP_IMAGE);
             }
         });
 
+    }
+
+    public boolean isNeedCropImage() {
+        return isNeedCropImage;
+    }
+
+    public void setIsNeedCropImage(boolean isNeedCropImage) {
+        this.isNeedCropImage = isNeedCropImage;
+    }
+
+    public int getCropAspectX() {
+        return cropAspectX;
+    }
+
+    public void setCropAspectX(int cropAspectX) {
+        this.cropAspectX = cropAspectX;
+    }
+
+    public int getCropAspectY() {
+        return cropAspectY;
+    }
+
+    public void setCropAspectY(int cropAspectY) {
+        this.cropAspectY = cropAspectY;
+    }
+
+    public int getCropWidth() {
+        return cropWidth;
+    }
+
+    public void setCropWidth(int cropWidth) {
+        this.cropWidth = cropWidth;
+    }
+
+    public int getCropHeight() {
+        return cropHeight;
+    }
+
+    public void setCropHeight(int cropHeight) {
+        this.cropHeight = cropHeight;
     }
 }

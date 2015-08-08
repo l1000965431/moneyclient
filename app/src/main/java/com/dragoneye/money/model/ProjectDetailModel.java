@@ -62,6 +62,11 @@ public class ProjectDetailModel implements Serializable {
     String marketAnalysis;
 
     /**
+     * 盈利模式
+     */
+    String profitMode;
+
+    /**
      * 团队介绍
      */
     String teamIntroduce;
@@ -251,5 +256,13 @@ public class ProjectDetailModel implements Serializable {
 
     public void setTotalStage(int totalStage) {
         this.totalStage = totalStage;
+    }
+
+    public String getProfitMode() {
+        return profitMode;
+    }
+
+    public void setProfitMode(String profitMode) {
+        this.profitMode = profitMode;
     }
 }

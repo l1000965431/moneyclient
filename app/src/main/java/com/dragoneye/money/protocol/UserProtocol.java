@@ -105,4 +105,16 @@ public interface UserProtocol {
 
 
     /*****************************************************************************************/
+
+    /******************************************************************************************
+     *  钱包余额                                                                               *
+     ******************************************************************************************/
+    String URL_CHANGE_USER_PORTRAIT = HttpUrlConfig.URL_ROOT + "User/ChangeUserHeadPortrait";
+
+    String CHANGE_USER_PORTRAIT_PARAM_USER_ID = "userId";
+    String CHANGE_USER_PORTRAIT_PARAM_URL = "Url";
+
+    int CHANGE_PORTRAIT_RESULT_SUCCESS = 0;
+    int CHANGE_PORTRAIT_RESULT_FAILED = -1;
+    /*****************************************************************************************/
 }

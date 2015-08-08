@@ -23,4 +23,9 @@ public interface PreferencesConfig {
      * 记录是否显示过特性页
      */
     String IS_SHOWED_FEATURE = "IS_SHOWED_FEATURE";
+
+    /**
+     *  记录最后一次的用户登录数据
+     */
+    String LAST_LOGIN_USER_DATA = "LAST_LOGIN_USER_DATA";
 }

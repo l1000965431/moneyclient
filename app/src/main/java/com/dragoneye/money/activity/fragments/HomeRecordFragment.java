@@ -17,19 +17,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
-import com.dragoneye.money.activity.InvestProjectActivity;
 import com.dragoneye.money.activity.ProjectDetailActivity;
+import com.dragoneye.money.application.MyApplication;
 import com.dragoneye.money.config.PreferencesConfig;
 import com.dragoneye.money.dao.Project;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
 import com.dragoneye.money.model.OrderModel;
 import com.dragoneye.money.protocol.GetProjectListProtocol;
+import com.dragoneye.money.tool.ToolMaster;
 import com.dragoneye.money.tool.UIHelper;
-import com.dragoneye.money.user.CurrentUser;
 import com.dragoneye.money.view.RefreshableView;
 import com.dragoneye.money.view.TopTabButton;
-import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -132,42 +132,34 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
         public void run() {
             HttpParams httpParams = new HttpParams();
 
-            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_USER_ID, CurrentUser.getCurrentUser().getUserId());
-            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_FIRST_PAGE, 0);
-            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_TOKEN, CurrentUser.getToken());
+            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_USER_ID, ((MyApplication)getActivity().getApplication()).getCurrentUser().getUserId());
+            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_PAGE_INDEX, 0);
+            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_TOKEN, ((MyApplication)getActivity().getApplication()).getToken());
+            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_NUM_PER_PAGE, 10);
 
             HttpClient.atomicPost(getActivity(), GetProjectListProtocol.URL_GET_ORDER_LIST, httpParams, new HttpClient.MyHttpHandler() {
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    UIHelper.toast(getActivity(), "网络异常");
                     refreshableView.finishRefreshing();
                 }
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
+                    refreshableView.finishRefreshing();
                     if (s == null) {
-                        UIHelper.toast(getActivity(), "服务器异常");
-                        refreshableView.finishRefreshing();
+                        UIHelper.toast(getActivity(), "服务器繁忙");
                         return;
                     }
-                    onUpdateOrderResult(HttpClient.getValueFromHeader(headers, GetProjectListProtocol.GET_ORDER_RESULT_KEY), s);
+                    onUpdateOrderResult(s);
                 }
             });
         }
     };
 
-    private void onUpdateOrderResult(String result, String response){
-        switch (result){
-            case GetProjectListProtocol.GET_ORDER_RESULT_SUCCESS:
-                UIHelper.toast(getActivity(), "更新成功");
-                onUpdateOrderSuccess(response);
-                refreshableView.finishRefreshing();
-                break;
-            case GetProjectListProtocol.GET_ORDER_RESULT_NEED_LOGIN:
-                UIHelper.toast(getActivity(), "需要登录");
-                refreshableView.finishRefreshing();
-                break;
-            default:
-                break;
+    private void onUpdateOrderResult(String result){
+        if( result.isEmpty() ){
+
+        }else {
+            onUpdateOrderSuccess(result);
         }
     }
 
@@ -181,8 +173,19 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
                 orderModel.setOrderState(object.getInt("orderState"));
                 orderModel.setPurchaseNum(object.getInt("PurchaseNum"));
                 orderModel.setAdvanceNum(object.getInt("AdvanceNum"));
-                orderModel.setProjectName(object.getString("ActivityName"));
-                orderModel.setProjectStatus(object.getInt("ActivityStatus"));
+                orderModel.setOrderLines(object.getInt("orderLines"));
+                JSONObject detail = object.getJSONObject("activityDetailModel");
+                orderModel.setActivityStageId(detail.getString("activityStageId"));
+                orderModel.setActivityId(detail.getString("activityId"));
+                orderModel.setActivityName(detail.getString("activityName"));
+                orderModel.setSummary(detail.getString("summary"));
+                orderModel.setTargetFund(detail.getInt("targetFund"));
+                orderModel.setStatus(detail.getInt("status"));
+                orderModel.setImageUrl(detail.getString("imageUrl"));
+                orderModel.setCurrentFund(detail.getInt("currentFund"));
+                orderModel.setCurrentStage(detail.getInt("currentStage"));
+                orderModel.setTotalStage(detail.getInt("totalStage"));
+
                 orderModels.add(orderModel);
             }
 
@@ -269,18 +272,27 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
                 viewHolder.tvInvestStageNum = (TextView)convertView.findViewById(R.id.home_record_listview_tv_invest_stage_num);
                 viewHolder.tvEarningProportion = (TextView)convertView.findViewById(R.id.home_record_listview_tv_earning_proportion);
                 viewHolder.tvEarningProportion.setOnClickListener(HomeRecordFragment.this);
+                viewHolder.tvTargetFund = (TextView)convertView.findViewById(R.id.home_record_listview_tv_targetFund);
 
                 convertView.setTag(viewHolder);
             }else{
                 viewHolder = (ViewHolder)convertView.getTag();
             }
 
-            viewHolder.tvProjectName.setText(orderModel.getProjectName());
-            viewHolder.tvInvestAmount.setText(String.format(getString(R.string.invest_project_invested_price), orderModel.getOrderLines()));
+            viewHolder.tvProjectName.setText(orderModel.getActivityName());
+            viewHolder.tvInvestAmount.setText(String.format(getString(R.string.invest_project_invested_price),
+                    ToolMaster.convertToPriceString(orderModel.getOrderLines())));
             viewHolder.tvInvestPriceNum.setText(String.format(getString(R.string.invest_project_invested_quantity), orderModel.getPurchaseNum()));
             viewHolder.tvInvestStageNum.setText(String.format(getString(R.string.invest_project_invested_installments), orderModel.getAdvanceNum()));
             viewHolder.tvEarningProportion.setTag(orderModel);
+            viewHolder.tvTargetFund.setText(ToolMaster.convertToPriceString(orderModel.getTargetFund()));
+            try{
+                JSONArray jsonArray = new JSONArray(orderModel.getImageUrl());
+                String url = jsonArray.getString(0);
+                ImageLoader.getInstance().displayImage(url, viewHolder.ivLogo);
+            }catch (Exception e){
 
+            }
 
             return convertView;
         }
@@ -292,6 +304,7 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
             TextView tvInvestPriceNum;
             TextView tvInvestStageNum;
             TextView tvEarningProportion;
+            TextView tvTargetFund;
 
         }
     }

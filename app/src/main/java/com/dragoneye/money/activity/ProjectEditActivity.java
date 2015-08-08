@@ -1,21 +1,25 @@
 package com.dragoneye.money.activity;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.dragoneye.money.R;
-import com.dragoneye.money.activity.base.BaseActivity;
-import com.dragoneye.money.activity.base.ImageMulSelectedActivity;
 import com.dragoneye.money.activity.base.ImageSelectedActivity;
+import com.dragoneye.money.application.MyApplication;
 import com.dragoneye.money.config.HttpUrlConfig;
 import com.dragoneye.money.http.HttpClient;
 import com.dragoneye.money.http.HttpParams;
@@ -26,17 +30,22 @@ import com.dragoneye.money.tool.UIHelper;
 import com.dragoneye.money.user.CurrentUser;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCancellationSignal;
 import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UpProgressHandler;
 import com.qiniu.android.storage.UploadManager;
+import com.qiniu.android.storage.UploadOptions;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.UUID;
 
 
-public class ProjectEditActivity extends ImageSelectedActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class ProjectEditActivity extends ImageSelectedActivity implements View.OnClickListener,
+        CompoundButton.OnCheckedChangeListener, View.OnLongClickListener {
     private static final long MAX_IMAGE_SIZE = 500 * 1024;
     private static final int MAX_IMAGE_NUM = 8;
 
@@ -56,12 +65,21 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
     private TextView mTVSaveProject;
     private TextView mTVSelectedImage;
 
-    private ArrayList<File> mImageFile = new ArrayList<>();
+    private ArrayList<Uri> mImageUri = new ArrayList<>();
+    private ArrayList<String> mImagesURL = new ArrayList<>();
     private String mUploadToken;
 
     private ArrayList<RadioButton> mRBProjectTypeList = new ArrayList<>();
     private CompoundButton mRBSelectedProjectType;
 
+    private ImageView mIVImageViews[] = new ImageView[MAX_IMAGE_NUM];
+
+    ProjectDetailModel mDetailModel = new ProjectDetailModel();
+    ProgressDialog progressDialog;
+
+    private int uploadingImageIndex = 0;
+    private boolean isCancelUpload = true;
+    UploadManager uploadManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +87,6 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
         setContentView(R.layout.fragment_project_launched);
         initView();
         initData();
-        test();
     }
 
     private void initView(){
@@ -103,6 +120,24 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
         for(RadioButton radioButton : mRBProjectTypeList){
             radioButton.setOnCheckedChangeListener(this);
         }
+
+        mIVImageViews[0] = (ImageView)findViewById(R.id.project_launched_iv_projectImage0);
+        mIVImageViews[1] = (ImageView)findViewById(R.id.project_launched_iv_projectImage1);
+        mIVImageViews[2] = (ImageView)findViewById(R.id.project_launched_iv_projectImage2);
+        mIVImageViews[3] = (ImageView)findViewById(R.id.project_launched_iv_projectImage3);
+        mIVImageViews[4] = (ImageView)findViewById(R.id.project_launched_iv_projectImage4);
+        mIVImageViews[5] = (ImageView)findViewById(R.id.project_launched_iv_projectImage5);
+        mIVImageViews[6] = (ImageView)findViewById(R.id.project_launched_iv_projectImage6);
+        mIVImageViews[7] = (ImageView)findViewById(R.id.project_launched_iv_projectImage7);
+        for(int i = 0; i < mIVImageViews.length; i++){
+            mIVImageViews[i].setVisibility(View.GONE);
+            mIVImageViews[i].setOnClickListener(this);
+            mIVImageViews[i].setOnLongClickListener(this);
+            mIVImageViews[i].setTag(i);
+        }
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
     }
 
     private void initData(){
@@ -125,13 +160,86 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
             case R.id.project_launched_tv_selected_image:
                 onSelectedImage();
                 break;
+            case R.id.project_launched_iv_projectImage0:
+            case R.id.project_launched_iv_projectImage1:
+            case R.id.project_launched_iv_projectImage2:
+            case R.id.project_launched_iv_projectImage3:
+            case R.id.project_launched_iv_projectImage4:
+            case R.id.project_launched_iv_projectImage5:
+            case R.id.project_launched_iv_projectImage6:
+            case R.id.project_launched_iv_projectImage7:
+                Object tag = v.getTag();
+                if( tag != null ){
+                    int index = (int)tag;
+                    onPreviewImage(index);
+                }
+                break;
         }
     }
 
+    @Override
+    public boolean onLongClick(View v){
+        switch (v.getId()){
+            case R.id.project_launched_iv_projectImage0:
+            case R.id.project_launched_iv_projectImage1:
+            case R.id.project_launched_iv_projectImage2:
+            case R.id.project_launched_iv_projectImage3:
+            case R.id.project_launched_iv_projectImage4:
+            case R.id.project_launched_iv_projectImage5:
+            case R.id.project_launched_iv_projectImage6:
+            case R.id.project_launched_iv_projectImage7:
+                Object tag = v.getTag();
+                if( tag != null ){
+                    int index = (int)tag;
+                    removeOnImage(index);
+                    return true;
+                }
+                break;
+        }
+
+        return false;
+    }
+
+    private void onPreviewImage(int index){
+
+        Intent intent = new Intent(this, ImageExplorerActivity.class);
+        intent.putExtra(ImageExplorerActivity.EXTRA_URI_ARRAY, mImageUri);
+        intent.putExtra(ImageExplorerActivity.EXTRA_INDEX_TO_SHOW, index);
+        startActivity(intent);
+    }
+
     private void onSelectedImage(){
-        goToPortraitSelect();
+        goToGallerySelect();
 //        Intent intent = new Intent(this, ImageMulSelectedActivity.class);
 //        startActivity(intent);
+    }
+
+    private void addImageToShow(Uri uri){
+        if( mImageUri.size() >= MAX_IMAGE_NUM ){
+            UIHelper.toast(this, "超出图片数量限制");
+            return;
+        }
+        int currentSize = mImageUri.size();
+        mIVImageViews[currentSize].setVisibility(View.VISIBLE);
+        mIVImageViews[currentSize].setImageBitmap(ToolMaster.getBitmapFromUri(this, uri));
+
+        mImageUri.add(uri);
+    }
+
+    private void removeOnImage(int index){
+        if(index > mImageUri.size()){
+            return;
+        }
+
+        mImageUri.remove(index);
+        for(ImageView imageView : mIVImageViews){
+            imageView.setVisibility(View.GONE);
+        }
+
+        for(int i = 0; i < mImageUri.size(); i++){
+            mIVImageViews[i].setVisibility(View.VISIBLE);
+            mIVImageViews[i].setImageBitmap(ToolMaster.getBitmapFromUri(this, mImageUri.get(i)));
+        }
     }
 
     @Override
@@ -147,63 +255,129 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
             UIHelper.toast(this, "图片太大!");
             return;
         }
-        mImageFile.add(file);
 
-        UIHelper.toast(this, "选择成功");
+        addImageToShow(uri);
     }
 
     private void onSave(){
-//        ProjectDetailModel projectDetail = new ProjectDetailModel();
-//        if( !getProjectInput(projectDetail) ){
-//            return;
-//        }
+        if( !getProjectInput(mDetailModel) ){
+            return;
+        }
 
-//        startUploadProject(projectDetail);
-        onUploadTest();
+        if( mImageUri.size() == 0 ){
+            UIHelper.toast(this, "请添加一张或多张项目图片");
+            return;
+        }
+
+        if( mUploadToken == null ){
+            isCancelUpload = false;
+            progressDialog.setMessage("正在连接服务器");
+            progressDialog.show();
+            handler.post(getUploadToken_r);
+        }else {
+            startUploadImages();
+        }
     }
 
-    private void test(){
-        HttpClient.atomicPost(this, HttpUrlConfig.URL_ROOT + "ImageUploadController/getUploadToken",
-                null, new HttpClient.MyHttpHandler() {
+    Runnable getUploadToken_r = new Runnable() {
+        @Override
+        public void run() {
+            HttpClient.atomicPost(ProjectEditActivity.this, HttpUrlConfig.URL_ROOT + "ImageUploadController/getUploadToken",
+                    null, new HttpClient.MyHttpHandler() {
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+                            cancelUpload();
+                        }
+
+                        @Override
+                        public void onSuccess(int i, Header[] headers, String s) {
+                            UIHelper.toast(ProjectEditActivity.this, s);
+                            mUploadToken = s;
+                            startUploadImages();
+                        }
+                    });
+        }
+    };
+
+    private void startUploadImages(){
+        isCancelUpload = false;
+        uploadingImageIndex = 0;
+        uploadManager = new UploadManager();
+        progressDialog.show();
+        handler.post(uploadOneImage_r);
+    }
+
+    private void cancelUpload(){
+        isCancelUpload = true;
+        progressDialog.dismiss();
+    }
+
+    Runnable uploadOneImage_r = new Runnable() {
+        @Override
+        public void run() {
+            try{
+                progressDialog.setMessage("正在上传图片: " + (uploadingImageIndex + 1) + "/" + mImageUri.size());
+                String filePath = ToolMaster.getRealPathFromURI(ProjectEditActivity.this, mImageUri.get(uploadingImageIndex));
+                if(filePath == null){
+                    throw new Exception();
+                }
+                File file = new File(filePath);
+                String key = UUID.randomUUID().toString();
+                uploadManager.put(file, key, mUploadToken, new UpCompletionHandler() {
                     @Override
-                    public void onSuccess(int i, Header[] headers, String s) {
-                        UIHelper.toast(ProjectEditActivity.this, s);
-                        mUploadToken = s;
+                    public void complete(String s, ResponseInfo responseInfo, JSONObject jsonObject) {
+                        ++uploadingImageIndex;
+                        mImagesURL.add(HttpUrlConfig.URL_IMAGE_SERVER_HEAD + s);
+                        if(uploadingImageIndex < mImageUri.size()){
+                            handler.post(uploadOneImage_r);
+                        }else {
+                            handler.post(uploadProject_r);
+                        }
                     }
-                });
-    }
+                }, new UploadOptions(null, null, false, new UpProgressHandler() {
+                    @Override
+                    public void progress(String s, double v) {
 
-    private void onUploadTest(){
-        UploadManager uploadManager = new UploadManager();
-
-        File file = mImageFile.get(0);
-
-        uploadManager.put(file, "moneyImageUploadTest", mUploadToken, new UpCompletionHandler() {
-            @Override
-            public void complete(String s, ResponseInfo responseInfo, JSONObject jsonObject) {
-                UIHelper.toast(ProjectEditActivity.this, "上传成功");
-                Log.i("upload", responseInfo.toString());
+                    }
+                }, new UpCancellationSignal() {
+                    @Override
+                    public boolean isCancelled() {
+                        return isCancelUpload;
+                    }
+                }));
+            }catch (Exception e){
+                UIHelper.toast(ProjectEditActivity.this, "发生意外错误，提交失败!");
+                e.printStackTrace();
+                cancelUpload();
             }
-        }, null);
-    }
+        }
+    };
 
-    private void startUploadProject(ProjectDetailModel projectDetail){
-        HttpParams httpParams = new HttpParams();
-        httpParams.putGsonData(projectDetail);
+    Runnable uploadProject_r = new Runnable() {
+        @Override
+        public void run() {
+            progressDialog.setMessage("正在提交项目...");
+            String json = ToolMaster.gsonInstance().toJson(mImagesURL);
+            mDetailModel.setImageUrl(json);
+            HttpParams httpParams = new HttpParams();
+            httpParams.putGsonData(mDetailModel);
 
-        HttpClient.get(UploadProjectProtocol.URL_SUBMIT_PROJECT, httpParams, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                Log.d("SubmitProject Failure", s);
-            }
+            HttpClient.post(UploadProjectProtocol.URL_SUBMIT_PROJECT, httpParams, new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    UIHelper.toast(ProjectEditActivity.this, "无法连接到服务器");
+                    cancelUpload();
+                }
 
-            @Override
-            public void onSuccess(int i, Header[] headers, String s) {
-                Log.d("SubmitProject Success", s);
-                UIHelper.toast(ProjectEditActivity.this, "上传成功");
-            }
-        });
-    }
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    Log.d("SubmitProject Success", s);
+                    progressDialog.dismiss();
+                    UIHelper.toast(ProjectEditActivity.this, "项目提交成功");
+                }
+            });
+        }
+    };
 
     private boolean getProjectInput(ProjectDetailModel projectDetail){
         projectDetail.setName(mETProjectName.getText().toString());
@@ -227,31 +401,8 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
         projectDetail.setMarketAnalysis(mETMarketAnalysis.getText().toString());
         projectDetail.setTeamIntroduce(mETTeamIntroduce.getText().toString());
         projectDetail.setTags(mETTags.getText().toString());
-        projectDetail.setCreatorId(CurrentUser.getCurrentUser().getUserId());
+        projectDetail.setCreatorId(((MyApplication)getApplication()).getCurrentUser().getUserId());
+        projectDetail.setProfitMode(mETProfitModel.getText().toString());
         return true;
-    }
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_project_edit, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

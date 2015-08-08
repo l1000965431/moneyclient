@@ -1,6 +1,8 @@
 package com.dragoneye.money.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
@@ -10,11 +12,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.dragoneye.money.R;
 import com.dragoneye.money.activity.base.BaseActivity;
 import com.dragoneye.money.view.ZoomImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 
@@ -61,33 +67,30 @@ public class ImageExplorerActivity extends BaseActivity {
                 ZoomImageView imageView = null;
                 try {
                     imageView = new ZoomImageView(ImageExplorerActivity.this);
-                    DisplayImageOptions options;
-                    options = new DisplayImageOptions.Builder()
-                            .cacheOnDisk(true)
-                            .build();
-                    imageView.setImageBitmap( MediaStore.Images.Media.getBitmap(getContentResolver(),
-                            uris.get(position) ) );
-//                    ImageLoader.getInstance().displayImage( uris.get(position).toString(), imageView, options, new ImageLoadingListener() {
-//                        @Override
-//                        public void onLoadingStarted(String s, View view) {
-//                            if (mViewPager.getCurrentItem() == position) {
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onLoadingFailed(String s, View view, FailReason failReason) {
-//                        }
-//
-//                        @Override
-//                        public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-//                            WindowManager wm = (WindowManager) ImageExplorerActivity.this.getSystemService(Context.WINDOW_SERVICE);
-//                            imageViews[position].scaleToWindowSize(wm.getDefaultDisplay().getWidth(), wm.getDefaultDisplay().getHeight());
-//                        }
-//
-//                        @Override
-//                        public void onLoadingCancelled(String s, View view) {
-//                        }
-//                    });
+
+//                    imageView.setImageBitmap( MediaStore.Images.Media.getBitmap(getContentResolver(),
+//                            uris.get(position) ) );
+                    ImageLoader.getInstance().displayImage( uris.get(position).toString(), imageView, null, new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String s, View view) {
+                            if (mViewPager.getCurrentItem() == position) {
+                            }
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String s, View view, FailReason failReason) {
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                            WindowManager wm = (WindowManager) ImageExplorerActivity.this.getSystemService(Context.WINDOW_SERVICE);
+                            imageViews[position].scaleToWindowSize(wm.getDefaultDisplay().getWidth(), wm.getDefaultDisplay().getHeight());
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String s, View view) {
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -115,27 +118,5 @@ public class ImageExplorerActivity extends BaseActivity {
         });
 
         mViewPager.setCurrentItem(indexToShow);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_image_explorer, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
