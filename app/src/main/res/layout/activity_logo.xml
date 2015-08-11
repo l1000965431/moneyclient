@@ -12,4 +12,5 @@
         android:layout_centerHorizontal="true"
         android:src="@mipmap/logo"
         android:scaleType="centerCrop"/>
+
 </RelativeLayout>

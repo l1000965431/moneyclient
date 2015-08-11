@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent"
+    android:gravity="bottom"
+    android:id="@+id/function_switch_bottom">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/function_switch_bottom_button_layout"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/function_switch_bottom_button_layout">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ff0681d3"
+            android:layout_weight="1"
+            android:id="@+id/function_switch_bottom_button_record" >
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:id="@+id/function_switch_bottom_button_record_red"
+                android:src="@mipmap/icon_point"
+                android:layout_gravity="center|right"
+                android:tint="#ffff4b51"
+                android:scaleType="fitXY"
+                android:layout_marginBottom="-10dp"
+                android:layout_marginRight="70dp" />
+
+            <ImageView
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:id="@+id/function_switch_bottom_button_record_imageView"
+                android:src="@mipmap/button_record"
+                android:layout_gravity="center"
+                android:tint="@color/home_bottom_button_unselected"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="项目管理"
+                android:id="@+id/function_switch_bottom_button_record_textView"
+                android:layout_gravity="center"
+                android:textSize="10dp"
+                android:textColor="@color/home_bottom_button_unselected"
+                android:paddingBottom="3dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ff0487de"
+            android:layout_weight="1"
+            android:id="@+id/function_switch_bottom_button_me" >
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:id="@+id/function_switch_bottom_button_me_red"
+                android:src="@mipmap/icon_point"
+                android:layout_gravity="center|right"
+                android:tint="#ffff4b51"
+                android:scaleType="fitXY"
+                android:layout_marginRight="70dp"
+                android:layout_marginBottom="-10dp" />
+
+            <ImageView
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:id="@+id/function_switch_bottom_button_me_imageView"
+                android:src="@mipmap/button_me"
+                android:layout_gravity="center"
+                android:tint="@color/home_bottom_button_unselected"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="我"
+                android:id="@+id/function_switch_bottom_button_me_textView"
+                android:layout_gravity="center"
+                android:textSize="10dp"
+                android:textColor="@color/home_bottom_button_unselected"
+                android:paddingBottom="3dp" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -68,4 +68,13 @@
     <string name="title_activity_image_mul_selected">ImageMulSelectedActivity</string>
     <string name="title_activity_progress_action_bar">ProgressActionBarActivity</string>
     <string name="title_activity_agreement">用户服务协议</string>
+
+    <!-- 项目者，项目记录状态文字 -->
+    <string name="home_investment_listview_developer_auditing">项目审核中（需要3到7个工作日）</string>
+    <string name="home_investment_listview_developer_notpass">未通过审核</string>
+    <string name="home_investment_listview_developer_reservedwait">已通过（进入项目库保留）</string>
+    <string name="home_investment_listview_developer_sign">已通过（请等待我们方客服与您联系，请保持电话畅通）</string>
+    <string name="home_investment_listview_developer_fundraising">已开始上线筹款</string>
+    <string name="home_investment_listview_developer_end">筹款结束（募集款已发出）</string>
+
 </resources>
