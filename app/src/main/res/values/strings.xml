@@ -37,7 +37,7 @@
     <string name="title_activity_image_explorer">图片</string>
 
     <!-- 投资界面 -->
-    <string name="invest_project_invested_price">您已入资:%d￥</string>
+    <string name="invest_project_invested_price">您已入资:%s</string>
     <string name="invest_project_invested_quantity">购买数量:%d</string>
     <string name="invest_project_invested_earnings">您的收益:X</string>
     <string name="invest_project_invested_goal">筹款目标:</string>
@@ -49,7 +49,7 @@
     
     <!-- 货币单位 -->
     <string name="monetary_unit_rmb">元</string>
-    <string name="title_activity_user_info">UserInfoActivity</string>
+    <string name="title_activity_user_info">个人资料</string>
 
     <!-- 项目列表项 -->
     <string name="project_list_item_stage_info">第%s期 众筹中</string>
@@ -66,6 +66,8 @@
     <string name="title_activity_feature">微聚竞投</string>
     <string name="title_activity_image_selected">ImageSelectedActivity</string>
     <string name="title_activity_image_mul_selected">ImageMulSelectedActivity</string>
+    <string name="title_activity_progress_action_bar">ProgressActionBarActivity</string>
+    <string name="title_activity_agreement">用户服务协议</string>
 
     <!-- 项目者，项目记录状态文字 -->
     <string name="home_investment_listview_developer_auditing">项目审核中（需要3到7个工作日）</string>

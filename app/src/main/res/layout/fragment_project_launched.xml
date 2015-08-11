@@ -426,20 +426,6 @@
                         android:layout_gravity="center" />
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:text="上传图片"
-                            android:id="@+id/textView25"
-                            android:textSize="10dp"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:textColor="#ff727272"
-                            android:layout_marginLeft="3dp"
-                            android:background="@drawable/edittext1"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
-                            android:layout_gravity="center" />
-
-                        <TextView
                             android:layout_width="fill_parent"
                             android:layout_height="50dp"
                             android:text="支持jpg,png,jpeg每张大小不超过500K，推荐尺寸：630*260，上传的第一张会默认为封面图。最多不要超过8张"
@@ -460,26 +446,35 @@
                         <ImageView
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:id="@+id/imageView18"
+                            android:id="@+id/project_launched_iv_projectImage0"
                             android:src="@mipmap/icon_albums"
-                            android:tint="#ff969696"
-                            android:layout_margin="1dp" />
+                            android:layout_margin="1dp"
+                            android:focusableInTouchMode="false"
+                            android:scaleType="centerCrop"/>
 
                         <ImageView
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:id="@+id/imageView19"
+                            android:id="@+id/project_launched_iv_projectImage1"
                             android:src="@mipmap/icon_albums"
-                            android:tint="#ff969696"
-                            android:layout_margin="1dp" />
+                            android:layout_margin="1dp"
+                            android:scaleType="centerCrop"/>
 
                         <ImageView
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:id="@+id/imageView20"
+                            android:id="@+id/project_launched_iv_projectImage2"
                             android:src="@mipmap/icon_albums"
-                            android:tint="#ff969696"
-                            android:layout_margin="1dp" />
+                            android:layout_margin="1dp"
+                            android:scaleType="centerCrop"/>
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:id="@+id/project_launched_iv_projectImage3"
+                            android:src="@mipmap/icon_albums"
+                            android:layout_margin="1dp"
+                            android:scaleType="centerCrop"/>
 
                     </LinearLayout>
 
@@ -492,57 +487,34 @@
                         <ImageView
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:id="@+id/imageView21"
+                            android:id="@+id/project_launched_iv_projectImage4"
                             android:src="@mipmap/icon_albums"
-                            android:tint="#ff969696"
-                            android:layout_margin="1dp" />
+                            android:layout_margin="1dp"
+                            android:scaleType="centerCrop"/>
 
                         <ImageView
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:id="@+id/imageView22"
+                            android:id="@+id/project_launched_iv_projectImage5"
                             android:src="@mipmap/icon_albums"
-                            android:tint="#ff969696"
-                            android:layout_margin="1dp" />
+                            android:layout_margin="1dp"
+                            android:scaleType="centerCrop"/>
 
                         <ImageView
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:id="@+id/imageView23"
+                            android:id="@+id/project_launched_iv_projectImage6"
                             android:src="@mipmap/icon_albums"
-                            android:tint="#ff969696"
-                            android:layout_margin="1dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_marginLeft="80dp" >
+                            android:layout_margin="1dp"
+                            android:scaleType="centerCrop"/>
 
                         <ImageView
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:id="@+id/imageView24"
+                            android:id="@+id/project_launched_iv_projectImage7"
                             android:src="@mipmap/icon_albums"
-                            android:tint="#ff969696"
-                            android:layout_margin="1dp" />
-
-                        <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:id="@+id/imageView25"
-                            android:src="@mipmap/icon_albums"
-                            android:tint="#ff969696"
-                            android:layout_margin="1dp" />
-
-                        <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:id="@+id/imageView26"
-                            android:src="@mipmap/icon_albums"
-                            android:tint="#ff969696"
-                            android:layout_margin="1dp" />
+                            android:layout_margin="1dp"
+                            android:scaleType="centerCrop"/>
                     </LinearLayout>
 
                 </LinearLayout>

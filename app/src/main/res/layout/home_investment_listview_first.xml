@@ -10,11 +10,11 @@
     android:id="@+id/home_investment_list_view_root">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="180dp"
         android:id="@+id/home_investment_list_view_item_iv_logo"
-        android:src="@mipmap/projects_display002_0"
-        android:scaleType="fitXY" />
+        android:src="@mipmap/icon_albums"
+        android:scaleType="centerCrop" />
 
     <TextView
         android:layout_width="wrap_content"

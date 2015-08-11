@@ -18,12 +18,12 @@
             android:layout_height="fill_parent"
             android:orientation="vertical">
 
-            <com.dragoneye.money.view.DotViewPager
+            <com.dragoneye.wjjt.view.DotViewPager
                 android:layout_width="fill_parent"
                 android:layout_height="170dp"
                 android:id="@+id/project_detail_dot_viewpager">
 
-            </com.dragoneye.money.view.DotViewPager>
+            </com.dragoneye.wjjt.view.DotViewPager>
 
             <LinearLayout
                 android:orientation="horizontal"
