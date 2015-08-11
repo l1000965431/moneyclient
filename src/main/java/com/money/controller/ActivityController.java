@@ -47,7 +47,7 @@ public class ActivityController extends ControllerBase implements IController {
             return "";
         } else {
             try {
-                List<ActivityDetailModel> activityModels = activityService.getAllActivityDetail();
+                List<ActivityDetailModel> activityModels = activityService.getAllActivityDetail(0, 1000);
                 String json = GsonUntil.getGson().toJson(activityModels);
                 return json;
             } catch (Exception e) {
