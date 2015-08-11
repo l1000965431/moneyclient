@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,8 @@ import com.dragoneye.wjjt.activity.base.BaseActivity;
 import com.dragoneye.wjjt.activity.fragments.HomeInvestmentFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeMyselfFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeRecordFragment;
+import com.umeng.message.PushAgent;
+import com.umeng.message.UmengRegistrar;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{
     public static final int TAB_INVESTMENT = 0;
@@ -58,6 +61,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         setContentView(R.layout.function_switch_bottom);
         initView();
         addListener();
+        InitPush();
     }
 
     private void initView(){
@@ -202,5 +206,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         public int getCount() {
             return TAB_COUNT;
         }
+    }
+
+    /**
+     * 初始化推送插件
+     */
+    private void InitPush(){
+        PushAgent mPushAgent = PushAgent.getInstance( this );
+        mPushAgent.enable();
+        PushAgent.getInstance(this).onAppStart();
+        String device_token = UmengRegistrar.getRegistrationId(this);
+        String device_token1 = UmengRegistrar.getRegistrationId(this);
+
+        Log.d( "InitPush",device_token1 );
     }
 }
