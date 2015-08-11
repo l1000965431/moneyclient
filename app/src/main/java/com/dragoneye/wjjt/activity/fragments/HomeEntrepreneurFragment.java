@@ -39,17 +39,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
- * Created by happysky on 15-6-19.
- * 主界面-投资
+ * Created by happysky on 15-8-11.
  */
-public class HomeInvestmentFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
-    private static final String TAG = HomeInvestmentFragment.class.getSimpleName();
-
-
+public class HomeEntrepreneurFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener{
     private RefreshableView refreshableView;
     private GridViewWithHeaderAndFooter mGridView;
-    private InvestmentListViewAdapter mAdapter;
+    private MyProjectListListViewAdapter mAdapter;
     private View mListViewFooter;
     private Boolean mIsLoadingMore;
     private ArrayList<ProjectDetailModel> mProjectList = new ArrayList<>();
@@ -88,7 +85,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         mListViewFooter.setVisibility(View.GONE);
         mGridView.setOnItemClickListener(this);
 
-        mAdapter = new InvestmentListViewAdapter(getActivity(), mProjectList);
+        mAdapter = new MyProjectListListViewAdapter(getActivity(), mProjectList);
         mGridView.setAdapter(mAdapter);
 
 
@@ -132,7 +129,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
             HttpClient.atomicPost(getActivity(), GetProjectListProtocol.URL_GET_PROJECT_LIST, params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d(TAG, "update project list failure-> " + s);
+                    Log.d("", "update project list failure-> " + s);
                     refreshableView.finishRefreshing();
                     if (mIsLoadingMore) {
                         mIsLoadingMore = false;
@@ -200,12 +197,12 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         startActivity(intent);
     }
 
-    public class InvestmentListViewAdapter extends BaseAdapter {
+    public class MyProjectListListViewAdapter extends BaseAdapter {
         private List<ProjectDetailModel> data;
         private Context context;
         private LayoutInflater mInflater;
 
-        public InvestmentListViewAdapter(Context context, List<ProjectDetailModel> data){
+        public MyProjectListListViewAdapter(Context context, List<ProjectDetailModel> data){
             this.context = context;
             this.data = data;
             mInflater = LayoutInflater.from(context);
@@ -293,7 +290,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                     }while (false);
                 }else {
                     viewHolder.ivLogo.setImageBitmap(BitmapFactory.decodeResource(getResources(),
-                            ((MyApplication)(context.getApplicationContext())).images.get(position % 7)));
+                            ((MyApplication) (context.getApplicationContext())).images.get(position % 7)));
                 }
             }catch (JSONException e){
                 e.printStackTrace();
