@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.0"
 
     defaultConfig {
-        applicationId "com.dragoneye.money"
+        applicationId "com.dragoneye.wjjt"
         minSdkVersion 9
         targetSdkVersion 22
         versionCode 1
@@ -16,6 +16,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    lintOptions{
+        checkReleaseBuilds false
+        abortOnError false
     }
 }
 
@@ -30,4 +34,14 @@ dependencies {
     compile files('libs/qiniu-android-sdk-7.0.7.jar')
     compile files('libs/happy-dns-0.2.3.1.jar')
     compile files('libs/umeng-analytics-v5.5.3.jar')
+    compile files('libs/umeng-update-v2.6.0.1.jar')
+    compile(name: 'libone', ext: 'aar')
+    compile(name: 'libpingpp', ext: 'aar')
+    compile(name: 'bdwallet_pay_sdk', ext: 'aar')
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
 }

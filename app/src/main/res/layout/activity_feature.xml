@@ -2,14 +2,14 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context="com.dragoneye.money.activity.FeatureActivity">
+                tools:context="com.dragoneye.wjjt.activity.FeatureActivity">
 
-    <com.dragoneye.money.view.DotViewPager
+    <com.dragoneye.wjjt.view.DotViewPager
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/feature_dot_viewpager">
 
-    </com.dragoneye.money.view.DotViewPager>
+    </com.dragoneye.wjjt.view.DotViewPager>
 
     <ImageView
         android:layout_width="wrap_content"

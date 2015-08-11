@@ -18,7 +18,7 @@
             android:paddingBottom="17dp"
             android:background="#ff1e1e1e">
 
-            <com.dragoneye.money.view.DotViewPager
+            <com.dragoneye.wjjt.view.DotViewPager
                 android:layout_width="fill_parent"
                 android:layout_height="170dp"
                 android:id="@+id/investment_project_detail_dot_viewpager"/>

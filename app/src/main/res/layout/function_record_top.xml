@@ -66,7 +66,7 @@
 
     </LinearLayout>
 
-    <com.dragoneye.money.view.RefreshableView
+    <com.dragoneye.wjjt.view.RefreshableView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/function_switch_bottom"
@@ -77,6 +77,6 @@
             android:layout_height="fill_parent"
             android:id="@+id/home_record_list_view"
             android:layout_centerHorizontal="true"/>
-    </com.dragoneye.money.view.RefreshableView>
+    </com.dragoneye.wjjt.view.RefreshableView>
 
 </RelativeLayout>
