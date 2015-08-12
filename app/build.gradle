@@ -41,6 +41,8 @@ dependencies {
     compile files('libs/com.umeng.message.lib_v2.4.1.jar')
     compile files('libs/MobTools.jar')
     compile files('libs/SMSSDK-1.2.2.jar')
+    compile files('libs/AnalysisSDK_0.0.3.jar')
+    compile files('libs/mframework.jar')
 }
 
 repositories {

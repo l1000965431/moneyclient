@@ -59,7 +59,7 @@ public class MyApplication extends Application {
         PushAgent mPushAgent = PushAgent.getInstance( this );
         mPushAgent.enable();
         PushAgent.getInstance(this).onAppStart();
-        SMSSDK.initSDK(this, PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET);
+        /*SMSSDK.initSDK(this, PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET);*/
 
         Log.d("UMENG TEST", getDeviceInfo(this));
 

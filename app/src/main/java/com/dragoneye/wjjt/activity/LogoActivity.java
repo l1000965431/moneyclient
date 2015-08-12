@@ -5,16 +5,15 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.BaseActivity;
 import com.dragoneye.wjjt.config.PreferencesConfig;
-import com.umeng.message.PushAgent;
-import com.umeng.message.UmengRegistrar;
 import com.umeng.update.UmengUpdateAgent;
+
+import cn.smssdk.SMSSDK;
 
 public class LogoActivity extends BaseActivity {
 
@@ -30,6 +29,8 @@ public class LogoActivity extends BaseActivity {
         handler.postDelayed(startNextActivity_r, 3000);
         getSupportActionBar().hide();
         UmengUpdateAgent.update(this);
+
+        SMSSDK.initSDK(this,PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET );
     }
 
     Runnable startNextActivity_r = new Runnable() {
