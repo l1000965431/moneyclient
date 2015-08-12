@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import cn.smssdk.SMSSDK;
+
 /**
  * Created by happysky on 15-6-30.
  */
@@ -57,7 +59,7 @@ public class MyApplication extends Application {
         PushAgent mPushAgent = PushAgent.getInstance( this );
         mPushAgent.enable();
         PushAgent.getInstance(this).onAppStart();
-
+        SMSSDK.initSDK(this, PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET);
 
         Log.d("UMENG TEST", getDeviceInfo(this));
 

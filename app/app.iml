@@ -96,6 +96,8 @@
     <orderEntry type="library" exported="" name="umeng-analytics-v5.5.3" level="project" />
     <orderEntry type="library" exported="" name="libpingpp-" level="project" />
     <orderEntry type="library" exported="" name="bdwallet_pay_sdk-" level="project" />
+    <orderEntry type="library" exported="" name="MobTools" level="project" />
+    <orderEntry type="library" exported="" name="SMSSDK-1.2.2" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="happy-dns-0.2.3.1" level="project" />
     <orderEntry type="library" exported="" name="umeng-update-v2.6.0.1" level="project" />
