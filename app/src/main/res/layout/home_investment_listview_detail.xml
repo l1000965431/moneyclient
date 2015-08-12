@@ -161,7 +161,7 @@
                         android:src="@mipmap/icon_triangle2"
                         android:layout_gravity="center"
                         android:layout_marginRight="10dp"
-                        android:tint="#ff44ff0b" />
+                        android:tint="#ffd0d0d0" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -260,7 +260,7 @@
                         android:src="@mipmap/icon_triangle2"
                         android:layout_gravity="center"
                         android:layout_marginRight="10dp"
-                        android:tint="#ff44ff0b" />
+                        android:tint="#ffd0d0d0" />
 
                 </LinearLayout>
 

@@ -794,7 +794,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="筹资的一定数额将归属于第三方平台，作为服务费用。《服务条款》"
+                    android:text="请您务必保证上述信息的真实性，我们会对其进行核实。《服务条款》"
                     android:id="@+id/fragment_register_Agreement_text"
                     android:layout_weight="0.45"
                     android:layout_gravity="center"
