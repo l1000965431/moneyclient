@@ -45,7 +45,7 @@ public class AuditActivityController extends ControllerBase implements IControll
      * @param response
      * @return
      */
-    @RequestMapping("getNoAudiActivity")
+    @RequestMapping("/getNoAudiActivity")
     @ResponseBody
     public String getNoAudiActivity(HttpServletRequest request, HttpServletResponse response) {
 
@@ -67,7 +67,7 @@ public class AuditActivityController extends ControllerBase implements IControll
      * @param response
      * @return
      */
-    @RequestMapping("getHasAudiActivity")
+    @RequestMapping("/getHasAudiActivity")
     @ResponseBody
     public String getHasAudiActivity(HttpServletRequest request, HttpServletResponse response) {
 
@@ -75,7 +75,7 @@ public class AuditActivityController extends ControllerBase implements IControll
         return "";
     }
 
-    @RequestMapping("setActivityAuditResult")
+    @RequestMapping("/setActivityAuditResult")
     @ResponseBody
     public String setActivityAuditResult(HttpServletRequest request, HttpServletResponse response) {
         ServiceAuditActivity serviceAuditActivity = ServiceFactory.getService("ServiceAuditActivity");
@@ -90,7 +90,7 @@ public class AuditActivityController extends ControllerBase implements IControll
         }
     }
 
-    @RequestMapping("splitActivity")
+    @RequestMapping("/splitActivity")
     @ResponseBody
     public String splitActivity(HttpServletRequest request, HttpServletResponse response){
         String ActivityID = request.getParameter( "ActivityID" );
@@ -100,7 +100,7 @@ public class AuditActivityController extends ControllerBase implements IControll
         return "1";
     }
 
-    @RequestMapping("ActivityStart")
+    @RequestMapping("/ActivityStart")
     @ResponseBody
     public String ActivityStart(HttpServletRequest request, HttpServletResponse response){
         String ActivityID = request.getParameter( "ActivityID" );

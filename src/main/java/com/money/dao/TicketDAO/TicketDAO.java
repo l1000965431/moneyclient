@@ -86,45 +86,40 @@ public class TicketDAO extends BaseDao {
      * @param InstallmentActivityID
      * @param TotalNum
      */
-    public void CreateTicketID(String InstallmentActivityID, int TotalNum,int TickType) {
+    public void CreateTicketID(String InstallmentActivityID, int TotalNum, int TickType) {
         String DBName = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
         Session session = this.getNewSession();
-        Transaction t = session.beginTransaction();
         int CurNum = 0;
-        try{
-            while (true) {
-                String insertSql = "insert into " +  DBName + " (TickID,PurchaseType) values";
-                if (TotalNum == CurNum) {
-                    t.commit();
-                    return;
-                }
-
-                String TicketID[] = new String[1000];
-
-                int index = 0;
-                for (int i = 0; i < 1000; ++i) {
-                    TicketID[i] = UUID.randomUUID().toString();
-                    index ++;
-
-                    if( index >= TotalNum ){
-                        break;
-                    }
-                }
-
-                String ValueSql = new String();
-                for( int j = 0; j < index; ++j ){
-                    ValueSql+= "('"+ TicketID[j] + "'," +Integer.toString( TickType )+ "),";
-                }
-
-                ValueSql = ValueSql.substring( 0,ValueSql.lastIndexOf( "," ) );
-                ValueSql +=";";
-                insertSql += ValueSql;
-                CurNum += index;
-                session.createSQLQuery( insertSql ).executeUpdate();
+        while (true) {
+            String insertSql = "insert into " + DBName + " (TickID,PurchaseType) values";
+            if (TotalNum == CurNum) {
+                return;
             }
-        }catch ( Exception e ){
-            t.rollback();
+
+            String TicketID[] = new String[1000];
+
+            int index = 0;
+            for (int i = 0; i < 1000; ++i) {
+                TicketID[i] = UUID.randomUUID().toString();
+                index++;
+
+                if (index >= TotalNum) {
+                    break;
+                }
+            }
+
+            String ValueSql = new String();
+            for (int j = 0; j < index; ++j) {
+                ValueSql += "('" + TicketID[j] + "'," + Integer.toString(TickType) + "),";
+            }
+
+            ValueSql = ValueSql.substring(0, ValueSql.lastIndexOf(","));
+            ValueSql += ";";
+            insertSql += ValueSql;
+            CurNum += index;
+            session.createSQLQuery(insertSql).executeUpdate();
         }
+
 
     }
 }

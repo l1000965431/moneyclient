@@ -70,10 +70,11 @@ public class OrderService extends ServiceBase implements ServiceInterface {
         orderModel.setOrderState(OrderModel.ORDER_STATE_NOSUBMITTED);
 
         //插入消息队列
-        String messagebody = GsonUntil.JavaClassToJson( orderModel );
+       /* String messagebody = GsonUntil.JavaClassToJson( orderModel );
         MoneyServerMQManager.SendMessage( new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TOPIC,
-                MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TAG,messagebody,Long.toString(OrderID)) );
+                MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TAG,messagebody,Long.toString(OrderID)) );*/
 
+        orderDAO.saveNoTransaction( orderModel );
         return Config.SERVICE_SUCCESS;
     }
 
@@ -188,12 +189,10 @@ public class OrderService extends ServiceBase implements ServiceInterface {
     /**
      * 根据用户ID 获得订单序列
      * @param UserID
-     * @param firstPage
+     * @param
      * @return
      */
-    public List getOrderByUserID( String UserID,int firstPage ){
-          List list = orderDAO.getOrderByUserID( UserID,firstPage,10 );
-          return list;
+    public List getOrderByUserID( String UserID,int page,int findNum ){
+          return orderDAO.getOrderByUserID( UserID,page,findNum );
     }
-
 }

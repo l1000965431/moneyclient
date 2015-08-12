@@ -10,13 +10,10 @@ import javax.persistence.*;
 @javax.persistence.Table(name = "PrizeList")
 public class PrizeListModel extends BaseModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int ID;
-
     /**
      * 分期项目ID
      */
+    @Id
     String ActivityIID;
 
     /**
@@ -29,14 +26,6 @@ public class PrizeListModel extends BaseModel {
      * 是否已经发奖
      */
     boolean IsPrize;
-
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
-    }
 
     public String getPrizeSituation() {
         return PrizeSituation;

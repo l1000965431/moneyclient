@@ -145,4 +145,22 @@ public class UserController extends ControllerBase implements IController
         String userID = request.getParameter( "userId" );
         return userService.SendCode( userID );
     }
+
+    @RequestMapping("/ChangeUserHeadPortrait")
+    @ResponseBody
+    public int ChangeUserHeadPortrait( HttpServletRequest request,
+                                   HttpServletResponse response ){
+        String userID = request.getParameter( "userId" );
+        String Url = request.getParameter( "Url" );
+
+        if( userID == null || userID.length() == 0 ){
+            return ServerReturnValue.SERVERRETURNERROR;
+        }
+
+        if( Url == null || Url.length() == 0 ){
+            return ServerReturnValue.SERVERRETURNERROR;
+        }
+
+        return userService.ChangeUserHeadPortrait( userID,Url );
+    }
 }

@@ -44,6 +44,8 @@ public class UserModel extends BaseModel {
     private String career;
     //是否完善过信息
     private boolean IsPerfect;
+    //用户头像
+    private String userHeadPortrait;
 
     public String getUserId() {
         return userId;
@@ -165,4 +167,14 @@ public class UserModel extends BaseModel {
     public void setCareer(String career) {
         this.career = career;
     }
+
+    public String getUserHeadPortrait() {
+        return userHeadPortrait;
+    }
+
+    public void setUserHeadPortrait(String UserHeadPortrait) {
+        userHeadPortrait = UserHeadPortrait;
+    }
+
+    
 }

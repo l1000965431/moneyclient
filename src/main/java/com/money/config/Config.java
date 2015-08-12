@@ -122,4 +122,6 @@ public class Config {
      * 短信验证码的超时时间
      */
     public static final int USERCODETIME = 120;
+
+    public static final int FINDPAGENUM = 1000;
 }

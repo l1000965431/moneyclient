@@ -2,14 +2,18 @@ package com.money.dao.PurchaseInAdvanceDAO;
 
 import com.money.Service.order.OrderService;
 import com.money.config.Config;
+import com.money.config.ServerReturnValue;
 import com.money.dao.BaseDao;
 import com.money.dao.activityDAO.activityDAO;
 import com.money.model.ActivityDynamicModel;
 import com.money.model.ActivityVerifyCompleteModel;
 import com.money.model.PurchaseInAdvanceModel;
+import javassist.convert.Transformer;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -60,18 +64,17 @@ public class PurchaseInAdvanceDAO extends BaseDao {
         String sql = "select * from " + DBNmae + " where PurchaseInAdvanceNum>CurPurchaseInAdvanceNum limit ?,?";
 
         Session session = this.getNewSession();
-        Transaction t = session.beginTransaction();
+
 
         try {
-            SQLQuery query = session.createSQLQuery(sql).addEntity(PurchaseInAdvanceModel.class);
+            Query query = session.createSQLQuery(sql).
+                    setResultTransformer(Transformers.aliasToBean(PurchaseInAdvanceModel.class));
 
             query.setParameter(0, page);
             query.setParameter(1, findnum);
             List<PurchaseInAdvanceModel> list = query.list();
-            t.commit();
             return list;
         } catch (Exception e) {
-            t.rollback();
             return null;
         }
 
@@ -85,24 +88,15 @@ public class PurchaseInAdvanceDAO extends BaseDao {
      * @param curPurchaseActivityNum 当前的次数
      * @return
      */
-    public int UpdatePurchaseActivityNum(String UserID, String ActivityID, int curPurchaseActivityNum) {
+    public int UpdatePurchaseActivityNum(int Id, String UserID, String ActivityID, int curPurchaseActivityNum) throws Exception {
         String DBNmae = Config.ACTIVITYPURCHASE + ActivityID;
-        String sql = "update " + DBNmae + " set CurPurchaseInAdvanceNum=? where UserID=?";
-
+        String sql = "update " + DBNmae + " set CurPurchaseInAdvanceNum=? where UserID=? and Id=?";
         Session session = this.getNewSession();
-        Transaction t = session.beginTransaction();
-        try {
-            SQLQuery query = session.createSQLQuery(sql);
-
-            query.setParameter(0, curPurchaseActivityNum);
-            query.setParameter(1, UserID);
-
-            query.executeUpdate();
-            t.commit();
-        } catch (Exception e) {
-            t.rollback();
-        }
-
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setParameter(0, curPurchaseActivityNum);
+        query.setParameter(1, UserID);
+        query.setParameter(2, Id);
+        query.executeUpdate();
 
         return 0;
     }
@@ -115,7 +109,7 @@ public class PurchaseInAdvanceDAO extends BaseDao {
      * @param PurchaseNum 当前的次数
      * @return
      */
-    public void PurchaseActivity(String ActivityID, String UserID, int PurchaseNum, int PurchaseType) throws Exception {
+    public int PurchaseActivity(String ActivityID, String UserID, int PurchaseNum, int PurchaseType) throws Exception {
         //刷新项目票的表 票的所有者
         String DBNmae = Config.ACTIVITYGROUPTICKETNAME + ActivityID;
         String sql = "update " + DBNmae + " set userId=? where userId='0' and PurchaseType=? limit ?";
@@ -130,28 +124,26 @@ public class PurchaseInAdvanceDAO extends BaseDao {
         ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDynamicModel.getActivityVerifyCompleteModel();
 
         if (activityDynamicModel == null || activityVerifyCompleteModel == null) {
-            return;
+            return ServerReturnValue.SERVERRETURNERROR;
         }
 
         switch (PurchaseType) {
             case Config.PURCHASELOCALTYRANTS:
                 int totalPeoples = activityDynamicModel.getActivityTotalLinesPeoples();
                 activityDynamicModel.setActivityCurLinesPeoples(totalPeoples);
-                int curLines = activityVerifyCompleteModel.getCurFund();
-                curLines += totalPeoples;
-                activityVerifyCompleteModel.setCurFund(curLines);
                 break;
             case Config.PURCHASEPRICKSILK:
-                activityDynamicModel.setActivityCurLines(PurchaseNum);
-                int curLines1 = activityVerifyCompleteModel.getCurFund();
-                curLines1 += PurchaseNum;
-                activityVerifyCompleteModel.setCurFund(curLines1);
+                int curLines = activityDynamicModel.getActivityCurLines();
+                curLines+=PurchaseNum;
+                activityDynamicModel.setActivityCurLines(curLines);
                 break;
+            default:
+                return ServerReturnValue.SERVERRETURNERROR;
         }
 
         query.executeUpdate();
         session.update(activityDynamicModel);
         session.update(activityVerifyCompleteModel);
-
+        return ServerReturnValue.SERVERRETURNCOMPELETE;
     }
 }

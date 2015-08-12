@@ -49,7 +49,7 @@ public class OrderController {
             return "";
         }
 
-        List<OrderModel> list = orderService.getOrderByUserID( UserID,firstPage );
+        List<OrderModel> list = orderService.getOrderByUserID( UserID,firstPage,10 );
         response.setHeader( "response", ServerReturnValue.LANDSUCCESS );
 
         try{
@@ -58,7 +58,6 @@ public class OrderController {
             return Json;
 
         } catch ( Exception e ){
-            int a= 0;
             return null;
         }
 

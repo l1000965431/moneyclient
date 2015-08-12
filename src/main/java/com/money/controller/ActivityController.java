@@ -3,6 +3,7 @@ package com.money.controller;
 import com.google.gson.GsonBuilder;
 import com.money.Service.ServiceFactory;
 import com.money.Service.activity.ActivityService;
+import com.money.Service.order.OrderService;
 import com.money.Service.user.UserService;
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
@@ -123,21 +124,21 @@ public class ActivityController extends ControllerBase implements IController {
     @RequestMapping("/GetActivityHasInvestment")
     @ResponseBody
     public String GetActivityHasInvestment(HttpServletRequest request, HttpServletResponse response) {
-
         //获取UserID;
+        String UserID = request.getParameter("UserID");
+        String Token = request.getParameter("Token");
+        int page = Integer.valueOf(request.getParameter("Page"));
+        int findNum = Integer.valueOf(request.getParameter("findNum"));
 
-        UserService userService = ServiceFactory.getService("User");
+        UserService userService = ServiceFactory.getService("UserService");
+        OrderService orderService = ServiceFactory.getService("OrderService");
 
-        ActivityService activityService = ServiceFactory.getService("ActivityService");
-
-        if (userService.tokenLand("", "") == 0) {
+        if (userService.tokenLand(UserID,Token) == 0) {
             return Integer.toString(ServerReturnValue.USERNOTLAND);
         }
 
-        /*List ActivityHasEarnings = activityService.GetActivityHasInvestment("1");*/
-
-        String Json = null; //= GsonUntil.JavaClassToJson(ActivityHasEarnings);
-
+        List ActivityHasEarnings = orderService.getOrderByUserID(UserID,page,findNum );
+        String Json = GsonUntil.JavaClassToJson(ActivityHasEarnings);
         return Json;
     }
 
@@ -194,11 +195,15 @@ public class ActivityController extends ControllerBase implements IController {
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
-        if (activityService.CanelActivity("1") == Config.SERVICE_SUCCESS) {
-            return Config.SERVICE_SUCCESS;
-        } else {
-            return Config.SERVICE_FAILED;
+        int a = Integer.valueOf(request.getParameter( "a" ));
+
+        try {
+            activityService.InstallmentActivityStart("5",a );
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        return "1";
     }
 
 }

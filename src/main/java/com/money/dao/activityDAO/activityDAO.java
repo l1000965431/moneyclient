@@ -253,17 +253,11 @@ public class activityDAO extends BaseDao {
      * @param InstallmentActivityID
      */
     public void CreateTicketDB(final String InstallmentActivityID) {
-
-        this.excuteTransactionByCallback(new TransactionSessionCallback() {
-            public boolean callback(Session session) throws Exception {
-                String DBName = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
-                String Sql = "CREATE TABLE " + DBName + " ( TickID VARCHAR(45) NOT NULL,UserId VARCHAR(45) NULL DEFAULT 0,PurchaseType INT(2) NOT NULL,PRIMARY KEY (TickID));";
-                SQLQuery sqlQuery = session.createSQLQuery(Sql);
-
-                sqlQuery.executeUpdate();
-                return true;
-            }
-        });
+        Session session = this.getNewSession();
+        String DBName = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
+        String Sql = "CREATE TABLE " + DBName + " ( TickID VARCHAR(45) NOT NULL,UserId VARCHAR(45) NULL DEFAULT 0,PurchaseType INT(2) NOT NULL,PRIMARY KEY (TickID));";
+        SQLQuery sqlQuery = session.createSQLQuery(Sql);
+        sqlQuery.executeUpdate();
     }
 
     /**
@@ -272,17 +266,15 @@ public class activityDAO extends BaseDao {
      * @param ActivityID
      */
     public void CreatePurchaseInAdvanceDB(final String ActivityID) {
-        this.excuteTransactionByCallback(new TransactionSessionCallback() {
-            public boolean callback(Session session) throws Exception {
-                String DBName = Config.ACTIVITYPURCHASE + ActivityID;
-                String Sql = "CREATE TABLE " + DBName + " ( Id INT NOT NULL AUTO_INCREMENT,UserID VARCHAR(45) NOT NULL,PurchaseInAdvanceNum INT(5) NOT NULL, " +
-                        "CurPurchaseInAdvanceNum INT(5) NOT NULL,PurchaseNum INT(5) NOT NULL,PurchaseType INT(5) NOT NULL, PRIMARY KEY (Id));";
-                SQLQuery sqlQuery = session.createSQLQuery(Sql);
 
-                sqlQuery.executeUpdate();
-                return true;
-            }
-        });
+        Session session = getNewSession();
+        String DBName = Config.ACTIVITYPURCHASE + ActivityID;
+        String Sql = "CREATE TABLE " + DBName + " ( Id INT NOT NULL AUTO_INCREMENT,UserID VARCHAR(45) NOT NULL,PurchaseInAdvanceNum INT(5) NOT NULL, " +
+                "CurPurchaseInAdvanceNum INT(5) NOT NULL,PurchaseNum INT(5) NOT NULL,PurchaseType INT(5) NOT NULL, PRIMARY KEY (Id));";
+        SQLQuery sqlQuery = session.createSQLQuery(Sql);
+
+        sqlQuery.executeUpdate();
+
     }
 
     /**
@@ -303,10 +295,10 @@ public class activityDAO extends BaseDao {
         return list;
     }
 
-    public ActivityDetailModel getActivityInvestInfo(String activityStageId){
+    public ActivityDetailModel getActivityInvestInfo(String activityStageId) {
         Session session = getNewSession();
         Transaction t = session.beginTransaction();
-        ActivityDetailModel detailModel = (ActivityDetailModel)session.get(ActivityDetailModel.class, activityStageId);
+        ActivityDetailModel detailModel = (ActivityDetailModel) session.get(ActivityDetailModel.class, activityStageId);
         detailModel.getSrEarningModels().size();
         detailModel.getDynamicModel().getActivityTotalLinesPeoples();
         t.commit();

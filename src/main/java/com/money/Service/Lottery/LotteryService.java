@@ -9,6 +9,7 @@ import com.money.Service.Wallet.WalletService;
 import com.money.Service.activity.ActivityService;
 import com.money.config.Config;
 import com.money.config.MoneyServerMQ_Topic;
+import com.money.config.ServerReturnValue;
 import com.money.dao.LotteryDAO.LotteryDAO;
 import com.money.dao.PrizeListDAO.PrizeListDAO;
 import com.money.dao.TicketDAO.TicketDAO;
@@ -58,46 +59,32 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
      */
     public String StartLottery(final String InstallmentActivityID) {
 
-        lotteryDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
-            public boolean callback(Session session) throws Exception {
 
-                ActivityDetailModel activityDetailModel = activityService.getActivityDetailsNoTran(InstallmentActivityID);
-                if (activityDetailModel == null) {
-                    return false;
-                }
+        ActivityDetailModel activityDetailModel = activityService.getActivityDetailsNoTran(InstallmentActivityID);
+        if (activityDetailModel == null) {
+            return null;
+        }
 
-                Set<SREarningModel> srEarningModelSet = activityDetailModel.getSrEarningModels();
-                //计算总共多少人中奖
-                int TotalPeople = 0;
-                Iterator<SREarningModel> it = srEarningModelSet.iterator();
-                while (it.hasNext()) {
-                    SREarningModel str = it.next();
-                    TotalPeople += str.getNum();
+        Set<SREarningModel> srEarningModelSet = activityDetailModel.getSrEarningModels();
+        StartLottery(InstallmentActivityID,srEarningModelSet);
 
-                }
+        //同组完成后 给人打钱
+        if (IsGroupCompelete(activityDetailModel)) {
+            SomeFarmByPrizeList(InstallmentActivityID);
+        }
 
-                StartLottery(InstallmentActivityID, TotalPeople, srEarningModelSet);
-
-                //同组完成后 给人打钱
-                if( IsGroupCompelete( activityDetailModel ) ){
-                    SomeFarmByPrizeList(InstallmentActivityID);
-                }
-
-                return false;
-            }
-        });
-
-        return null;
+        return Config.SERVICE_SUCCESS;
     }
+    
 
     /**
      * @param InstallmentActivityID 分期项目ID
-     * @param LotteryPeoples        总共中奖的人数
-     * @param srEarningModelSet            得奖的层次和每个层次的人数
+     * @param srEarningModelSet        总共中奖的人数
+     * @param srEarningModelSet     得奖的层次和每个层次的人数
      * @return
      */
-    public String StartLottery(String InstallmentActivityID, int LotteryPeoples, Set<SREarningModel> srEarningModelSet) {
-        List<LotteryPeoples> listPeoples = lotteryDAO.GetRandNotLottery(InstallmentActivityID, LotteryPeoples);
+    public String StartLottery(String InstallmentActivityID, Set<SREarningModel> srEarningModelSet) {
+        List<LotteryPeoples> listPeoples = lotteryDAO.GetRandNotLottery(InstallmentActivityID, srEarningModelSet);
 
         if (listPeoples == null) {
             return null;
@@ -110,19 +97,19 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
             int LotteryLines = str.getEarningPrice();
             int PeoplesLines = str.getNum();
 
-            if( str.getEarningType() == Config.PURCHASELOCALTYRANTS ){
-                for( LotteryPeoples TempListPeople:listPeoples ){
-                     if( TempListPeople.getPurchaseType() == Config.PURCHASELOCALTYRANTS ){
-                         TempListPeople.setLotteryLines( PeoplesLines );
-                     }
+            if (str.getEarningType() == Config.PURCHASELOCALTYRANTS) {
+                for (LotteryPeoples TempListPeople : listPeoples) {
+                    if (TempListPeople.getPurchaseType() == Config.PURCHASELOCALTYRANTS) {
+                        TempListPeople.setLotteryLines(LotteryLines);
+                    }
                 }
-            }else{
+            } else {
                 for (int i = 0; i < PeoplesLines; ++i) {
                     if (Index >= listPeoples.size()) {
                         return null;
                     }
 
-                    if( listPeoples.get(Index).getPurchaseType() == Config.PURCHASELOCALTYRANTS ){
+                    if (listPeoples.get(Index).getPurchaseType() == Config.PURCHASELOCALTYRANTS) {
                         continue;
                     }
 
@@ -146,15 +133,16 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
 
     /**
      * 判断同组是否完成
+     *
      * @param activityDetailModel
      * @return
      */
-    private boolean IsGroupCompelete( ActivityDetailModel activityDetailModel ){
-        List<ActivityDetailModel> list = activityDAO.getActivityDetailByGroupID( activityDetailModel.getActivityVerifyCompleteModel().getActivityId(),
-                activityDetailModel.getGroupId() );
+    private boolean IsGroupCompelete(ActivityDetailModel activityDetailModel) {
+        List<ActivityDetailModel> list = activityDAO.getActivityDetailByGroupID(activityDetailModel.getActivityVerifyCompleteModel().getActivityId(),
+                activityDetailModel.getGroupId());
 
-        for( ActivityDetailModel temp:list ){
-            if( temp.getStatus() != ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE ){
+        for (ActivityDetailModel temp : list) {
+            if (temp.getStatus() != ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE) {
                 return false;
             }
         }
@@ -165,32 +153,34 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
 
     /**
      * 给人钱包充值
+     *
      * @param InstallmentActivityID
      */
-    void SomeFarmByPrizeList( String InstallmentActivityID ){
-        ActivityDetailModel activityDetailModel = activityDAO.getActivityDetails( InstallmentActivityID );
+    void SomeFarmByPrizeList(String InstallmentActivityID) {
+        ActivityDetailModel activityDetailModel = activityDAO.getActivityDetails(InstallmentActivityID);
 
         String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
         int GroupID = activityDetailModel.getGroupId();
 
-        List<ActivityDetailModel> list = activityDAO.getActivityDetailByGroupID( ActivityID,GroupID );
-        list.add( activityDetailModel );
+        List<ActivityDetailModel> list = activityDAO.getActivityDetailByGroupID(ActivityID, GroupID);
+        list.add(activityDetailModel);
 
 
-        for( ActivityDetailModel it : list ){
+        for (ActivityDetailModel it : list) {
             String ActivityStageId = it.getActivityStageId();
 
             PrizeListModel prizeListModel = prizeListDAO.getListPrizeListModel(ActivityStageId);
 
             String json = prizeListModel.getPrizeSituation();
-            List<LotteryPeoples> LotteryPeoplesList = GsonUntil.jsonToJavaClass( json,new TypeToken<List<LotteryPeoples>>(){}.getType() );
+            List<LotteryPeoples> LotteryPeoplesList = GsonUntil.jsonToJavaClass(json, new TypeToken<List<LotteryPeoples>>() {
+            }.getType());
 
-            if( LotteryPeoplesList == null ){
+            if (LotteryPeoplesList == null) {
                 continue;
             }
 
-            for( LotteryPeoples Peoples:LotteryPeoplesList ){
-                walletService.RechargeWallet( Peoples.getUserId(),Peoples.getLotteryLines() );
+            for (LotteryPeoples Peoples : LotteryPeoplesList) {
+                walletService.RechargeWallet(Peoples.getUserId(), Peoples.getLotteryLines());
             }
 
         }

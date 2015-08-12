@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityDynamicModel;
 import com.money.model.ActivityVerifyCompleteModel;
+import com.money.model.OrderModel;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
@@ -51,6 +52,19 @@ public class GsonUntil {
                 o.addProperty("address", src.getAddress());
                 o.addProperty("category", src.getCategory());
                 o.addProperty("projectIntroduction", src.getActivityIntroduce());
+                return o;
+            }
+        }).registerTypeAdapter(ActivityVerifyCompleteModel.class, new JsonSerializer<OrderModel>() {
+            public JsonElement serialize(OrderModel src, Type typeOfSrc,
+                                         JsonSerializationContext context) {
+                JsonObject o=new JsonObject();
+                o.addProperty("orderDate", src.getOrderDate().toString());
+                o.addProperty("PurchaseNum", src.getPurchaseNum());
+                o.addProperty("AdvanceNum", src.getAdvanceNum());
+                o.addProperty("orderLines", src.getOrderLines());
+                o.addProperty("ActivityName", src.getActivityDetailModel().getActivityVerifyCompleteModel().getName());
+                o.addProperty("ActivityIndex", src.getActivityDetailModel().getActivityVerifyCompleteModel().getCurInstallmentNum()+1);
+                o.addProperty("ActivityAdVance", src.getActivityDetailModel().getActivityVerifyCompleteModel().getTotalInstallmentNum());
                 return o;
             }
         }).create();
