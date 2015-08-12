@@ -50,6 +50,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     String UserID;
 
+    RegisterActivity a;
+
     private static class MyHandler extends Handler{
         private final WeakReference<RegisterActivity> mRef;
 
@@ -81,6 +83,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_register);
+        a = this;
         initView();
         initData();
         initSMS();
@@ -114,7 +117,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             case R.id.fragment_register_buttonlogin:
                 if( checkUserInput() ){
                     //onRegister();
-                    SMSSDK.submitVerificationCode("86",mUserIdTextField.getText().toString(), "1");
+                    SMSSDK.submitVerificationCode("86",mUserIdTextField.getText().toString(), mETCode.getText().toString());
                 }
                 break;
             case R.id.fragment_register_Enter_SecurityCode_button:
@@ -196,7 +199,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         handler.sendMessage(handler.obtainMessage(MESSAGE_TICK));
     }
 
-    private void onRegister(){
+    private void onRegisterButton(){
         HttpParams params = new HttpParams();
         params.put(UserProtocol.REGISTER_PARAM_USER_ID, mUserIdTextField.getText().toString());
         params.put(UserProtocol.REGISTER_PARAM_USER_PASSWORD, mUserPasswordTextField.getText().toString());
@@ -290,10 +293,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void afterEvent(int event, int result, Object data) {
                 if (result == SMSSDK.RESULT_COMPLETE) {
-                    //回调完成
+                        //回调完成
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
                         //提交验证码成功
-                        onRegister();
+                         onRegisterButton();
                     }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
                         //获取验证码成功
                     }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){

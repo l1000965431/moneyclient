@@ -32,8 +32,7 @@ public class LogoActivity extends BaseActivity {
         handler.postDelayed(startNextActivity_r, 3000);
         getSupportActionBar().hide();
         UmengUpdateAgent.update(this);
-
-//        SMSSDK.initSDK(this,PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET );
+        SMSSDK.initSDK(this,PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET );
     }
 
     Runnable startNextActivity_r = new Runnable() {
