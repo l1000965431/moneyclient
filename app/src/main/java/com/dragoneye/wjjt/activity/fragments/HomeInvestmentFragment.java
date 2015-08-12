@@ -15,6 +15,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -22,7 +23,6 @@ import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.InvestProjectActivity;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.PreferencesConfig;
-import com.dragoneye.wjjt.dao.Project;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.model.ProjectDetailModel;
@@ -52,10 +52,14 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
     private InvestmentListViewAdapter mAdapter;
     private View mListViewFooter;
     private Boolean mIsLoadingMore;
+    private Boolean mIsNoMore;
     private ArrayList<ProjectDetailModel> mProjectList = new ArrayList<>();
     private int mCurPageIndex;
 
     private Handler handler = new Handler();
+
+    private LinearLayout mLLIsLoadingMore;
+    private LinearLayout mLLNoMore;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,7 +89,9 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         refreshableView.setArrowColor(Color.WHITE);
 
         mGridView = (GridViewWithHeaderAndFooter)getActivity().findViewById(R.id.home_investment_grid_view);
-        mListViewFooter = LayoutInflater.from(getActivity()).inflate(R.layout.loading_list_view_item, null, false);
+        mListViewFooter = LayoutInflater.from(getActivity()).inflate(R.layout.loading_list_view_item, mGridView, false);
+        mLLIsLoadingMore = (LinearLayout)mListViewFooter.findViewById(R.id.loading_list_view_item_panelLoadingMore);
+        mLLNoMore = (LinearLayout)mListViewFooter.findViewById(R.id.loading_list_view_item_panelNoMore);
         mIsLoadingMore = false;
         mGridView.addFooterView(mListViewFooter);
         mListViewFooter.setVisibility(View.GONE);
@@ -94,15 +100,15 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         mAdapter = new InvestmentListViewAdapter(getActivity(), mProjectList);
         mGridView.setAdapter(mAdapter);
 
-
-
         mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    if (!mIsLoadingMore && view.getLastVisiblePosition() == view.getCount() - 1) {
+                    if ( !mIsNoMore && !mIsLoadingMore && view.getLastVisiblePosition() == view.getCount() - 1) {
                         mIsLoadingMore = true;
                         mListViewFooter.setVisibility(View.VISIBLE);
+                        mLLNoMore.setVisibility(View.GONE);
+                        mLLIsLoadingMore.setVisibility(View.VISIBLE);
                         handler.post(updateInvestmentList_r);
                     }
                 }
@@ -116,14 +122,9 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
     }
 
     private void initData(){
-
-
-//        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
-//        QueryBuilder queryBuilder = projectDao.queryBuilder();
-//        queryBuilder.limit(7);
-//        List<Project> list = queryBuilder.list();
-//        mDataArrays.addAll(list);
-
+        mIsLoadingMore = false;
+        mIsNoMore = false;
+        mCurPageIndex = -1;
         handler.post(updateInvestmentList_r);
     }
 
@@ -131,11 +132,17 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         @Override
         public void run() {
             HttpParams params = new HttpParams();
+            params.put("pageIndex", mCurPageIndex + 1);
+            params.put("numPerPage", 10);
 
             HttpClient.atomicPost(getActivity(), GetProjectListProtocol.URL_GET_PROJECT_LIST, params, new HttpClient.MyHttpHandler() {
                 @Override
+                public void onPosting(){
+                    refreshableView.finishRefreshing();
+                }
+
+                @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d(TAG, "update project list failure-> " + s);
                     refreshableView.finishRefreshing();
                     if (mIsLoadingMore) {
                         mIsLoadingMore = false;
@@ -145,22 +152,36 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
-                    ArrayList<ProjectDetailModel> detailModels = jsonToProjectList(s);
-                    addNewProjectToList(detailModels);
-                    mCurPageIndex += 1;
-                    mAdapter.notifyDataSetChanged();
                     refreshableView.finishRefreshing();
+                    ArrayList<ProjectDetailModel> detailModels = jsonToProjectList(s);
+                    mCurPageIndex += 1;
                     if (mIsLoadingMore) {
-                        mIsLoadingMore = false;
-                        mListViewFooter.setVisibility(View.GONE);
+                        loadMoreProjectToList(detailModels);
+                    } else {
+                        reloadProjectList(detailModels);
                     }
                 }
             });
         }
     };
 
-    private void addNewProjectToList(ArrayList<ProjectDetailModel> projectDetailModels){
+    private void loadMoreProjectToList(ArrayList<ProjectDetailModel> projectDetailModels){
+        if(projectDetailModels.isEmpty()){
+            mIsNoMore = true;
+            mLLNoMore.setVisibility(View.VISIBLE);
+            mLLIsLoadingMore.setVisibility(View.GONE);
+        }else {
+            mProjectList.addAll(projectDetailModels);
+            mAdapter.notifyDataSetChanged();
+            mIsLoadingMore = false;
+            mListViewFooter.setVisibility(View.GONE);
+        }
+    }
+
+    private void reloadProjectList(ArrayList<ProjectDetailModel> projectDetailModels){
+        mProjectList.clear();
         mProjectList.addAll(projectDetailModels);
+        mAdapter.notifyDataSetChanged();
     }
 
     private ArrayList<ProjectDetailModel> jsonToProjectList(String json){
@@ -198,6 +219,9 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+        if( position >= mProjectList.size() ){
+            return;
+        }
         ProjectDetailModel project = (ProjectDetailModel) mGridView.getItemAtPosition(position);
         Intent intent = new Intent(getActivity(), InvestProjectActivity.class);
         intent.putExtra(InvestProjectActivity.EXTRA_PROJECT_MODEL, project);
