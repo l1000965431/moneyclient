@@ -124,4 +124,21 @@ public class Config {
     public static final int USERCODETIME = 120;
 
     public static final int FINDPAGENUM = 1000;
+
+    /**
+     * ping++ 测试key
+     */
+    public static final String PINGPLUSTESTID = "sk_test_aD4qnHSWTCmPvX1un5rXfjPK";
+
+    /**
+     * ping++ 生产key
+     */
+    public static final String PINGPLUSLIVEID = "sk_live_tAeZAe9UXtT3p3UVcm4ZbcgD";
+
+    public static final String PINGPLUSLAPPID = "app_jvXfzPe9e90GeLWz";
+
+    /**
+     * 友盟推送的参数
+     */
+    public static final String UMENGAPPKEY = "jsyt1miaqkdj1upwujmbbixz1r5uejnj";
 }

@@ -1,15 +1,11 @@
 package com.money.Service.Lottery;
 
 import com.google.gson.reflect.TypeToken;
-import com.money.MoneyServerMQ.MoneyServerMQManager;
-import com.money.MoneyServerMQ.MoneyServerMessage;
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
 import com.money.Service.Wallet.WalletService;
 import com.money.Service.activity.ActivityService;
 import com.money.config.Config;
-import com.money.config.MoneyServerMQ_Topic;
-import com.money.config.ServerReturnValue;
 import com.money.dao.LotteryDAO.LotteryDAO;
 import com.money.dao.PrizeListDAO.PrizeListDAO;
 import com.money.dao.TicketDAO.TicketDAO;
@@ -57,21 +53,24 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
      * @param InstallmentActivityID
      * @return
      */
-    public String StartLottery(final String InstallmentActivityID) {
+    public String StartLottery(final String InstallmentActivityID) throws Exception {
+        lotteryDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                ActivityDetailModel activityDetailModel = activityService.getActivityDetailsNoTran(InstallmentActivityID);
+                if (activityDetailModel == null) {
+                    return false;
+                }
 
+                Set<SREarningModel> srEarningModelSet = activityDetailModel.getSrEarningModels();
+                StartLottery(InstallmentActivityID,srEarningModelSet);
 
-        ActivityDetailModel activityDetailModel = activityService.getActivityDetailsNoTran(InstallmentActivityID);
-        if (activityDetailModel == null) {
-            return null;
-        }
-
-        Set<SREarningModel> srEarningModelSet = activityDetailModel.getSrEarningModels();
-        StartLottery(InstallmentActivityID,srEarningModelSet);
-
-        //同组完成后 给人打钱
-        if (IsGroupCompelete(activityDetailModel)) {
-            SomeFarmByPrizeList(InstallmentActivityID);
-        }
+                //同组完成后 给人打钱
+                if (IsGroupCompelete(activityDetailModel)) {
+                    SomeFarmByPrizeList(InstallmentActivityID);
+                }
+                return true;
+            }
+        });
 
         return Config.SERVICE_SUCCESS;
     }
@@ -156,7 +155,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
      *
      * @param InstallmentActivityID
      */
-    void SomeFarmByPrizeList(String InstallmentActivityID) {
+    void SomeFarmByPrizeList(String InstallmentActivityID) throws Exception {
         ActivityDetailModel activityDetailModel = activityDAO.getActivityDetails(InstallmentActivityID);
 
         String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();

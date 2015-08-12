@@ -16,4 +16,11 @@ public class MoneyServerMQ_Topic {
 
     public static final String MONEYSERVERMQ_SOMEFRAM_TOPIC="MoneyServer_SomeFarm_Listener";
     public static final String MONEYSERVERMQ_SOMEFRAM_TAG="MoneyServer_SomeFarm_Listener";
+
+    public static final String MONEYSERVERMQ_RECHARGEWALLET_TOPIC="MoneyServer_RechargeWallet_Listener";
+    public static final String MONEYSERVERMQ_RECHARGEWALLET_TAG="MoneyServer_RechargeWallet_Listener";
+
+    public static final String MONEYSERVERMQ_PUSH_TOPIC="MoneyServer_PushListener_Listener";
+    public static final String MONEYSERVERMQ_PUSH_TAG="MoneyServer_PushListener_Listener";
+
 }

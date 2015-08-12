@@ -5,9 +5,12 @@ import com.money.MoneyServerMQ.MoneyServerListener;
 import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
+import com.money.MoneyServerMQ.MoneyServerMQManager;
+import com.money.MoneyServerMQ.MoneyServerMessage;
 import com.money.Service.PurchaseInAdvance.PurchaseInAdvance;
 import com.money.Service.activity.ActivityService;
 import com.money.config.Config;
+import com.money.config.MoneyServerMQ_Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.GsonUntil;
 

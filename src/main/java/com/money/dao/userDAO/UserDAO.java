@@ -41,7 +41,6 @@ public class UserDAO extends BaseDao {
             Map.Entry<String, String> entry = it.next();
             String value = entry.getValue();
             if (value == null)
-
                 infoFlag = false;
         }
         //查看用户昵称是否合法
@@ -117,7 +116,7 @@ public class UserDAO extends BaseDao {
                 userModel.setUserType(userType);
                 basedao.getNewSession().save(userModel);
             }
-        }) == Config.SERVICE_SUCCESS) {
+        }).equals(Config.SERVICE_SUCCESS)) {
             return ServerReturnValue.REQISTEREDSUCCESS;
         } else {
             return ServerReturnValue.REQISTEREDFAILED;
@@ -194,6 +193,11 @@ public class UserDAO extends BaseDao {
     //查询数据库，比对用户密码是否正确
     public boolean checkPassWord(String userID, String passWord) {
         UserModel userModel = this.getUSerModel(userID);
+
+        if( userModel == null ){
+            return false;
+        }
+
         String passWordSql = userModel.getPassword();
 
         String decodePassWord = new String(Base32.decode(passWordSql));
@@ -268,11 +272,23 @@ public class UserDAO extends BaseDao {
         String mail = map.get("mail");
         int sex = Integer.valueOf(map.get("sex"));
         String location = map.get("location");
+        String education = map.get("education");
+        String identity = map.get("identity");
+        String personalProfile = map.get("personalProfile");
+        String selfintroduce = map.get("selfintroduce");
+        String goodAtField = map.get("goodAtField");
+        String RealName = map.get("realName");
         userModel.setUserName(user);
         userModel.setMail(mail);
         userModel.setSex(sex);
         userModel.setLocation(location);
-        userModel.setRealName("");
+        userModel.setRealName(RealName);
+        userModel.setEduInfo(education );
+        userModel.setIdentityId( identity );
+        userModel.setCareer( personalProfile );
+        userModel.setIntroduction( selfintroduce );
+        userModel.setExpertise( goodAtField );
+
         userModel.setIsPerfect(true);
         this.update(userModel);
 

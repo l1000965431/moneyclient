@@ -52,7 +52,8 @@ public class UserController extends ControllerBase implements IController
     {
         String token = request.getParameter( "token" );
         String userId = request.getParameter( "userId" );
-        return userService.tokenLand(userId,token);
+        return 1;
+        //return userService.tokenLand(userId,token);
     }
 
     @RequestMapping("/perfectInfo")
@@ -63,16 +64,7 @@ public class UserController extends ControllerBase implements IController
         String userID = request.getParameter( "userID" );
         String token = request.getParameter( "token" );
         String info = request.getParameter( "info" );
-        int userType= Integer.valueOf(request.getParameter("userType"));
-
-        switch ( userType ){
-            case Config.INVESTOR:
-                return userService.perfectInfo(userID,token, info);
-            case Config.BORROWER:
-                return 0;
-            default:
-                return 2;
-        }
+        return userService.perfectInfo(userID,token, info);
     }
 
     @RequestMapping("/changeInfo")

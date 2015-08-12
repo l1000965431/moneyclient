@@ -23,6 +23,7 @@ public class InsertOrderListener extends MoneyServerListener {
         try {
             String bodyString = BodyToString( message.getBody() );
 
+
             OrderModel orderModel = GsonUntil.jsonToJavaClass(bodyString, OrderModel.class);
 
             baseDao.save( orderModel );

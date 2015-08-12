@@ -16,7 +16,6 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.GsonUntil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -70,7 +69,7 @@ public class SomeFarmListener extends MoneyServerListener {
      *
      * @param list
      */
-    void SomeFarmByPrizeList(List<ActivityDetailModel> list) {
+    void SomeFarmByPrizeList(List<ActivityDetailModel> list) throws Exception {
         for (ActivityDetailModel it : list) {
 
             String ActivityStageId = it.getActivityStageId();

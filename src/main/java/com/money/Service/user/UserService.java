@@ -92,7 +92,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
             if (landFlag) {
                 return Config.ALREADLAND;
             } else {
-                return userDAO.tokenLand(userID, time);
+                return Config.USEPASSWORD;//userDAO.tokenLand(userID, time);
             }
         } else {
             return Config.USEPASSWORD;
@@ -103,19 +103,19 @@ public class UserService extends ServiceBase implements ServiceInterface {
     //完善信息 0未登录；1，修改信息成功；2，信息不合法;3，token不一致;4,userType有问题
     public int perfectInfo(String username, String token, String info) {
         //查看缓存中是否含有token,且客户端参数是否与token一样
-        boolean tokenExist = userDAO.isTokenExist(username, token);
+        int flag = tokenLand(username, token);
 
-        if (tokenExist) {
+        if (flag == 1) {
             //比对缓存token上次更新时间，判断用户是否已登录
-            Long orderTime = System.currentTimeMillis();
+           /* Long orderTime = System.currentTimeMillis();
             String time = Long.toString(orderTime);
             Long timeLong = Long.parseLong(time);
             boolean landFlag = userDAO.tokenTime(username, timeLong);
-            if (landFlag) {
+            if (landFlag) {*/
                 //根据username,查找用户类型
                 return userDAO.modifyInvestorInfo(username, info);
-            } else
-                return 0;
+            /*} else
+                return 0;*/
         } else
             return 3;
     }
@@ -192,7 +192,6 @@ public class UserService extends ServiceBase implements ServiceInterface {
      */
     public String getUserInfo(String UserID) {
         UserModel userModel = userDAO.getUSerModel(UserID);
-        String a = GsonUntil.JavaClassToJson(userModel);
         return GsonUntil.JavaClassToJson(userModel);
     }
 

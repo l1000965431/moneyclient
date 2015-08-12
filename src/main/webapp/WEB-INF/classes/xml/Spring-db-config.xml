@@ -13,7 +13,7 @@
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property value= "com.mysql.jdbc.Driver" name="driverClassName"/>
         <!--driverClassName指定了JDBC驱动类的全限定类名 -->
-        <property value="jdbc:mysql://moneyserver.mysql.rds.aliyuncs.com:3306/moneyserver" name="url"/>
+        <property value="jdbc:mysql://rdsam4y7614j11jki04bpublic.mysql.rds.aliyuncs.com:3306/moneyserver" name="url"/>
         <!-- 数据库所在IP地址和数据库名-->
         <property value="money" name="username"/>
         <property value="123456" name="password"/>

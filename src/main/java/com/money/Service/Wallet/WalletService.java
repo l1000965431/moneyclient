@@ -4,6 +4,7 @@ import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
 import com.money.dao.GeneraDAO;
 import com.money.model.WalletModel;
+import com.money.model.WalletOrderModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +43,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
      * @param Lines  充值金额
      * @return
      */
-    public int RechargeWallet( String UserID,int Lines ){
+    public int RechargeWallet(String UserID, int Lines) throws Exception{
         WalletModel walletModel = (WalletModel)generaDAO.loadNoTransaction( WalletModel.class,UserID );
 
         if( walletModel == null ){
@@ -52,7 +53,6 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         WalletLines+=Lines;
         walletModel.setWalletLines( WalletLines );
         generaDAO.updateNoTransaction( walletModel );
-
         return 0;
     }
 
@@ -79,6 +79,24 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         generaDAO.updateNoTransaction( walletModel );
 
         return true;
+    }
+
+    /**
+     * 插入充值订单
+     * @param OrderID
+     * @param Lines
+     * @param ChannelID
+     */
+    public void InsertWalletOrder( String OrderID,int Lines,String ChannelID )throws Exception{
+
+        WalletOrderModel walletOrderModel = new WalletOrderModel();
+
+        walletOrderModel.setOrderID( OrderID );
+        walletOrderModel.setWalletLines( Lines );
+        walletOrderModel.setWalletChannel( ChannelID );
+
+        generaDAO.save( walletOrderModel );
+
     }
 
 }

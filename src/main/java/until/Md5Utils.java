@@ -3,6 +3,7 @@ package until;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 
 public class Md5Utils {
@@ -38,6 +39,14 @@ public class Md5Utils {
             buf.append(Long.toString(hash[i] & 0xff, 16));
         }
         return buf.toString();
+    }
+
+    public static final String MD5( String s ){
+        try {
+            return new String( md5( s ),"UTF-8" );
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
     }
 
     public static String hash(String s) {

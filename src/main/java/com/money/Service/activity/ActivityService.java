@@ -1,5 +1,7 @@
 package com.money.Service.activity;
 
+import com.money.MoneyServerMQ.MoneyServerMQManager;
+import com.money.MoneyServerMQ.MoneyServerMessage;
 import com.money.Service.Lottery.LotteryService;
 import com.money.Service.PurchaseInAdvance.PurchaseInAdvance;
 import com.money.Service.ServiceBase;
@@ -8,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import com.money.Service.Ticket.TicketService;
 import com.money.Service.user.UserService;
 import com.money.config.Config;
+import com.money.config.MoneyServerMQ_Topic;
 import com.money.config.ServerReturnValue;
 import com.money.dao.BaseDao;
 import com.money.dao.TransactionCallback;
@@ -286,9 +289,11 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
                     activityDao.updateNoTransaction( activityVerifyCompleteModel );
 
                     //发奖
-                    if(lotteryService.StartLottery( InstallmentActivityID ) == null){
+/*                    if(lotteryService.StartLottery( InstallmentActivityID ) == null){
                         return false;
-                    }
+                    }*/
+                    MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_LOTTERY_TOPIC,
+                            MoneyServerMQ_Topic.MONEYSERVERMQ_LOTTERY_TAG, InstallmentActivityID, "1"));
 
                     //如果所有分期项目完成  设置父项目完成
                     SetActivityEnd( activityDynamicModel.getActivityVerifyCompleteModel().getActivityId() );

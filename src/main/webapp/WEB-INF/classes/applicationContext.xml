@@ -43,6 +43,13 @@
                                       expression = "org.springframework.stereotype.Service" />
        </context:component-scan >
 
+       <!-- 配置RestTemplate -->
+       <bean id="httpClient" class="ytx.org.apache.http.impl.client.DefaultHttpClient">
+              <constructor-arg>
+                     <bean class="ytx.org.apache.http.impl.conn.PoolingClientConnectionManager"/>
+              </constructor-arg>
+       </bean>
+
        <!-- 读取配置文件-->
        <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
               <property name="locations">
@@ -52,8 +59,6 @@
                      </list>
               </property>
        </bean>
-
-
 
        <!--<import resource="xml/Spring-*.xml"/>-->
        <import resource="xml/Spring-db-config.xml"/>

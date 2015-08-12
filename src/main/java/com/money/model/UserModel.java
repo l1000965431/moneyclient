@@ -17,35 +17,35 @@ public class UserModel extends BaseModel {
     private int id;
 
     //主键，手机号
-    private String userId;//service里的username
+    private String userId="";//service里的username
     //登录密码
-    private String password;
+    private String password="";
     //用户类型
-    private int userType;
+    private int userType=0;
     //用户名
-    private String userName;
+    private String userName="";
     //邮箱
-    private String mail;
+    private String mail="";
     //性别
-    private int sex;
+    private int sex=0;
     //所在地
-    private String location;
+    private String location="";
     //真实姓名
-    private String realName;
+    private String realName="";
     //身份证号
-    private String identityId;
+    private String identityId="";
     //擅长领域
-    private String expertise;
+    private String expertise="";
     //个人介绍
-    private String introduction;
+    private String introduction="";
     //教育经历
-    private String eduInfo;
+    private String eduInfo="";
     //职业生涯
-    private String career;
+    private String career="";
     //是否完善过信息
-    private boolean IsPerfect;
+    private boolean IsPerfect=false;
     //用户头像
-    private String userHeadPortrait;
+    private String userHeadPortrait="";
 
     public String getUserId() {
         return userId;
