@@ -69,8 +69,8 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
 
     @SuppressWarnings("unchecked")
-    public List<ActivityDetailModel> getAllActivityDetail() {
-        return activityDao.getActivityListActivity(0, 1000);
+    public List<ActivityDetailModel> getAllActivityDetail(int pageIndex, int numPerPage) {
+        return activityDao.getActivityListActivity(pageIndex, numPerPage);
     }
 
     /**

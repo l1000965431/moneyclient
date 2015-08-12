@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import until.GsonUntil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * 项目审核
@@ -47,8 +49,14 @@ public class AuditActivityController extends ControllerBase implements IControll
     @ResponseBody
     public String getNoAudiActivity(HttpServletRequest request, HttpServletResponse response) {
 
+        int pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
+        int pageNum = Integer.parseInt(request.getParameter("pageNum"));
 
-        return "";
+
+        List<ActivityVerifyModel> list = serviceAuditActivity.getAuditingActivityList(pageIndex, pageNum);
+
+        String json = GsonUntil.JavaClassListToJsonList(list);
+        return json;
     }
 
 

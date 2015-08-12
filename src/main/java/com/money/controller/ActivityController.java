@@ -48,7 +48,9 @@ public class ActivityController extends ControllerBase implements IController {
             return "";
         } else {
             try {
-                List<ActivityDetailModel> activityModels = activityService.getAllActivityDetail();
+                int pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
+                int numPerPage = Integer.parseInt(request.getParameter("numPerPage"));
+                List<ActivityDetailModel> activityModels = activityService.getAllActivityDetail(pageIndex, numPerPage);
                 String json = GsonUntil.getGson().toJson(activityModels);
                 return json;
             } catch (Exception e) {

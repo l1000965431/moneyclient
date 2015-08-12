@@ -6,6 +6,7 @@ import com.money.dao.TransactionSessionCallback;
 import com.money.model.ActivityVerifyCompleteModel;
 import com.money.model.ActivityVerifyModel;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -76,6 +77,7 @@ public class AuditActivityDao extends BaseDao {
     @SuppressWarnings("unchecked")
     public List<ActivityVerifyModel> getActivityList(int status, int pageIndex, int pageNum){
         Session session = getNewSession();
+        Transaction t = session.beginTransaction();
         List<ActivityVerifyModel> activityVerifyModels = session.createCriteria(ActivityVerifyModel.class)
                 .addOrder(Order.asc("id"))
                 .add(Restrictions.eq("auditorStatus", status))
@@ -83,6 +85,7 @@ public class AuditActivityDao extends BaseDao {
                 .setMaxResults(pageNum)
                 .list();
 
+        t.commit();
         return activityVerifyModels;
     }
 }
