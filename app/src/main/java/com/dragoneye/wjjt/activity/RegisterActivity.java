@@ -299,7 +299,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                          onRegisterButton();
                     }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
                         //获取验证码成功
-                        UIHelper.toast(registerActivity, "短信已经发送,请注意查收");
+                        //UIHelper.toast(registerActivity, "短信已经发送,请注意查收");
                     }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
                         //返回支持发送验证码的国家列表
                     }
