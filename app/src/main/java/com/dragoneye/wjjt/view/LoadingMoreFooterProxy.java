@@ -54,6 +54,10 @@ public class LoadingMoreFooterProxy {
         });
     }
 
+    public void setOnLoadingMoreListener(OnLoadingMoreListener onLoadingMoreListener){
+        this.onLoadingMoreListener = onLoadingMoreListener;
+    }
+
     public void setIsLoadingMore(){
         mIsLoadingMore = true;
         mFooter.setVisibility(View.VISIBLE);
@@ -94,6 +98,6 @@ public class LoadingMoreFooterProxy {
     }
 
     public interface OnLoadingMoreListener {
-        public void onLoadingMore();
+        void onLoadingMore();
     }
 }

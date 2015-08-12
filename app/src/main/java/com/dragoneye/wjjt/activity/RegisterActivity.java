@@ -40,6 +40,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     EditText mUserIdTextField;
     EditText mUserPasswordTextField;
     EditText mUserPasswordConfirmTextFiled;
+    EditText mETCode;
 
     RadioGroup mRBUserType;
 
@@ -92,6 +93,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         mUserIdTextField = (EditText)findViewById(R.id.fragment_register_account);
         mUserPasswordTextField = (EditText)findViewById(R.id.fragment_register_Enter_password);
         mUserPasswordConfirmTextFiled = (EditText)findViewById(R.id.change_password_et_newPassword);
+        mETCode = (EditText)findViewById(R.id.fragment_register_Enter_SecurityCode_Text);
 
         mRBUserType = (RadioGroup)findViewById(R.id.fragment_register_Classification);
 

@@ -29,6 +29,7 @@ import com.dragoneye.wjjt.model.ProjectDetailModel;
 import com.dragoneye.wjjt.protocol.GetProjectListProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.view.GridViewWithHeaderAndFooter;
+import com.dragoneye.wjjt.view.LoadingMoreFooterProxy;
 import com.dragoneye.wjjt.view.RefreshableView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -50,16 +51,13 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
     private RefreshableView refreshableView;
     private GridViewWithHeaderAndFooter mGridView;
     private InvestmentListViewAdapter mAdapter;
-    private View mListViewFooter;
-    private Boolean mIsLoadingMore;
-    private Boolean mIsNoMore;
+
     private ArrayList<ProjectDetailModel> mProjectList = new ArrayList<>();
     private int mCurPageIndex;
 
     private Handler handler = new Handler();
 
-    private LinearLayout mLLIsLoadingMore;
-    private LinearLayout mLLNoMore;
+    LoadingMoreFooterProxy mLoadingMoreProxy;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,50 +78,36 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
             @Override
             public void onRefresh() {
-                mCurPageIndex = -1;
-                mProjectList.clear();
-                handler.post(updateInvestmentList_r);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLoadingMoreProxy.reset();
+                        mCurPageIndex = -1;
+                        mProjectList.clear();
+                        handler.post(updateInvestmentList_r);
+                    }
+                });
             }
         }, PreferencesConfig.FRAGMENT_HOME_INVESTMENT);
         refreshableView.setTextColor(Color.WHITE);
         refreshableView.setArrowColor(Color.WHITE);
 
         mGridView = (GridViewWithHeaderAndFooter)getActivity().findViewById(R.id.home_investment_grid_view);
-        mListViewFooter = LayoutInflater.from(getActivity()).inflate(R.layout.loading_list_view_item, mGridView, false);
-        mLLIsLoadingMore = (LinearLayout)mListViewFooter.findViewById(R.id.loading_list_view_item_panelLoadingMore);
-        mLLNoMore = (LinearLayout)mListViewFooter.findViewById(R.id.loading_list_view_item_panelNoMore);
-        mIsLoadingMore = false;
-        mGridView.addFooterView(mListViewFooter);
-        mListViewFooter.setVisibility(View.GONE);
+        mLoadingMoreProxy = new LoadingMoreFooterProxy(getActivity(), mGridView);
+        mLoadingMoreProxy.setOnLoadingMoreListener(new LoadingMoreFooterProxy.OnLoadingMoreListener() {
+            @Override
+            public void onLoadingMore() {
+                handler.post(updateInvestmentList_r);
+            }
+        });
+        mLoadingMoreProxy.reset();
         mGridView.setOnItemClickListener(this);
 
         mAdapter = new InvestmentListViewAdapter(getActivity(), mProjectList);
         mGridView.setAdapter(mAdapter);
-
-        mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    if ( !mIsNoMore && !mIsLoadingMore && view.getLastVisiblePosition() == view.getCount() - 1) {
-                        mIsLoadingMore = true;
-                        mListViewFooter.setVisibility(View.VISIBLE);
-                        mLLNoMore.setVisibility(View.GONE);
-                        mLLIsLoadingMore.setVisibility(View.VISIBLE);
-                        handler.post(updateInvestmentList_r);
-                    }
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-            }
-        });
     }
 
     private void initData(){
-        mIsLoadingMore = false;
-        mIsNoMore = false;
         mCurPageIndex = -1;
         handler.post(updateInvestmentList_r);
     }
@@ -144,9 +128,8 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     refreshableView.finishRefreshing();
-                    if (mIsLoadingMore) {
-                        mIsLoadingMore = false;
-                        mListViewFooter.setVisibility(View.GONE);
+                    if (mLoadingMoreProxy.isLoadingMore()) {
+                        mLoadingMoreProxy.setLoadingFailed();
                     }
                 }
 
@@ -155,7 +138,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                     refreshableView.finishRefreshing();
                     ArrayList<ProjectDetailModel> detailModels = jsonToProjectList(s);
                     mCurPageIndex += 1;
-                    if (mIsLoadingMore) {
+                    if ( mLoadingMoreProxy.isLoadingMore() ) {
                         loadMoreProjectToList(detailModels);
                     } else {
                         reloadProjectList(detailModels);
@@ -167,18 +150,16 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
 
     private void loadMoreProjectToList(ArrayList<ProjectDetailModel> projectDetailModels){
         if(projectDetailModels.isEmpty()){
-            mIsNoMore = true;
-            mLLNoMore.setVisibility(View.VISIBLE);
-            mLLIsLoadingMore.setVisibility(View.GONE);
+            mLoadingMoreProxy.finishLoadingMore(true);
         }else {
             mProjectList.addAll(projectDetailModels);
             mAdapter.notifyDataSetChanged();
-            mIsLoadingMore = false;
-            mListViewFooter.setVisibility(View.GONE);
+            mLoadingMoreProxy.finishLoadingMore(false);
         }
     }
 
     private void reloadProjectList(ArrayList<ProjectDetailModel> projectDetailModels){
+        mLoadingMoreProxy.reset();
         mProjectList.clear();
         mProjectList.addAll(projectDetailModels);
         mAdapter.notifyDataSetChanged();
