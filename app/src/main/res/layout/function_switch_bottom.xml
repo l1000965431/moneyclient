@@ -22,7 +22,8 @@
             android:layout_height="wrap_content"
             android:background="#ff0487de"
             android:layout_weight="1"
-            android:id="@+id/function_switch_bottom_button_investment">
+            android:id="@+id/function_switch_bottom_button_investment"
+            android:paddingTop="2dp">
 
             <ImageView
                 android:layout_width="8dp"
@@ -62,7 +63,8 @@
             android:layout_height="wrap_content"
             android:background="#ff0681d3"
             android:layout_weight="1"
-            android:id="@+id/function_switch_bottom_button_record" >
+            android:id="@+id/function_switch_bottom_button_record"
+            android:paddingTop="2dp">
 
             <ImageView
                 android:layout_width="8dp"
@@ -102,7 +104,8 @@
             android:layout_height="wrap_content"
             android:background="#ff0487de"
             android:layout_weight="1"
-            android:id="@+id/function_switch_bottom_button_me" >
+            android:id="@+id/function_switch_bottom_button_me"
+            android:paddingTop="2dp">
 
             <ImageView
                 android:layout_width="8dp"

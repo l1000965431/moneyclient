@@ -140,7 +140,6 @@
                     android:textColor="#ff767676"
                     android:textIsSelectable="false"
                     android:textStyle="bold"
-                    android:layout_gravity="right"
                     android:layout_alignTop="@+id/linearLayout15"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true" />
