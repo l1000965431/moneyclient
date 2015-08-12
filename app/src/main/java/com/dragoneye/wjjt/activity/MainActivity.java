@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,8 +18,9 @@ import com.dragoneye.wjjt.activity.base.BaseActivity;
 import com.dragoneye.wjjt.activity.fragments.HomeInvestmentFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeMyselfFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeRecordFragment;
-import com.umeng.message.PushAgent;
-import com.umeng.message.UmengRegistrar;
+import com.dragoneye.wjjt.config.PreferencesConfig;
+
+import cn.smssdk.SMSSDK;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{
     public static final int TAB_INVESTMENT = 0;
