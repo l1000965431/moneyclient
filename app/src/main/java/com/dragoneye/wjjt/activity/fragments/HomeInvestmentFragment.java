@@ -53,6 +53,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
     private View mListViewFooter;
     private Boolean mIsLoadingMore;
     private ArrayList<ProjectDetailModel> mProjectList = new ArrayList<>();
+    private int mCurPageIndex;
 
     private Handler handler = new Handler();
 
@@ -75,6 +76,8 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
             @Override
             public void onRefresh() {
+                mCurPageIndex = -1;
+                mProjectList.clear();
                 handler.post(updateInvestmentList_r);
             }
         }, PreferencesConfig.FRAGMENT_HOME_INVESTMENT);
@@ -144,6 +147,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                 public void onSuccess(int i, Header[] headers, String s) {
                     ArrayList<ProjectDetailModel> detailModels = jsonToProjectList(s);
                     addNewProjectToList(detailModels);
+                    mCurPageIndex += 1;
                     mAdapter.notifyDataSetChanged();
                     refreshableView.finishRefreshing();
                     if (mIsLoadingMore) {
@@ -200,7 +204,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         startActivity(intent);
     }
 
-    public class InvestmentListViewAdapter extends BaseAdapter {
+    private class InvestmentListViewAdapter extends BaseAdapter {
         private List<ProjectDetailModel> data;
         private Context context;
         private LayoutInflater mInflater;

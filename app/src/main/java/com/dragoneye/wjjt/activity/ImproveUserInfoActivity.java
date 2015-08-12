@@ -126,20 +126,21 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
             UIHelper.toast(this, "请输入邮箱");
             return false;
         }
-        if(mETAddress.getText().length() == 0){
-            UIHelper.toast(this, "请输入地址");
+        if(mETRealName.getText().length() == 0){
+            UIHelper.toast(this, "请输入真实姓名");
+            return false;
+        }
+        if(mETIdentityId.getText().length() == 0){
+            UIHelper.toast(this, "请输入身份证号");
             return false;
         }
 
         if(((MyApplication)getApplication()).getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
-            if(mETRealName.getText().length() == 0){
-                UIHelper.toast(this, "请输入真实姓名");
+            if(mETAddress.getText().length() == 0){
+                UIHelper.toast(this, "请输入地址");
                 return false;
             }
-            if(mETIdentityId.getText().length() == 0){
-                UIHelper.toast(this, "请输入身份证号");
-                return false;
-            }
+
             if(mETSelfIntroduction.getText().length() == 0){
                 UIHelper.toast(this, "请输入个人介绍");
                 return false;
@@ -193,7 +194,7 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         String expertise = "";
         for(CheckBox checkBox : mCBExpertise){
             if(checkBox.isChecked()){
-                expertise = checkBox.getText().toString() + ";";
+                expertise += checkBox.getText().toString() + ";";
             }
         }
 
@@ -253,14 +254,15 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
 
     private HashMap<String, String> getUserImproveInfo(){
         HashMap<String, String> userInfo = new HashMap<>();
-        userInfo.put("location", mETAddress.getText().toString());
         userInfo.put("mail", mETEmail.getText().toString());
         userInfo.put("sex", String.valueOf(getSexuality()));
         userInfo.put("userName", mETUserName.getText().toString());
+        userInfo.put("realName", mETRealName.getText().toString());
+        userInfo.put("identity", mETIdentityId.getText().toString());
 
         if(((MyApplication)getApplication()).getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+            userInfo.put("location", mETAddress.getText().toString());
             userInfo.put("education", mETEduInfo.getText().toString());
-            userInfo.put("identity", mETIdentityId.getText().toString());
             userInfo.put("personalProfile", mETCareer.getText().toString());
             userInfo.put("selfintroduce", mETSelfIntroduction.getText().toString());
             userInfo.put("goodAtField", getExpertiseString());

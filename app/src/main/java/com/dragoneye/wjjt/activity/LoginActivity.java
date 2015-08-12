@@ -129,7 +129,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private void onLoginResult(String result, String response, String token){
         switch (result){
             case UserProtocol.PASSWORD_LOGIN_RESULT_SUCCESS:
-                UIHelper.toast(this, "登录成功");
                 onLoginSuccess(response, token);
                 break;
             case UserProtocol.PASSWORD_LOGIN_RESULT_ERROR:
@@ -179,6 +178,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             return;
         }
 
+        UIHelper.toast(this, "登录成功");
         if( ((MyApplication)getApplication()).getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_INVESTOR ){
             startMainActivity();
         }else {

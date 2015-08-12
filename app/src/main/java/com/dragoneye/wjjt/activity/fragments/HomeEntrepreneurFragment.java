@@ -139,8 +139,8 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
-                    ArrayList<ProjectDetailModel> detailModels = jsonToProjectList(s);
-                    addNewProjectToList(detailModels);
+//                    ArrayList<ProjectDetailModel> detailModels = jsonToProjectList(s);
+//                    addNewProjectToList(detailModels);
                     mAdapter.notifyDataSetChanged();
                     refreshableView.finishRefreshing();
                     if (mIsLoadingMore) {

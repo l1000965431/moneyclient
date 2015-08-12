@@ -1,5 +1,7 @@
 package com.dragoneye.wjjt.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,9 +17,12 @@ import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.BaseActivity;
+import com.dragoneye.wjjt.activity.fragments.HomeEntrepreneurFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeInvestmentFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeMyselfFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeRecordFragment;
+import com.dragoneye.wjjt.application.MyApplication;
+import com.dragoneye.wjjt.user.UserBase;
 
 
 public class EntrepreneurActivity extends BaseActivity implements View.OnClickListener{
@@ -68,7 +73,7 @@ public class EntrepreneurActivity extends BaseActivity implements View.OnClickLi
         projectListButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_record_imageView);
         projectListButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_record_textView);
         projectListButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_record_red);
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_investment);
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_record);
         linearLayout.setOnClickListener(this);
 
         myselfButton = new BottomButton();
@@ -80,7 +85,7 @@ public class EntrepreneurActivity extends BaseActivity implements View.OnClickLi
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(2);
     }
 
     private void addListener(){
@@ -119,7 +124,7 @@ public class EntrepreneurActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.function_switch_bottom_button_investment:
+            case R.id.function_switch_bottom_button_record:
                 viewPager.setCurrentItem(TAB_PROJECT_LIST);
                 break;
             case R.id.function_switch_bottom_button_me:
@@ -139,7 +144,7 @@ public class EntrepreneurActivity extends BaseActivity implements View.OnClickLi
         public Fragment getItem(int id) {
             switch (id) {
                 case TAB_PROJECT_LIST:
-                    return new HomeInvestmentFragment();
+                    return new HomeEntrepreneurFragment();
                 case TAB_MYSELF:
                     return new HomeMyselfFragment();
 
@@ -169,10 +174,21 @@ public class EntrepreneurActivity extends BaseActivity implements View.OnClickLi
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.menu_entrepreneur_create_project) {
+            startSubmitProjectActivity(this, ((MyApplication)getApplication()).getCurrentUser() );
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void startSubmitProjectActivity(Context context, UserBase userBase){
+        if(userBase.isPerfectInfo()){
+            Intent intent = new Intent(context, ProjectEditActivity.class);
+            context.startActivity(intent);
+        }else {
+            Intent intent = new Intent(context, ImproveUserInfoActivity.class);
+            context.startActivity(intent);
+        }
     }
 }

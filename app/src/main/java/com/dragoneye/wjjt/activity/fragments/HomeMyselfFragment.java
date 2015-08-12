@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.ChargeActivity;
+import com.dragoneye.wjjt.activity.EntrepreneurActivity;
 import com.dragoneye.wjjt.activity.ImproveUserInfoActivity;
 import com.dragoneye.wjjt.activity.ProjectEditActivity;
 import com.dragoneye.wjjt.activity.SettingsActivity;
@@ -131,8 +132,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
             case R.id.linearLayout4:    // 提现
                 break;
             case R.id.linearLayout21:   // 创建项目
-                intent = new Intent(getActivity(), ProjectEditActivity.class);
-                startActivity(intent);
+                EntrepreneurActivity.startSubmitProjectActivity(getActivity(), ((MyApplication)getActivity().getApplication()).getCurrentUser());
                 break;
             case R.id.home_self_group_iv_portrait:
                 onChangePortrait();
