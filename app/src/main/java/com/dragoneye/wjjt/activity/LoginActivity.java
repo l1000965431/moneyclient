@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.UserBase;
+import com.umeng.message.UmengRegistrar;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -45,6 +47,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         initView();
         initData();
+        InitPush();
     }
 
     private void initView(){
@@ -126,7 +129,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private void onLoginResult(String result, String response, String token){
         switch (result){
             case UserProtocol.PASSWORD_LOGIN_RESULT_SUCCESS:
-                UIHelper.toast(this, "登录成功");
                 onLoginSuccess(response, token);
                 break;
             case UserProtocol.PASSWORD_LOGIN_RESULT_ERROR:
@@ -176,11 +178,22 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             return;
         }
 
-        startMainActivity();
+        UIHelper.toast(this, "登录成功");
+        if( ((MyApplication)getApplication()).getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_INVESTOR ){
+            startMainActivity();
+        }else {
+            startEntrepreneurActivity();
+        }
     }
 
     private void startMainActivity(){
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void startEntrepreneurActivity(){
+        Intent intent = new Intent(this, EntrepreneurActivity.class);
         startActivity(intent);
         finish();
     }
@@ -198,5 +211,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private void onRegister(){
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
+    }
+
+    private void InitPush(){
+        String device_token = UmengRegistrar.getRegistrationId(getApplication());
+
+        Log.d("InitPush", device_token);
     }
 }

@@ -1,12 +1,13 @@
 package com.dragoneye.wjjt.activity;
 
+import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,18 +17,20 @@ import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.BaseActivity;
+import com.dragoneye.wjjt.activity.fragments.HomeEntrepreneurFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeInvestmentFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeMyselfFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeRecordFragment;
-import com.umeng.message.PushAgent;
-import com.umeng.message.UmengRegistrar;
+import com.dragoneye.wjjt.application.MyApplication;
+import com.dragoneye.wjjt.user.UserBase;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener{
-    public static final int TAB_INVESTMENT = 0;
-    public static final int TAB_RECORD = 1;
-    public static final int TAB_MYSELF = 2;
 
-    public static final int TAB_COUNT = 3;
+public class EntrepreneurActivity extends BaseActivity implements View.OnClickListener{
+
+    public static final int TAB_PROJECT_LIST = 0;
+    public static final int TAB_MYSELF = 1;
+
+    public static final int TAB_COUNT = 2;
 
     private class BottomButton{
         public ImageView imageView;
@@ -52,13 +55,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private ViewPager viewPager;
-    private BottomButton investButton, recordButton, myselfButton;
+    private BottomButton projectListButton,  myselfButton;
     private BottomButton currentCheckedButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.function_switch_bottom);
+        setContentView(R.layout.function_switch_developer_bottom);
         initView();
         addListener();
     }
@@ -66,18 +69,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private void initView(){
         viewPager = (ViewPager)findViewById(R.id.viewpager);
 
-        investButton = new BottomButton();
-        investButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_investment_imageView);
-        investButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_investment_textView);
-        investButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_investment_red);
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_investment);
-        linearLayout.setOnClickListener(this);
-
-        recordButton = new BottomButton();
-        recordButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_record_imageView);
-        recordButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_record_textView);
-        recordButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_record_red);
-        linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_record);
+        projectListButton = new BottomButton();
+        projectListButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_record_imageView);
+        projectListButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_record_textView);
+        projectListButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_record_red);
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_record);
         linearLayout.setOnClickListener(this);
 
         myselfButton = new BottomButton();
@@ -89,7 +85,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(2);
     }
 
     private void addListener(){
@@ -105,13 +101,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     currentCheckedButton.setChecked(false);
                 }
                 switch (position) {
-                    case TAB_INVESTMENT:
-                        investButton.setChecked(true);
-                        currentCheckedButton = investButton;
-                        break;
-                    case TAB_RECORD:
-                        recordButton.setChecked(true);
-                        currentCheckedButton = recordButton;
+                    case TAB_PROJECT_LIST:
+                        projectListButton.setChecked(true);
+                        currentCheckedButton = projectListButton;
                         break;
                     case TAB_MYSELF:
                         myselfButton.setChecked(true);
@@ -126,17 +118,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             }
         };
         viewPager.setOnPageChangeListener(onPageChangeListener);
-        onPageChangeListener.onPageSelected(TAB_INVESTMENT);
+        onPageChangeListener.onPageSelected(TAB_PROJECT_LIST);
     }
 
     @Override
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.function_switch_bottom_button_investment:
-                viewPager.setCurrentItem(TAB_INVESTMENT);
-                break;
             case R.id.function_switch_bottom_button_record:
-                viewPager.setCurrentItem(TAB_RECORD);
+                viewPager.setCurrentItem(TAB_PROJECT_LIST);
                 break;
             case R.id.function_switch_bottom_button_me:
                 viewPager.setCurrentItem(TAB_MYSELF);
@@ -146,43 +135,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.main_menu_submit_project) {
-            Intent intent = new Intent(this, ProjectEditActivity.class);
-            startActivity(intent);
-            return true;
-        }
-
-        if(id == R.id.main_menu_project_detail){
-            Intent intent = new Intent(this, InvestProjectActivity.class);
-            startActivity(intent);
-            return true;
-        }
-
-        if(id == R.id.main_menu_improve_user_info){
-            Intent intent = new Intent(this, ImproveUserInfoActivity.class);
-            startActivity(intent);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private class FragmentAdapter extends FragmentPagerAdapter{
+    private class FragmentAdapter extends FragmentPagerAdapter {
         public FragmentAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -190,10 +143,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         @Override
         public Fragment getItem(int id) {
             switch (id) {
-                case TAB_INVESTMENT:
-                    return new HomeInvestmentFragment();
-                case TAB_RECORD:
-                    return new HomeRecordFragment();
+                case TAB_PROJECT_LIST:
+                    return new HomeEntrepreneurFragment();
                 case TAB_MYSELF:
                     return new HomeMyselfFragment();
 
@@ -207,8 +158,37 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
-    /**
-     * 初始化推送插件
-     */
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_entrepreneur, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.menu_entrepreneur_create_project) {
+            startSubmitProjectActivity(this, ((MyApplication)getApplication()).getCurrentUser() );
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public static void startSubmitProjectActivity(Context context, UserBase userBase){
+        if(userBase.isPerfectInfo()){
+            Intent intent = new Intent(context, ProjectEditActivity.class);
+            context.startActivity(intent);
+        }else {
+            Intent intent = new Intent(context, ImproveUserInfoActivity.class);
+            context.startActivity(intent);
+        }
+    }
 }

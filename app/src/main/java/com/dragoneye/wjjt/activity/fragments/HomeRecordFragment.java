@@ -20,7 +20,6 @@ import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.ProjectDetailActivity;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.PreferencesConfig;
-import com.dragoneye.wjjt.dao.Project;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.model.OrderModel;
@@ -37,7 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -48,9 +46,10 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
     private TopTabButton mIncomingButton, mInvestmentButton, mCurrentSelectButton;
     private RefreshableView refreshableView;
     private ListView mListView;
-    private HashMap<Long, Project> mProjects = new HashMap<>();
     private ArrayList<OrderModel> mInvestedProjects = new ArrayList<>();
-    private InvestmentListViewAdapter mAdapter;
+    private ArrayList<String> mEarningProjects = new ArrayList<>();
+    private InvestmentListViewAdapter mInvestAdapter;
+    private EarningProjectListViewAdapter mEarningAdapter;
     private Handler handler = new Handler();
 
     @Override
@@ -78,10 +77,12 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
                     case R.id.home_record_top_tab_ll_incoming:
                         mIncomingButton.setChecked(true);
                         mCurrentSelectButton = mIncomingButton;
+                        updateInvestProjectList();
                         break;
                     case R.id.home_record_top_tab_ll_investment:
                         mInvestmentButton.setChecked(true);
                         mCurrentSelectButton = mInvestmentButton;
+                        updateEarningProjectList();
                         break;
                 }
             }
@@ -92,19 +93,27 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
         mIncomingButton.textView = (TextView)getActivity().findViewById(R.id.home_record_top_tab_ll_incoming_tv);
         LinearLayout linearLayout = (LinearLayout)getActivity().findViewById(R.id.home_record_top_tab_ll_incoming);
         linearLayout.setOnClickListener(tabButtonOnClickListener);
-        tabButtonOnClickListener.onClick(linearLayout);
 
         mInvestmentButton = new TopTabButton(getActivity());
         mInvestmentButton.imageView = (ImageView)getActivity().findViewById(R.id.home_record_top_tab_ll_investment_iv);
         mInvestmentButton.textView = (TextView)getActivity().findViewById(R.id.home_record_top_tab_ll_investment_tv);
-        linearLayout = (LinearLayout)getActivity().findViewById(R.id.home_record_top_tab_ll_investment);
-        linearLayout.setOnClickListener(tabButtonOnClickListener);
+        LinearLayout linearLayout1 = (LinearLayout)getActivity().findViewById(R.id.home_record_top_tab_ll_investment);
+        linearLayout1.setOnClickListener(tabButtonOnClickListener);
 
         refreshableView = (RefreshableView)getActivity().findViewById(R.id.home_record_refreshable_view);
         refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
             @Override
             public void onRefresh() {
-                handler.post(onUpdateOrderList_r);
+                if( mListView.getAdapter() instanceof InvestmentListViewAdapter){
+                    handler.post(onUpdateOrderList_r);
+                }else {
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            refreshableView.finishRefreshing();
+                        }
+                    }, 2000);
+                }
             }
         }, PreferencesConfig.FRAGMENT_HOME_RECORD);
 
@@ -112,9 +121,10 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
         mListView.setDividerHeight(0);
         mListView.setOnItemClickListener(this);
 
-        mInvestedProjects = new ArrayList<>();
-        mAdapter = new InvestmentListViewAdapter(getActivity(), mInvestedProjects);
-        mListView.setAdapter(mAdapter);
+        mInvestAdapter = new InvestmentListViewAdapter(getActivity(), mInvestedProjects);
+        mEarningAdapter = new EarningProjectListViewAdapter(getActivity(), mEarningProjects);
+
+        tabButtonOnClickListener.onClick(linearLayout);
     }
 
     private void initData(){
@@ -123,8 +133,18 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
 
 
 
-        mAdapter.notifyDataSetChanged();
+
+    }
+
+    private void updateInvestProjectList(){
+        mListView.setAdapter(mInvestAdapter);
+        mInvestAdapter.notifyDataSetChanged();
         handler.post(onUpdateOrderList_r);
+    }
+
+    private void updateEarningProjectList(){
+        mListView.setAdapter(mEarningAdapter);
+        mEarningAdapter.notifyDataSetChanged();
     }
 
     Runnable onUpdateOrderList_r = new Runnable() {
@@ -193,8 +213,9 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
             e.printStackTrace();
         }
 
+        mInvestedProjects.clear();
         mInvestedProjects.addAll(orderModels);
-        mAdapter.notifyDataSetChanged();
+        mInvestAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -219,12 +240,102 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
         alertDialog.show();
     }
 
-    public class InvestmentListViewAdapter extends BaseAdapter {
+    private class InvestmentListViewAdapter extends BaseAdapter {
         private List<OrderModel> data;
         private Context context;
         private LayoutInflater mInflater;
 
         public InvestmentListViewAdapter(Context context, List<OrderModel> data){
+            this.context = context;
+            this.data = data;
+            mInflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public int getCount(){
+            return data.size();
+        }
+
+        @Override
+        public Object getItem(int position){
+            return data.get(position);
+        }
+
+        @Override
+        public long getItemId(int position){
+            return position;
+        }
+
+        @Override
+        public int getItemViewType(int position){
+            return 0;
+        }
+
+        @Override
+        public int getViewTypeCount(){
+            return 1;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent){
+            OrderModel orderModel = (OrderModel)getItem(position);
+
+
+            ViewHolder viewHolder;
+            if(convertView == null){
+                viewHolder = new ViewHolder();
+
+                convertView = mInflater.inflate(R.layout.home_investment_listview, parent, false);
+                viewHolder.ivLogo = (ImageView)convertView.findViewById(R.id.imageView);
+                viewHolder.tvProjectName = (TextView)convertView.findViewById(R.id.home_record_listview_tv_project_name);
+                viewHolder.tvInvestAmount = (TextView)convertView.findViewById(R.id.home_record_listview_tv_invest_amount);
+                viewHolder.tvInvestPriceNum = (TextView)convertView.findViewById(R.id.home_record_listview_tv_invest_price_num);
+                viewHolder.tvInvestStageNum = (TextView)convertView.findViewById(R.id.home_record_listview_tv_invest_stage_num);
+                viewHolder.tvEarningProportion = (TextView)convertView.findViewById(R.id.home_record_listview_tv_earning_proportion);
+                viewHolder.tvEarningProportion.setOnClickListener(HomeRecordFragment.this);
+                viewHolder.tvTargetFund = (TextView)convertView.findViewById(R.id.home_record_listview_tv_targetFund);
+
+                convertView.setTag(viewHolder);
+            }else{
+                viewHolder = (ViewHolder)convertView.getTag();
+            }
+
+            viewHolder.tvProjectName.setText(orderModel.getActivityName());
+            viewHolder.tvInvestAmount.setText(String.format(getString(R.string.invest_project_invested_price),
+                    ToolMaster.convertToPriceString(orderModel.getOrderLines())));
+            viewHolder.tvInvestPriceNum.setText(String.format(getString(R.string.invest_project_invested_quantity), orderModel.getPurchaseNum()));
+            viewHolder.tvInvestStageNum.setText(String.format(getString(R.string.invest_project_invested_installments), orderModel.getAdvanceNum()));
+            viewHolder.tvEarningProportion.setTag(orderModel);
+            viewHolder.tvTargetFund.setText(ToolMaster.convertToPriceString(orderModel.getTargetFund()));
+            try{
+                JSONArray jsonArray = new JSONArray(orderModel.getImageUrl());
+                String url = jsonArray.getString(0);
+                ImageLoader.getInstance().displayImage(url, viewHolder.ivLogo);
+            }catch (Exception e){
+
+            }
+
+            return convertView;
+        }
+
+        private class ViewHolder{
+            ImageView ivLogo;
+            TextView tvProjectName;
+            TextView tvInvestAmount;
+            TextView tvInvestPriceNum;
+            TextView tvInvestStageNum;
+            TextView tvEarningProportion;
+            TextView tvTargetFund;
+
+        }
+    }
+
+    public class EarningProjectListViewAdapter extends BaseAdapter {
+        private List<String> data;
+        private Context context;
+        private LayoutInflater mInflater;
+
+        public EarningProjectListViewAdapter(Context context, List<String> data){
             this.context = context;
             this.data = data;
             mInflater = LayoutInflater.from(context);

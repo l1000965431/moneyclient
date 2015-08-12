@@ -17,6 +17,7 @@ import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.umeng.message.PushAgent;
 
 import org.apache.http.Header;
 
@@ -42,6 +43,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     TextView mTVSendSecurityCode;
 
     TextView mTVAgreement;
+
+    String UserID;
 
     private static class MyHandler extends Handler{
         private final WeakReference<RegisterActivity> mRef;
@@ -191,7 +194,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         params.put(UserProtocol.REGISTER_PARAM_USER_ID, mUserIdTextField.getText().toString());
         params.put(UserProtocol.REGISTER_PARAM_USER_PASSWORD, mUserPasswordTextField.getText().toString());
         params.put(UserProtocol.REGISTER_PARAM_USER_TYPE, getUserType());
-
+        UserID = mUserIdTextField.getText().toString();
         HttpClient.atomicPost(this, UserProtocol.URL_REGISTER, params, new HttpClient.MyHttpHandler() {
             @Override
             public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
@@ -213,6 +216,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         switch (result){
             case UserProtocol.REGISTER_RESULT_SUCCESS:
                 UIHelper.toast(this, "注册成功");
+
+                //注册推送
+                PushAgent mPushAgent = PushAgent.getInstance( this );
+                try {
+                    mPushAgent.addAlias(UserID, "1");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 finish();
                 break;
             case UserProtocol.REGISTER_RESULT_OCCUPIED:

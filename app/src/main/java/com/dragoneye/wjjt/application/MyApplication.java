@@ -32,6 +32,7 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.PushAgent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,6 +54,11 @@ public class MyApplication extends Application {
         initImageLoader();
         AnalyticsConfig.enableEncrypt(true);
         MobclickAgent.updateOnlineConfig(this);
+        PushAgent mPushAgent = PushAgent.getInstance( this );
+        mPushAgent.enable();
+        PushAgent.getInstance(this).onAppStart();
+
+
         Log.d("UMENG TEST", getDeviceInfo(this));
 
 
