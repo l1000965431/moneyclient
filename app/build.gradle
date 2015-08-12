@@ -39,6 +39,8 @@ dependencies {
     compile(name: 'libpingpp', ext: 'aar')
     compile(name: 'bdwallet_pay_sdk', ext: 'aar')
     compile files('libs/com.umeng.message.lib_v2.4.1.jar')
+    compile files('libs/MobTools.jar')
+    compile files('libs/SMSSDK-1.2.2.jar')
 }
 
 repositories {

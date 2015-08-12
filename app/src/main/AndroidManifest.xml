@@ -12,7 +12,9 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.READ_SMS" />
-
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
         android:name="com.dragoneye.wjjt.application.MyApplication"
         android:allowBackup="true"
@@ -393,7 +395,6 @@
             android:name="UMENG_MESSAGE_SECRET"
             android:value="0f992dffe8fdf32862285c902b7c8204" >
         </meta-data>
-        <!-- AppKEY配置结束 -->
     </application>
 
 </manifest>

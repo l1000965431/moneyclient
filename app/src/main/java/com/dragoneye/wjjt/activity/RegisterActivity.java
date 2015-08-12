@@ -23,6 +23,9 @@ import org.apache.http.Header;
 
 import java.lang.ref.WeakReference;
 
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
+
 public class RegisterActivity extends BaseActivity implements View.OnClickListener{
 
     private static final int USER_ID_LIMIT_MIN = 9;
@@ -79,6 +82,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.fragment_register);
         initView();
         initData();
+        initSMS();
     }
 
     private void initView(){
@@ -107,7 +111,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()){
             case R.id.fragment_register_buttonlogin:
                 if( checkUserInput() ){
-                    onRegister();
+                    //onRegister();
+                    SMSSDK.submitVerificationCode("86",mUserIdTextField.getText().toString(), "1");
                 }
                 break;
             case R.id.fragment_register_Enter_SecurityCode_button:
@@ -133,7 +138,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             return;
         }
         onSendCodeSuccess();
-
+        SMSSDK.getVerificationCode("86", mUserIdTextField.getText().toString());
         //handler.post(sendRequestCode_r);
     }
 
@@ -224,6 +229,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                SMSSDK.unregisterAllEventHandler();
                 finish();
                 break;
             case UserProtocol.REGISTER_RESULT_OCCUPIED:
@@ -276,4 +282,26 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }
         return -1;
     }
+
+    private void initSMS(){
+        SMSSDK.registerEventHandler( new EventHandler(){
+            @Override
+            public void afterEvent(int event, int result, Object data) {
+                if (result == SMSSDK.RESULT_COMPLETE) {
+                    //回调完成
+                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                        //提交验证码成功
+                        onRegister();
+                    }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+                        //获取验证码成功
+                    }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
+                        //返回支持发送验证码的国家列表
+                    }
+                }else{
+                    ((Throwable)data).printStackTrace();
+                }
+            }
+        });
+    }
+
 }
