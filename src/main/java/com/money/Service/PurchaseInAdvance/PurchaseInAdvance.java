@@ -3,7 +3,6 @@ package com.money.Service.PurchaseInAdvance;
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
 import com.money.Service.Wallet.WalletService;
-import com.money.Service.activity.ActivityService;
 import com.money.Service.order.OrderService;
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
@@ -71,7 +70,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 int tempPurchaseNum = remainingNum < PurchaseNum ? remainingNum : PurchaseNum;
                 int costLines = tempPurchaseNum + (PurchaseNum * (AdvanceNum - 1));
                 if (!IsRemainingInstallment(ActivityID, AdvanceNum) ||
-                activityVerifyCompleteModel.IsEnouthFund( costLines )) {
+                activityVerifyCompleteModel.IsEnoughLines(costLines)) {
                     return false;
                 }
 
@@ -97,6 +96,11 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 int curLines = activityVerifyCompleteModel.getCurFund();
                 curLines += costLines;
                 activityVerifyCompleteModel.setCurFund(curLines);
+
+                //刷新小R
+                int curLines1 = activityVerifyCompleteModel.getCurLines();
+                curLines1 += costLines;
+                activityVerifyCompleteModel.setCurLinePeoples( curLines1 );
 
                 if (!walletService.CostLines(UserID, costLines )) {
                     return false;
@@ -219,7 +223,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
      */
     public boolean IsRemainingTickets(String ActivityID, int PurchaseNum) {
         ActivityVerifyCompleteModel activityVerifyCompleteModel = activityInfoDAO.getActivityVerifyCompleteModelNoTransaction(ActivityID);
-        return activityVerifyCompleteModel.IsEnouthFund(PurchaseNum);
+        return activityVerifyCompleteModel.IsEnoughFund(PurchaseNum);
     }
 
     /**
@@ -280,7 +284,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 int Lines = activityDynamicModel.getActivityTotalLinesPeoples() * AdvanceNum;
 
                 if (!activityVerifyCompleteModel.IsEnoughAdvance(AdvanceNum) ||
-                        activityVerifyCompleteModel.IsEnouthFund( Lines ) ) {
+                        activityVerifyCompleteModel.IsEnoughLinePoples(Lines) ) {
                     return false;
                 }
 
@@ -304,6 +308,10 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 int curLines = activityVerifyCompleteModel.getCurFund();
                 curLines += Lines;
                 activityVerifyCompleteModel.setCurFund(curLines);
+                //刷新大R
+                int curLinePeoples = activityVerifyCompleteModel.getCurLinePeoples();
+                curLinePeoples += Lines;
+                activityVerifyCompleteModel.setCurLinePeoples( curLinePeoples );
 
                 //钱包花费
                 if (!walletService.CostLines(UserID, Lines)) {

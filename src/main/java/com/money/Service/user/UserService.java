@@ -22,7 +22,6 @@ public class UserService extends ServiceBase implements ServiceInterface {
 
     //用户注册，判断验证码是否正确，正确则完成用户注册
     public int userRegister(String username, String code, String password, int userType) {
-
         //用户名 密码合法性
         if (!userDAO.userIsRight(username) || !userDAO.passwordIsRight(password)) {
             return ServerReturnValue.REQISTEREDUSERNAMEERROR;
@@ -201,7 +200,8 @@ public class UserService extends ServiceBase implements ServiceInterface {
      * @param UserID
      */
     public int SendCode(String UserID) {
-        return userDAO.teleCodeIsSend(UserID);
+        //return userDAO.teleCodeIsSend(UserID);
+        return 0;
     }
 
     /**
@@ -218,9 +218,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
         }
 
         userModel.setUserHeadPortrait( Url );
-
         userDAO.update( userModel );
-
         return ServerReturnValue.SERVERRETURNCOMPELETE;
     }
 

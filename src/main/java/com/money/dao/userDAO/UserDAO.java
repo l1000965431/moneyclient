@@ -6,7 +6,9 @@ import com.money.config.ServerReturnValue;
 import com.money.dao.BaseDao;
 import com.money.dao.TransactionCallback;
 import com.money.memcach.MemCachService;
+import com.money.model.UserEarningsModel;
 import com.money.model.UserModel;
+import com.money.model.WalletModel;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,8 @@ import until.MoneySeverRandom;
 import until.PRestSmsSDKUntil;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by fisher on 2015/7/9.
@@ -115,6 +119,16 @@ public class UserDAO extends BaseDao {
                 userModel.setPassword(passWord);
                 userModel.setUserType(userType);
                 basedao.getNewSession().save(userModel);
+
+                if( userType == Config.INVESTOR ){
+                    WalletModel walletModel = new WalletModel();
+                    walletModel.setUserID( userID );
+                    basedao.getNewSession().save(walletModel);
+
+                    UserEarningsModel userEarningsModel = new UserEarningsModel();
+                    userEarningsModel.setUserID( userID );
+                    basedao.getNewSession().save(userEarningsModel);
+                }
             }
         }).equals(Config.SERVICE_SUCCESS)) {
             return ServerReturnValue.REQISTEREDSUCCESS;
@@ -132,11 +146,12 @@ public class UserDAO extends BaseDao {
     //验证短信验证码是否正确
     public boolean checkTeleCode(String userName, String code) {
         //根据userName,寻找缓存中的code，并判断是否相等
-        String UserCodeName = Config.CODE + userName;
+        return true;
+        /*String UserCodeName = Config.CODE + userName;
         if (code == MemCachService.MemCachgGet(UserCodeName))
             return true;
         else
-            return true;
+            return true;*/
     }
 
     //发送手机验证码，并验证手机短信是否发送成功 1为成功，0为失败............验证码内容待改，输出待改
@@ -275,7 +290,7 @@ public class UserDAO extends BaseDao {
         String education = map.get("education");
         String identity = map.get("identity");
         String personalProfile = map.get("personalProfile");
-        String selfintroduce = map.get("selfintroduce");
+        String selfIntroduce = map.get("selfintroduce");
         String goodAtField = map.get("goodAtField");
         String RealName = map.get("realName");
         userModel.setUserName(user);
@@ -286,23 +301,32 @@ public class UserDAO extends BaseDao {
         userModel.setEduInfo(education );
         userModel.setIdentityId( identity );
         userModel.setCareer( personalProfile );
-        userModel.setIntroduction( selfintroduce );
+        userModel.setIntroduction( selfIntroduce );
         userModel.setExpertise( goodAtField );
-
         userModel.setIsPerfect(true);
         this.update(userModel);
-
-
     }
 
     //查看用户昵称是否合法
     public boolean userIsRight(String user) {
-        return true;
+        if( user == null ){
+            return false;
+        }
+
+        Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
+        Matcher m = p.matcher(user);
+        return m.find();
     }
 
     //检查登录密码是否合法
     public boolean passwordIsRight(String password) {
-        return true;
+        if( password == null ){
+            return false;
+        }
+
+        Pattern p = Pattern.compile("^[0-9a-zA-Z]{6,16}$");
+        Matcher m = p.matcher(password);
+        return m.find();
     }
 
     public UserModel getUSerModel(final String UserID) {

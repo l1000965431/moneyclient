@@ -62,7 +62,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
                 }
 
                 Set<SREarningModel> srEarningModelSet = activityDetailModel.getSrEarningModels();
-                StartLottery(InstallmentActivityID,srEarningModelSet);
+                StartLottery(InstallmentActivityID, srEarningModelSet);
 
                 //同组完成后 给人打钱
                 if (IsGroupCompelete(activityDetailModel)) {
@@ -74,11 +74,11 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
 
         return Config.SERVICE_SUCCESS;
     }
-    
+
 
     /**
      * @param InstallmentActivityID 分期项目ID
-     * @param srEarningModelSet        总共中奖的人数
+     * @param srEarningModelSet     总共中奖的人数
      * @param srEarningModelSet     得奖的层次和每个层次的人数
      * @return
      */
@@ -114,11 +114,12 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
 
                     listPeoples.get(Index).setLotteryLines(LotteryLines);
                     Index++;
-
                 }
             }
         }
 
+        //刷新个人的收益记录
+        updateEarnings(listPeoples);
 
         String json = GsonUntil.JavaClassToJson(listPeoples);
         PrizeListModel prizeListModel = new PrizeListModel();
@@ -182,6 +183,39 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
                 walletService.RechargeWallet(Peoples.getUserId(), Peoples.getLotteryLines());
             }
 
+        }
+    }
+
+
+    private void updateEarnings(List<LotteryPeoples> listPeoples) {
+        if (listPeoples == null) {
+            return;
+        }
+
+        for (LotteryPeoples itLotteryPeoples : listPeoples) {
+            String UserID = itLotteryPeoples.getUserId();
+
+            UserEarningsModel userEarningsModel = (UserEarningsModel) lotteryDAO.loadNoTransaction(UserEarningsModel.class, UserID);
+            if (userEarningsModel == null) {
+                return;
+            }
+            UserEarningsModel newUserEarningsModel = new UserEarningsModel();
+            newUserEarningsModel.setUserID(UserID);
+            String json = userEarningsModel.getUserEarnings();
+            Map<String, Object> map = GsonUntil.jsonToJavaClass(json, new TypeToken<Map<String, Object>>() {
+            }.getType());
+
+            if (map == null) {
+                map = new HashMap<String, Object>();
+            }
+
+            if (map.get(itLotteryPeoples.getActivityID()) == null) {
+                map.put(itLotteryPeoples.getActivityID(), itLotteryPeoples.getLotteryLines());
+            } else {
+                Integer lines =  (Integer)map.get(itLotteryPeoples.getActivityID());
+                lines+=itLotteryPeoples.getLotteryLines();
+                map.put(itLotteryPeoples.getActivityID(), lines);
+            }
         }
     }
 }

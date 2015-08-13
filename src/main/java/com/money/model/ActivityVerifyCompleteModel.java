@@ -155,6 +155,26 @@ public class ActivityVerifyCompleteModel extends BaseModel {
     @Column( nullable=false,columnDefinition="INT default 0" )
     int CurInstallmentNum;
 
+    /**
+     * 小R的投资总金额
+     */
+    int TotalLines;
+
+    /**
+     * 大R的投资总金额
+     */
+    int TotalLinePeoples;
+
+    /**
+     * 小R的当前筹资金额
+     */
+    int CurLines;
+
+    /**
+     * 大R的当前筹资金额
+     */
+    int CurLinePeoples;
+
     public int getStatus() {
         return status;
     }
@@ -355,17 +375,64 @@ public class ActivityVerifyCompleteModel extends BaseModel {
         CurInstallmentNum = curInstallmentNum;
     }
 
-    public boolean IsEnoughAdvance( int AdvanceNum ){
-        if( TotalInstallmentNum-CurInstallmentNum >= AdvanceNum ){
-            return true;
-        }else{
-            return false;
-        }
+    public int getTotalLines() {
+        return TotalLines;
     }
 
-    public boolean IsEnouthFund( int Fund ){
+    public void setTotalLines(int totalLines) {
+        TotalLines = totalLines;
+    }
+
+    public int getTotalLinePeoples() {
+        return TotalLinePeoples;
+    }
+
+    public void setTotalLinePeoples(int totalLinePeoples) {
+        TotalLinePeoples = totalLinePeoples;
+    }
+
+    public int getCurLines() {
+        return CurLines;
+    }
+
+    public void setCurLines(int curLines) {
+        CurLines = curLines;
+    }
+
+    public int getCurLinePeoples() {
+        return CurLinePeoples;
+    }
+
+    public void setCurLinePeoples(int curLinePeoples) {
+        CurLinePeoples = curLinePeoples;
+    }
+
+    public boolean IsEnoughAdvance( int AdvanceNum ){
+        return TotalInstallmentNum-CurInstallmentNum >= AdvanceNum;
+    }
+
+    public boolean IsEnoughFund(int Fund){
         return curFund+Fund>=targetFund;
     }
+
+    /**
+     * 小R筹款检查
+     * @param Lines
+     * @return
+     */
+    public boolean IsEnoughLines( int Lines ){
+        return (CurLines+Lines)>=TotalLines;
+    }
+
+    /**
+     * 大R筹款检查
+     * @param LinePeoples
+     * @return
+     */
+    public boolean IsEnoughLinePoples( int LinePeoples ){
+        return (CurLinePeoples+LinePeoples)>=TotalLinePeoples;
+    }
+
 
     public boolean IsEnoughInstallmentNum(){
         return ( CurInstallmentNum >= TotalInstallmentNum );

@@ -7,7 +7,7 @@ package com.money.model;
  * <p>Version: 1.0
  */
 
-public class TicketModel {
+public class TicketModel extends BaseModel{
 
     /**
      * 票ID

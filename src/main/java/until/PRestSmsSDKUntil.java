@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
  * Created by liumin on 15/7/31.
  */
 
-@Component
+//@Component
 public class PRestSmsSDKUntil {
 
     static CCPRestSmsSDK restAPI;
