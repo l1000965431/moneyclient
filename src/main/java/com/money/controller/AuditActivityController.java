@@ -59,6 +59,26 @@ public class AuditActivityController extends ControllerBase implements IControll
         return json;
     }
 
+    /**
+     *  获取用户所有的提交过的项目
+     *
+     */
+    @RequestMapping("/getUserActivityList")
+    @ResponseBody
+    public String getUserActivityList(HttpServletRequest request, HttpServletResponse response) {
+
+//        int pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
+//        int pageNum = Integer.parseInt(request.getParameter("pageNum"));
+        String userId = request.getParameter("userId");
+
+
+        List<ActivityVerifyModel> list = serviceAuditActivity.getUserActivityList(userId, 0, 1000);
+
+        String json = GsonUntil.JavaClassListToJsonList(list);
+        return json;
+    }
+
+
 
     /**
      * 获取已审批的项目列表

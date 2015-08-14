@@ -54,7 +54,7 @@ public class GsonUntil {
                 o.addProperty("projectIntroduction", src.getActivityIntroduce());
                 return o;
             }
-        }).registerTypeAdapter(ActivityVerifyCompleteModel.class, new JsonSerializer<OrderModel>() {
+        }).registerTypeAdapter(OrderModel.class, new JsonSerializer<OrderModel>() {
             public JsonElement serialize(OrderModel src, Type typeOfSrc,
                                          JsonSerializationContext context) {
                 JsonObject o=new JsonObject();

@@ -52,6 +52,10 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
         return auditActivityDao.getActivityList(ActivityVerifyModel.STATUS_AUDITOR_NOT_PASS, pageIndex, pageNum);
     }
 
+    public List<ActivityVerifyModel> getUserActivityList(String userId, int pageIndex, int pageNum){
+        return auditActivityDao.getUsersActivityList(userId, pageIndex, pageNum);
+    }
+
     /**
      * 设置项目审核状态
      * @param id

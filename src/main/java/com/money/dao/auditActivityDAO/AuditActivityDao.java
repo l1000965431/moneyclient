@@ -88,4 +88,19 @@ public class AuditActivityDao extends BaseDao {
         t.commit();
         return activityVerifyModels;
     }
+
+    @SuppressWarnings("unchecked")
+    public List<ActivityVerifyModel> getUsersActivityList(String userId, int pageIndex, int pageNum){
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
+        List<ActivityVerifyModel> activityVerifyModels = session.createCriteria(ActivityVerifyModel.class)
+                .addOrder(Order.asc("id"))
+                .add(Restrictions.eq("creatorId", userId))
+                .setFirstResult(pageIndex * pageNum)
+                .setMaxResults(pageNum)
+                .list();
+
+        t.commit();
+        return activityVerifyModels;
+    }
 }
