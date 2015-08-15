@@ -15,6 +15,7 @@ import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.dragoneye.wjjt.user.CurrentUser;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCancellationSignal;
@@ -51,10 +52,6 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
         initData();
     }
 
-    @Override
-    protected void onMenuCreated(){
-    }
-
     private void initView(){
         mTVUserName = (TextView)findViewById(R.id.home_self_group_pinfo_linearLayout1_num);
         mTVUserId = (TextView)findViewById(R.id.home_self_group_pinfo_linearLayout2_num);
@@ -62,15 +59,15 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
         mTVSexuality = (TextView)findViewById(R.id.home_self_group_pinfo_linearLayout5_num);
         mIBPortrait = (ImageButton)findViewById(R.id.home_self_group_pinfo_imageButton1_group);
         mIBPortrait.setOnClickListener(this);
-        String userPortrait = ((MyApplication)getApplication()).getCurrentUser().getUserHeadPortrait();
+        String userPortrait = ((MyApplication)getApplication()).getCurrentUser(this).getUserHeadPortrait();
         if( userPortrait != null && userPortrait.length() > 0 ){
             ImageLoader.getInstance().displayImage(userPortrait, mIBPortrait);
         }
 
-        mTVUserName.setText(((MyApplication) getApplication()).getCurrentUser().getUserName());
-        mTVUserId.setText(((MyApplication)getApplication()).getCurrentUser().getUserId());
-        mTVAddress.setText(((MyApplication)getApplication()).getCurrentUser().getAddress());
-        mTVSexuality.setText(((MyApplication)getApplication()).getCurrentUser().getSexualityString());
+        mTVUserName.setText(((MyApplication) getApplication()).getCurrentUser(this).getUserName());
+        mTVUserId.setText(((MyApplication) getApplication()).getCurrentUser(this).getUserId());
+        mTVAddress.setText(((MyApplication) getApplication()).getCurrentUser(this).getAddress());
+        mTVSexuality.setText(((MyApplication) getApplication()).getCurrentUser(this).getSexualityString());
 
         progressDialog = new ProgressDialog(this);
     }
@@ -82,8 +79,10 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
     Runnable getUploadToken_r = new Runnable() {
         @Override
         public void run() {
-            HttpClient.atomicPost(UserInfoActivity.this, HttpUrlConfig.URL_ROOT + "ImageUploadController/getUploadToken",
-                    null, new HttpClient.MyHttpHandler() {
+            HttpParams params = new HttpParams();
+            params.put("userId", ((MyApplication)getApplication()).getCurrentUser(UserInfoActivity.this).getUserId());
+            HttpClient.atomicPost(UserInfoActivity.this, HttpUrlConfig.URL_ROOT + "ImageUploadController/getUploadTokenUserHead",
+                    params, new HttpClient.MyHttpHandler() {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             cancelUpload();
@@ -91,7 +90,6 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
 
                         @Override
                         public void onSuccess(int i, Header[] headers, String s) {
-                            UIHelper.toast(UserInfoActivity.this, s);
                             mUploadToken = s;
                             startUploadImages();
                         }
@@ -116,7 +114,7 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
         public void run() {
             try{
                 progressDialog.setMessage("正在上传图片");
-                String key = "user_portrait_" + ((MyApplication)getApplication()).getCurrentUser().getUserId();
+                String key = "user_portrait_" + ((MyApplication)getApplication()).getCurrentUser(UserInfoActivity.this).getUserId();
                 uploadManager.put(mSelectedFile, key, mUploadToken, new UpCompletionHandler() {
                     @Override
                     public void complete(String s, ResponseInfo responseInfo, JSONObject jsonObject) {
@@ -145,7 +143,7 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
         @Override
         public void run() {
             HttpParams httpParams = new HttpParams();
-            httpParams.put(UserProtocol.CHANGE_USER_PORTRAIT_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser().getUserId());
+            httpParams.put(UserProtocol.CHANGE_USER_PORTRAIT_PARAM_USER_ID, ((MyApplication) getApplication()).getCurrentUser(UserInfoActivity.this).getUserId());
             httpParams.put(UserProtocol.CHANGE_USER_PORTRAIT_PARAM_URL, uploadPortraitUrl);
 
             HttpClient.atomicPost(UserInfoActivity.this, UserProtocol.URL_CHANGE_USER_PORTRAIT, httpParams, new HttpClient.MyHttpHandler() {
@@ -167,9 +165,12 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
             Integer integer = Integer.parseInt(s);
             switch (integer){
                 case UserProtocol.CHANGE_PORTRAIT_RESULT_SUCCESS:
-                    ((MyApplication)getApplication()).getCurrentUser().setUserHeadPortrait(uploadPortraitUrl);
+                    ((MyApplication)getApplication()).getCurrentUser(this).setUserHeadPortrait(uploadPortraitUrl);
+                    ImageLoader.getInstance().clearDiskCache();
+                    ImageLoader.getInstance().clearMemoryCache();
                     ImageLoader.getInstance().displayImage(uploadPortraitUrl, mIBPortrait);
                     cancelUpload();
+                    UIHelper.toast(this, "更换头像成功");
                     break;
                 case UserProtocol.CHANGE_PORTRAIT_RESULT_FAILED:
                 default:

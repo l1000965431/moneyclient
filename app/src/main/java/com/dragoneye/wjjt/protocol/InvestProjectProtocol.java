@@ -29,6 +29,8 @@ public interface InvestProjectProtocol {
     int INVEST_RESULT_SUCCESS = 100;   // 投资成功
     int INVEST_RESULT_IMPROVE_INFO = 101;     // 需完善个人信息
     int INVEST_RESULT_FAILED = 102;    // 投资失败
+    int INVEST_RESULT_MONEY_NOT_ENOUGH = 2;
+    int INVEST_RESULT_TICKET_SOLD_OUT = 1;
 
     /*****************************************************************************************/
 

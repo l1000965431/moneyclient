@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import com.dragoneye.wjjt.model.ProjectDetailModel;
 import com.dragoneye.wjjt.protocol.UploadProjectProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.dragoneye.wjjt.user.CurrentUser;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCancellationSignal;
@@ -75,6 +77,8 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
     private boolean isCancelUpload = true;
     UploadManager uploadManager;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +103,23 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
 
         mTVSaveProject = (TextView)findViewById(R.id.fragment_register_buttonlogin);
         mTVSaveProject.setOnClickListener(this);
+        CheckBox checkBox = (CheckBox)findViewById(R.id.fragment_register_Agreement_checkBox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mTVSaveProject.setEnabled(isChecked);
+                if (isChecked) {
+                    mTVSaveProject.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_rounded10blue));
+                } else {
+                    mTVSaveProject.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_rounded12));
+                }
+            }
+        });
+        checkBox.setChecked(true);
+        checkBox.setChecked(false);
+        View agreement = findViewById(R.id.fragment_register_Agreement_text);
+        agreement.setOnClickListener(this);
+
         mTVSelectedImage = (TextView)findViewById(R.id.project_launched_tv_selected_image);
         mTVSelectedImage.setOnClickListener(this);
 
@@ -168,6 +189,9 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
                     onPreviewImage(index);
                 }
                 break;
+            case R.id.fragment_register_Agreement_text:
+                AgreementActivity.CallThisActivity(this);
+                break;
         }
     }
 
@@ -195,11 +219,7 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
     }
 
     private void onPreviewImage(int index){
-
-        Intent intent = new Intent(this, ImageExplorerActivity.class);
-        intent.putExtra(ImageExplorerActivity.EXTRA_URI_ARRAY, mImageUri);
-        intent.putExtra(ImageExplorerActivity.EXTRA_INDEX_TO_SHOW, index);
-        startActivity(intent);
+        ImageExplorerActivity.CallActivity(this, mImageUri, index);
     }
 
     private void onSelectedImage(){
@@ -285,7 +305,6 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
 
                         @Override
                         public void onSuccess(int i, Header[] headers, String s) {
-                            UIHelper.toast(ProjectEditActivity.this, s);
                             mUploadToken = s;
                             startUploadImages();
                         }
@@ -368,6 +387,7 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
                     Log.d("SubmitProject Success", s);
                     progressDialog.dismiss();
                     UIHelper.toast(ProjectEditActivity.this, "项目提交成功");
+                    finish();
                 }
             });
         }
@@ -375,28 +395,80 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
 
     private boolean getProjectInput(ProjectDetailModel projectDetail){
         projectDetail.setName(mETProjectName.getText().toString());
-        if( mETProjectTargetPrice.getText().length() > 0 ){
-            projectDetail.setTargetFund(Integer.parseInt(mETProjectTargetPrice.getText().toString()));
+        if( mETProjectTargetPrice.getText().length() == 0 ){
+            UIHelper.toast(this, "请输入筹资金额");
+            return false;
         }
-        if( mETRaiseDay.getText().length() > 0 ){
-            projectDetail.setRaiseDay(Integer.parseInt(mETRaiseDay.getText().toString()));
-        }
-        if( mETTeamSize.getText().length() > 0 ){
-            projectDetail.setTeamSize(Integer.parseInt(mETTeamSize.getText().toString()));
-        }
-        if( mRBSelectedProjectType != null ){
-            projectDetail.setCategory(mRBSelectedProjectType.getText().toString());
-        }
+        projectDetail.setTargetFund(Integer.parseInt(mETProjectTargetPrice.getText().toString()));
 
+        if( mETRaiseDay.getText().length() == 0 ){
+            UIHelper.toast(this, "请输入筹资天数");
+            return false;
+        }
+        projectDetail.setRaiseDay(Integer.parseInt(mETRaiseDay.getText().toString()));
+
+        if( mETTeamSize.getText().length() == 0 ){
+            UIHelper.toast(this, "请输入团队人数");
+            return false;
+        }
+        projectDetail.setTeamSize(Integer.parseInt(mETTeamSize.getText().toString()));
+
+        if( mRBSelectedProjectType == null ){
+            UIHelper.toast(this, "请选择项目类别");
+            return false;
+        }
+        projectDetail.setCategory(mRBSelectedProjectType.getText().toString());
+
+        if( mETAddress.getText().length() == 0 ){
+            UIHelper.toast(this, "请输入地址");
+            return false;
+        }
         projectDetail.setAddress(mETAddress.getText().toString());
+
+        if( mETVideoUrl.getText().length() == 0 ){
+            UIHelper.toast(this, "请输入视频地址");
+            return false;
+        }
         projectDetail.setVideoUrl(mETVideoUrl.getText().toString());
+
+        if( mETProjectSummary.getText().length() == 0 ){
+            UIHelper.toast(this, "请输入项目简介");
+            return false;
+        }
         projectDetail.setSummary(mETProjectSummary.getText().toString());
+
+        if( mETProjectIntroduce.getText().length() == 0 ){
+            UIHelper.toast(this, "请输入项目详细介绍");
+            return false;
+        }
         projectDetail.setActivityIntroduce(mETProjectIntroduce.getText().toString());
+
+        if( mETMarketAnalysis.getText().length() == 0 ){
+            UIHelper.toast(this, "请输入市场分析");
+            return false;
+        }
         projectDetail.setMarketAnalysis(mETMarketAnalysis.getText().toString());
-        projectDetail.setTeamIntroduce(mETTeamIntroduce.getText().toString());
-        projectDetail.setTags(mETTags.getText().toString());
-        projectDetail.setCreatorId(((MyApplication)getApplication()).getCurrentUser().getUserId());
+
+        if( mETProfitModel.getText().length() == 0 ){
+            UIHelper.toast(this, "请输入盈利模式");
+            return false;
+        }
         projectDetail.setProfitMode(mETProfitModel.getText().toString());
+
+        if( mETTeamIntroduce.getText().length() == 0 ){
+            UIHelper.toast(this, "请输入团队介绍");
+            return false;
+        }
+        projectDetail.setTeamIntroduce(mETTeamIntroduce.getText().toString());
+
+        if( mETTags.getText().length() == 0 ){
+            UIHelper.toast(this, "请输入标签");
+            return false;
+        }
+        projectDetail.setTags(mETTags.getText().toString());
+
+        projectDetail.setCreatorId(((MyApplication)getApplication()).getCurrentUser(this).getUserId());
+
         return true;
     }
 }

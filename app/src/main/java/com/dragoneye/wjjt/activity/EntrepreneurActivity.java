@@ -1,6 +1,9 @@
 package com.dragoneye.wjjt.activity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,15 +20,18 @@ import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.BaseActivity;
+import com.dragoneye.wjjt.activity.base.DoubleClickExitActivity;
+import com.dragoneye.wjjt.activity.fragments.BaseFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeEntrepreneurFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeInvestmentFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeMyselfFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeRecordFragment;
 import com.dragoneye.wjjt.application.MyApplication;
+import com.dragoneye.wjjt.user.CurrentUser;
 import com.dragoneye.wjjt.user.UserBase;
 
 
-public class EntrepreneurActivity extends BaseActivity implements View.OnClickListener{
+public class EntrepreneurActivity extends DoubleClickExitActivity implements View.OnClickListener{
 
     public static final int TAB_PROJECT_LIST = 0;
     public static final int TAB_MYSELF = 1;
@@ -57,13 +63,14 @@ public class EntrepreneurActivity extends BaseActivity implements View.OnClickLi
     private ViewPager viewPager;
     private BottomButton projectListButton,  myselfButton;
     private BottomButton currentCheckedButton;
+    private FragmentAdapter mFragmentAdapter;
+    private ViewPager.OnPageChangeListener onPageChangeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.function_switch_developer_bottom);
         initView();
-        addListener();
     }
 
     private void initView(){
@@ -83,13 +90,10 @@ public class EntrepreneurActivity extends BaseActivity implements View.OnClickLi
         linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_me);
         linearLayout.setOnClickListener(this);
 
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
+        mFragmentAdapter = new FragmentAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(mFragmentAdapter);
         viewPager.setOffscreenPageLimit(2);
-    }
-
-    private void addListener(){
-        ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+        onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -110,6 +114,8 @@ public class EntrepreneurActivity extends BaseActivity implements View.OnClickLi
                         currentCheckedButton = myselfButton;
                         break;
                 }
+                BaseFragment baseFragment = (BaseFragment)mFragmentAdapter.getItem(position);
+                baseFragment.onSelected();
             }
 
             @Override
@@ -118,7 +124,12 @@ public class EntrepreneurActivity extends BaseActivity implements View.OnClickLi
             }
         };
         viewPager.setOnPageChangeListener(onPageChangeListener);
-        onPageChangeListener.onPageSelected(TAB_PROJECT_LIST);
+    }
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
     }
 
     @Override
@@ -158,37 +169,25 @@ public class EntrepreneurActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_entrepreneur, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.menu_entrepreneur_create_project) {
-            startSubmitProjectActivity(this, ((MyApplication)getApplication()).getCurrentUser() );
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public static void startSubmitProjectActivity(Context context, UserBase userBase){
+    public static void startSubmitProjectActivity(final Activity activity, UserBase userBase){
         if(userBase.isPerfectInfo()){
-            Intent intent = new Intent(context, ProjectEditActivity.class);
-            context.startActivity(intent);
+            Intent intent = new Intent(activity, ProjectEditActivity.class);
+            activity.startActivity(intent);
         }else {
-            Intent intent = new Intent(context, ImproveUserInfoActivity.class);
-            context.startActivity(intent);
+            AlertDialog alertDialog = new AlertDialog.Builder(activity)
+                    .setPositiveButton("去完善资料", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(activity, ImproveUserInfoActivity.class);
+                            activity.startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("取消", null)
+                    .setMessage("提交项目需要您先完善资料，现在去完善吗？")
+                    .create();
+            alertDialog.show();
+
         }
     }
+
 }

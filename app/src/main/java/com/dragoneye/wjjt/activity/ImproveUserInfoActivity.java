@@ -14,8 +14,10 @@ import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
+import com.dragoneye.wjjt.tool.InputChecker;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.dragoneye.wjjt.user.CurrentUser;
 import com.dragoneye.wjjt.user.UserBase;
 
 import org.apache.http.Header;
@@ -71,9 +73,12 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         mTVConfirmButton = (TextView)findViewById(R.id.improve_user_info_tv_confirmButton);
         mTVConfirmButton.setOnClickListener(this);
 
+        View agreement = findViewById(R.id.fragment_register_Agreement_text);
+        agreement.setOnClickListener(this);
+
         mLLEntrepreneurInfo = findViewById(R.id.inmprove_user_info_ll_entrepreneurInfo);
 
-        mTVPhoneNumber.setText(((MyApplication)getApplication()).getCurrentUser().getUserId());
+        mTVPhoneNumber.setText(((MyApplication)getApplication()).getCurrentUser(this).getUserId());
 
         mLLExpertiseRootLeft = (LinearLayout)findViewById(R.id.improve_user_info_ll_expertise_rootL);
         mLLExpertiseRootRight = (LinearLayout)findViewById(R.id.improve_user_info_ll_expertise_rootR);
@@ -90,7 +95,7 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         mCBExpertise.add((CheckBox)findViewById(R.id.checkBox7));
         mCBExpertise.add((CheckBox)findViewById(R.id.checkBox8));
 
-        setUIMode(((MyApplication)getApplication()).getCurrentUser().getUserType());
+        setUIMode(((MyApplication)getApplication()).getCurrentUser(this).getUserType());
     }
 
     private void initData(){
@@ -122,22 +127,26 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
             UIHelper.toast(this, "请输入用户名");
             return false;
         }
-        if(mETEmail.getText().length() == 0){
-            UIHelper.toast(this, "请输入邮箱");
+        if(!InputChecker.isEmail(mETEmail.getText().toString())){
+            UIHelper.toast(this, "请输入正确的邮箱");
             return false;
         }
         if(mETRealName.getText().length() == 0){
             UIHelper.toast(this, "请输入真实姓名");
             return false;
         }
-        if(mETIdentityId.getText().length() == 0){
-            UIHelper.toast(this, "请输入身份证号");
+        if(!InputChecker.isIdCardNumber(mETIdentityId.getText().toString())){
+            UIHelper.toast(this, "请输入正确的身份证号");
             return false;
         }
 
-        if(((MyApplication)getApplication()).getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+        if(((MyApplication)getApplication()).getCurrentUser(this).getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
             if(mETAddress.getText().length() == 0){
                 UIHelper.toast(this, "请输入地址");
+                return false;
+            }
+            if(getExpertiseString().isEmpty()){
+                UIHelper.toast(this, "请选择擅长领域");
                 return false;
             }
 
@@ -150,7 +159,7 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
                 return false;
             }
             if(mETCareer.getText().length() == 0){
-                UIHelper.toast(this, "请输入个人经历");
+                UIHelper.toast(this, "请输入事业经历");
                 return false;
             }
         }
@@ -166,6 +175,9 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
                 break;
             case R.id.improve_user_info_tv_addCustomExpertise:
                 onAddCustomExpertise();
+                break;
+            case R.id.fragment_register_Agreement_text:
+                AgreementActivity.CallThisActivity(this);
                 break;
         }
     }
@@ -207,10 +219,10 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         }
 
         HttpParams params = new HttpParams();
-        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_TOKEN, ((MyApplication)getApplication()).getToken());
-        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_TYPE, ((MyApplication)getApplication()).getCurrentUser().getUserType());
+        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_TOKEN, ((MyApplication)getApplication()).getToken(this));
+        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_TYPE, ((MyApplication)getApplication()).getCurrentUser(this).getUserType());
         params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_INFO, ToolMaster.gsonInstance().toJson(getUserImproveInfo()) );
-        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser().getUserId());
+        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser(this).getUserId());
 
         HttpClient.atomicPost(this, UserProtocol.URL_IMPROVE_USER_INFO, params, new HttpClient.MyHttpHandler() {
             @Override
@@ -247,7 +259,9 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
                 UIHelper.toast(this, "用户类型错误");
                 break;
             case UserProtocol.IMPROVE_USER_INFO_RESULT_SUCCESS:
+                ((MyApplication)getApplication()).getCurrentUser(this).setIsPerfectInfo(true);
                 UIHelper.toast(this, "更改成功");
+                finish();
                 break;
         }
     }
@@ -260,7 +274,7 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         userInfo.put("realName", mETRealName.getText().toString());
         userInfo.put("identity", mETIdentityId.getText().toString());
 
-        if(((MyApplication)getApplication()).getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+        if(((MyApplication)getApplication()).getCurrentUser(this).getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
             userInfo.put("location", mETAddress.getText().toString());
             userInfo.put("education", mETEduInfo.getText().toString());
             userInfo.put("personalProfile", mETCareer.getText().toString());

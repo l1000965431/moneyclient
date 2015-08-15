@@ -23,6 +23,7 @@ import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.dragoneye.wjjt.user.CurrentUser;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
@@ -55,9 +56,10 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         mTVUserName = (TextView)getActivity().findViewById(R.id.home_selfui_name);
 
         mTVWalletBalance = (TextView)getActivity().findViewById(R.id.textView17);
+        View walletDesc = getActivity().findViewById(R.id.textView16);
 
         mIVPortrait = (ImageView)getActivity().findViewById(R.id.home_self_group_iv_portrait);
-        String userPortrait = ((MyApplication)getActivity().getApplication()).getCurrentUser().getUserHeadPortrait();
+        String userPortrait = ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserHeadPortrait();
         if( userPortrait != null && userPortrait.length() > 0 ){
             ImageLoader.getInstance().displayImage(userPortrait, mIVPortrait);
         }
@@ -79,15 +81,19 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         userInfoButton.setOnClickListener(this);
 
         // 创建新项目
-        View submitProjectButton = getActivity().findViewById(R.id.linearLayout21);
-        submitProjectButton.setOnClickListener(this);
-        if(((MyApplication)getActivity().getApplication()).getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_INVESTOR){
-            submitProjectButton.setVisibility(View.GONE);
+//        View submitProjectButton = getActivity().findViewById(R.id.linearLayout21);
+//        submitProjectButton.setOnClickListener(this);
+        if(((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+            chargeButton.setVisibility(View.GONE);
+            withdrawButton.setVisibility(View.GONE);
+            walletDesc.setVisibility(View.GONE);
+            mTVWalletBalance.setVisibility(View.GONE);
+        }else {
+//            submitProjectButton.setVisibility(View.GONE);
+            handler.post(getWalletBalance_r);
         }
 
-        mTVUserName.setText(((MyApplication)getActivity().getApplication()).getCurrentUser().getUserName());
-
-        handler.post(getWalletBalance_r);
+        mTVUserName.setText(((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserName());
     }
 
     private void initData(){
@@ -99,7 +105,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         public void run() {
             HttpParams params = new HttpParams();
 
-            params.put("userId", ((MyApplication)getActivity().getApplication()).getCurrentUser().getUserId());
+            params.put("userId", ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserId());
 
             HttpClient.atomicPost(getActivity(), UserProtocol.URL_GET_WALLET_BALANCE, params, new HttpClient.MyHttpHandler() {
                 @Override
@@ -131,9 +137,9 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.linearLayout4:    // 提现
                 break;
-            case R.id.linearLayout21:   // 创建项目
-                EntrepreneurActivity.startSubmitProjectActivity(getActivity(), ((MyApplication)getActivity().getApplication()).getCurrentUser());
-                break;
+//            case R.id.linearLayout21:   // 创建项目
+//                EntrepreneurActivity.startSubmitProjectActivity(getActivity(), ((MyApplication)getApplication()).getCurrentUser.getCurrentUser(getActivity()));
+//                break;
             case R.id.home_self_group_iv_portrait:
                 onChangePortrait();
                 break;
@@ -145,7 +151,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
     }
 
     private void onUserInfo(){
-        if( ((MyApplication)getActivity().getApplication()).getCurrentUser().isPerfectInfo() ){
+        if( ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).isPerfectInfo() ){
             Intent intent = new Intent(getActivity(), UserInfoActivity.class);
             startActivity(intent);
         }else {

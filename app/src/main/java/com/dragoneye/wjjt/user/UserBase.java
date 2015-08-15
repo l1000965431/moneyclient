@@ -1,9 +1,13 @@
 package com.dragoneye.wjjt.user;
 
+import com.dragoneye.wjjt.protocol.UserProtocol;
+
+import java.io.Serializable;
+
 /**
  * Created by happysky on 15-7-22.
  */
-public class UserBase {
+public class UserBase implements Serializable{
     /**
      * 用户名
      */
@@ -212,5 +216,13 @@ public class UserBase {
 
     public void setExpertise(String expertise) {
         this.expertise = expertise;
+    }
+
+    public String getUserTypeString(){
+        if(userType == UserProtocol.PROTOCOL_USER_TYPE_INVESTOR){
+            return "投资者";
+        }else {
+            return "创业者";
+        }
     }
 }

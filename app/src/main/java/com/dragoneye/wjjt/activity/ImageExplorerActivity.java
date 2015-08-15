@@ -22,10 +22,14 @@ import java.util.ArrayList;
 
 public class ImageExplorerActivity extends BaseActivity {
 
-    public static final String EXTRA_URI_ARRAY = "EXTRA_URI_ARRAY";
-    public static final String EXTRA_INDEX_TO_SHOW = "EXTRA_INDEX_TO_SHOW";
-
     ViewPager mViewPager;
+
+    public static void CallActivity(Context context, ArrayList<Uri> uris, int indexToShow){
+        Intent intent = new Intent(context, ImageExplorerActivity.class);
+        intent.putParcelableArrayListExtra("EXTRA_URI_ARRAY", uris);
+        intent.putExtra("EXTRA_INDEX_TO_SHOW", indexToShow);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +37,8 @@ public class ImageExplorerActivity extends BaseActivity {
         setContentView(R.layout.activity_image_explorer);
 
         Intent intent = getIntent();
-        final ArrayList<Uri> uris = intent.getParcelableArrayListExtra(EXTRA_URI_ARRAY);
-        int indexToShow = intent.getIntExtra(EXTRA_INDEX_TO_SHOW, 0);
+        final ArrayList<Uri> uris = intent.getParcelableArrayListExtra("EXTRA_URI_ARRAY");
+        int indexToShow = intent.getIntExtra("EXTRA_INDEX_TO_SHOW", 0);
         final ZoomImageView[] imageViews = new ZoomImageView[uris.size()];
 
         mViewPager = (ViewPager)findViewById(R.id.activity_image_explorer_view_pager);
@@ -46,7 +50,7 @@ public class ImageExplorerActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-
+                setPageIndexTitle(position, imageViews.length);
             }
 
             @Override
@@ -114,5 +118,10 @@ public class ImageExplorerActivity extends BaseActivity {
         });
 
         mViewPager.setCurrentItem(indexToShow);
+        setPageIndexTitle(indexToShow, imageViews.length);
+    }
+
+    private void setPageIndexTitle(int index, int size){
+        setTitle(String.format("%d/%d", index + 1, size));
     }
 }

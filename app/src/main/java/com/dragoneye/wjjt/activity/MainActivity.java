@@ -1,5 +1,7 @@
 package com.dragoneye.wjjt.activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,14 +17,19 @@ import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.BaseActivity;
+import com.dragoneye.wjjt.activity.base.DoubleClickExitActivity;
+import com.dragoneye.wjjt.activity.fragments.BaseFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeInvestmentFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeMyselfFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeRecordFragment;
+import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.PreferencesConfig;
+import com.dragoneye.wjjt.protocol.UserProtocol;
+import com.dragoneye.wjjt.user.CurrentUser;
 
 import cn.smssdk.SMSSDK;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener{
+public class MainActivity extends DoubleClickExitActivity implements View.OnClickListener{
     public static final int TAB_INVESTMENT = 0;
     public static final int TAB_RECORD = 1;
     public static final int TAB_MYSELF = 2;
@@ -54,13 +61,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private ViewPager viewPager;
     private BottomButton investButton, recordButton, myselfButton;
     private BottomButton currentCheckedButton;
+    private FragmentAdapter mFragmentAdapter;
+    private ViewPager.OnPageChangeListener onPageChangeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.function_switch_bottom);
         initView();
-        addListener();
     }
 
     private void initView(){
@@ -87,13 +95,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_me);
         linearLayout.setOnClickListener(this);
 
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
+        mFragmentAdapter = new FragmentAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(mFragmentAdapter);
         viewPager.setOffscreenPageLimit(3);
-    }
-
-    private void addListener(){
-        ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+        onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -118,6 +123,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                         currentCheckedButton = myselfButton;
                         break;
                 }
+                BaseFragment baseFragment = (BaseFragment)mFragmentAdapter.getItem(position);
+                baseFragment.onSelected();
             }
 
             @Override
@@ -126,7 +133,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             }
         };
         viewPager.setOnPageChangeListener(onPageChangeListener);
-        onPageChangeListener.onPageSelected(TAB_INVESTMENT);
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
     }
 
     @Override
@@ -207,8 +223,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
-    /**
-     * 初始化推送插件
-     */
-
+    public static void CallMainActivity(Activity context){
+        if( ((MyApplication)context.getApplication()).getCurrentUser(context).getUserType() == UserProtocol.PROTOCOL_USER_TYPE_INVESTOR ){
+            Intent intent = new Intent(context, MainActivity.class);
+            context.startActivity(intent);
+        }else {
+            Intent intent = new Intent(context, EntrepreneurActivity.class);
+            context.startActivity(intent);
+        }
+    }
 }

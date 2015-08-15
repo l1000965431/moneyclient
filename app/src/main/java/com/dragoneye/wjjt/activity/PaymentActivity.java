@@ -16,6 +16,7 @@ import com.dragoneye.wjjt.protocol.InvestProjectProtocol;
 import com.dragoneye.wjjt.protocol.PaymentProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.dragoneye.wjjt.user.CurrentUser;
 import com.dragoneye.wjjt.view.DotViewPager;
 import com.google.gson.reflect.TypeToken;
 import com.pingplusplus.libone.PayActivity;
@@ -105,8 +106,8 @@ public class PaymentActivity extends DotViewPagerActivity implements View.OnClic
     public void onClick(View v){
         switch (v.getId()){
             case R.id.payment_tv_goToPay:
-//                onPay();
-                onTest();
+                onPay();
+//                onTest();
                 break;
         }
     }
@@ -116,18 +117,17 @@ public class PaymentActivity extends DotViewPagerActivity implements View.OnClic
 //打开支付宝按钮
         PayActivity.SHOW_CHANNEL_ALIPAY = true;
 
-        String userId = ((MyApplication)getApplication()).getCurrentUser().getUserId();
+        String userId = ((MyApplication)getApplication()).getCurrentUser(this).getUserId();
 
         // 产生个订单号
         String orderNo = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + userId;
 
         //计算总金额（以分为单位）
-        int amount = 100;
+        int amount = 0;
         JSONArray billList = new JSONArray();
-        for (int i = 0; i < 3; i ++) {
-            amount += 111;
-            billList.put("good" + " x " + i);
-        }
+        billList.put("购买期数: " + " x " + mInvestStageNum);
+        billList.put("每期金额: " + " x " + mInvestPriceNum);
+        amount = mInvestStageNum * mInvestPriceNum * 100;
 
         //自定义的额外信息 选填
         JSONObject extras = new JSONObject();
@@ -141,7 +141,7 @@ public class PaymentActivity extends DotViewPagerActivity implements View.OnClic
         JSONObject bill = new JSONObject();
         JSONObject displayItem = new JSONObject();
         try {
-            displayItem.put("name", "商品");
+            displayItem.put("name", "详情");
             displayItem.put("contents", billList);
             JSONArray display = new JSONArray();
             display.put(displayItem);
@@ -153,9 +153,7 @@ public class PaymentActivity extends DotViewPagerActivity implements View.OnClic
             e.printStackTrace();
         }
 
-
         PayActivity.CallPayActivity(this, bill.toString(), PaymentProtocol.URL_PAYMENT);
-
     }
 
     private void onPay(){
@@ -165,7 +163,7 @@ public class PaymentActivity extends DotViewPagerActivity implements View.OnClic
     private void onInvest(int investType, int investStageNum, int investPriceNum){
         HttpParams params = new HttpParams();
 
-        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser().getUserId());
+        params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser(this).getUserId());
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_ACTIVITY_STAGE_ID, mProjectDetailModel.getActivityStageId());
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_TYPE, investType);
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_STAGE_NUM, investStageNum);
@@ -202,6 +200,12 @@ public class PaymentActivity extends DotViewPagerActivity implements View.OnClic
                 break;
             case InvestProjectProtocol.INVEST_RESULT_FAILED:
                 UIHelper.toast(this, "投资失败");
+                break;
+            case InvestProjectProtocol.INVEST_RESULT_MONEY_NOT_ENOUGH:
+                UIHelper.toast(this, "资金不足");
+                break;
+            case InvestProjectProtocol.INVEST_RESULT_TICKET_SOLD_OUT:
+                UIHelper.toast(this, "期或票不够");
                 break;
             default:
                 UIHelper.toast(this, "服务器异常");

@@ -1,5 +1,6 @@
 package com.dragoneye.wjjt.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.dragoneye.wjjt.user.CurrentUser;
 import com.dragoneye.wjjt.user.UserBase;
 import com.umeng.message.UmengRegistrar;
 
@@ -55,6 +57,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         mLoginTextView.setOnClickListener(this);
         mRegisterTextView = (TextView)findViewById(R.id.fragment_login_button_Register);
         mRegisterTextView.setOnClickListener(this);
+        View agreementButton = findViewById(R.id.fragment_login_button_agreement);
+        agreementButton.setOnClickListener(this);
 
         mETUserId = (EditText)findViewById(R.id.fragment_login_Enter_account);
         mETUserPassword = (EditText)findViewById(R.id.fragment_login_Enter_password);
@@ -92,6 +96,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.fragment_login_button_Register:
                 onRegister();
+                break;
+            case R.id.fragment_login_button_agreement:
+                AgreementActivity.CallThisActivity(this);
                 break;
         }
     }
@@ -167,8 +174,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                     userBase.setCareer(jsonObject.getString("career"));
                 }
             }
-            ((MyApplication) getApplication()).setCurrentUser(userBase);
-            ((MyApplication)getApplication()).setToken(token);
+            ((MyApplication)getApplication()).setCurrentUser(this, userBase);
+            ((MyApplication)getApplication()).setToken(this, token);
             setLastLoginUserId(mLoginUserId);
             setLastLoginUserPassword(mLoginUserPassword);
 
@@ -179,22 +186,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         }
 
         UIHelper.toast(this, "登录成功");
-        if( ((MyApplication)getApplication()).getCurrentUser().getUserType() == UserProtocol.PROTOCOL_USER_TYPE_INVESTOR ){
-            startMainActivity();
-        }else {
-            startEntrepreneurActivity();
-        }
-    }
-
-    private void startMainActivity(){
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void startEntrepreneurActivity(){
-        Intent intent = new Intent(this, EntrepreneurActivity.class);
-        startActivity(intent);
+        ((MyApplication)getApplication()).setUserLoginSuccess(this);
+        MainActivity.CallMainActivity(this);
         finish();
     }
 
@@ -217,5 +210,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         String device_token = UmengRegistrar.getRegistrationId(getApplication());
 
         Log.d("InitPush", device_token);
+    }
+
+    public static void CallLoginActivity(Context context){
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
     }
 }

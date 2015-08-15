@@ -14,6 +14,7 @@ import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.dragoneye.wjjt.user.CurrentUser;
 
 import org.apache.http.Header;
 
@@ -105,7 +106,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
     Runnable sendRequestCode_r = new Runnable() {
         @Override
         public void run() {
-            String phoneNumber = ((MyApplication)getApplication()).getCurrentUser().getUserId();
+            String phoneNumber = ((MyApplication)getApplication()).getCurrentUser(ChangePasswordActivity.this).getUserId();
 
             HttpParams params = new HttpParams();
             params.put(UserProtocol.SEND_CODE_PARAM_USER_ID, phoneNumber);
@@ -164,7 +165,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
         public void run() {
             HttpParams params = new HttpParams();
 
-            params.put(UserProtocol.CHANGE_PASSWORD_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser().getUserId());
+            params.put(UserProtocol.CHANGE_PASSWORD_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser(ChangePasswordActivity.this).getUserId());
             params.put(UserProtocol.CHANGE_PASSWORD_PARAM_OLD_PASSWORD, mETOldPassword.getText());
             params.put(UserProtocol.CHANGE_PASSWORD_PARAM_NEW_PASSWORD, mETNewPassword.getText());
             params.put(UserProtocol.CHANGE_PASSWORD_PARAM_CODE, mETCode.getText());

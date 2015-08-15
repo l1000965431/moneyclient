@@ -27,8 +27,10 @@ import com.dragoneye.wjjt.model.OrderModel;
 import com.dragoneye.wjjt.protocol.GetProjectListProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.dragoneye.wjjt.user.CurrentUser;
 import com.dragoneye.wjjt.view.RefreshableView;
 import com.dragoneye.wjjt.view.TopTabButton;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
@@ -191,9 +193,9 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
         public void run() {
             HttpParams httpParams = new HttpParams();
 
-            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_USER_ID, ((MyApplication)getActivity().getApplication()).getCurrentUser().getUserId());
+            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_USER_ID, ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserId());
             httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_PAGE_INDEX, mCurPageIndex + 1);
-            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_TOKEN, ((MyApplication)getActivity().getApplication()).getToken());
+            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_TOKEN, ((MyApplication)getActivity().getApplication()).getToken(getActivity()));
             httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_NUM_PER_PAGE, 10);
 
             HttpClient.atomicPost(getActivity(), GetProjectListProtocol.URL_GET_ORDER_LIST, httpParams, new HttpClient.MyHttpHandler() {
@@ -307,8 +309,18 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
         if( position >= mInvestedProjects.size() ){
             return;
         }
-        Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
-        startActivity(intent);
+        if( mCurAdapter == mInvestAdapter ){
+            OrderModel orderModel = mInvestedProjects.get(position);
+            ArrayList<String> img = new ArrayList<>();
+            try{
+                img = ToolMaster.gsonInstance().fromJson(orderModel.getImageUrl(),
+                        new TypeToken<ArrayList<String>>(){}.getType());
+            }catch (Exception e){
+
+            }
+            ProjectDetailActivity.CallProjectDetailActivity(getActivity(), orderModel.getActivityId(), img,
+                    orderModel.getTargetFund(), orderModel.getCurrentFund());
+        }
     }
 
     @Override

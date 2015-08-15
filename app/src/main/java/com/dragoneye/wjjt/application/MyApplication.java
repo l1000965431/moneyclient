@@ -73,6 +73,12 @@ public class MyApplication extends Application {
         images.add(R.mipmap.projects_display007_0);
     }
 
+    /**
+     * 友盟测试函数
+     * 获取设备信息
+     * @param context
+     * @return
+     */
     public static String getDeviceInfo(Context context) {
         try{
             org.json.JSONObject json = new org.json.JSONObject();
@@ -202,31 +208,54 @@ public class MyApplication extends Application {
         }
     }
 
-    public  UserBase getCurrentUser() {
-        if( currentUser == null ){
-            String json = PreferenceManager.getDefaultSharedPreferences(this).getString(
+    public  UserBase getCurrentUser(Context context) {
+        if( mUser == null ){
+            String json = PreferenceManager.getDefaultSharedPreferences(context).getString(
                     PreferencesConfig.LAST_LOGIN_USER_DATA, "");
-            UserBase userBase = ToolMaster.gsonInstance().fromJson(json, UserBase.class);
-            currentUser = userBase;
+            try{
+                mUser = ToolMaster.gsonInstance().fromJson(json, UserBase.class);
+            }catch (Exception e){
+                mUser = null;
+            }
         }
-        return currentUser;
+        return mUser;
     }
 
-    public void setCurrentUser(UserBase currentUser) {
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PreferencesConfig.LAST_LOGIN_USER_DATA,
-                ToolMaster.gsonInstance().toJson(currentUser)).apply();
-        this.currentUser = currentUser;
+    public void setCurrentUser(Context context, UserBase user) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PreferencesConfig.LAST_LOGIN_USER_DATA,
+                ToolMaster.gsonInstance().toJson(mUser)).apply();
+        mUser = user;
     }
 
-    private UserBase currentUser;
+    private UserBase mUser;
+    private String mToken;
 
-    public String getToken() {
-        return token;
+    public String getToken(Context context) {
+        return mToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setToken(Context context, String token) {
+        mToken = token;
     }
 
-    private String token;
+    public void setUserLoginSuccess(Context context){
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(
+                PreferencesConfig.IS_USER_LOGIN_DATA_OUT_OF_DATE, false
+        ).apply();
+    }
+
+    public boolean isUserOutOfDate(Context context){
+        if( getCurrentUser(context) == null || PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
+                PreferencesConfig.IS_USER_LOGIN_DATA_OUT_OF_DATE, true)){
+            return true;
+        }
+
+        return false;
+    }
+
+    public void setUserOutOfDate(Context context){
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(
+                PreferencesConfig.IS_USER_LOGIN_DATA_OUT_OF_DATE, true
+        ).apply();
+    }
 }
