@@ -194,6 +194,21 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }
     };
 
+    Runnable SendCode_r = new Runnable() {
+        @Override
+        public void run() {
+            UIHelper.toast(registerActivity, "短信已经发送,请注意查收");
+        }
+    };
+
+    Runnable SendCodeError_r = new Runnable() {
+        @Override
+        public void run() {
+            UIHelper.toast(registerActivity, "短信验证失败");
+        }
+    };
+
+
     private void onRegisterResult(String result){
         switch (result){
             case UserProtocol.REGISTER_RESULT_SUCCESS:
@@ -278,12 +293,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                          handler.post(onRegisterButton_r);
                     }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
                         //获取验证码成功
+                        handler.post(SendCode_r);
                         //UIHelper.toast(registerActivity, "短信已经发送,请注意查收");
                     }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
                         //返回支持发送验证码的国家列表
                     }
                 }else{
-                    ((Throwable)data).printStackTrace();
+                    handler.post(SendCodeError_r);
+                    //((Throwable)data).printStackTrace();
                 }
             }
         });
