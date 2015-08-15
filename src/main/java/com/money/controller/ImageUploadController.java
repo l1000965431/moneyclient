@@ -25,14 +25,21 @@ public class ImageUploadController extends ControllerBase implements IController
         return getUpToken0();
     }
 
+    @RequestMapping("/getUploadTokenUserHead")
+    @ResponseBody
+    public String getUploadTokenUserHead(HttpServletRequest request, HttpServletResponse response) {
+        String userId = request.getParameter("userId");
+        return getUpTokenUserPortrait(userId);
+    }
+
     // 简单上传，使用默认策略
     private String getUpToken0(){
         return auth.uploadToken("self");
     }
 
     // 覆盖上传
-    private String getUpToken1(){
-        return auth.uploadToken("bucket", "key");
+    private String getUpTokenUserPortrait(String userId){
+        return auth.uploadToken("self", "user_portrait_" + userId);
     }
 
     // 设置指定上传策略

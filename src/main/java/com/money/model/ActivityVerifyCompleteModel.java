@@ -175,6 +175,11 @@ public class ActivityVerifyCompleteModel extends BaseModel {
      */
     int CurLinePeoples;
 
+    /**
+     * 项目创建时间
+     */
+    Date createDate;
+
     public int getStatus() {
         return status;
     }
@@ -444,5 +449,13 @@ public class ActivityVerifyCompleteModel extends BaseModel {
 
     public void setProfitMode(String profitMode) {
         this.profitMode = profitMode;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }

@@ -52,6 +52,7 @@ public class GsonUntil {
                 o.addProperty("address", src.getAddress());
                 o.addProperty("category", src.getCategory());
                 o.addProperty("projectIntroduction", src.getActivityIntroduce());
+                o.addProperty("createDate", src.getCreateDate().getTime());
                 return o;
             }
         }).registerTypeAdapter(OrderModel.class, new JsonSerializer<OrderModel>() {

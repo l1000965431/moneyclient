@@ -164,6 +164,7 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
         completeModel.setTeamIntroduce(activity.getTeamIntroduce());
         completeModel.setTeamSize(activity.getTeamSize());
         completeModel.setVideoUrl(activity.getVideoUrl());
+        completeModel.setCreateDate(activity.getCreateDate());
 
         return completeModel;
     }
