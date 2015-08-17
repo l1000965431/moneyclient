@@ -1,15 +1,23 @@
 package com.money.controller;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.money.Service.ServiceFactory;
 import com.money.Service.activity.ActivityService;
 import com.money.Service.order.OrderService;
 import com.money.Service.user.UserService;
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
+import com.money.dao.GeneraDAO;
+import com.money.dao.TransactionSessionCallback;
 import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityDynamicModel;
 import com.money.model.ActivityVerifyCompleteModel;
+import com.money.model.UserEarningsModel;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,7 +26,7 @@ import until.GsonUntil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.util.*;
 
 /**
  * 项目控制
@@ -30,6 +38,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/ActivityController")
 public class ActivityController extends ControllerBase implements IController {
+
+    @Autowired
+    GeneraDAO generaDAO;
 
     /**
      * 获得项目列表
@@ -125,25 +136,26 @@ public class ActivityController extends ControllerBase implements IController {
     @ResponseBody
     public String GetActivityHasInvestment(HttpServletRequest request, HttpServletResponse response) {
         //获取UserID;
-        String UserID = request.getParameter("UserID");
-        String Token = request.getParameter("Token");
-        int page = Integer.valueOf(request.getParameter("Page"));
+        String UserID = request.getParameter("userID");
+        String Token = request.getParameter("token");
+        int page = Integer.valueOf(request.getParameter("page"));
         int findNum = Integer.valueOf(request.getParameter("findNum"));
 
         UserService userService = ServiceFactory.getService("UserService");
         OrderService orderService = ServiceFactory.getService("OrderService");
 
-        if (userService.tokenLand(UserID,Token) == 0) {
+        if (userService.tokenLand(UserID, Token) == 0) {
             return Integer.toString(ServerReturnValue.USERNOTLAND);
         }
 
-        List ActivityHasEarnings = orderService.getOrderByUserID(UserID,page,findNum );
+        List ActivityHasEarnings = orderService.getOrderByUserID(UserID, page, findNum);
         String Json = GsonUntil.JavaClassToJson(ActivityHasEarnings);
         return Json;
     }
 
     /**
      * 获取项目详情
+     *
      * @param request
      * @param response
      * @return
@@ -159,7 +171,7 @@ public class ActivityController extends ControllerBase implements IController {
 
 
         ActivityVerifyCompleteModel completeModel = activityService.getActivityInformation(activityId);
-        if(completeModel == null){
+        if (completeModel == null) {
             response.setHeader("response", ServerReturnValue.ACTIVITY_INFO_NO_ACTIVITY);
             return "";
         }
@@ -172,37 +184,140 @@ public class ActivityController extends ControllerBase implements IController {
 
     @RequestMapping("/getActivityInvestInfo")
     @ResponseBody
-    public String getActivityInvestInfo(HttpServletRequest request, HttpServletResponse response) {
-        String activityStageId = request.getParameter("ActivityStageId");
-        ActivityService activityService = ServiceFactory.getService("ActivityService");
+    public String getActivityInvestInfo(HttpServletRequest request, final HttpServletResponse response) {
+        final String activityStageId = request.getParameter("ActivityStageId");
+        final String[] Json = new String[1];
+        generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                ActivityService activityService = ServiceFactory.getService("ActivityService");
 
-        ActivityDetailModel activityDetailModel = activityService.getActivityInvestInfo(activityStageId);
-        if(activityDetailModel == null){
-            response.setHeader("response", ServerReturnValue.ACTIVITY_INVEST_INFO_FAILED);
-            return "";
-        }
+                ActivityDetailModel activityDetailModel = activityService.getActivityInvestInfo(activityStageId);
+                ActivityDynamicModel activityDynamicModel = activityDetailModel.getDynamicModel();
+                ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
+                if (activityDetailModel == null) {
+                    response.setHeader("response", ServerReturnValue.ACTIVITY_INVEST_INFO_FAILED);
+                    return false;
+                }
 
-        String json = new GsonBuilder().registerTypeAdapter(ActivityDetailModel.class, new InvestInfoAdapter()).create()
-                .toJson(activityDetailModel);
-        response.setHeader("response", ServerReturnValue.ACTIVITY_INVEST_INFO_SUCCESS);
-        return json;
+                //String json = GsonUntil.JavaClassToJson( activityDetailModel.getSrEarningModels() );
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("TotalLines", activityDynamicModel.getActivityTotalLines());
+                map.put("TotalLinePeoples", activityDynamicModel.getActivityTotalLinesPeoples());
+                map.put("EarningPeoples", activityVerifyCompleteModel.getEarningPeoples());
+                map.put("SREarning", activityDetailModel.getSrEarningModels());
+
+                Json[0] = GsonUntil.JavaClassToJson(map);
+
+                response.setHeader("response", ServerReturnValue.ACTIVITY_INVEST_INFO_SUCCESS);
+                return true;
+            }
+        });
+
+
+        return Json[0];
+    }
+
+    /**
+     * 获得收益项目
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/getActivityEarnings")
+    @ResponseBody
+    public String getActivityEarnings(HttpServletRequest request, final HttpServletResponse response) {
+        final String UserID = request.getParameter("userID");
+        final int Page = Integer.valueOf(request.getParameter("page"));
+        final int FindNum = Integer.valueOf(request.getParameter("findNum"));
+        final List<Object> ListJson = new ArrayList<Object>();
+
+        generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                UserEarningsModel userEarningsModel = (UserEarningsModel) session.createCriteria(UserEarningsModel.class)
+                        .setMaxResults(1)
+                        .add(Restrictions.eq("UserID", UserID))
+                        .uniqueResult();
+
+
+                String Earnings = userEarningsModel.getUserEarnings();
+                Map<String, Object> map = GsonUntil.jsonToJavaClass(Earnings, new TypeToken<Map<String, Object>>() {
+                }.getType());
+
+                int MapStartIndex = Page * FindNum;
+                int tempStartIndex = 0;
+                int tempFindNum = 0;
+                boolean IsEnough = false;
+                Iterator it = map.entrySet().iterator();
+
+                Map<String, Object> mapTemp = new HashMap<String, Object>();
+
+                while (it.hasNext()) {
+                    if( IsEnough ){
+                        break;
+                    }
+
+                    Map.Entry entry = (Map.Entry) it.next();
+                    if (tempStartIndex < MapStartIndex) {
+                        tempStartIndex++;
+                    } else {
+                        List<Object> listTemp = null;
+                        for (Double lines : (List<Double>) entry.getValue()) {
+                            tempFindNum++;
+                            if( tempFindNum > FindNum ){
+                                IsEnough = true;
+                                break;
+                            }
+
+                            if( mapTemp.get( entry.getKey().toString() ) == null ){
+                                listTemp  = new ArrayList<Object>();
+                                ActivityService activityService = ServiceFactory.getService("ActivityService");
+                                List<String> ActivityChidInfo = new ArrayList<String>();
+                                List<Double> LinesList = new ArrayList<Double>();
+                                ActivityDetailModel activityDetailModel = activityService.getActivityDetailsNoTran( entry.getKey().toString() );
+                                if( activityDetailModel == null ){
+                                    return false;
+                                }
+                                ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
+                                ActivityChidInfo.add(activityDetailModel.getActivityStageId());
+                                ActivityChidInfo.add(activityVerifyCompleteModel.getName());
+                                ActivityChidInfo.add(Integer.toString(activityVerifyCompleteModel.getTotalInstallmentNum()));
+                                ActivityChidInfo.add(Integer.toString(activityDetailModel.getStageIndex()));
+                                ActivityChidInfo.add(activityVerifyCompleteModel.getActivityId());
+                                ActivityChidInfo.add(activityVerifyCompleteModel.getImageUrl());
+                                listTemp.add(ActivityChidInfo);
+                                LinesList.add(lines);
+                                listTemp.add( LinesList );
+                                mapTemp.put( entry.getKey().toString(),listTemp );
+                            }else{
+                                listTemp = (List)mapTemp.get( entry.getKey().toString() );
+                                List<Double> LinesList = (List)listTemp.get( 1 );
+                                LinesList.add(lines);
+                                mapTemp.put( entry.getKey().toString(),listTemp );
+                            }
+                        }
+                        ListJson.add(listTemp);
+                    }
+                }
+                return true;
+            }
+        });
+
+        String Json = GsonUntil.JavaClassToJson( ListJson );
+        return Json;
     }
 
 
     @RequestMapping("/Test")
     @ResponseBody
     public String Test(HttpServletRequest request, HttpServletResponse response) {
-
         ActivityService activityService = ServiceFactory.getService("ActivityService");
-
-        int a = Integer.valueOf(request.getParameter( "a" ));
-
+        int a = Integer.valueOf(request.getParameter("a"));
         try {
-            activityService.InstallmentActivityStart("5",a );
+            activityService.InstallmentActivityStart("5", a);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return "1";
     }
 

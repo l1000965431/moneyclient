@@ -53,7 +53,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         WalletLines+=Lines;
         walletModel.setWalletLines( WalletLines );
         generaDAO.updateNoTransaction( walletModel );
-        return 0;
+        return 1;
     }
 
     /**
@@ -95,8 +95,23 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         walletOrderModel.setWalletLines( Lines );
         walletOrderModel.setWalletChannel( ChannelID );
 
-        generaDAO.save( walletOrderModel );
+        generaDAO.saveNoTransaction( walletOrderModel );
 
+    }
+
+
+    public boolean IsWalletEnough( String UserID,int Lines ){
+        WalletModel walletModel = (WalletModel)generaDAO.loadNoTransaction(WalletModel.class, UserID);
+
+        if( walletModel == null ){
+            return false;
+        }
+
+        if( !walletModel.IsLinesEnough( Lines ) ){
+            return false;
+        }else{
+            return true;
+        }
     }
 
 }

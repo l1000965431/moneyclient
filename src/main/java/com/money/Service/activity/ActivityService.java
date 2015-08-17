@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -187,19 +188,14 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
     private boolean InstallmentActivityIDStart(String ActivityID, int Installment) throws Exception {
         String InstallmentActivityID = ActivityID + "_" + Integer.toString(Installment);
-
         //创建分期项目票表
         activityDao.CreateTicketDB(InstallmentActivityID);
-
         //创建分期项目票ID
         ActivityCreateTicketID( InstallmentActivityID );
-
         //预购项目
         purchaseInAdvance.PurchaseActivityFromPurchaseInAdvance(ActivityID, InstallmentActivityID);
-
         //设置项目开始
         SetInstallmentActivityStatus(InstallmentActivityID, ActivityDetailModel.ONLINE_ACTIVITY_START);
-
         return true;
     }
 
@@ -295,6 +291,15 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
                     MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_LOTTERY_TOPIC,
                             MoneyServerMQ_Topic.MONEYSERVERMQ_LOTTERY_TAG, InstallmentActivityID, "1"));
 
+                    if( !activityVerifyCompleteModel.IsEnoughInstallmentNum() ){
+                        //开启下一期
+                        Map<String,Object> map = new HashMap<String,Object>();
+                        map.put( "ActivityID",activityVerifyCompleteModel.getActivityId() );
+                        map.put( "Installment",CurInstallmentNum );
+                        MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_INSTALLMENT_TOPIC,
+                                MoneyServerMQ_Topic.MONEYSERVERMQ_INSTALLMENT_TAG, InstallmentActivityID, "1"));
+                    }
+
                     //如果所有分期项目完成  设置父项目完成
                     SetActivityEnd( activityDynamicModel.getActivityVerifyCompleteModel().getActivityId() );
                 }
@@ -320,5 +325,6 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     public ActivityDetailModel getActivityInvestInfo(String activityStageId){
         return activityDao.getActivityInvestInfo(activityStageId);
     }
+
 
 }

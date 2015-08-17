@@ -1,11 +1,9 @@
 package until;
 
 import com.google.gson.*;
-import com.money.model.ActivityDetailModel;
-import com.money.model.ActivityDynamicModel;
-import com.money.model.ActivityVerifyCompleteModel;
-import com.money.model.OrderModel;
+import com.money.model.*;
 import org.springframework.stereotype.Component;
+import until.Adapter.InvestInfoAdapter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -79,7 +77,7 @@ public class GsonUntil {
 
                 return o;
             }
-        }).create();
+        }).registerTypeAdapter(SREarningModel.class,new InvestInfoAdapter()).create();
     }
 
     /**

@@ -22,12 +22,8 @@ public class InsertOrderListener extends MoneyServerListener {
     public Action consume(Message message, ConsumeContext consumeContext) {
         try {
             String bodyString = BodyToString( message.getBody() );
-
-
             OrderModel orderModel = GsonUntil.jsonToJavaClass(bodyString, OrderModel.class);
-
             baseDao.save( orderModel );
-
             return Action.CommitMessage;
         } catch (Exception e) {
             return Action.CommitMessage;

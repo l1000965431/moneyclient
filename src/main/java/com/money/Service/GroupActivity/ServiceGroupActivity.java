@@ -1,16 +1,20 @@
 package com.money.Service.GroupActivity;
 
+import com.google.gson.reflect.TypeToken;
 import com.money.Service.GlobalConifg.GlobalConfigService;
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceFactory;
 import com.money.Service.ServiceInterface;
 import com.money.dao.GeneraDAO;
 import com.money.dao.TransactionSessionCallback;
+import com.money.dao.activityDAO.activityDAO;
 import com.money.model.*;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import until.GsonUntil;
 import until.MoneyServerDate;
+import until.MoneySeverRandom;
 
 import java.util.*;
 
@@ -20,7 +24,7 @@ import java.util.*;
 @Service("ServiceGroupActivity")
 public class ServiceGroupActivity extends ServiceBase implements ServiceInterface {
     @Autowired
-    private GeneraDAO generaDAO;
+    private activityDAO generaDAO;
 
     /**
      * 设置项目大小R比例
@@ -82,7 +86,7 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
                     activityDetailModel.setActivityVerifyCompleteModel(completeModel);
                     activityDetailModel.setGroupId((i / PurchaseNum) + 1);
                     activityDetailModel.setActivityStartTime(MoneyServerDate.getDateCurDate());
-                    activityDetailModel.setStageIndex( i+1 );
+                    activityDetailModel.setStageIndex(i + 1);
 
                     activityDynamicModel.setActivityStageId(activityDetailModel.getActivityStageId());
                     activityDynamicModel.setActivityVerifyCompleteModel(completeModel);
@@ -90,13 +94,13 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
 
                     activityDynamicModel.setActivityDetailModel(activityDetailModel);
                     activityDetailModel.setDynamicModel(activityDynamicModel);
-                    generaDAO.saveNoTransaction( activityDetailModel );
+                    generaDAO.saveNoTransaction(activityDetailModel);
                 }
                 return true;
             }
         });
 
-        completeModel.setTotalInstallmentNum( AdvanceNum * PurchaseNum );
+        completeModel.setTotalInstallmentNum(AdvanceNum * PurchaseNum);
         generaDAO.update(completeModel);
         //completeModel.setActivityDetailModels( activityDetailModels );
         //completeModel.setActivityDynamicModels( activityDynamicModels );
@@ -193,4 +197,65 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
 
         return list;
     }
+
+    /**
+     * 设置项目收益
+     *
+     * @param ActivityID
+     * @param AdvanceNum
+     * @param PurchaseNum
+     * @param LinesEarnings       小R 收益金额
+     * @param LinePeoplesEarnings 大R的收益金额
+     * @return
+     */
+    public int SetActivityInformationEarnings(final String ActivityID, final int AdvanceNum, final int PurchaseNum, final String LinesEarnings, final String LinePeoplesEarnings) {
+        generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+
+                ActivityVerifyCompleteModel activityVerifyCompleteModel = generaDAO.getActivityVerifyCompleteModelNoTransaction(ActivityID);
+
+                if ( activityVerifyCompleteModel == null) {
+                    return false;
+                }
+
+                List<SREarningModel> LinesSREarningList = GsonUntil.jsonToJavaClass( LinesEarnings,new TypeToken<List<SREarningModel>>(){}.getType());
+                List<SREarningModel> LinePeoplesSREarningList = GsonUntil.jsonToJavaClass( LinePeoplesEarnings,new TypeToken<List<SREarningModel>>(){}.getType());
+
+                activityVerifyCompleteModel.setEarningPeoples( LinePeoplesEarnings );
+                generaDAO.saveNoTransaction( activityVerifyCompleteModel );
+
+                int PurchaseNumIndex = 0;
+                for (int i = 0; i < AdvanceNum * PurchaseNum; i++) {
+                    int Index = i + 1;
+                    String InstallmentActivityID = ActivityID + "_" + Integer.toString(Index);
+                    ActivityDetailModel activityDetailModel = generaDAO.getActivityDetaillNoTransaction(InstallmentActivityID);
+                    if (activityDetailModel == null) {
+                        return false;
+                    }
+
+                    //小R发奖
+                    for (SREarningModel LinesSREarning : LinesSREarningList) {
+                        SREarningModel newSREarningModel = new SREarningModel(LinesSREarning);
+                        newSREarningModel.setActivityDetailModel(activityDetailModel);
+                        generaDAO.saveNoTransaction(newSREarningModel);
+                    }
+
+
+                    //大R发奖
+                    if (PurchaseNumIndex >= PurchaseNum) {
+                        PurchaseNumIndex = 0;
+                        Collections.shuffle(LinePeoplesSREarningList);
+                    }
+
+                    SREarningModel newSREarningModel = new SREarningModel(LinePeoplesSREarningList.get(PurchaseNumIndex));
+                    newSREarningModel.setActivityDetailModel(activityDetailModel);
+                    generaDAO.saveNoTransaction(newSREarningModel);
+                }
+                return true;
+            }
+        });
+
+        return 0;
+    }
+
 }

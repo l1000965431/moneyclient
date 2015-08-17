@@ -1,9 +1,6 @@
 package com.money.model;
 
-import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -64,32 +61,32 @@ public class ActivityDetailModel extends BaseModel {
      * 项目状态
      * {@link #ONLINE_ACTIVITY_START}
      */
-    int status;
+    int status=0;
 
     /**
      *  项目期数
      */
-    int stageIndex;
+    int stageIndex=0;
 
     /**
      *  组号
      */
-    int groupId;
+    int groupId=0;
 
     /**
      * 小R的筹资金额
      */
-    int targetFund;
+    int targetFund=0;
 
     /**
      * 筹资天数
      */
-    int raiseDay;
+    int raiseDay=0;
 
     /**
      * 大R中奖金额
      */
-    int LocaltyrantsLotteryLines;
+    int LocaltyrantsLotteryLines=0;
 
     /**
      * 发布时间
