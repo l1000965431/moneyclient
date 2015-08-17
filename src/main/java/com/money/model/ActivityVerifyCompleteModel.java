@@ -180,6 +180,11 @@ public class ActivityVerifyCompleteModel extends BaseModel {
      */
     Date createDate;
 
+    /**
+     * 大R的中奖收益概况
+     */
+    String EarningPeoples;
+
     public int getStatus() {
         return status;
     }
@@ -457,5 +462,13 @@ public class ActivityVerifyCompleteModel extends BaseModel {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public String getEarningPeoples() {
+        return EarningPeoples;
+    }
+
+    public void setEarningPeoples(String earningPeoples) {
+        EarningPeoples = earningPeoples;
     }
 }

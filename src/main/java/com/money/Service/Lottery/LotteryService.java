@@ -100,6 +100,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
                 for (LotteryPeoples TempListPeople : listPeoples) {
                     if (TempListPeople.getPurchaseType() == Config.PURCHASELOCALTYRANTS) {
                         TempListPeople.setLotteryLines(LotteryLines);
+                        TempListPeople.setActivityID(InstallmentActivityID);
                     }
                 }
             } else {
@@ -113,6 +114,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
                     }
 
                     listPeoples.get(Index).setLotteryLines(LotteryLines);
+                    listPeoples.get(Index).setActivityID( InstallmentActivityID );
                     Index++;
                 }
             }
@@ -199,23 +201,26 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
             if (userEarningsModel == null) {
                 return;
             }
-            UserEarningsModel newUserEarningsModel = new UserEarningsModel();
-            newUserEarningsModel.setUserID(UserID);
+
             String json = userEarningsModel.getUserEarnings();
             Map<String, Object> map = GsonUntil.jsonToJavaClass(json, new TypeToken<Map<String, Object>>() {
             }.getType());
-
+            List list;
             if (map == null) {
+                list = new ArrayList<Integer>();
                 map = new HashMap<String, Object>();
+                list.add( itLotteryPeoples.getLotteryLines() );
+                map.put(itLotteryPeoples.getActivityID(), list);
+            }else{
+                list = (List)map.get( itLotteryPeoples.getActivityID() );
+                list.add( itLotteryPeoples.getLotteryLines() );
+                map.put( itLotteryPeoples.getActivityID(),list );
             }
 
-            if (map.get(itLotteryPeoples.getActivityID()) == null) {
-                map.put(itLotteryPeoples.getActivityID(), itLotteryPeoples.getLotteryLines());
-            } else {
-                Integer lines =  (Integer)map.get(itLotteryPeoples.getActivityID());
-                lines+=itLotteryPeoples.getLotteryLines();
-                map.put(itLotteryPeoples.getActivityID(), lines);
-            }
+            String Json = GsonUntil.JavaClassToJson( map );
+            userEarningsModel.setUserEarnings( Json );
+            lotteryDAO.getNewSession().save( userEarningsModel );
+            lotteryDAO.getNewSession().flush();
         }
     }
 }

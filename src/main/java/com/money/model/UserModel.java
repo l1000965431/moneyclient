@@ -17,35 +17,35 @@ public class UserModel extends BaseModel {
     private int id;
 
     //主键，手机号
-    private String userId="";//service里的username
+    private String userId = "";//service里的username
     //登录密码
-    private String password="";
+    private String password = "";
     //用户类型
-    private int userType=0;
+    private int userType = 0;
     //用户名
-    private String userName="";
+    private String userName = "";
     //邮箱
-    private String mail="";
+    private String mail = "";
     //性别
-    private int sex=0;
+    private int sex = 0;
     //所在地
-    private String location="";
+    private String location = "";
     //真实姓名
-    private String realName="";
+    private String realName = "";
     //身份证号
-    private String identityId="";
+    private String identityId = "";
     //擅长领域
-    private String expertise="";
+    private String expertise = "";
     //个人介绍
-    private String introduction="";
+    private String introduction = "";
     //教育经历
-    private String eduInfo="";
+    private String eduInfo = "";
     //职业生涯
-    private String career="";
+    private String career = "";
     //是否完善过信息
-    private boolean IsPerfect=false;
+    private boolean IsPerfect = false;
     //用户头像
-    private String userHeadPortrait="";
+    private String userHeadPortrait = "";
 
     public String getUserId() {
         return userId;
@@ -77,7 +77,11 @@ public class UserModel extends BaseModel {
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        if (userName == null) {
+            this.userName = "";
+        } else {
+            this.userName = userName;
+        }
     }
 
     public int getId() {
@@ -93,7 +97,11 @@ public class UserModel extends BaseModel {
     }
 
     public void setMail(String mail) {
-        this.mail = mail;
+        if (mail == null) {
+            this.mail = "";
+        } else {
+            this.mail = mail;
+        }
     }
 
     public int getSex() {
@@ -109,7 +117,11 @@ public class UserModel extends BaseModel {
     }
 
     public void setLocation(String location) {
-        this.location = location;
+        if (location == null) {
+            this.location = "";
+        } else {
+            this.location = location;
+        }
     }
 
     public String getRealName() {
@@ -117,7 +129,11 @@ public class UserModel extends BaseModel {
     }
 
     public void setRealName(String realName) {
-        this.realName = realName;
+        if (realName == null) {
+            this.realName = "";
+        } else {
+            this.realName = realName;
+        }
     }
 
     public boolean isPerfect() {
@@ -141,7 +157,11 @@ public class UserModel extends BaseModel {
     }
 
     public void setExpertise(String expertise) {
-        this.expertise = expertise;
+        if( expertise == null ){
+            this.expertise = "";
+        }else{
+            this.expertise = expertise;
+        }
     }
 
     public String getIntroduction() {
@@ -149,7 +169,12 @@ public class UserModel extends BaseModel {
     }
 
     public void setIntroduction(String introduction) {
-        this.introduction = introduction;
+        if( introduction == null ){
+            this.introduction = "";
+        }else{
+            this.introduction = introduction;
+        }
+
     }
 
     public String getEduInfo() {
@@ -157,7 +182,11 @@ public class UserModel extends BaseModel {
     }
 
     public void setEduInfo(String eduInfo) {
-        this.eduInfo = eduInfo;
+        if (eduInfo == null) {
+            this.eduInfo = "";
+        } else {
+            this.eduInfo = eduInfo;
+        }
     }
 
     public String getCareer() {
@@ -165,7 +194,11 @@ public class UserModel extends BaseModel {
     }
 
     public void setCareer(String career) {
-        this.career = career;
+        if (career == null) {
+            this.career = "";
+        } else {
+            this.career = career;
+        }
     }
 
     public String getUserHeadPortrait() {
@@ -173,8 +206,12 @@ public class UserModel extends BaseModel {
     }
 
     public void setUserHeadPortrait(String UserHeadPortrait) {
-        userHeadPortrait = UserHeadPortrait;
+        if( UserHeadPortrait == null ){
+            userHeadPortrait = "";
+        }else{
+            userHeadPortrait = UserHeadPortrait;
+        }
     }
 
-    
+
 }

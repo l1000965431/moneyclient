@@ -22,7 +22,7 @@ public class ServerReturnValue {
     /**
      * 条件退出
      */
-    public static final int SERVERRETURNCONDITIONS = 0;
+    public static final int SERVERRETURNCONDITIONS = 2;
 
     /**
      * 用户登录失败

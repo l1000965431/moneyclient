@@ -17,14 +17,14 @@ public class SREarningModel extends BaseModel {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Long id = Long.valueOf(0);
 
     /**
      *  项目组ID
      */
     @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.EAGER)
     @JoinColumn( name = "activityStageId",referencedColumnName = "activityStageId")
-    ActivityDetailModel activityDetailModel;
+    ActivityDetailModel activityDetailModel=null;
 
     /**
      *  收益金额
@@ -41,6 +41,16 @@ public class SREarningModel extends BaseModel {
      */
     int earningType;
 
+
+    public SREarningModel(){
+
+    }
+
+    public SREarningModel( SREarningModel a ){
+        this.earningPrice = a.getEarningPrice();
+        this.num = a.getNum();
+        this.earningType = a.getEarningType();
+    }
 
     public Long getId() {
         return id;

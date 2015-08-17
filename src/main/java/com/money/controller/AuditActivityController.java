@@ -8,14 +8,17 @@ import com.money.config.Config;
 import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityDynamicModel;
 import com.money.model.ActivityVerifyModel;
+import com.money.model.SREarningModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import until.GsonUntil;
+import until.MoneySeverRandom;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -127,5 +130,45 @@ public class AuditActivityController extends ControllerBase implements IControll
         activityService.ActivityCompleteStart( ActivityID );
         return "1";
     }
+
+
+    @RequestMapping("/SetActivityInformationEarnings")
+    @ResponseBody
+    public int SetActivityInformationEarnings(HttpServletRequest request, HttpServletResponse response){
+        String ActivityID = request.getParameter( "ActivityID" );
+        int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
+        int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
+
+        //Test
+        List<SREarningModel> LinesSREarningList = new ArrayList<SREarningModel>();
+        List<SREarningModel> LinePeoplesSREarningList = new ArrayList<SREarningModel>();
+
+
+
+
+        for( int i= 0; i < 3; ++i ){
+            SREarningModel srEarningModel = new SREarningModel();
+            srEarningModel.setEarningPrice( 20 );
+            srEarningModel.setEarningType(2);
+            srEarningModel.setNum(3);
+            LinesSREarningList.add( srEarningModel );
+        }
+
+        for( int i= 0; i < PurchaseNum; ++i ){
+            SREarningModel srEarningModel = new SREarningModel();
+            srEarningModel.setEarningType( 1 );
+            srEarningModel.setEarningPrice(1000/ MoneySeverRandom.getRandomNum( 2,10 ));
+            srEarningModel.setNum(1);
+            LinePeoplesSREarningList.add( srEarningModel );
+        }
+
+
+
+        String LinesEarnings = GsonUntil.JavaClassToJson(LinesSREarningList); //request.getParameter("LinesEarnings");
+        String LinePeoplesEarnings = GsonUntil.JavaClassToJson(LinePeoplesSREarningList);//request.getParameter("LinePeoplesEarnings");
+        serviceGroupActivity.SetActivityInformationEarnings(ActivityID,AdvanceNum,PurchaseNum,LinesEarnings,LinePeoplesEarnings );
+        return 1;
+    }
+
 
 }

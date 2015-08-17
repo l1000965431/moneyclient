@@ -41,37 +41,37 @@ public class ActivityDynamicModel extends BaseModel {
     /**
      *  组号
      */
-    int groupId;
+    int groupId=0;
 
     /**
      * 项目总金额
      */
-    int activityTotalAmount;
+    int activityTotalAmount=0;
 
     /**
      * 项目状态
      */
-    int activityState;
+    int activityState=0;
 
     /**
      * 小R项目当前金额
      */
-    int activityCurLines;
+    int activityCurLines=0;
 
     /**
      * 小R的总金额
      */
-    int activityTotalLines;
+    int activityTotalLines=0;
 
     /**
      * 大R当前的金额
      */
-    int activityCurLinesPeoples;
+    int activityCurLinesPeoples=0;
 
     /**
      * 大R总金额
      */
-    int activityTotalLinesPeoples;
+    int activityTotalLinesPeoples=0;
 
     public ActivityDetailModel getActivityDetailModel() {
         return activityDetailModel;

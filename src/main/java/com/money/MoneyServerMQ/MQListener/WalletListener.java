@@ -9,7 +9,11 @@ import com.money.MoneyServerMQ.MoneyServerListener;
 import com.money.MoneyServerMQ.MoneyServerMQManager;
 import com.money.MoneyServerMQ.MoneyServerMessage;
 import com.money.Service.Wallet.WalletService;
+import com.money.config.Config;
 import com.money.config.MoneyServerMQ_Topic;
+import com.money.dao.GeneraDAO;
+import com.money.dao.TransactionSessionCallback;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.GsonUntil;
 import until.UmengPush.UmengSendParameter;
@@ -24,6 +28,9 @@ public class WalletListener extends MoneyServerListener {
 
     @Autowired
     WalletService walletService;
+
+    @Autowired
+    GeneraDAO generaDAO;
 
     @Override
     public Action consume(Message message, ConsumeContext consumeContext) {
@@ -47,12 +54,24 @@ public class WalletListener extends MoneyServerListener {
             }
 
             UserID = mapMetadata.get( "UserID" ).toString();
-            int Lines = (Integer)map.get( "amount" )/100;
-            String OrderID = map.get( "order_no" ).toString();
-            String ChannelID = map.get( "channel" ).toString();
+            Double nLinse = (Double)mapobject.get( "amount" );
+            final int Lines = (nLinse.intValue()/100);
+            final String OrderID = mapobject.get( "order_no" ).toString();
+            final String ChannelID = mapobject.get( "channel" ).toString();
 
-            walletService.RechargeWallet( UserID,Lines);
-            walletService.InsertWalletOrder(OrderID, Lines, ChannelID);
+            final String finalUserID = UserID;
+            if(generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+                public boolean callback(Session session) throws Exception {
+                    if(walletService.RechargeWallet(finalUserID,Lines) == 0){
+                        return false;
+                    }
+                    walletService.InsertWalletOrder(OrderID, Lines, ChannelID);
+                    return true;
+                }
+            })!= Config.SERVICE_SUCCESS){
+                return Action.CommitMessage;
+            }
+
 
             UmengSendParameter umengSendParameter = new UmengSendParameter( UserID,"微距竞投","微距竞投","充值成功,成功充入"+Integer.toString(Lines)+"元","充值成功" );
             String Json = GsonUntil.JavaClassToJson( umengSendParameter );

@@ -33,7 +33,7 @@ public class UserDAO extends BaseDao {
 
 
     //投资者完善个人信息,1，修改信息成功；2，信息不合法
-    public int modifyInvestorInfo(String userName, String info) {
+    public int modifyInvestorInfo(String userId, String info) {
         //将信息转换为map形式
         Map<String, String> map = new HashMap<String, String>();
         map = GsonUntil.jsonToJavaClass(info, map.getClass());
@@ -48,12 +48,11 @@ public class UserDAO extends BaseDao {
                 infoFlag = false;
         }
         //查看用户昵称是否合法
-        String user = map.get("userName");
-        boolean userIsRight = userIsRight(user);
+        boolean userIsRight = userIsRight(userId);
 
         if ((userIsRight) && (infoFlag)) {
             //写数据库信息
-            writeInfo(userName, map);
+            writeInfo(userId, map);
             return Config.MODIFYINFO_SUCCESS;
         } else
             return Config.MODIFYINFO_FAILED;

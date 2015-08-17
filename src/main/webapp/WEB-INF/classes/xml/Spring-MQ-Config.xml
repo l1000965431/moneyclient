@@ -21,9 +21,11 @@
     <bean id="WalletListener" class="com.money.MoneyServerMQ.MQListener.WalletListener">
         <property name="messageTopic" value="MoneyServer_RechargeWallet_Listener"/>
     </bean>
-
     <bean id="PushListener" class="com.money.MoneyServerMQ.MQListener.PushListener">
         <property name="messageTopic" value="MoneyServer_PushListener_Listener"/>
+    </bean>
+    <bean id="StartInstallmentActivityListener" class="com.money.MoneyServerMQ.MQListener.StartInstallmentActivityListener">
+        <property name="messageTopic" value="MoneyServer_Installment_Listener"/>
     </bean>
     <bean id="MoneySeverMQManager" class="com.money.MoneyServerMQ.MoneyServerMQManager">
         <constructor-arg>
@@ -34,6 +36,7 @@
                 <ref bean="SomeFarmListener"/>
                 <ref bean="WalletListener"/>
                 <ref bean="PushListener"/>
+                <ref bean="StartInstallmentActivityListener"/>
             </list>
         </constructor-arg>
     </bean>

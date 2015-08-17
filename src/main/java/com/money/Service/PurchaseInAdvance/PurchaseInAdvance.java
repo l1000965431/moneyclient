@@ -79,10 +79,12 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
 
                 //购买当前期
                 int PurchaseResult = PurchaseActivity(InstallmentActivityID, UserID, tempPurchaseNum);
-                if( PurchaseResult == ServerReturnValue.SERVERRETURNERROR){
-                    return false;
-                }else if( PurchaseResult == ServerReturnValue.SERVERRETURNCONDITIONS ){
-                    costLines = PurchaseNum * (AdvanceNum - 1);
+
+                switch ( PurchaseResult ){
+                    case ServerReturnValue.SERVERRETURNERROR:
+                        return false;
+                    case ServerReturnValue.SERVERRETURNCONDITIONS:
+                        costLines = PurchaseNum * (AdvanceNum - 1);
                 }
 
                 //减去购买当前期的次数  才是预购的次数
@@ -100,7 +102,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 //刷新小R
                 int curLines1 = activityVerifyCompleteModel.getCurLines();
                 curLines1 += costLines;
-                activityVerifyCompleteModel.setCurLinePeoples( curLines1 );
+                activityVerifyCompleteModel.setCurLines( curLines1 );
 
                 if (!walletService.CostLines(UserID, costLines )) {
                     return false;
