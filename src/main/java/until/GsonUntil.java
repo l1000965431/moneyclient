@@ -61,9 +61,20 @@ public class GsonUntil {
                 o.addProperty("PurchaseNum", src.getPurchaseNum());
                 o.addProperty("AdvanceNum", src.getAdvanceNum());
                 o.addProperty("orderLines", src.getOrderLines());
-                o.addProperty("ActivityName", src.getActivityDetailModel().getActivityVerifyCompleteModel().getName());
-                o.addProperty("ActivityIndex", src.getActivityDetailModel().getActivityVerifyCompleteModel().getCurInstallmentNum()+1);
-                o.addProperty("ActivityAdVance", src.getActivityDetailModel().getActivityVerifyCompleteModel().getTotalInstallmentNum());
+                JsonObject object = new JsonObject();
+
+                object.addProperty("activityName", src.getActivityDetailModel().getActivityVerifyCompleteModel().getName());
+                object.addProperty("activityStageId", src.getActivityDetailModel().getActivityStageId());
+                object.addProperty("activityId", src.getActivityDetailModel().getActivityVerifyCompleteModel().getActivityId());
+                object.addProperty("summary", src.getActivityDetailModel().getActivityVerifyCompleteModel().getSummary());
+                object.addProperty("targetFund", src.getActivityDetailModel().getTargetFund());
+                object.addProperty("status", src.getActivityDetailModel().getStatus());
+                object.addProperty("imageUrl", src.getActivityDetailModel().getActivityVerifyCompleteModel().getImageUrl());
+                object.addProperty("currentFund", src.getActivityDetailModel().getActivityVerifyCompleteModel().getCurFund());
+                object.addProperty("currentStage", src.getActivityDetailModel().getActivityVerifyCompleteModel().getCurInstallmentNum()+1);
+                object.addProperty("totalStage", src.getActivityDetailModel().getActivityVerifyCompleteModel().getTotalInstallmentNum());
+                o.addProperty("activityDetailModel", object.toString());
+
                 return o;
             }
         }).registerTypeAdapter(SREarningModel.class,new InvestInfoAdapter()).create();
