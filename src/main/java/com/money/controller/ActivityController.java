@@ -136,9 +136,9 @@ public class ActivityController extends ControllerBase implements IController {
     @ResponseBody
     public String GetActivityHasInvestment(HttpServletRequest request, HttpServletResponse response) {
         //获取UserID;
-        String UserID = request.getParameter("UserID");
-        String Token = request.getParameter("Token");
-        int page = Integer.valueOf(request.getParameter("Page"));
+        String UserID = request.getParameter("userID");
+        String Token = request.getParameter("token");
+        int page = Integer.valueOf(request.getParameter("page"));
         int findNum = Integer.valueOf(request.getParameter("findNum"));
 
         UserService userService = ServiceFactory.getService("UserService");
@@ -227,9 +227,9 @@ public class ActivityController extends ControllerBase implements IController {
     @RequestMapping("/getActivityEarnings")
     @ResponseBody
     public String getActivityEarnings(HttpServletRequest request, final HttpServletResponse response) {
-        final String UserID = request.getParameter("UserID");
-        final int Page = Integer.valueOf(request.getParameter("Page"));
-        final int FindNum = Integer.valueOf(request.getParameter("FindNum"));
+        final String UserID = request.getParameter("userID");
+        final int Page = Integer.valueOf(request.getParameter("page"));
+        final int FindNum = Integer.valueOf(request.getParameter("findNum"));
         final List<Object> ListJson = new ArrayList<Object>();
 
         generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
@@ -250,8 +250,8 @@ public class ActivityController extends ControllerBase implements IController {
                 boolean IsEnough = false;
                 Iterator it = map.entrySet().iterator();
 
-                List<String> ActivityID = new ArrayList();
                 Map<String, Object> mapTemp = new HashMap<String, Object>();
+
                 while (it.hasNext()) {
                     if( IsEnough ){
                         break;
@@ -261,6 +261,7 @@ public class ActivityController extends ControllerBase implements IController {
                     if (tempStartIndex < MapStartIndex) {
                         tempStartIndex++;
                     } else {
+                        List<Object> listTemp = null;
                         for (Double lines : (List<Double>) entry.getValue()) {
                             tempFindNum++;
                             if( tempFindNum > FindNum ){
@@ -269,7 +270,7 @@ public class ActivityController extends ControllerBase implements IController {
                             }
 
                             if( mapTemp.get( entry.getKey().toString() ) == null ){
-                                List<Object> listTemp  = new ArrayList<Object>();
+                                listTemp  = new ArrayList<Object>();
                                 ActivityService activityService = ServiceFactory.getService("ActivityService");
                                 List<String> ActivityChidInfo = new ArrayList<String>();
                                 List<Double> LinesList = new ArrayList<Double>();
@@ -278,6 +279,7 @@ public class ActivityController extends ControllerBase implements IController {
                                     return false;
                                 }
                                 ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
+                                ActivityChidInfo.add(activityDetailModel.getActivityStageId());
                                 ActivityChidInfo.add(activityVerifyCompleteModel.getName());
                                 ActivityChidInfo.add(Integer.toString(activityVerifyCompleteModel.getTotalInstallmentNum()));
                                 ActivityChidInfo.add(Integer.toString(activityDetailModel.getStageIndex()));
@@ -288,13 +290,13 @@ public class ActivityController extends ControllerBase implements IController {
                                 listTemp.add( LinesList );
                                 mapTemp.put( entry.getKey().toString(),listTemp );
                             }else{
-                                List<Object> listTemp = (List)mapTemp.get( entry.getKey().toString() );
+                                listTemp = (List)mapTemp.get( entry.getKey().toString() );
                                 List<Double> LinesList = (List)listTemp.get( 1 );
                                 LinesList.add(lines);
                                 mapTemp.put( entry.getKey().toString(),listTemp );
                             }
                         }
-                        ListJson.add( mapTemp );
+                        ListJson.add(listTemp);
                     }
                 }
                 return true;

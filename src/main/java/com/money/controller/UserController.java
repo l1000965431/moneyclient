@@ -93,10 +93,10 @@ public class UserController extends ControllerBase implements IController
                              HttpServletResponse response )
     {
         String userName = request.getParameter( "userId" );
-        String code = request.getParameter( "code" );
+        //String code = request.getParameter( "code" );
         String password = request.getParameter( "password" );
         int userType = Integer.valueOf(request.getParameter("userType"));
-        return  userService.userRegister( userName, code,password,userType );
+        return  userService.userRegister( userName, "",password,userType );
     }
 
     @RequestMapping("/submitTeleNum")
@@ -124,10 +124,10 @@ public class UserController extends ControllerBase implements IController
                                      HttpServletResponse response )
     {
         String userName = request.getParameter( "userId" );
-        String code = request.getParameter( "code" );
+        //String code = request.getParameter( "code" );
         String newPassword = request.getParameter( "newPassword" );
         String oldPassword = request.getParameter( "oldPassword" );
-        return  userService.changPassword(userName,code,newPassword,oldPassword);
+        return  userService.changPassword(userName,"",newPassword,oldPassword);
     }
 
     @RequestMapping("/SendUserCode")
