@@ -77,6 +77,7 @@ public class ActivityVerifyModel extends BaseModel {
     /**
      * 团队地址
      */
+    @Column(length = 500)
     String address;
 
     /**
@@ -93,11 +94,13 @@ public class ActivityVerifyModel extends BaseModel {
     /**
      * 项目简介
      */
+    @Column(length = 500)
     String summary;
 
     /**
      * 项目介绍
      */
+    @Column(length = 3100)
     String activityIntroduce;
 
     /**
@@ -108,16 +111,19 @@ public class ActivityVerifyModel extends BaseModel {
     /**
      * 市场分析
      */
+    @Column(length = 3100)
     String marketAnalysis;
 
     /**
      * 盈利模式
      */
+    @Column(length = 3100)
     String profitMode;
 
     /**
      * 团队介绍
      */
+    @Column(length = 1000)
     String teamIntroduce;
 
     /**
