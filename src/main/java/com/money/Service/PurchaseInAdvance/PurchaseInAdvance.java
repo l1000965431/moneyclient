@@ -60,31 +60,26 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
                 String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
 
-
                 int remainingNum = getInstallmentActivityRemainingTicket(InstallmentActivityID);
 
                 if (remainingNum == 0) {
                     return false;
                 }
 
-                int tempPurchaseNum = remainingNum < PurchaseNum ? remainingNum : PurchaseNum;
-                int costLines = tempPurchaseNum + (PurchaseNum * (AdvanceNum - 1));
+                int costLines = PurchaseNum * AdvanceNum;
                 if (!IsRemainingInstallment(ActivityID, AdvanceNum) ||
                 activityVerifyCompleteModel.IsEnoughLines(costLines)) {
                     return false;
                 }
 
-
-                orderService.createOrder(UserID, InstallmentActivityID, AdvanceNum * PurchaseNum, PurchaseNum, AdvanceNum);
-
                 //购买当前期
-                int PurchaseResult = PurchaseActivity(InstallmentActivityID, UserID, tempPurchaseNum);
+                int PurchaseResult = PurchaseActivity(InstallmentActivityID, UserID, PurchaseNum);
 
                 switch ( PurchaseResult ){
                     case ServerReturnValue.SERVERRETURNERROR:
                         return false;
-                    case ServerReturnValue.SERVERRETURNCONDITIONS:
-                        costLines = PurchaseNum * (AdvanceNum - 1);
+                   /* case ServerReturnValue.SERVERRETURNCONDITIONS:
+                        costLines = PurchaseNum * (AdvanceNum - 1);*/
                 }
 
                 //减去购买当前期的次数  才是预购的次数
@@ -103,7 +98,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 int curLines1 = activityVerifyCompleteModel.getCurLines();
                 curLines1 += costLines;
                 activityVerifyCompleteModel.setCurLines( curLines1 );
-
+                orderService.createOrder(UserID, InstallmentActivityID, AdvanceNum * PurchaseNum, PurchaseNum, AdvanceNum,Config.PURCHASEPRICKSILK);
                 if (!walletService.CostLines(UserID, costLines )) {
                     return false;
                 }
@@ -126,7 +121,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
 
     public int PurchaseActivity(String InstallmentActivityID, String UserID, int PurchaseNum) throws Exception {
         if (PurchaseNum > getInstallmentActivityRemainingTicket(InstallmentActivityID)) {
-            return ServerReturnValue.SERVERRETURNCONDITIONS;
+            return ServerReturnValue.SERVERRETURNERROR;
         }
 
         return purchaseInAdvanceDAO.PurchaseActivity(InstallmentActivityID, UserID, PurchaseNum, Config.PURCHASEPRICKSILK);
@@ -291,7 +286,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 }
 
 
-                orderService.createOrder(UserID, InstallmentActivityID, Lines, 1, AdvanceNum);
+                orderService.createOrder(UserID, InstallmentActivityID, Lines, 1, AdvanceNum,Config.PURCHASELOCALTYRANTS);
 
                 int PurchaseResult = LocalTyrantsPurchase(InstallmentActivityID, UserID);
 

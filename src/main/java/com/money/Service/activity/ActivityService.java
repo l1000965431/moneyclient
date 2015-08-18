@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,7 +192,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
         //创建分期项目票表
         activityDao.CreateTicketDB(InstallmentActivityID);
         //创建分期项目票ID
-        ActivityCreateTicketID( InstallmentActivityID );
+        ActivityCreateTicketID(InstallmentActivityID);
         //预购项目
         purchaseInAdvance.PurchaseActivityFromPurchaseInAdvance(ActivityID, InstallmentActivityID);
         //设置项目开始
@@ -203,7 +204,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     public void InstallmentActivityStart(final String ActivityID, final int Installment) throws Exception {
         activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
-                return InstallmentActivityIDStart( ActivityID,Installment );
+                return InstallmentActivityIDStart(ActivityID, Installment);
             }
         });
 
@@ -244,7 +245,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
             return;
         }
 
-        if( activityDynamic.getActivityState() != ActivityDetailModel.ONLINE_ACTIVITY_NOSTART ){
+        if (activityDynamic.getActivityState() != ActivityDetailModel.ONLINE_ACTIVITY_NOSTART) {
             return;
         }
 
@@ -256,25 +257,27 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
     /**
      * 设置项目完成
+     *
      * @param ActivityID
      */
-    public void SetActivityEnd( String ActivityID ){
-        ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDao.getActivityVerifyCompleteModelNoTransaction( ActivityID );
-        if( activityVerifyCompleteModel.IsEnoughInstallmentNum() ){
+    public void SetActivityEnd(String ActivityID) {
+        ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDao.getActivityVerifyCompleteModelNoTransaction(ActivityID);
+        if (activityVerifyCompleteModel.IsEnoughInstallmentNum()) {
             SetActivityStatus(ActivityID, ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE);
         }
     }
 
     /**
      * 设置分期项目完成
+     *
      * @param InstallmentActivityID
      */
-    public void SetInstallmentActivityEnd( final String InstallmentActivityID ){
+    public void SetInstallmentActivityEnd(final String InstallmentActivityID) {
 
         activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
-                ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamicModelNoTransaction( InstallmentActivityID );
-                if(activityDynamicModel.IsEnough() ){
+                ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamicModelNoTransaction(InstallmentActivityID);
+                if (activityDynamicModel.IsEnough()) {
                     SetInstallmentActivityStatus(InstallmentActivityID, ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE);
 
                     ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDynamicModel.getActivityVerifyCompleteModel();
@@ -282,7 +285,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
                     int CurInstallmentNum = activityVerifyCompleteModel.getCurInstallmentNum();
                     CurInstallmentNum++;
                     activityVerifyCompleteModel.setCurInstallmentNum(CurInstallmentNum);
-                    activityDao.updateNoTransaction( activityVerifyCompleteModel );
+                    activityDao.updateNoTransaction(activityVerifyCompleteModel);
 
                     //发奖
 /*                    if(lotteryService.StartLottery( InstallmentActivityID ) == null){
@@ -291,17 +294,19 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
                     MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_LOTTERY_TOPIC,
                             MoneyServerMQ_Topic.MONEYSERVERMQ_LOTTERY_TAG, InstallmentActivityID, "1"));
 
-                    if( !activityVerifyCompleteModel.IsEnoughInstallmentNum() ){
+                    if (!activityVerifyCompleteModel.IsEnoughInstallmentNum()) {
                         //开启下一期
-                        Map<String,Object> map = new HashMap<String,Object>();
-                        map.put( "ActivityID",activityVerifyCompleteModel.getActivityId() );
-                        map.put( "Installment",CurInstallmentNum );
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        map.put("ActivityID", activityVerifyCompleteModel.getActivityId());
+                        map.put("Installment", CurInstallmentNum);
+
+                        String json = GsonUntil.JavaClassToJson( map );
                         MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_INSTALLMENT_TOPIC,
-                                MoneyServerMQ_Topic.MONEYSERVERMQ_INSTALLMENT_TAG, InstallmentActivityID, "1"));
+                                MoneyServerMQ_Topic.MONEYSERVERMQ_INSTALLMENT_TAG,json, "1"));
                     }
 
                     //如果所有分期项目完成  设置父项目完成
-                    SetActivityEnd( activityDynamicModel.getActivityVerifyCompleteModel().getActivityId() );
+                    SetActivityEnd(activityDynamicModel.getActivityVerifyCompleteModel().getActivityId());
                 }
                 return true;
             }
@@ -310,21 +315,86 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
     /**
      * 获取项目详情
+     *
      * @param activityId
      * @return
      */
-    public ActivityVerifyCompleteModel getActivityInformation(String activityId){
-        return (ActivityVerifyCompleteModel)activityDao.load(ActivityVerifyCompleteModel.class, activityId);
+    public ActivityVerifyCompleteModel getActivityInformation(String activityId) {
+        return (ActivityVerifyCompleteModel) activityDao.load(ActivityVerifyCompleteModel.class, activityId);
     }
 
     /**
      * 获取项目投资详情（领投金额、收益层次等)
+     *
      * @param activityStageId
      * @return
      */
-    public ActivityDetailModel getActivityInvestInfo(String activityStageId){
+    public ActivityDetailModel getActivityInvestInfo(String activityStageId) {
         return activityDao.getActivityInvestInfo(activityStageId);
     }
 
+    /**
+     * 获得分期项目信息
+     *
+     * @param InstallmentActivityID
+     * @return
+     */
+    public String GetInstaInstallmentActivityInfo(final String InstallmentActivityID) {
+        final int[] TotalLines = {0};
+        final int[] CurLines = {0};
+        final int[] TotalLinePeoples = {0};
+        final int[] CurLinePeoples = {0};
+        final int[] TotalActivityLines = {0};
+        final int[] CurActivityLine = {0};
+        final int[] InstallmentTotalLinesPeoplse = {0};
+        final int[] CurInstallmentNum = {0};
+        final int[] TotalInstallmentNum = {0};
+        activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamicModelNoTransaction(InstallmentActivityID);
 
+                if (activityDynamicModel == null) {
+                    return false;
+                }
+
+                ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDynamicModel.getActivityVerifyCompleteModel();
+
+                if (activityVerifyCompleteModel == null) {
+                    return false;
+                }
+
+                TotalLines[0] = activityDynamicModel.getActivityTotalLines();
+                CurLines[0] = activityDynamicModel.getActivityCurLines();
+                TotalLinePeoples[0] = activityVerifyCompleteModel.getTotalLinePeoples();
+                CurLinePeoples[0] = activityVerifyCompleteModel.getCurLinePeoples();
+                TotalActivityLines[0] = activityVerifyCompleteModel.getTotalLines();
+                CurActivityLine[0] = activityVerifyCompleteModel.getCurLines();
+                InstallmentTotalLinesPeoplse[0] = activityDynamicModel.getActivityTotalLinesPeoples();
+                TotalInstallmentNum[0] = activityVerifyCompleteModel.getTotalInstallmentNum();
+                CurInstallmentNum[0] = activityVerifyCompleteModel.getCurInstallmentNum();
+                return true;
+            }
+        });
+
+        int InstallmentPurchNum = 0;
+        int InstallmentAdvance = 0;
+        int LinePeoples = 0;
+        if( CurInstallmentNum[0] >= TotalInstallmentNum[0] ){
+            InstallmentPurchNum = TotalLines[0] - CurLines[0];
+            InstallmentAdvance = 1;
+            LinePeoples = 1;
+        }else{
+             InstallmentPurchNum = TotalLines[0] - CurLines[0];
+             InstallmentAdvance = (TotalActivityLines[0] - CurActivityLine[0])/TotalLines[0];
+             LinePeoples = (TotalLinePeoples[0] - CurLinePeoples[0])/InstallmentTotalLinesPeoplse[0];
+        }
+
+
+        List list = new ArrayList();
+        list.add(InstallmentPurchNum);
+        list.add( InstallmentAdvance );
+        list.add( LinePeoples );
+
+        return GsonUntil.JavaClassToJson( list );
+    }
 }

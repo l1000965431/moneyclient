@@ -112,8 +112,19 @@ public class PurchaseInAdvanceDAO extends BaseDao {
     public int PurchaseActivity(String ActivityID, String UserID, int PurchaseNum, int PurchaseType) throws Exception {
         //刷新项目票的表 票的所有者
         String DBNmae = Config.ACTIVITYGROUPTICKETNAME + ActivityID;
-        String sql = "update " + DBNmae + " set userId=? where userId='0' and PurchaseType=? limit ?";
+
+        String sqlCount = "select count(TickID) from " + DBNmae + " where UserId='0' and PurchaseType=?;";
         Session session = this.getNewSession();
+        SQLQuery queryCount = session.createSQLQuery(sqlCount);
+        queryCount.setParameter( 0,PurchaseType );
+        int count = queryCount.executeUpdate();
+
+        if( count < PurchaseNum ){
+            return ServerReturnValue.SERVERRETURNERROR;
+        }
+
+        String sql = "update " + DBNmae + " set userId=? where userId='0' and PurchaseType=? limit ?";
+
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, UserID);
         query.setParameter(1, PurchaseType);

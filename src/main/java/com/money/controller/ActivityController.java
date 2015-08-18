@@ -107,21 +107,15 @@ public class ActivityController extends ControllerBase implements IController {
     @RequestMapping("/GetActivityHasEarnings")
     @ResponseBody
     public String GetActivityHasEarnings(HttpServletRequest request, HttpServletResponse response) {
-
         //获取UserID;
-
         UserService userService = ServiceFactory.getService("userService");
-
         ActivityService activityService = ServiceFactory.getService("ActivityService");
-
         if (userService.tokenLand("", "") == 0) {
             return Integer.toString(ServerReturnValue.USERNOTLAND);
         }
 
         List ActivityHasEarnings = activityService.GetActivityHasEarnings("");
-
         String Json = GsonUntil.JavaClassToJson(ActivityHasEarnings);
-
         return Json;
     }
 
@@ -163,22 +157,16 @@ public class ActivityController extends ControllerBase implements IController {
     @RequestMapping("/GetActivityInformation")
     @ResponseBody
     public String getActivityInformation(HttpServletRequest request, HttpServletResponse response) {
-
         // 项目分期id
         String activityId = request.getParameter("activityId");
-
         ActivityService activityService = ServiceFactory.getService("ActivityService");
-
-
         ActivityVerifyCompleteModel completeModel = activityService.getActivityInformation(activityId);
         if (completeModel == null) {
             response.setHeader("response", ServerReturnValue.ACTIVITY_INFO_NO_ACTIVITY);
             return "";
         }
-
         String Json = GsonUntil.JavaClassToJson(completeModel);
         response.setHeader("response", ServerReturnValue.ACTIVITY_INFO_SUCCESS);
-
         return Json;
     }
 

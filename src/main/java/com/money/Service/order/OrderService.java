@@ -50,7 +50,7 @@ public class OrderService extends ServiceBase implements ServiceInterface {
      *
      * @return
      */
-    public String createOrder( String userID,String activityID,int lines,int PurchaseNum,int AdvanceNum ){
+    public String createOrder( String userID,String activityID,int lines,int PurchaseNum,int AdvanceNum,int purchasType ){
 
         Long OrderID = createOrderID();
 
@@ -62,12 +62,13 @@ public class OrderService extends ServiceBase implements ServiceInterface {
         orderModel.setOrderId(OrderID);
         orderModel.setPurchaseNum( PurchaseNum );
         orderModel.setAdvanceNum( AdvanceNum );
+        orderModel.setPurchaseType( purchasType );
         try {
             orderModel.setOrderDate(MoneyServerDate.getDateCurDate());
         } catch (ParseException e) {
             return Config.SERVICE_FAILED;
         }
-        orderModel.setOrderState(OrderModel.ORDER_STATE_NOSUBMITTED);
+        //orderModel.setOrderState(OrderModel.ORDER_STATE_NOSUBMITTED);
 
         //插入消息队列
        /* String messagebody = GsonUntil.JavaClassToJson( orderModel );
@@ -92,7 +93,7 @@ public class OrderService extends ServiceBase implements ServiceInterface {
             return Config.SERVICE_FAILED;
         }
 
-        orderModel.setOrderState(OrderModel.ORDER_STATE_SUBMITTECANEL);
+        //orderModel.setOrderState(OrderModel.ORDER_STATE_SUBMITTECANEL);
         orderDAO.update(orderModel);
 
         return Config.SERVICE_SUCCESS;
@@ -165,7 +166,7 @@ public class OrderService extends ServiceBase implements ServiceInterface {
             return  Config.SERVICE_FAILED;
         }
 
-        orderModel.setOrderState(OrderModel.ORDER_STATE_SUBMITTSUCCESS);
+        //orderModel.setOrderState(OrderModel.ORDER_STATE_SUBMITTSUCCESS);
         orderDAO.update( orderModel );
         return Config.SERVICE_FAILED;
     }

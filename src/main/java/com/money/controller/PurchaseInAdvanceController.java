@@ -5,6 +5,7 @@ import com.money.MoneyServerMQ.MoneyServerMessage;
 import com.money.Service.PurchaseInAdvance.PurchaseInAdvance;
 import com.money.Service.ServiceFactory;
 import com.money.Service.Wallet.WalletService;
+import com.money.Service.activity.ActivityService;
 import com.money.Service.user.UserService;
 import com.money.config.Config;
 import com.money.config.MoneyServerMQ_Topic;
@@ -45,6 +46,9 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
 
     @Autowired
     WalletService walletService;
+
+    @Autowired
+    ActivityService activityService;
 
     @RequestMapping("/PurchaseTest")
     @ResponseBody
@@ -130,6 +134,13 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
 
             return ServerReturnValue.PERFECTSUCCESS;
         }
+    }
+
+    @RequestMapping("/PurchaseActivityNum")
+    @ResponseBody
+    public String PurchaseActivityNum( HttpServletRequest request, HttpServletResponse response ){
+        final String InstallmentActivityID = request.getParameter("installmentActivityID");
+        return activityService.GetInstaInstallmentActivityInfo( InstallmentActivityID );
     }
 
 }

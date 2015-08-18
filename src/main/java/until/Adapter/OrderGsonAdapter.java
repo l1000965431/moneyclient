@@ -13,7 +13,6 @@ public class OrderGsonAdapter implements JsonSerializer<OrderModel> {
     public JsonElement serialize(OrderModel orderModel, Type type, JsonSerializationContext jsonSerializationContext) {
         JsonObject o=new JsonObject();
 
-        o.addProperty("orderState",orderModel.getOrderState() );
         o.addProperty("PurchaseNum", orderModel.getPurchaseNum());
         o.addProperty("AdvanceNum", orderModel.getAdvanceNum());
         o.addProperty("orderLines", orderModel.getOrderLines());

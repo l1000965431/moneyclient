@@ -42,7 +42,7 @@ public class OrderModel extends BaseModel {
     /**
      * 订单状态
      */
-    private int orderState;
+    private int purchaseType;
 
     /**
      * 购买票数
@@ -133,11 +133,11 @@ public class OrderModel extends BaseModel {
         this.activityDetailModel = activityDetailModel;
     }
 
-    public int getOrderState() {
-        return orderState;
+    public int getPurchaseType() {
+        return purchaseType;
     }
 
-    public void setOrderState(int orderState) {
-        this.orderState = orderState;
+    public void setPurchaseType(int purchaseType) {
+        this.purchaseType = purchaseType;
     }
 }
