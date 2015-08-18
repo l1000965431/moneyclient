@@ -1,9 +1,13 @@
 package com.dragoneye.wjjt.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,10 +27,12 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ProjectDetailActivity extends DotViewPagerActivity implements View.OnClickListener{
-    private ProjectDetailModel mProjectDetailModel;
 
     private ProgressBar mProgressBar;
     private TextView mTextViewProjectProgress;
@@ -37,16 +43,112 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
     private TextView mTVProjectIntroduction;
     private TextView mTVProjectSummary;
     private TextView mTVAddress;
+    private TextView mTVCategory;
+    private TextView mTVCreateDate;
+
+
+
+    MenuItem mProgressMenu;
+
+    Handler handler = new Handler();
+
+    public static void CallProjectDetailActivity(Context context, String activityId, ArrayList<String> imageUrl, int targetFund, int currentFund){
+        Intent intent = new Intent(context, ProjectDetailActivity.class);
+        intent.putExtra("activityId", activityId);
+        intent.putStringArrayListExtra("imageUrl", imageUrl);
+        intent.putExtra("targetFund", targetFund);
+        intent.putExtra("currentFund", currentFund);
+        context.startActivity(intent);
+    }
+
+    public static void CallProjectDetailActivityFullInfo(Context context, ArrayList<String> imageUrl, int targetFund,
+                                                         int currentFund, String marketAnalyze, String profitMode, String teamIntroduction,
+                                                         String summary, String address, String activityIntroduction, Date createDate,
+                                                         String category){
+        Intent intent = new Intent(context, ProjectDetailActivity.class);
+        intent.putStringArrayListExtra("imageUrl", imageUrl);
+        intent.putExtra("targetFund", targetFund);
+        intent.putExtra("currentFund", currentFund);
+        intent.putExtra("isFullInfo", true);
+        intent.putExtra("marketAnalyze", marketAnalyze);
+        intent.putExtra("profitMode", profitMode);
+        intent.putExtra("teamIntroduction", teamIntroduction);
+        intent.putExtra("summary", summary);
+        intent.putExtra("address", address);
+        intent.putExtra("activityIntroduction", activityIntroduction);
+        intent.putExtra("category", category);
+        intent.putExtra("createDate", createDate.getTime());
+        context.startActivity(intent);
+    }
+
+    private String mMarketAnalyze;
+    private String mProfitMode;
+    private String mTeamIntroduction;
+    private String mActivityId;
+    private ArrayList<String> pmImageUrl;
+    private int mTargetFund;
+    private int mCurrentFund;
+    private Date mCreateDate;
+    private String mCategory;
+
+    private boolean isFullInfo;
+    private String mSummary;
+    private String mAddress;
+    private String mActivityIntroduction;
+
+    private void readIntent(){
+        Intent intent = getIntent();
+        pmImageUrl = intent.getStringArrayListExtra("imageUrl");
+        mTargetFund = intent.getIntExtra("targetFund", 0);
+        mCurrentFund = intent.getIntExtra("currentFund", 0);
+        isFullInfo = intent.getBooleanExtra("isFullInfo", false);
+        if( isFullInfo ){
+            mMarketAnalyze = intent.getStringExtra("marketAnalyze");
+            mProfitMode = intent.getStringExtra("profitMode");
+            mTeamIntroduction = intent.getStringExtra("teamIntroduction");
+            mSummary = intent.getStringExtra("summary");
+            mAddress = intent.getStringExtra("address");
+            mActivityIntroduction = intent.getStringExtra("activityIntroduction");
+            mCreateDate = new Date(intent.getLongExtra("createDate", 0));
+            mCategory = intent.getStringExtra("category");
+        }else {
+            mActivityId = intent.getStringExtra("activityId");
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        mProjectDetailModel = (ProjectDetailModel)intent.getSerializableExtra(InvestProjectActivity.EXTRA_PROJECT_MODEL);
+        readIntent();
         setContentView(R.layout.home_investment_detail);
         initView();
         initData();
         updateUIContent();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_progress_action_bar, menu);
+        mProgressMenu = menu.findItem(R.id.refresh_loading);
+        if( !isFullInfo ){
+            handler.post(onUpdateProjectDetail_r);
+        }
+        return true;
+    }
+
+    public void setLoadingState(boolean refreshing) {
+        if (mProgressMenu != null) {
+            if (refreshing) {
+                mProgressMenu
+                        .setActionView(R.layout.actionbar_indeterminate_progress);
+                mProgressMenu.setVisible(true);
+            } else {
+                mProgressMenu.setVisible(false);
+                mProgressMenu.setActionView(null);
+            }
+        }
     }
 
     @Override
@@ -58,11 +160,8 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
     protected void initImageUrl(){
         mImageUrl = new ArrayList<>();
 
-        ArrayList<String> imageUrl = ToolMaster.gsonInstance().fromJson(mProjectDetailModel.getImageUrl(),
-                new TypeToken<ArrayList<String>>() {
-                }.getType());
-        if( imageUrl != null && imageUrl.size() > 0 ){
-            mImageUrl = imageUrl;
+        if( pmImageUrl != null && pmImageUrl.size() > 0 ){
+            mImageUrl = pmImageUrl;
         }else {
             mImageUrl = new ArrayList<>();
             mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_1).toString());
@@ -86,43 +185,77 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
         mTVProjectSummary = (TextView)findViewById(R.id.project_detail_tv_summary);
         mTVProjectIntroduction = (TextView)findViewById(R.id.project_detail_tv_projectIntroduction);
         mTVAddress = (TextView)findViewById(R.id.project_detail_tv_address);
+        mTVCategory = (TextView)findViewById(R.id.project_detail_tv_category);
+        mTVCreateDate = (TextView)findViewById(R.id.project_detail_tv_createDate);
+
+        int percent = (int)((float)mCurrentFund / mTargetFund + 0.5f);
+        mProgressBar.setProgress(percent);
+        mTextViewProjectProgress.setText(String.format("筹款进度: %d%%", percent));
     }
 
     private void initData(){
+        if( isFullInfo ){
+            mTVAddress.setText(mAddress);
+            mTVProjectSummary.setText(mSummary);
+            mTVProjectIntroduction.setText(mActivityIntroduction);
+            mTVCategory.setText(mCategory);
+            try{
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                mTVCreateDate.setText(sdf.format(mCreateDate));
+            }catch (Exception e){
 
-        onUpdateProjectDetail();
-    }
-
-    private void onUpdateProjectDetail(){
-        HttpParams params = new HttpParams();
-        params.put("activityId", mProjectDetailModel.getActivityId());
-
-        HttpClient.atomicPost(this, GetProjectListProtocol.URL_GET_PROJECT_INFO, params, new HttpClient.MyHttpHandler() {
-            @Override
-            public void onSuccess(int i, Header[] headers, String s) {
-                String result = HttpClient.getValueFromHeader(headers, GetProjectListProtocol.GET_PROJECT_INFO_RESULT_KEY);
-                if (result == null || s == null) {
-                    UIHelper.toast(ProjectDetailActivity.this, "服务器异常");
-                    return;
-                }
-                onUpdateProjectDetailResult(result, s);
             }
-        });
+        }
     }
+
+    Runnable onUpdateProjectDetail_r = new Runnable() {
+        @Override
+        public void run() {
+            setLoadingState(true);
+            HttpParams params = new HttpParams();
+            params.put("activityId", mActivityId);
+
+            HttpClient.atomicPost(ProjectDetailActivity.this, GetProjectListProtocol.URL_GET_PROJECT_INFO, params, new HttpClient.MyHttpHandler() {
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+                    setLoadingState(false);
+                }
+
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    setLoadingState(false);
+                    String result = HttpClient.getValueFromHeader(headers, GetProjectListProtocol.GET_PROJECT_INFO_RESULT_KEY);
+                    if (result == null || s == null) {
+                        UIHelper.toast(ProjectDetailActivity.this, "服务器繁忙");
+                        return;
+                    }
+                    onUpdateProjectDetailResult(result, s);
+                }
+            });
+        }
+    };
 
     private void onUpdateProjectDetailResult(String result, String response){
         switch (result){
             case GetProjectListProtocol.GET_PROJECT_INFO_SUCCESS:
                 try{
                     JSONObject jsonObject = new JSONObject(response);
-                    mProjectDetailModel.setMarketAnalysis(jsonObject.getString("marketAnalysis"));
-                    mProjectDetailModel.setProfitMode(jsonObject.getString("profitMode"));
-                    mProjectDetailModel.setTeamIntroduce(jsonObject.getString("teamIntroduction"));
-                    mProjectDetailModel.setSummary(jsonObject.getString("summary"));
+                    mMarketAnalyze = jsonObject.getString("marketAnalysis");
+                    mProfitMode = jsonObject.getString("profitMode");
+                    mTeamIntroduction = jsonObject.getString("teamIntroduction");
 
-                    mTVProjectSummary.setText(mProjectDetailModel.getSummary());
-                    mTVAddress.setText(mProjectDetailModel.getAddress());
-                    mTVProjectIntroduction.setText(mProjectDetailModel.getActivityIntroduce());
+                    mTVProjectSummary.setText(jsonObject.getString("summary"));
+                    mTVAddress.setText(jsonObject.getString("address"));
+                    mTVProjectIntroduction.setText(jsonObject.getString("projectIntroduction"));
+                    mTVCategory.setText(jsonObject.getString("category"));
+                    try{
+                        Date date = new Date(jsonObject.getLong("createDate"));
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        mTVCreateDate.setText(sdf.format(date));
+                    }catch (Exception e){
+
+                    }
+
                 }catch (JSONException e){
                     e.printStackTrace();
                 }
@@ -159,13 +292,13 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
 
         switch (id){
             case R.id.project_detail_tv_marketAnalyze:
-                alertDialog.setMessage(mProjectDetailModel.getMarketAnalysis());
+                alertDialog.setMessage(mMarketAnalyze);
                 break;
             case R.id.project_detail_tv_profitMode:
-                alertDialog.setMessage(mProjectDetailModel.getProfitMode());
+                alertDialog.setMessage(mProfitMode);
                 break;
             case R.id.project_detail_tv_teamIntroduction:
-                alertDialog.setMessage(mProjectDetailModel.getTeamIntroduce());
+                alertDialog.setMessage(mTeamIntroduction);
                 break;
         }
 

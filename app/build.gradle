@@ -17,9 +17,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions{
+    lintOptions {
         checkReleaseBuilds false
         abortOnError false
+    }
+    sourceSets {
+        main { res.srcDirs = ['src/main/res']}
     }
 }
 
@@ -39,6 +42,10 @@ dependencies {
     compile(name: 'libpingpp', ext: 'aar')
     compile(name: 'bdwallet_pay_sdk', ext: 'aar')
     compile files('libs/com.umeng.message.lib_v2.4.1.jar')
+    compile files('libs/MobTools.jar')
+    compile files('libs/SMSSDK-1.2.2.jar')
+    compile files('libs/AnalysisSDK_0.0.3.jar')
+    compile files('libs/mframework.jar')
 }
 
 repositories {

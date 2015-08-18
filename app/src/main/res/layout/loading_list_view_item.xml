@@ -2,17 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="50dp"
-              android:orientation="horizontal"
+              android:orientation="vertical"
               android:gravity="center_vertical|center_horizontal">
 
-    <ProgressBar
-        android:layout_width="30dip"
-        android:layout_height="30dip"
-        android:id="@+id/loading_list_view_item_progressBar"/>
-
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/loading_list_view_item_textView"
-        android:text="加载中"/>
+        android:layout_height="match_parent"
+        android:id="@+id/loading_list_view_item_panelNoMore"
+        android:gravity="center_vertical|center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="没有更多内容"
+            android:id="@+id/loading_list_view_item_tv_noMore"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:id="@+id/loading_list_view_item_panelLoadingMore">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/loading_list_view_item_textView"
+            android:text="加载中"
+            />
+
+        <ProgressBar
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:id="@+id/loading_list_view_item_progressBar"/>
+    </LinearLayout>
 </LinearLayout>

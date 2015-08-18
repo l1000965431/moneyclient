@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -26,8 +27,10 @@ import com.dragoneye.wjjt.model.OrderModel;
 import com.dragoneye.wjjt.protocol.GetProjectListProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.dragoneye.wjjt.user.CurrentUser;
 import com.dragoneye.wjjt.view.RefreshableView;
 import com.dragoneye.wjjt.view.TopTabButton;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
@@ -50,7 +53,15 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
     private ArrayList<String> mEarningProjects = new ArrayList<>();
     private InvestmentListViewAdapter mInvestAdapter;
     private EarningProjectListViewAdapter mEarningAdapter;
+    private BaseAdapter mCurAdapter;
     private Handler handler = new Handler();
+
+    private View mListViewFooter;
+    private Boolean mIsLoadingMore;
+    private Boolean mIsNoMore;
+    private LinearLayout mLLIsLoadingMore;
+    private LinearLayout mLLNoMore;
+    private int mCurPageIndex;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,12 +88,12 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
                     case R.id.home_record_top_tab_ll_incoming:
                         mIncomingButton.setChecked(true);
                         mCurrentSelectButton = mIncomingButton;
-                        updateInvestProjectList();
+                        switchInvestProjectList();
                         break;
                     case R.id.home_record_top_tab_ll_investment:
                         mInvestmentButton.setChecked(true);
                         mCurrentSelectButton = mInvestmentButton;
-                        updateEarningProjectList();
+                        switchEarningProjectList();
                         break;
                 }
             }
@@ -104,7 +115,10 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
         refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
             @Override
             public void onRefresh() {
-                if( mListView.getAdapter() instanceof InvestmentListViewAdapter){
+                if( mCurAdapter == mInvestAdapter ){
+                    mIsNoMore = false;
+                    mIsLoadingMore = false;
+                    mCurPageIndex = -1;
                     handler.post(onUpdateOrderList_r);
                 }else {
                     handler.postDelayed(new Runnable() {
@@ -118,33 +132,60 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
         }, PreferencesConfig.FRAGMENT_HOME_RECORD);
 
         mListView = (ListView)getActivity().findViewById(R.id.home_record_list_view);
+        mListViewFooter = LayoutInflater.from(getActivity()).inflate(R.layout.loading_list_view_item, mListView, false);
+        mLLIsLoadingMore = (LinearLayout)mListViewFooter.findViewById(R.id.loading_list_view_item_panelLoadingMore);
+        mLLNoMore = (LinearLayout)mListViewFooter.findViewById(R.id.loading_list_view_item_panelNoMore);
+        mIsLoadingMore = false;
+        mIsNoMore = false;
+        mListView.addFooterView(mListViewFooter);
+        mListViewFooter.setVisibility(View.GONE);
         mListView.setDividerHeight(0);
         mListView.setOnItemClickListener(this);
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    if (!mIsNoMore && !mIsLoadingMore && view.getLastVisiblePosition() == view.getCount() - 1) {
+                        mIsLoadingMore = true;
+                        mListViewFooter.setVisibility(View.VISIBLE);
+                        mLLNoMore.setVisibility(View.GONE);
+                        mLLIsLoadingMore.setVisibility(View.VISIBLE);
+                        if(mCurAdapter == mInvestAdapter){
+                            handler.post(onUpdateOrderList_r);
+                        }else {
+
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
 
         mInvestAdapter = new InvestmentListViewAdapter(getActivity(), mInvestedProjects);
         mEarningAdapter = new EarningProjectListViewAdapter(getActivity(), mEarningProjects);
 
         tabButtonOnClickListener.onClick(linearLayout);
-    }
-
-    private void initData(){
-//        InvestedProjectDao investedProjectDao = MyDaoMaster.getDaoSession().getInvestedProjectDao();
-//        mInvestedProjects.addAll(investedProjectDao.loadAll());
-
-
-
-
-    }
-
-    private void updateInvestProjectList(){
-        mListView.setAdapter(mInvestAdapter);
-        mInvestAdapter.notifyDataSetChanged();
         handler.post(onUpdateOrderList_r);
     }
 
-    private void updateEarningProjectList(){
+    private void initData(){
+        mCurPageIndex = -1;
+    }
+
+    private void switchInvestProjectList(){
+        mListView.setAdapter(mInvestAdapter);
+        mInvestAdapter.notifyDataSetChanged();
+        mCurAdapter = mInvestAdapter;
+    }
+
+    private void switchEarningProjectList(){
         mListView.setAdapter(mEarningAdapter);
         mEarningAdapter.notifyDataSetChanged();
+        mCurAdapter = mEarningAdapter;
     }
 
     Runnable onUpdateOrderList_r = new Runnable() {
@@ -152,12 +193,65 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
         public void run() {
             HttpParams httpParams = new HttpParams();
 
-            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_USER_ID, ((MyApplication)getActivity().getApplication()).getCurrentUser().getUserId());
-            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_PAGE_INDEX, 0);
-            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_TOKEN, ((MyApplication)getActivity().getApplication()).getToken());
+            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_USER_ID, ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserId());
+            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_PAGE_INDEX, mCurPageIndex + 1);
+            httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_TOKEN, ((MyApplication)getActivity().getApplication()).getToken(getActivity()));
             httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_NUM_PER_PAGE, 10);
 
             HttpClient.atomicPost(getActivity(), GetProjectListProtocol.URL_GET_ORDER_LIST, httpParams, new HttpClient.MyHttpHandler() {
+                @Override
+                public void onPosting(){
+                    refreshableView.finishRefreshing();
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    refreshableView.finishRefreshing();
+                    if (mIsLoadingMore) {
+                        mIsLoadingMore = false;
+                        mListViewFooter.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    refreshableView.finishRefreshing();
+                    if (s == null) {
+                        UIHelper.toast(getActivity(), "服务器繁忙");
+                        return;
+                    }
+
+                    mCurPageIndex += 1;
+                    ArrayList<OrderModel> orderModels = onUpdateOrderSuccess(s);
+                    if( mIsLoadingMore ){
+                        mIsLoadingMore = false;
+                        if(orderModels.isEmpty()){
+                            mIsNoMore = true;
+                            mLLNoMore.setVisibility(View.VISIBLE);
+                            mLLIsLoadingMore.setVisibility(View.GONE);
+                        }else {
+                            mInvestedProjects.addAll(orderModels);
+                            mInvestAdapter.notifyDataSetChanged();
+                            mListViewFooter.setVisibility(View.GONE);
+                        }
+                    }else {
+                        mListViewFooter.setVisibility(View.GONE);
+                        mInvestedProjects.clear();
+                        mInvestedProjects.addAll(orderModels);
+                        mInvestAdapter.notifyDataSetChanged();
+                    }
+
+                }
+            });
+        }
+    };
+
+    Runnable onUpdateEarningList_r = new Runnable() {
+        @Override
+        public void run() {
+            HttpParams params = new HttpParams();
+
+            HttpClient.atomicPost(getActivity(), "", params, new HttpClient.MyHttpHandler() {
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     refreshableView.finishRefreshing();
                 }
@@ -169,21 +263,12 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
                         UIHelper.toast(getActivity(), "服务器繁忙");
                         return;
                     }
-                    onUpdateOrderResult(s);
                 }
             });
         }
     };
 
-    private void onUpdateOrderResult(String result){
-        if( result.isEmpty() ){
-
-        }else {
-            onUpdateOrderSuccess(result);
-        }
-    }
-
-    private void onUpdateOrderSuccess(String response){
+    private ArrayList<OrderModel> onUpdateOrderSuccess(String response){
         ArrayList<OrderModel> orderModels = new ArrayList<>();
         try{
             JSONArray jsonArray = new JSONArray(response);
@@ -212,16 +297,30 @@ public class HomeRecordFragment extends BaseFragment implements AdapterView.OnIt
         }catch (JSONException e){
             e.printStackTrace();
         }
+        return orderModels;
+    }
 
-        mInvestedProjects.clear();
-        mInvestedProjects.addAll(orderModels);
-        mInvestAdapter.notifyDataSetChanged();
+    private void onUpdateEarningListSuccess(String response){
+
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-        Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
-        startActivity(intent);
+        if( position >= mInvestedProjects.size() ){
+            return;
+        }
+        if( mCurAdapter == mInvestAdapter ){
+            OrderModel orderModel = mInvestedProjects.get(position);
+            ArrayList<String> img = new ArrayList<>();
+            try{
+                img = ToolMaster.gsonInstance().fromJson(orderModel.getImageUrl(),
+                        new TypeToken<ArrayList<String>>(){}.getType());
+            }catch (Exception e){
+
+            }
+            ProjectDetailActivity.CallProjectDetailActivity(getActivity(), orderModel.getActivityId(), img,
+                    orderModel.getTargetFund(), orderModel.getCurrentFund());
+        }
     }
 
     @Override

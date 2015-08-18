@@ -1,10 +1,12 @@
 package com.dragoneye.wjjt.activity.base;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
 import com.dragoneye.wjjt.application.MyApplication;
+import com.dragoneye.wjjt.user.UserBase;
 import com.umeng.analytics.MobclickAgent;
 
 /**
@@ -20,12 +22,23 @@ public class BaseActivity extends ActionBarActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         MyApplication.addActivity(this);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        if( savedInstanceState != null ){
+            UserBase userBase = (UserBase)savedInstanceState.getSerializable("currentUser");
+            ((MyApplication)getApplication()).setCurrentUser(this, userBase);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         MyApplication.removeActivity(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("currentUser", ((MyApplication)getApplication()).getCurrentUser(this));
     }
 
     @Override

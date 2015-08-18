@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +61,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     private int mSelectedLeadStageNum;
     private int mSelectedFallowStageNum;
     private int mLeadInvestPrice;
+    private int mFallowInvestPrice;
 
     private View mLLLeadButton;
     private View mLLLeadPanel;
@@ -105,8 +108,6 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     }
 
     private void initView(){
-
-
         mTVStageInfo = (TextView)findViewById(R.id.textView2);
         mTVTargetFund = (TextView)findViewById(R.id.textView3);
         mTVTargetFundNum = (TextView)findViewById(R.id.textView5);
@@ -128,6 +129,26 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
 
         // 跟投数量输入控件
         mETInvestPrice = (EditText)findViewById(R.id.invest_project_et_price_num);
+        mETInvestPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try{
+                    updateSrEarningProportion(Integer.parseInt(s.toString()));
+                }catch (Exception e){
+                    updateSrEarningProportion(0);
+                }
+            }
+        });
 
         // 领投面板
         mLLLeadButton = findViewById(R.id.investment_ll_leadButton);
@@ -275,10 +296,13 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mSelectedFallowStageNum = 0;
         mLLFallowPanel.setVisibility(View.GONE);
         mIVFallowArrow.setRotation(-90.0f);
+        mETInvestPrice.setText("");
+        updateSrEarningProportion(0);
     }
 
     private void setLeadStageNum(int num){
         mTVLeadStage.setText(String.format("%d/%d", num, mProjectStageMaxNum));
+        updateBrEarningProportion(num);
     }
 
     private void setFallowStageNum(int num){
@@ -313,16 +337,20 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             case InvestProjectProtocol.GET_INVEST_INFO_SUCCESS:
                 try{
                     JSONObject object = new JSONObject(result);
-                    mLeadInvestPrice = object.getInt("brInvestPrice");
-                    JSONArray srEarnings = object.getJSONArray("srEarningInfo");
+                    mLeadInvestPrice = object.getInt("TotalLinePeoples");
+                    mFallowInvestPrice = object.getInt("TotalLines");;
+                    JSONArray srEarnings = object.getJSONArray("SREarning");
                     for(int i = 0; i < srEarnings.length(); i++){
-                        SrEarningModel srEarningModel = new SrEarningModel();
-                        srEarningModel.setNum( srEarnings.getJSONObject(i).getInt("srEarningNum"));
-                        srEarningModel.setPrice(srEarnings.getJSONObject(i).getInt("srEarningPrice"));
-                        mSrEarningModels.add(srEarningModel);
+                        JSONObject object1 = srEarnings.getJSONObject(i);
+                        int earningType = object1.getInt("srEarningType");
+                        if( earningType == 2 ){
+                            SrEarningModel srEarningModel = new SrEarningModel();
+                            srEarningModel.setNum( srEarnings.getJSONObject(i).getInt("srEarningNum"));
+                            srEarningModel.setPrice(srEarnings.getJSONObject(i).getInt("srEarningPrice"));
+                            mSrEarningModels.add(srEarningModel);
+                        }
                     }
                     updateLeadInvestText();
-                    updateEarningProportion();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -340,14 +368,34 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mTVLeadInvestInfo.setText(leadInvestInfo);
     }
 
-    private void updateEarningProportion(){
-        for(SrEarningModel model : mSrEarningModels){
-            TextView textView = new TextView(this);
-            mLinearLayoutResultRoot.addView(textView);
+    private void updateSrEarningProportion(int investPrice){
+        mLinearLayoutResultRoot.removeAllViews();
+        if( investPrice == 0 ){
 
-            String text = String.format("%f几率获得%s", 0.0f, model.getPrice());
-            textView.setText(text);
+        }else {
+            for(SrEarningModel model : mSrEarningModels){
+                TextView textView = new TextView(this);
+                mLinearLayoutResultRoot.addView(textView);
+
+                float proportion = (float)investPrice / mFallowInvestPrice * model.getNum() * 100;
+                if( proportion > 99.0f ){
+                    proportion = 99.0f;
+                }
+
+                String text = String.format("%%%.2f几率获得%s", proportion, model.getPrice());
+                textView.setText(text);
+            }
         }
+    }
+
+    private void updateBrEarningProportion(int stageNum){
+        mLinearLayoutResultRoot.removeAllViews();
+        if( stageNum == 0 ){
+
+        }else {
+
+        }
+
     }
 
 
@@ -453,9 +501,15 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_invest_project_detail) {
-            Intent intent = new Intent(this, ProjectDetailActivity.class);
-            intent.putExtra(EXTRA_PROJECT_MODEL, mProjectDetailModel);
-            startActivity(intent);
+            ArrayList<String> img = new ArrayList<>();
+            try{
+                img = ToolMaster.gsonInstance().fromJson(mProjectDetailModel.getImageUrl(),
+                        new TypeToken<ArrayList<String>>(){}.getType());
+            }catch (Exception e){
+
+            }
+            ProjectDetailActivity.CallProjectDetailActivity(this, mProjectDetailModel.getActivityId(),
+                    img, mProjectDetailModel.getTargetFund(), mProjectDetailModel.getCurrentFund());
             return true;
         }
 

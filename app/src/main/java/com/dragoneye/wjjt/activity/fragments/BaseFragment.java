@@ -17,4 +17,8 @@ public class BaseFragment extends Fragment{
     public void onPause(){
         super.onPause();
     }
+
+    public void onSelected(){
+
+    }
 }

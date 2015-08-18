@@ -25,7 +25,15 @@ public interface PreferencesConfig {
     String IS_SHOWED_FEATURE = "IS_SHOWED_FEATURE";
 
     /**
+     * 记录用户登录信息是否过期
+     */
+    String IS_USER_LOGIN_DATA_OUT_OF_DATE = "IS_USER_LOGIN_DATA_OUT_OF_DATE";
+
+    /**
      *  记录最后一次的用户登录数据
      */
     String LAST_LOGIN_USER_DATA = "LAST_LOGIN_USER_DATA";
+
+    final String SHARESDKAPPKEY = "98bbea40c2d7";
+    final String SHARESDKAPPSECRET = "79b44d7eba1b2d29fc660b450a004e12";
 }

@@ -67,6 +67,7 @@
     <string name="title_activity_image_selected">ImageSelectedActivity</string>
     <string name="title_activity_image_mul_selected">ImageMulSelectedActivity</string>
     <string name="title_activity_progress_action_bar">ProgressActionBarActivity</string>
+    <string name="title_activity_entrepreneur">微聚竞投</string>
     <string name="title_activity_agreement">用户服务协议</string>
 
     <!-- 项目者，项目记录状态文字 -->

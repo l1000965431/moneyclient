@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -16,17 +18,20 @@ import com.dragoneye.wjjt.config.HttpUrlConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
+import com.dragoneye.wjjt.tool.InputChecker;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.umeng.message.PushAgent;
 
 import org.apache.http.Header;
 
 import java.lang.ref.WeakReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener{
-
-    private static final int USER_ID_LIMIT_MIN = 9;
-    private static final int USER_ID_LIMIT_MAX = 16;
 
     private static final int SEND_CODE_INTERVAL = 60;
 
@@ -37,6 +42,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     EditText mUserIdTextField;
     EditText mUserPasswordTextField;
     EditText mUserPasswordConfirmTextFiled;
+    EditText mETCode;
+    CheckBox mCKAgreement;
 
     RadioGroup mRBUserType;
 
@@ -45,6 +52,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     TextView mTVAgreement;
 
     String UserID;
+
+    RegisterActivity registerActivity;
 
     private static class MyHandler extends Handler{
         private final WeakReference<RegisterActivity> mRef;
@@ -61,6 +70,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     if( mRef.get().tick < 0 ){
                         mRef.get().mTVSendSecurityCode.setText("发送验证码");
                         mRef.get().mTVSendSecurityCode.setOnClickListener(mRef.get());
+                        mRef.get().mTVSendSecurityCode.setBackgroundDrawable(mRef.get().getResources().getDrawable(R.drawable.bg_rounded10blue));
                     }else {
                         mRef.get().mTVSendSecurityCode.setText(mRef.get().tick + "秒后再次发送");
                         mRef.get().handler.sendMessageDelayed(mRef.get().handler.obtainMessage(MESSAGE_TICK), 1000);
@@ -77,8 +87,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_register);
+        registerActivity = this;
         initView();
         initData();
+        initSMS();
     }
 
     private void initView(){
@@ -88,6 +100,22 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         mUserIdTextField = (EditText)findViewById(R.id.fragment_register_account);
         mUserPasswordTextField = (EditText)findViewById(R.id.fragment_register_Enter_password);
         mUserPasswordConfirmTextFiled = (EditText)findViewById(R.id.change_password_et_newPassword);
+        mETCode = (EditText)findViewById(R.id.fragment_register_Enter_SecurityCode_Text);
+        mCKAgreement = (CheckBox)findViewById(R.id.fragment_register_Agreement_checkBox);
+        mCKAgreement.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    mConfirmRegisterTextView.setEnabled(true);
+                    mConfirmRegisterTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_rounded10blue));
+                }else {
+                    mConfirmRegisterTextView.setEnabled(false);
+                    mConfirmRegisterTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_rounded12));
+                }
+            }
+        });
+        mCKAgreement.setChecked(true);
+        mCKAgreement.setChecked(false);
 
         mRBUserType = (RadioGroup)findViewById(R.id.fragment_register_Classification);
 
@@ -107,7 +135,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()){
             case R.id.fragment_register_buttonlogin:
                 if( checkUserInput() ){
-                    onRegister();
+                    //onRegister();
+                    SMSSDK.submitVerificationCode("86",mUserIdTextField.getText().toString(), mETCode.getText().toString());
                 }
                 break;
             case R.id.fragment_register_Enter_SecurityCode_button:
@@ -120,97 +149,65 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void onAgreement(){
-        Uri uri = Uri.parse(HttpUrlConfig.URL_AGREEMENT);
-
-//        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         Intent intent = new Intent(this, AgreementActivity.class);
         startActivity(intent);
     }
 
     private void onSendCode(){
-        if( mUserIdTextField.getText().length() < 11){
+        if( !InputChecker.isPhoneNumber(mUserIdTextField.getText().toString()) ){
             UIHelper.toast(this, "请输入一个正确的手机号码!");
             return;
         }
         onSendCodeSuccess();
-
-        //handler.post(sendRequestCode_r);
-    }
-
-    /**
-     * 向服务器发送请求
-     */
-    Runnable sendRequestCode_r = new Runnable() {
-        @Override
-        public void run() {
-            String phoneNumber = mUserIdTextField.getText().toString();
-
-            HttpParams params = new HttpParams();
-            params.put(UserProtocol.SEND_CODE_PARAM_USER_ID, phoneNumber);
-
-            HttpClient.atomicPost(RegisterActivity.this, UserProtocol.URL_SEND_CODE, params, new HttpClient.MyHttpHandler() {
-                @Override
-                public void onSuccess(int i, Header[] headers, String s) {
-                    if (s == null) {
-                        UIHelper.toast(RegisterActivity.this, "服务器繁忙");
-                        return;
-                    }
-                    onSendCodeResult(s);
-                }
-            });
-
-        }
-    };
-
-    /**
-     * 请求发送验证码结果
-     * @param result
-     */
-    private void onSendCodeResult(String result){
-        try{
-            int resultCode = Integer.parseInt(result);
-            switch (resultCode){
-                case UserProtocol.SEND_CODE_RESULT_SUCCESS:
-                    UIHelper.toast(this, "验证码发送成功!");
-                    onSendCodeSuccess();
-                    break;
-                case UserProtocol.SEND_CODE_RESULT_FAILED:
-                default:
-                    throw new Exception();
-            }
-        }catch (Exception e){
-            UIHelper.toast(this, "服务器繁忙");
-        }
+        SMSSDK.getVerificationCode("86", mUserIdTextField.getText().toString());
     }
 
     private void onSendCodeSuccess(){
         mTVSendSecurityCode.setOnClickListener(null);
+        mTVSendSecurityCode.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_rounded12));
         tick = SEND_CODE_INTERVAL;
         handler.sendMessage(handler.obtainMessage(MESSAGE_TICK));
     }
 
-    private void onRegister(){
-        HttpParams params = new HttpParams();
-        params.put(UserProtocol.REGISTER_PARAM_USER_ID, mUserIdTextField.getText().toString());
-        params.put(UserProtocol.REGISTER_PARAM_USER_PASSWORD, mUserPasswordTextField.getText().toString());
-        params.put(UserProtocol.REGISTER_PARAM_USER_TYPE, getUserType());
-        UserID = mUserIdTextField.getText().toString();
-        HttpClient.atomicPost(this, UserProtocol.URL_REGISTER, params, new HttpClient.MyHttpHandler() {
-            @Override
-            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                UIHelper.toast(RegisterActivity.this, "网络异常");
-            }
-
-            @Override
-            public void onSuccess(int i, Header[] headers, String s) {
-                if (s == null) {
-                    UIHelper.toast(RegisterActivity.this, "服务器异常，请稍后再试");
-                    return;
+    Runnable onRegisterButton_r = new Runnable() {
+        @Override
+        public void run() {
+            HttpParams params = new HttpParams();
+            params.put(UserProtocol.REGISTER_PARAM_USER_ID, mUserIdTextField.getText().toString());
+            params.put(UserProtocol.REGISTER_PARAM_USER_PASSWORD, mUserPasswordTextField.getText().toString());
+            params.put(UserProtocol.REGISTER_PARAM_USER_TYPE, getUserType());
+            UserID = mUserIdTextField.getText().toString();
+            HttpClient.atomicPost(RegisterActivity.this, UserProtocol.URL_REGISTER, params, new HttpClient.MyHttpHandler() {
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                 }
-                onRegisterResult(s);
-            }
-        });
-    }
+
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    if (s == null) {
+                        UIHelper.toast(RegisterActivity.this, "服务器异常，请稍后再试");
+                        return;
+                    }
+                    onRegisterResult(s);
+                }
+            });
+        }
+    };
+
+    Runnable SendCode_r = new Runnable() {
+        @Override
+        public void run() {
+            UIHelper.toast(registerActivity, "短信已经发送,请注意查收");
+        }
+    };
+
+    Runnable SendCodeError_r = new Runnable() {
+        @Override
+        public void run() {
+            UIHelper.toast(registerActivity, "短信验证失败");
+        }
+    };
+
 
     private void onRegisterResult(String result){
         switch (result){
@@ -224,6 +221,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                SMSSDK.unregisterAllEventHandler();
                 finish();
                 break;
             case UserProtocol.REGISTER_RESULT_OCCUPIED:
@@ -246,22 +244,29 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private boolean checkUserInput(){
-        if( mUserIdTextField.getText().length() < USER_ID_LIMIT_MIN ){
-            UIHelper.toast(this, String.format("用户名至少%d个字符", USER_ID_LIMIT_MIN));
+        if( !InputChecker.isPhoneNumber(mUserIdTextField.getText().toString()) ){
+            UIHelper.toast(this, "请输入一个正确的手机号码!");
             return false;
-        }else if( mUserIdTextField.getText().length() > USER_ID_LIMIT_MAX ){
-            UIHelper.toast(this, String.format("用户名最多%d个字符", USER_ID_LIMIT_MAX));
+        }
+
+        if( !InputChecker.checkPassword(mUserPasswordTextField.getText().toString()) ){
+            UIHelper.toast(this, "密码格式错误，请输入6-16个英文字符或数字!");
             return false;
         }
 
         if( mUserPasswordTextField.getText().toString().compareTo(
                 mUserPasswordConfirmTextFiled.getText().toString() ) != 0 ){
-            UIHelper.toast(this, "两次输入密码不一致");
+            UIHelper.toast(this, "两次输入密码不一致!");
+            return false;
+        }
+
+        if( mETCode.getText().length() == 0 ){
+            UIHelper.toast(this, "请输入验证码!");
             return false;
         }
 
         if( getUserType() == -1 ){
-            UIHelper.toast(this, "请选择用户类别");
+            UIHelper.toast(this, "请选择用户类别!");
             return false;
         }
         return true;
@@ -276,4 +281,29 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }
         return -1;
     }
+
+    private void initSMS(){
+        SMSSDK.registerEventHandler( new EventHandler(){
+            @Override
+            public void afterEvent(int event, int result, Object data) {
+                if (result == SMSSDK.RESULT_COMPLETE) {
+                        //回调完成
+                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                        //提交验证码成功
+                         handler.post(onRegisterButton_r);
+                    }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+                        //获取验证码成功
+                        handler.post(SendCode_r);
+                        //UIHelper.toast(registerActivity, "短信已经发送,请注意查收");
+                    }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
+                        //返回支持发送验证码的国家列表
+                    }
+                }else{
+                    handler.post(SendCodeError_r);
+                    //((Throwable)data).printStackTrace();
+                }
+            }
+        });
+    }
+
 }

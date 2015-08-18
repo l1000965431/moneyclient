@@ -9,27 +9,40 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
+import com.dragoneye.wjjt.activity.EntrepreneurActivity;
+import com.dragoneye.wjjt.activity.ImproveUserInfoActivity;
 import com.dragoneye.wjjt.activity.InvestProjectActivity;
+import com.dragoneye.wjjt.activity.ProjectDetailActivity;
+import com.dragoneye.wjjt.activity.ProjectEditActivity;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.dao.Project;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
+import com.dragoneye.wjjt.model.MyProjectModel;
 import com.dragoneye.wjjt.model.ProjectDetailModel;
+import com.dragoneye.wjjt.protocol.GetMyProjectListProtocol;
 import com.dragoneye.wjjt.protocol.GetProjectListProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
+import com.dragoneye.wjjt.user.CurrentUser;
+import com.dragoneye.wjjt.user.UserBase;
 import com.dragoneye.wjjt.view.GridViewWithHeaderAndFooter;
 import com.dragoneye.wjjt.view.RefreshableView;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
@@ -45,11 +58,9 @@ import java.util.List;
  */
 public class HomeEntrepreneurFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener{
     private RefreshableView refreshableView;
-    private GridViewWithHeaderAndFooter mGridView;
+    private ListView mListView;
     private MyProjectListListViewAdapter mAdapter;
-    private View mListViewFooter;
-    private Boolean mIsLoadingMore;
-    private ArrayList<ProjectDetailModel> mProjectList = new ArrayList<>();
+    private ArrayList<MyProjectModel> mProjectList = new ArrayList<>();
 
     private Handler handler = new Handler();
 
@@ -57,7 +68,7 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.function_switch_top, container, false);
+        return inflater.inflate(R.layout.activity_entrepreneur, container, false);
     }
 
     @Override
@@ -65,10 +76,11 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
         super.onActivityCreated(savedInstanceState);
         initView();
         initData();
+        setHasOptionsMenu(true);
     }
 
     private void initView(){
-        refreshableView = (RefreshableView)getActivity().findViewById(R.id.home_investment_refreshable_view);
+        refreshableView = (RefreshableView)getActivity().findViewById(R.id.home_entrepreneur_refreshable_view);
         refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
             @Override
             public void onRefresh() {
@@ -78,104 +90,58 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
         refreshableView.setTextColor(Color.WHITE);
         refreshableView.setArrowColor(Color.WHITE);
 
-        mGridView = (GridViewWithHeaderAndFooter)getActivity().findViewById(R.id.home_investment_grid_view);
-        mListViewFooter = LayoutInflater.from(getActivity()).inflate(R.layout.loading_list_view_item, null, false);
-        mIsLoadingMore = false;
-        mGridView.addFooterView(mListViewFooter);
-        mListViewFooter.setVisibility(View.GONE);
-        mGridView.setOnItemClickListener(this);
+        mListView = (ListView)getActivity().findViewById(R.id.home_entrepreneur_list_view);
+        mListView.setOnItemClickListener(this);
 
         mAdapter = new MyProjectListListViewAdapter(getActivity(), mProjectList);
-        mGridView.setAdapter(mAdapter);
-
-
-
-        mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    if (!mIsLoadingMore && view.getLastVisiblePosition() == view.getCount() - 1) {
-                        mIsLoadingMore = true;
-                        mListViewFooter.setVisibility(View.VISIBLE);
-                        handler.post(updateInvestmentList_r);
-                    }
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-            }
-        });
+        mListView.setAdapter(mAdapter);
     }
 
     private void initData(){
+    }
 
-
-//        ProjectDao projectDao = MyDaoMaster.getDaoSession().getProjectDao();
-//        QueryBuilder queryBuilder = projectDao.queryBuilder();
-//        queryBuilder.limit(7);
-//        List<Project> list = queryBuilder.list();
-//        mDataArrays.addAll(list);
-
+    @Override
+    public void onResume(){
+        super.onResume();
         handler.post(updateInvestmentList_r);
+    }
+
+    @Override
+    public void onSelected(){
+        super.onSelected();
     }
 
     Runnable updateInvestmentList_r = new Runnable() {
         @Override
         public void run() {
             HttpParams params = new HttpParams();
+            params.put("userId", ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserId());
 
-            HttpClient.atomicPost(getActivity(), GetProjectListProtocol.URL_GET_PROJECT_LIST, params, new HttpClient.MyHttpHandler() {
+            HttpClient.atomicPost(getActivity(), GetMyProjectListProtocol.URL_GET_MY_PROJECT_LIST, params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("", "update project list failure-> " + s);
                     refreshableView.finishRefreshing();
-                    if (mIsLoadingMore) {
-                        mIsLoadingMore = false;
-                        mListViewFooter.setVisibility(View.GONE);
-                    }
                 }
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
-//                    ArrayList<ProjectDetailModel> detailModels = jsonToProjectList(s);
-//                    addNewProjectToList(detailModels);
+                    ArrayList<MyProjectModel> detailModels = jsonToProjectList(s);
+                    mProjectList.clear();
+                    mProjectList.addAll(detailModels);
                     mAdapter.notifyDataSetChanged();
                     refreshableView.finishRefreshing();
-                    if (mIsLoadingMore) {
-                        mIsLoadingMore = false;
-                        mListViewFooter.setVisibility(View.GONE);
-                    }
                 }
             });
         }
     };
 
-    private void addNewProjectToList(ArrayList<ProjectDetailModel> projectDetailModels){
-        mProjectList.addAll(projectDetailModels);
-    }
-
-    private ArrayList<ProjectDetailModel> jsonToProjectList(String json){
-        ArrayList<ProjectDetailModel> projectDetailModels = new ArrayList<>();
+    private ArrayList<MyProjectModel> jsonToProjectList(String json){
+        ArrayList<MyProjectModel> projectDetailModels = new ArrayList<>();
         try{
-            JSONArray jsonArray = new JSONArray(json);
-            for(int i = 0; i < jsonArray.length(); i++){
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                ProjectDetailModel detailModel = new ProjectDetailModel();
-                detailModel.setName( jsonObject.getString("activityName") );
-                detailModel.setActivityStageId(jsonObject.getString("activityStageId"));
-                detailModel.setActivityId(jsonObject.getString("activityId"));
-                detailModel.setSummary(jsonObject.getString("summary"));
-                detailModel.setTargetFund(jsonObject.getInt("targetFund"));
-                detailModel.setCurrentFund(jsonObject.getInt("currentFund"));
-                detailModel.setCurrentStage(jsonObject.getInt("currentStage"));
-                detailModel.setTotalStage(jsonObject.getInt("totalStage"));
-                detailModel.setImageUrl(jsonObject.getString("imageUrl"));
-                projectDetailModels.add(detailModel);
-            }
-
-        }catch (JSONException e){
+            ArrayList<MyProjectModel> list = ToolMaster.gsonInstance().fromJson(json, new TypeToken<ArrayList<MyProjectModel>>(){}.getType());
+            projectDetailModels.addAll(list);
+        }catch (Exception e){
             e.printStackTrace();
         }
 
@@ -191,18 +157,49 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-        ProjectDetailModel project = (ProjectDetailModel) mGridView.getItemAtPosition(position);
-        Intent intent = new Intent(getActivity(), InvestProjectActivity.class);
-        intent.putExtra(InvestProjectActivity.EXTRA_PROJECT_MODEL, project);
-        startActivity(intent);
+        MyProjectModel project = (MyProjectModel) mListView.getItemAtPosition(position);
+
+        ArrayList<String> img = new ArrayList<>();
+        try{
+            img = ToolMaster.gsonInstance().fromJson(project.getImageUrl(), new TypeToken<ArrayList<String>>(){}.getType());
+        }catch (Exception e){
+
+        }
+        ProjectDetailActivity.CallProjectDetailActivityFullInfo(getActivity(), img, project.getTargetFund(), 0, project.getMarketAnalysis(),
+                project.getProfitMode(), project.getTeamIntroduce(), project.getSummary(), project.getAddress(), project.getActivityIntroduce(),
+                project.getCreateDate(), project.getCategory());
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_entrepreneur, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.menu_entrepreneur_create_project) {
+            EntrepreneurActivity.startSubmitProjectActivity(getActivity(), ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
     public class MyProjectListListViewAdapter extends BaseAdapter {
-        private List<ProjectDetailModel> data;
+        private List<MyProjectModel> data;
         private Context context;
         private LayoutInflater mInflater;
 
-        public MyProjectListListViewAdapter(Context context, List<ProjectDetailModel> data){
+        public MyProjectListListViewAdapter(Context context, List<MyProjectModel> data){
             this.context = context;
             this.data = data;
             mInflater = LayoutInflater.from(context);
@@ -236,45 +233,24 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
         @Override
         @SuppressWarnings("unchecked")
         public View getView(int position, View convertView, ViewGroup parent){
-            ProjectDetailModel project = (ProjectDetailModel)getItem(position);
+            MyProjectModel project = (MyProjectModel)getItem(position);
 
             ViewHolder viewHolder;
             if(convertView == null){
                 viewHolder = new ViewHolder();
 
-                convertView = mInflater.inflate(R.layout.home_investment_listview_first, parent, false);
-                viewHolder.ivLogo = (ImageView)convertView.findViewById(R.id.home_investment_list_view_item_iv_logo);
-                viewHolder.tvSummary = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_summary);
-                viewHolder.tvTargetFundNum = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_currentFund);
-                viewHolder.tvTargetFund = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_targetFund);
-                viewHolder.tvName = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_projectName);
-                viewHolder.pbProjectProgress = (ProgressBar)convertView.findViewById(R.id.home_investment_list_view_item_pb_progress);
-                viewHolder.tvStageInfo = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_stageInfo);
-                viewHolder.tvProgress = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_progress);
+                convertView = mInflater.inflate(R.layout.home_investment_listview_developer, parent, false);
+                viewHolder.ivLogo = (ImageView)convertView.findViewById(R.id.home_developer_listview_iv_logo);
+                viewHolder.tvName = (TextView)convertView.findViewById(R.id.home_developer_listview_tv_name);
+                viewHolder.tvParam = (TextView)convertView.findViewById(R.id.home_developer_listview_tv_param);
+                viewHolder.tvStatus = (TextView)convertView.findViewById(R.id.home_developer_listview_tv_status);
 
                 convertView.setTag(viewHolder);
             }else{
                 viewHolder = (ViewHolder)convertView.getTag();
             }
 
-            viewHolder.tvSummary.setText(project.getSummary());
             viewHolder.tvName.setText(project.getName());
-
-            String strCurrentStage = String.format(getString(R.string.project_list_item_stage_info,
-                    (String.valueOf(project.getCurrentStage()) + "/" + project.getTotalStage())));
-            viewHolder.tvStageInfo.setText(strCurrentStage);
-
-
-            String strTargetFund = getString(R.string.project_list_item_target_fund);
-            viewHolder.tvTargetFund.setText(strTargetFund);
-
-            viewHolder.tvTargetFundNum.setText(ToolMaster.convertToPriceString(project.getTargetFund()));
-
-            int progress = (int)((float)project.getCurrentFund() / (float)project.getTargetFund() * 100);
-            viewHolder.pbProjectProgress.setProgress(progress);
-
-            String strProgress = getString(R.string.project_list_item_progress) + "%" + progress;
-            viewHolder.tvProgress.setText(strProgress);
 
             try{
                 JSONArray jsonArray = new JSONArray(project.getImageUrl());
@@ -290,27 +266,33 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
                     }while (false);
                 }else {
                     viewHolder.ivLogo.setImageBitmap(BitmapFactory.decodeResource(getResources(),
-                            ((MyApplication) (context.getApplicationContext())).images.get(position % 7)));
+                            ((MyApplication)(context.getApplicationContext())).images.get(position % 7)));
                 }
             }catch (JSONException e){
                 e.printStackTrace();
             }
 
-
-
+            switch (project.getAuditorStatus()){
+                case MyProjectModel.STATUS_FIRST_AUDITING:
+                    viewHolder.tvStatus.setText(getString(R.string.home_investment_listview_developer_auditing));
+                    viewHolder.tvParam.setVisibility(View.INVISIBLE);
+                    break;
+                case MyProjectModel.STATUS_AUDITOR_NOT_PASS:
+                    viewHolder.tvStatus.setText(getString(R.string.home_investment_listview_developer_notpass));
+                    viewHolder.tvParam.setVisibility(View.VISIBLE);
+                    viewHolder.tvParam.setText(project.getNoaudireason());
+                    break;
+            }
 
             return convertView;
         }
 
         private class ViewHolder{
             ImageView ivLogo;
-            TextView tvSummary;
-            TextView tvTargetFundNum;
-            TextView tvTargetFund;
-            TextView tvStageInfo;
-            TextView tvProgress;
             TextView tvName;
-            ProgressBar pbProjectProgress;
+            TextView tvStatus;
+            TextView tvParam;
+            TextView tvGotoEdit;
         }
     }
 }

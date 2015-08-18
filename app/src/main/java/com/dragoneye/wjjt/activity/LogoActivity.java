@@ -11,10 +11,14 @@ import android.view.MenuItem;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.BaseActivity;
+import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.PreferencesConfig;
+import com.dragoneye.wjjt.user.CurrentUser;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UmengRegistrar;
 import com.umeng.update.UmengUpdateAgent;
+
+import cn.smssdk.SMSSDK;
 
 public class LogoActivity extends BaseActivity {
 
@@ -30,18 +34,21 @@ public class LogoActivity extends BaseActivity {
         handler.postDelayed(startNextActivity_r, 3000);
         getSupportActionBar().hide();
         UmengUpdateAgent.update(this);
+        SMSSDK.initSDK(this,PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET );
     }
 
     Runnable startNextActivity_r = new Runnable() {
         @Override
         public void run() {
-            Intent intent;
             if(preferences.getBoolean(PreferencesConfig.IS_SHOWED_FEATURE, false)){
-                intent = new Intent(LogoActivity.this, LoginActivity.class);
+                if(!((MyApplication)getApplication()).isUserOutOfDate(LogoActivity.this)){
+                    MainActivity.CallMainActivity(LogoActivity.this);
+                }else {
+                    LoginActivity.CallLoginActivity(LogoActivity.this);
+                }
             }else {
-                intent = new Intent(LogoActivity.this, FeatureActivity.class);
+                FeatureActivity.CallFeatureActivity(LogoActivity.this);
             }
-            startActivity(intent);
             finish();
         }
     };

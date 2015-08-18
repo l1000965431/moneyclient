@@ -103,9 +103,7 @@ public abstract class DotViewPagerActivity extends BaseActivity {
         for (String url : mImageUrl) {
             uris.add(Uri.parse(url));
         }
-        intent.putExtra(ImageExplorerActivity.EXTRA_URI_ARRAY, uris);
-        intent.putExtra(ImageExplorerActivity.EXTRA_INDEX_TO_SHOW, position);
-        startActivity(intent);
+        ImageExplorerActivity.CallActivity(this, uris, position);
     }
 
     @Override
