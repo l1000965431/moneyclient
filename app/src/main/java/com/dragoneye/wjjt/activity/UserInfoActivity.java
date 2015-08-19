@@ -16,7 +16,10 @@ import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCancellationSignal;
 import com.qiniu.android.storage.UpCompletionHandler;
@@ -61,7 +64,14 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
         mIBPortrait.setOnClickListener(this);
         String userPortrait = ((MyApplication)getApplication()).getCurrentUser(this).getUserHeadPortrait();
         if( userPortrait != null && userPortrait.length() > 0 ){
-            ImageLoader.getInstance().displayImage(userPortrait, mIBPortrait);
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .cacheOnDisk(false)
+                    .cacheInMemory(true)
+                    .showImageOnLoading(R.mipmap.icon_albums)
+                    .imageScaleType(ImageScaleType.EXACTLY)
+                    .displayer(new FadeInBitmapDisplayer(300))
+                    .build();
+            ImageLoader.getInstance().displayImage(userPortrait, mIBPortrait, options);
         }
 
         mTVUserName.setText(((MyApplication) getApplication()).getCurrentUser(this).getUserName());
@@ -166,9 +176,14 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
             switch (integer){
                 case UserProtocol.CHANGE_PORTRAIT_RESULT_SUCCESS:
                     ((MyApplication)getApplication()).getCurrentUser(this).setUserHeadPortrait(uploadPortraitUrl);
-                    ImageLoader.getInstance().clearDiskCache();
-                    ImageLoader.getInstance().clearMemoryCache();
-                    ImageLoader.getInstance().displayImage(uploadPortraitUrl, mIBPortrait);
+                    DisplayImageOptions options = new DisplayImageOptions.Builder()
+                            .cacheOnDisk(false)
+                            .cacheInMemory(true)
+                            .showImageOnLoading(R.mipmap.icon_albums)
+                            .imageScaleType(ImageScaleType.EXACTLY)
+                            .displayer(new FadeInBitmapDisplayer(300))
+                            .build();
+                    ImageLoader.getInstance().displayImage(uploadPortraitUrl, mIBPortrait, options);
                     cancelUpload();
                     UIHelper.toast(this, "更换头像成功");
                     break;

@@ -22,9 +22,9 @@ public interface GetProjectListProtocol {
      ******************************************************************************************/
     String URL_GET_ORDER_LIST = HttpUrlConfig.URL_ROOT + "ActivityController/GetActivityHasInvestment";
 
-    String GET_ORDER_PARAM_USER_ID = "UserID";
-    String GET_ORDER_PARAM_TOKEN = "Token";
-    String GET_ORDER_PARAM_PAGE_INDEX = "Page";
+    String GET_ORDER_PARAM_USER_ID = "userID";
+    String GET_ORDER_PARAM_TOKEN = "token";
+    String GET_ORDER_PARAM_PAGE_INDEX = "page";
     String GET_ORDER_PARAM_NUM_PER_PAGE = "findNum";
 
     /*****************************************************************************************/

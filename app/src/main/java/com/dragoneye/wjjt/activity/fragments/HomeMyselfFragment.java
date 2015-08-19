@@ -24,7 +24,10 @@ import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import org.apache.http.Header;
 
@@ -59,10 +62,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         View walletDesc = getActivity().findViewById(R.id.textView16);
 
         mIVPortrait = (ImageView)getActivity().findViewById(R.id.home_self_group_iv_portrait);
-        String userPortrait = ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserHeadPortrait();
-        if( userPortrait != null && userPortrait.length() > 0 ){
-            ImageLoader.getInstance().displayImage(userPortrait, mIVPortrait);
-        }
+
 
         // 充值
         View chargeButton = getActivity().findViewById(R.id.home_self_group_linearLayout2);
@@ -97,6 +97,39 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initData(){
+
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser){
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            if(((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserType() != UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+                handler.post(getWalletBalance_r);
+            }
+
+            String userPortrait = ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserHeadPortrait();
+            if( userPortrait != null && userPortrait.length() > 0 ){
+                DisplayImageOptions options = new DisplayImageOptions.Builder()
+                        .cacheOnDisk(false)
+                        .cacheInMemory(true)
+                        .showImageOnLoading(R.mipmap.icon_albums)
+                        .imageScaleType(ImageScaleType.EXACTLY)
+                        .displayer(new FadeInBitmapDisplayer(300))
+                        .build();
+                ImageLoader.getInstance().displayImage(userPortrait, mIVPortrait, options);
+            }
+        }
+    }
+
+    @Override
+    public void onSelected(){
+        super.onSelected();
 
     }
 

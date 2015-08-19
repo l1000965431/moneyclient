@@ -96,9 +96,7 @@ public class PaymentActivity extends DotViewPagerActivity implements View.OnClic
             mImageUrl = imageUrl;
         }else {
             mImageUrl = new ArrayList<>();
-            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_1).toString());
-            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_2).toString());
-            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_3).toString());
+            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.icon_albums).toString());
         }
     }
 

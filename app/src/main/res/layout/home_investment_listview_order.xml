@@ -7,24 +7,27 @@
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:id="@+id/scrollView">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingLeft="7dp"
-            android:paddingTop="17dp"
-            android:paddingRight="7dp"
-            android:paddingBottom="17dp"
-            android:background="#ff1e1e1e">
-
-            <com.dragoneye.wjjt.view.DotViewPager
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="170dp"
-                android:id="@+id/investment_project_detail_dot_viewpager"/>
+                android:layout_height="fill_parent"
+                android:background="#ff1e1e1e">
 
+                <com.dragoneye.wjjt.view.DotViewPager
+                    android:layout_width="fill_parent"
+                    android:layout_height="170dp"
+                    android:id="@+id/investment_project_detail_dot_viewpager"/>
+
+
+
+            </LinearLayout>
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
@@ -70,7 +73,7 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:background="#ff49bfff"
                 android:paddingBottom="20dp">
 
@@ -174,8 +177,6 @@
                             android:textColor="#ff221d0d"
                             android:textIsSelectable="false"
                             android:textStyle="bold"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
                             android:gravity="center_vertical"
                             android:layout_marginTop="7dp" />
 
@@ -187,7 +188,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginLeft="70dp"
-                        android:id="@+id/investment_ll_result_root">
+                        android:id="@+id/investment_ll_result_root"
+                        android:layout_marginTop="5dp">
 
                     </LinearLayout>
 
@@ -196,109 +198,9 @@
             </LinearLayout>
 
         </LinearLayout>
+
+
     </ScrollView>
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="充值方式选择："
-        android:id="@+id/textView15"
-        android:textSize="14dp"
-        android:textColor="#ff767676"
-        android:textIsSelectable="false"
-        android:textStyle="bold"
-        android:visibility="visible"
-        android:layout_above="@+id/linearLayout22"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="#ffffffff"
-        android:paddingLeft="10dp"
-        android:paddingTop="3dp" />
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="100dp"
-        android:background="#ffffffff"
-        android:layout_above="@+id/payment_tv_goToPay"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout22">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="7dp"
-            android:layout_weight="1">
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="55dp"
-                android:id="@+id/imageView7"
-                android:src="@mipmap/pay_by_weixin"
-                android:layout_gravity="center"
-                android:scaleType="fitCenter" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/radioButton5"
-                android:layout_gravity="center" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="7dp"
-            android:layout_weight="1">
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="55dp"
-                android:id="@+id/imageView10"
-                android:src="@mipmap/pay_by_zhifubao"
-                android:layout_gravity="center"
-                android:scaleType="fitCenter" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/radioButton6"
-                android:layout_gravity="center" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="7dp"
-            android:layout_weight="1" >
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="55dp"
-                android:id="@+id/imageView11"
-                android:src="@mipmap/pay_by_yinlian"
-                android:layout_gravity="center"
-                android:scaleType="fitCenter" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/radioButton7"
-                android:layout_gravity="center" />
-        </LinearLayout>
-
-    </LinearLayout>
 
     <TextView
         android:layout_width="fill_parent"

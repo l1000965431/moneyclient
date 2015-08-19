@@ -1,12 +1,20 @@
 package com.dragoneye.wjjt.activity.base;
 
+import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.widget.LinearLayout;
 
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.user.UserBase;
+import com.dragoneye.wjjt.view.ActivityLoadingProxy;
+import com.dragoneye.wjjt.view.LoadingMoreFooterProxy;
 import com.umeng.analytics.MobclickAgent;
 
 /**
@@ -14,6 +22,11 @@ import com.umeng.analytics.MobclickAgent;
  * Activity 基类
  */
 public class BaseActivity extends ActionBarActivity {
+
+    private ActivityLoadingProxy loadingProxy;
+    private View mRootView;
+    private boolean mIsNeedLoadingFeature = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +51,7 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("currentUser", ((MyApplication)getApplication()).getCurrentUser(this));
+        outState.putSerializable("currentUser", ((MyApplication) getApplication()).getCurrentUser(this));
     }
 
     @Override
@@ -68,4 +81,60 @@ public class BaseActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void setContentView(int resId){
+        if( mIsNeedLoadingFeature ){
+            LinearLayout rootLayout = new LinearLayout(this);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            rootLayout.setLayoutParams(layoutParams);
+            rootLayout.setOrientation(LinearLayout.VERTICAL);
+
+            loadingProxy = new ActivityLoadingProxy();
+            loadingProxy.createView(this, null);
+            rootLayout.addView(loadingProxy.getView(), layoutParams);
+            loadingProxy.getView().setVisibility(View.GONE);
+            loadingProxy.setOnRetryListener(new ActivityLoadingProxy.OnRetryListener() {
+                @Override
+                public void onRetry() {
+                    onRetryLoading();
+                }
+            });
+
+            mRootView = LayoutInflater.from(this).inflate(resId, null);
+            rootLayout.addView(mRootView, layoutParams);
+            super.setContentView(rootLayout);
+        }else {
+            super.setContentView(resId);
+        }
+    }
+
+    public void setIsNeedLoadingFeature(boolean b){
+        mIsNeedLoadingFeature = b;
+    }
+
+    public void setStartLoading(){
+        loadingProxy.getView().setVisibility(View.VISIBLE);
+        mRootView.setVisibility(View.GONE);
+        loadingProxy.setLoading();
+    }
+
+    public void finishLoading(boolean isLoadingSuccess){
+        if(isLoadingSuccess){
+            loadingProxy.getView().setVisibility(View.GONE);
+            mRootView.setVisibility(View.VISIBLE);
+            AlphaAnimation aa = new AlphaAnimation(0.0f, 1.0f);
+            aa.setDuration(700);
+            mRootView.startAnimation(aa);
+        }else {
+            loadingProxy.getView().setVisibility(View.VISIBLE);
+            loadingProxy.setLoadingFailed();
+        }
+    }
+
+    protected void onRetryLoading(){
+
+    }
+
 }

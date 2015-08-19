@@ -13,7 +13,8 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:paddingBottom="20dp">
 
             <LinearLayout
                 android:orientation="vertical"
@@ -817,7 +818,7 @@
                 android:layout_width="170dp"
                 android:layout_height="40dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="保存"
+                android:text="提交"
                 android:id="@+id/fragment_register_buttonlogin"
                 android:layout_gravity="center"
                 android:textSize="15dp"

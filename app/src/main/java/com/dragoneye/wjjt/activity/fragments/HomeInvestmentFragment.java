@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,7 +56,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
     private ArrayList<ProjectDetailModel> mProjectList = new ArrayList<>();
     private int mCurPageIndex;
 
-    private Handler handler = new Handler();
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     LoadingMoreFooterProxy mLoadingMoreProxy;
 
@@ -109,7 +110,34 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
 
     private void initData(){
         mCurPageIndex = -1;
-        handler.post(updateInvestmentList_r);
+//        handler.post(updateInvestmentList_r);
+        refreshableView.doRefreshImmediately();
+    }
+
+    @Override
+    public void onSelected(){
+        super.onSelected();
+        int a = 0;
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+////                refreshableView.doRefreshImmediately();
+//                refreshableView.finishRefreshing();
+//            }
+//        }, 2000);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser){
+        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser) {
+//            handler.post(new Runnable() {
+//                @Override
+//                public void run() {
+////                    refreshableView.finishRefreshing();
+//                }
+//            });
+//        }
     }
 
     Runnable updateInvestmentList_r = new Runnable() {
@@ -254,7 +282,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
             if(convertView == null){
                 viewHolder = new ViewHolder();
 
-                convertView = mInflater.inflate(R.layout.home_investment_listview_first, parent, false);
+                convertView = mInflater.inflate(R.layout.home_investment_listview_first, parent, true);
                 viewHolder.ivLogo = (ImageView)convertView.findViewById(R.id.home_investment_list_view_item_iv_logo);
                 viewHolder.tvSummary = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_summary);
                 viewHolder.tvTargetFundNum = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_currentFund);

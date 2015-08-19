@@ -16,18 +16,14 @@ import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.DotViewPagerActivity;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
-import com.dragoneye.wjjt.model.ProjectDetailModel;
 import com.dragoneye.wjjt.protocol.GetProjectListProtocol;
-import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.view.DotViewPager;
-import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -121,6 +117,7 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         readIntent();
+        setIsNeedLoadingFeature(true);
         setContentView(R.layout.home_investment_detail);
         initView();
         initData();
@@ -132,22 +129,24 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_progress_action_bar, menu);
         mProgressMenu = menu.findItem(R.id.refresh_loading);
-        if( !isFullInfo ){
-            handler.post(onUpdateProjectDetail_r);
-        }
         return true;
     }
 
     public void setLoadingState(boolean refreshing) {
-        if (mProgressMenu != null) {
-            if (refreshing) {
-                mProgressMenu
-                        .setActionView(R.layout.actionbar_indeterminate_progress);
-                mProgressMenu.setVisible(true);
-            } else {
-                mProgressMenu.setVisible(false);
-                mProgressMenu.setActionView(null);
-            }
+//        if (mProgressMenu != null) {
+//            if (refreshing) {
+//                mProgressMenu
+//                        .setActionView(R.layout.actionbar_indeterminate_progress);
+//                mProgressMenu.setVisible(true);
+//            } else {
+//                mProgressMenu.setVisible(false);
+//                mProgressMenu.setActionView(null);
+//            }
+//        }
+        if(refreshing){
+            setStartLoading();
+        }else {
+            finishLoading(true);
         }
     }
 
@@ -164,9 +163,7 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
             mImageUrl = pmImageUrl;
         }else {
             mImageUrl = new ArrayList<>();
-            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_1).toString());
-            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_2).toString());
-            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_3).toString());
+            mImageUrl.add(Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.icon_albums).toString());
         }
     }
 
@@ -188,7 +185,7 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
         mTVCategory = (TextView)findViewById(R.id.project_detail_tv_category);
         mTVCreateDate = (TextView)findViewById(R.id.project_detail_tv_createDate);
 
-        int percent = (int)((float)mCurrentFund / mTargetFund + 0.5f);
+        int percent = (int)((float)mCurrentFund / mTargetFund * 100 + 0.5f);
         mProgressBar.setProgress(percent);
         mTextViewProjectProgress.setText(String.format("筹款进度: %d%%", percent));
     }
@@ -206,24 +203,32 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
 
             }
         }
+        else {
+            handler.post(onUpdateProjectDetail_r);
+        }
+    }
+
+    @Override
+    protected void onRetryLoading(){
+        handler.post(onUpdateProjectDetail_r);
     }
 
     Runnable onUpdateProjectDetail_r = new Runnable() {
         @Override
         public void run() {
-            setLoadingState(true);
+            setStartLoading();
             HttpParams params = new HttpParams();
             params.put("activityId", mActivityId);
 
             HttpClient.atomicPost(ProjectDetailActivity.this, GetProjectListProtocol.URL_GET_PROJECT_INFO, params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable){
-                    setLoadingState(false);
+                    finishLoading(false);
                 }
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
-                    setLoadingState(false);
+                    finishLoading(true);
                     String result = HttpClient.getValueFromHeader(headers, GetProjectListProtocol.GET_PROJECT_INFO_RESULT_KEY);
                     if (result == null || s == null) {
                         UIHelper.toast(ProjectDetailActivity.this, "服务器繁忙");

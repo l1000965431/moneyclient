@@ -535,4 +535,8 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 		arrow.setColorFilter(color);
 	}
 
+	public void doRefreshImmediately(){
+		new RefreshingTask().execute();
+	}
+
 }

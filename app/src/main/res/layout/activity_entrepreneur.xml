@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <com.dragoneye.wjjt.view.RefreshableView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/home_entrepreneur_refreshable_view"
+        android:background="#ff1e1e1e"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp">
+        <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/home_entrepreneur_list_view"
+            android:layout_centerHorizontal="true"/>
+    </com.dragoneye.wjjt.view.RefreshableView>
+
+</LinearLayout>

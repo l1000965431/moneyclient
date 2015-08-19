@@ -10,7 +10,8 @@ public interface PreferencesConfig {
     String REFRESH_VIEW_UPDATE_AT = "REFRESH_VIEW_UPDATE_AT";
 
     int FRAGMENT_HOME_INVESTMENT = 1;
-    int FRAGMENT_HOME_RECORD = 2;
+    int FRAGMENT_HOME_RECORD_INVEST = 2;
+    int FRAGMENT_HOME_RECORD_EARNING = 3;
 
 
     /**

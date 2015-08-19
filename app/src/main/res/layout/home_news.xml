@@ -19,7 +19,7 @@
             android:layout_height="170dp"
             android:id="@+id/home_news_Headlines_imageView"
             android:scaleType="fitXY"
-            android:src="@mipmap/projects_display001_2"
+            android:src="@mipmap/icon_albums"
             android:layout_gravity="center" />
 
         <TextView
@@ -64,7 +64,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:id="@+id/home_news_Second_imageView"
-            android:src="@mipmap/projects_display001_1"
+            android:src="@mipmap/icon_albums"
             android:scaleType="fitXY"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
@@ -100,7 +100,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:id="@+id/home_news_Third_imageView"
-            android:src="@mipmap/projects_display002_1"
+            android:src="@mipmap/icon_albums"
             android:scaleType="fitXY"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"

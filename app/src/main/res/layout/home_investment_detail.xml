@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent" android:layout_height="wrap_content"
+    android:layout_width="fill_parent" android:layout_height="fill_parent"
     android:background="#ff1e1e1e"
     android:orientation="vertical"
               android:paddingBottom="17dp"
@@ -113,54 +113,101 @@
                         android:layout_height="fill_parent"
                         android:visibility="visible"
                         android:layout_gravity="center"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:layout_marginBottom="5dp">
 
-                        <TextView
-                            android:layout_width="fill_parent"
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="所在城市：北京-海淀"
-                            android:id="@+id/project_detail_tv_address"
-                            android:textSize="12dp"
-                            android:textColor="#ff767676"
-                            android:textIsSelectable="false"
-                            android:textStyle="bold"
-                            android:visibility="visible"
-                            android:layout_gravity="center"
-                            android:gravity="left|center_vertical"
-                            android:layout_weight="1" />
+                            android:layout_weight="1">
 
-                        <TextView
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="创建时间：2012.12.4"
-                            android:id="@+id/textView73"
-                            android:textSize="12dp"
-                            android:textColor="#ff767676"
-                            android:textIsSelectable="false"
-                            android:textStyle="bold"
-                            android:visibility="visible"
-                            android:layout_gravity="center"
-                            android:gravity="left|center_vertical"
-                            android:layout_weight="1"
-                            android:paddingLeft="5dp" />
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="北京-海淀"
+                                android:id="@+id/project_detail_tv_address"
+                                android:textSize="12dp"
+                                android:textColor="#ff767676"
+                                android:textIsSelectable="false"
+                                android:textStyle="bold"
+                                android:visibility="visible"
+                                android:layout_gravity="center"
+                                android:gravity="left|center_vertical"
+                                android:layout_weight="1"
+                                android:layout_alignBaseline="@+id/textView8"
+                                android:layout_alignBottom="@+id/textView8"
+                                android:layout_toRightOf="@+id/textView8"
+                                android:layout_toEndOf="@+id/textView8"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="所在地："
+                                android:id="@+id/textView8"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textColor="#ff767676"
+                                android:textSize="12dp"
+                                android:textStyle="bold"/>
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="创建时间："
+                                android:id="@+id/textView10"
+                                android:textSize="12dp"
+                                android:textColor="#ff767676"
+                                android:textIsSelectable="false"
+                                android:textStyle="bold"
+                                android:visibility="visible"
+                                android:layout_gravity="center"
+                                android:gravity="left|center_vertical"
+                                android:layout_weight="1"
+                                android:paddingLeft="5dp"/>
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="2012.12.4"
+                                android:id="@+id/project_detail_tv_createDate"
+                                android:textSize="12dp"
+                                android:textColor="#ff767676"
+                                android:textIsSelectable="false"
+                                android:textStyle="bold"
+                                android:visibility="visible"
+                                android:layout_gravity="center"
+                                android:layout_toRightOf="@id/textView10"
+                                android:gravity="left|center_vertical"
+                                android:layout_weight="1"
+                                android:paddingLeft="5dp" />
+                        </RelativeLayout>
 
                     </LinearLayout>
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:orientation="horizontal"
                         android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
+                        android:layout_height="wrap_content"
                         android:visibility="visible"
                         android:layout_gravity="center"
                         android:layout_weight="1">
 
                         <TextView
-                            android:layout_width="fill_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="类型：掌机娱乐"
+                            android:text="类型："
                             android:id="@+id/textView77"
                             android:textSize="12dp"
                             android:textColor="#ff767676"
@@ -169,23 +216,25 @@
                             android:visibility="visible"
                             android:layout_gravity="center"
                             android:gravity="left|center_vertical"
-                            android:layout_weight="1" />
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentTop="true"
+                            />
 
                         <TextView
-                            android:layout_width="fill_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="创建时间：2012.12.4"
-                            android:id="@+id/textView76"
+                            android:text="掌机娱乐"
+                            android:id="@+id/project_detail_tv_category"
                             android:textSize="12dp"
                             android:textColor="#ff767676"
                             android:textIsSelectable="false"
                             android:textStyle="bold"
-                            android:visibility="invisible"
                             android:layout_gravity="center"
-                            android:gravity="left|center_vertical"
-                            android:layout_weight="1" />
-                    </LinearLayout>
+                            android:layout_toRightOf="@id/textView77"
+                            android:layout_alignParentTop="true"
+                            android:gravity="center_vertical"/>
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -408,22 +457,6 @@
                     android:progress="10"/>
 
             </LinearLayout>
-
-            <TextView
-                android:layout_width="170dp"
-                android:layout_height="37dp"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="投资该项目"
-                android:id="@+id/textView79"
-                android:layout_gravity="center"
-                android:textSize="15dp"
-                android:background="@drawable/bg_rounded10blue"
-                android:gravity="center_vertical|center_horizontal"
-                android:layout_marginTop="20dp"
-                android:textColor="#ff97e3ff"
-                android:layout_marginBottom="5dp"
-                android:textIsSelectable="false"
-                android:textStyle="bold" />
 
             <LinearLayout
                 android:orientation="vertical"

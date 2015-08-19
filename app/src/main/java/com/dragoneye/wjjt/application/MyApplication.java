@@ -52,7 +52,7 @@ public class MyApplication extends Application {
         super.onCreate();
         MyDaoMaster.init(this);
         HttpClient.initHttpClient(this);
-        createTestData();
+//        createTestData();
         initImageLoader();
         AnalyticsConfig.enableEncrypt(true);
         MobclickAgent.updateOnlineConfig(this);
@@ -64,13 +64,7 @@ public class MyApplication extends Application {
         Log.d("UMENG TEST", getDeviceInfo(this));
 
 
-        images.add(R.mipmap.projects_display001_0);
-        images.add(R.mipmap.projects_display002_0);
-        images.add(R.mipmap.projects_display003_0);
-        images.add(R.mipmap.projects_display004_0);
-        images.add(R.mipmap.projects_display005_0);
-        images.add(R.mipmap.projects_display006_0);
-        images.add(R.mipmap.projects_display007_0);
+        images.add(R.mipmap.icon_albums);
     }
 
     /**
@@ -109,47 +103,47 @@ public class MyApplication extends Application {
         return null;
     }
 
-    public static void createTestData(){
-        ProjectDao dao = MyDaoMaster.getDaoSession().getProjectDao();
-        ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
-
-        long id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "1", "test"));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_1).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_2).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_3).toString()));
-
-        id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "2", "test"));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display002_1).toString()));
-
-        id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "3", "test"));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_1).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_2).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_3).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_4).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_5).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_6).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_7).toString()));
-
-        id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "4", "test"));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display004_1).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display004_2).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display004_3).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display004_4).toString()));
-
-        id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "5", "test"));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display005_1).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display005_2).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display005_3).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display005_4).toString()));
-
-        id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "6", "test"));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display006_1).toString()));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display006_2).toString()));
-
-        id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "7", "test"));
-        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display007_1).toString()));
-
-    }
+//    public static void createTestData(){
+//        ProjectDao dao = MyDaoMaster.getDaoSession().getProjectDao();
+//        ProjectImageDao projectImageDao = MyDaoMaster.getDaoSession().getProjectImageDao();
+//
+//        long id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "1", "test"));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_1).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_2).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display001_3).toString()));
+//
+//        id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "2", "test"));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display002_1).toString()));
+//
+//        id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "3", "test"));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_1).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_2).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_3).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_4).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_5).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_6).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display003_7).toString()));
+//
+//        id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "4", "test"));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display004_1).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display004_2).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display004_3).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display004_4).toString()));
+//
+//        id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "5", "test"));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display005_1).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display005_2).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display005_3).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display005_4).toString()));
+//
+//        id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "6", "test"));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display006_1).toString()));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display006_2).toString()));
+//
+//        id = dao.insert(new Project(null, ProjectStatusConfig.IN_PROGRESS, 0, "7", "test"));
+//        projectImageDao.insert(new ProjectImage(null, id, Uri.parse("android.resource://com.dragoneye.money/" + R.mipmap.projects_display007_1).toString()));
+//
+//    }
 
     private void initImageLoader(){
         File cacheDir = StorageUtils.getOwnCacheDirectory(getApplicationContext(), "imageLoader/Cache");

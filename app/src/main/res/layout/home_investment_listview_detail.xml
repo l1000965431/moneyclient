@@ -21,7 +21,8 @@
             <com.dragoneye.wjjt.view.DotViewPager
                 android:layout_width="fill_parent"
                 android:layout_height="170dp"
-                android:id="@+id/investment_project_detail_dot_viewpager"/>
+                android:id="@+id/investment_project_detail_dot_viewpager"
+                />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -279,13 +280,28 @@
                         android:background="#ffefefef"
                         android:visibility="visible">
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="(最大跟投数额:9999)"
+                            android:id="@+id/invest_project_tv_maxFallowPrice"
+                            android:textSize="12dp"
+                            android:textColor="#ff7c7c7c"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center|left"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginLeft="70dp"
+                            android:layout_marginBottom="-12dp"/>
+
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:paddingLeft="30dp"
                             android:visibility="visible"
-                            android:layout_marginTop="20dp">
+                            >
 
                             <ImageView
                                 android:layout_width="30dp"
@@ -379,9 +395,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginLeft="70dp"
                     android:id="@+id/investment_ll_result_root"
-                    android:paddingBottom="10dp">
+                    android:paddingBottom="10dp"
+                    android:gravity="center_horizontal">
 
                 </LinearLayout>
 

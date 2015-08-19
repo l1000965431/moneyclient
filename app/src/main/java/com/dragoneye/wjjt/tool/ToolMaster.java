@@ -37,6 +37,7 @@ public class ToolMaster {
      */
     public static String convertToPriceString(int price){
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.CHINA);
+        format.setMaximumFractionDigits(0);
         return format.format(price);
     }
 

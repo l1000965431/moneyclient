@@ -1,5 +1,6 @@
 package com.dragoneye.wjjt.activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,14 +18,17 @@ import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.ImageSelectedActivity;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.HttpUrlConfig;
+import com.dragoneye.wjjt.dao.Project;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
+import com.dragoneye.wjjt.model.MyProjectModel;
 import com.dragoneye.wjjt.model.ProjectDetailModel;
 import com.dragoneye.wjjt.protocol.UploadProjectProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCancellationSignal;
 import com.qiniu.android.storage.UpCompletionHandler;
@@ -33,6 +37,8 @@ import com.qiniu.android.storage.UploadManager;
 import com.qiniu.android.storage.UploadOptions;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -77,7 +83,42 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
     private boolean isCancelUpload = true;
     UploadManager uploadManager;
 
+    private boolean mIsReeditMode = false;
 
+    public static void CallActivity(Activity activity, MyProjectModel myProjectModel){
+        Intent intent = new Intent(activity, ProjectEditActivity.class);
+        intent.putExtra("myProjectModel", myProjectModel);
+        activity.startActivity(intent);
+    }
+
+    private void readIntent(){
+        MyProjectModel myProjectModel = (MyProjectModel)getIntent().getSerializableExtra("myProjectModel");
+        if( myProjectModel != null ){
+            mIsReeditMode = true;
+            mETProjectName.setText(myProjectModel.getName());
+            mETProjectTargetPrice.setText(String.valueOf(myProjectModel.getTargetFund()));
+            mETRaiseDay.setText(String.valueOf(myProjectModel.getRaiseDay()));
+            mETTeamSize.setText(String.valueOf(myProjectModel.getTeamSize()));
+            mETAddress.setText(myProjectModel.getAddress());
+            mImageUri.clear();
+            try{
+                JSONArray array = new JSONArray(myProjectModel.getImageUrl());
+                for(int i = 0; i < array.length(); i++){
+                    Uri uri = Uri.parse(array.getString(i));
+                    addImageToShow(uri);
+                }
+            }catch (JSONException e){
+
+            }
+            mETVideoUrl.setText(myProjectModel.getVideoUrl());
+            mETProjectSummary.setText(myProjectModel.getSummary());
+            mETProjectIntroduce.setText(myProjectModel.getActivityIntroduce());
+            mETMarketAnalysis.setText(myProjectModel.getMarketAnalysis());
+            mETProfitModel.setText(myProjectModel.getProfitMode());
+            mETTeamIntroduce.setText(myProjectModel.getTeamIntroduce());
+            mETTags.setText(myProjectModel.getTags());
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +126,7 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
         setContentView(R.layout.fragment_project_launched);
         initView();
         initData();
+        readIntent();
     }
 
     private void initView(){
@@ -235,7 +277,8 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
         }
         int currentSize = mImageUri.size();
         mIVImageViews[currentSize].setVisibility(View.VISIBLE);
-        mIVImageViews[currentSize].setImageBitmap(ToolMaster.getBitmapFromUri(this, uri));
+        ImageLoader.getInstance().displayImage(uri.toString(), mIVImageViews[currentSize]);
+//        mIVImageViews[currentSize].setImageBitmap(ToolMaster.getBitmapFromUri(this, uri));
 
         mImageUri.add(uri);
     }
@@ -252,7 +295,8 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
 
         for(int i = 0; i < mImageUri.size(); i++){
             mIVImageViews[i].setVisibility(View.VISIBLE);
-            mIVImageViews[i].setImageBitmap(ToolMaster.getBitmapFromUri(this, mImageUri.get(i)));
+            ImageLoader.getInstance().displayImage(mImageUri.get(i).toString(), mIVImageViews[i]);
+//            mIVImageViews[i].setImageBitmap(ToolMaster.getBitmapFromUri(this, mImageUri.get(i)));
         }
     }
 
@@ -317,7 +361,16 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
         uploadingImageIndex = 0;
         uploadManager = new UploadManager();
         progressDialog.show();
-        handler.post(uploadOneImage_r);
+        mImagesURL.clear();
+        if( mIsReeditMode ){
+            for(Uri uri : mImageUri){
+                if( uri.toString().startsWith("http") ){
+                    mImagesURL.add(uri.toString());
+                }
+            }
+        }else {
+            handler.post(uploadOneImage_r);
+        }
     }
 
     private void cancelUpload(){
@@ -386,32 +439,48 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
                 public void onSuccess(int i, Header[] headers, String s) {
                     Log.d("SubmitProject Success", s);
                     progressDialog.dismiss();
-                    UIHelper.toast(ProjectEditActivity.this, "项目提交成功");
-                    finish();
+                    if( s != null && s.compareTo("success") == 0 ){
+                        UIHelper.toast(ProjectEditActivity.this, "项目提交成功");
+                        finish();
+                    }else {
+                        UIHelper.toast(ProjectEditActivity.this, "项目提交失败, 可能某些内容长度过长。");
+                    }
                 }
             });
         }
     };
 
     private boolean getProjectInput(ProjectDetailModel projectDetail){
+        if(mETProjectName.getText().length() == 0 || mETProjectName.getText().length() > 15){
+            UIHelper.toast(this, String.format("%s格式不正确, 1到%d个中文或英文字符。", "", 15));
+            UIHelper.toast(this, "请输入项目名称");
+            return false;
+        }
         projectDetail.setName(mETProjectName.getText().toString());
-        if( mETProjectTargetPrice.getText().length() == 0 ){
-            UIHelper.toast(this, "请输入筹资金额");
-            return false;
-        }
-        projectDetail.setTargetFund(Integer.parseInt(mETProjectTargetPrice.getText().toString()));
 
-        if( mETRaiseDay.getText().length() == 0 ){
-            UIHelper.toast(this, "请输入筹资天数");
-            return false;
-        }
-        projectDetail.setRaiseDay(Integer.parseInt(mETRaiseDay.getText().toString()));
+        try{
+            if( mETProjectTargetPrice.getText().length() == 0 ){
+                UIHelper.toast(this, "请输入筹资金额");
+                return false;
+            }
+            projectDetail.setTargetFund(Integer.parseInt(mETProjectTargetPrice.getText().toString()));
 
-        if( mETTeamSize.getText().length() == 0 ){
-            UIHelper.toast(this, "请输入团队人数");
+            if( mETRaiseDay.getText().length() == 0 ){
+                UIHelper.toast(this, "请输入筹资天数");
+                return false;
+            }
+            projectDetail.setRaiseDay(Integer.parseInt(mETRaiseDay.getText().toString()));
+
+            if( mETTeamSize.getText().length() == 0 ){
+                UIHelper.toast(this, "请输入团队人数");
+                return false;
+            }
+            projectDetail.setTeamSize(Integer.parseInt(mETTeamSize.getText().toString()));
+        }catch (NumberFormatException e){
+            UIHelper.toast(this, "筹资金额、筹资天数或团队人数输入有误!");
             return false;
         }
-        projectDetail.setTeamSize(Integer.parseInt(mETTeamSize.getText().toString()));
+
 
         if( mRBSelectedProjectType == null ){
             UIHelper.toast(this, "请选择项目类别");
@@ -419,50 +488,50 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
         }
         projectDetail.setCategory(mRBSelectedProjectType.getText().toString());
 
-        if( mETAddress.getText().length() == 0 ){
-            UIHelper.toast(this, "请输入地址");
+        if( mETAddress.getText().length() == 0 || mETAddress.getText().length() > 64){
+            UIHelper.toast(this, String.format("%s格式不正确, 1到%d个中文或英文字符。", "地址", 64));
             return false;
         }
         projectDetail.setAddress(mETAddress.getText().toString());
 
-        if( mETVideoUrl.getText().length() == 0 ){
-            UIHelper.toast(this, "请输入视频地址");
-            return false;
-        }
+//        if( mETVideoUrl.getText().length() == 0 ){
+//            UIHelper.toast(this, "请输入视频地址");
+//            return false;
+//        }
         projectDetail.setVideoUrl(mETVideoUrl.getText().toString());
 
-        if( mETProjectSummary.getText().length() == 0 ){
-            UIHelper.toast(this, "请输入项目简介");
+        if( mETProjectSummary.getText().length() == 0 || mETProjectSummary.getText().length() > 140){
+            UIHelper.toast(this, String.format("%s格式不正确, 1到%d个中文或英文字符。", "项目简介", 140));
             return false;
         }
         projectDetail.setSummary(mETProjectSummary.getText().toString());
 
-        if( mETProjectIntroduce.getText().length() == 0 ){
-            UIHelper.toast(this, "请输入项目详细介绍");
+        if( mETProjectIntroduce.getText().length() == 0 || mETProjectIntroduce.getText().length() > 1000){
+            UIHelper.toast(this, String.format("%s格式不正确, 1到%d个中文或英文字符。", "项目详细介绍", 1000));
             return false;
         }
         projectDetail.setActivityIntroduce(mETProjectIntroduce.getText().toString());
 
-        if( mETMarketAnalysis.getText().length() == 0 ){
-            UIHelper.toast(this, "请输入市场分析");
+        if( mETMarketAnalysis.getText().length() == 0 || mETMarketAnalysis.getText().length() > 1000 ){
+            UIHelper.toast(this, String.format("%s格式不正确, 1到%d个中文或英文字符。", "市场分析", 1000));
             return false;
         }
         projectDetail.setMarketAnalysis(mETMarketAnalysis.getText().toString());
 
-        if( mETProfitModel.getText().length() == 0 ){
-            UIHelper.toast(this, "请输入盈利模式");
+        if( mETProfitModel.getText().length() == 0 || mETMarketAnalysis.getText().length() > 1000 ){
+            UIHelper.toast(this, String.format("%s格式不正确, 1到%d个中文或英文字符。", "盈利模式", 1000));
             return false;
         }
         projectDetail.setProfitMode(mETProfitModel.getText().toString());
 
-        if( mETTeamIntroduce.getText().length() == 0 ){
-            UIHelper.toast(this, "请输入团队介绍");
+        if( mETTeamIntroduce.getText().length() == 0 || mETTeamIntroduce.getText().length() > 320 ){
+            UIHelper.toast(this, String.format("%s格式不正确, 1到%d个中文或英文字符。", "团队介绍", 320));
             return false;
         }
         projectDetail.setTeamIntroduce(mETTeamIntroduce.getText().toString());
 
-        if( mETTags.getText().length() == 0 ){
-            UIHelper.toast(this, "请输入标签");
+        if( mETTags.getText().length() == 0 || mETTags.getText().length() > 64 ){
+            UIHelper.toast(this, String.format("%s格式不正确, 1到%d个中文或英文字符。", "标签", 64));
             return false;
         }
         projectDetail.setTags(mETTags.getText().toString());

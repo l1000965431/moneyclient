@@ -13,6 +13,8 @@ import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.BaseActivity;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.PreferencesConfig;
+import com.dragoneye.wjjt.tool.InputChecker;
+import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.user.CurrentUser;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UmengRegistrar;
@@ -34,7 +36,12 @@ public class LogoActivity extends BaseActivity {
         handler.postDelayed(startNextActivity_r, 3000);
         getSupportActionBar().hide();
         UmengUpdateAgent.update(this);
-        SMSSDK.initSDK(this,PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET );
+        SMSSDK.initSDK(this, PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET);
+//        try{
+//            Log.d("------", InputChecker.IDCardValidate("11010120050101451X"));
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
     Runnable startNextActivity_r = new Runnable() {

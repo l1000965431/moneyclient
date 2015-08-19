@@ -34,7 +34,8 @@
                 android:tint="#ffff4b51"
                 android:scaleType="fitXY"
                 android:layout_marginRight="22dp"
-                android:layout_marginBottom="-10dp" />
+                android:layout_marginBottom="-10dp"
+                android:visibility="invisible"/>
 
             <ImageView
                 android:layout_width="27dp"
@@ -75,7 +76,8 @@
                 android:tint="#ffff4b51"
                 android:scaleType="fitXY"
                 android:layout_marginRight="22dp"
-                android:layout_marginBottom="-10dp" />
+                android:layout_marginBottom="-10dp"
+                android:visibility="invisible"/>
 
             <ImageView
                 android:layout_width="27dp"
@@ -116,7 +118,8 @@
                 android:tint="#ffff4b51"
                 android:scaleType="fitXY"
                 android:layout_marginRight="22dp"
-                android:layout_marginBottom="-10dp" />
+                android:layout_marginBottom="-10dp"
+                android:visibility="invisible"/>
 
             <ImageView
                 android:layout_width="27dp"

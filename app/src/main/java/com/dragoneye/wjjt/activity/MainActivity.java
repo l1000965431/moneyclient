@@ -124,7 +124,7 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
                         break;
                 }
                 BaseFragment baseFragment = (BaseFragment)mFragmentAdapter.getItem(position);
-                baseFragment.onSelected();
+//                baseFragment.onSelected();
             }
 
             @Override
@@ -133,6 +133,8 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
             }
         };
         viewPager.setOnPageChangeListener(onPageChangeListener);
+        investButton.setChecked(true);
+        currentCheckedButton = investButton;
     }
 
     @Override

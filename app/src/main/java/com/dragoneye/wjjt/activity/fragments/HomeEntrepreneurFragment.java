@@ -233,7 +233,7 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
         @Override
         @SuppressWarnings("unchecked")
         public View getView(int position, View convertView, ViewGroup parent){
-            MyProjectModel project = (MyProjectModel)getItem(position);
+            final MyProjectModel project = (MyProjectModel)getItem(position);
 
             ViewHolder viewHolder;
             if(convertView == null){
@@ -244,11 +244,19 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
                 viewHolder.tvName = (TextView)convertView.findViewById(R.id.home_developer_listview_tv_name);
                 viewHolder.tvParam = (TextView)convertView.findViewById(R.id.home_developer_listview_tv_param);
                 viewHolder.tvStatus = (TextView)convertView.findViewById(R.id.home_developer_listview_tv_status);
+                viewHolder.tvGotoEdit = (TextView)convertView.findViewById(R.id.home_developer_listview_tv_gotoEdit);
 
                 convertView.setTag(viewHolder);
             }else{
                 viewHolder = (ViewHolder)convertView.getTag();
             }
+
+            viewHolder.tvGotoEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ProjectEditActivity.CallActivity(getActivity(), project);
+                }
+            });
 
             viewHolder.tvName.setText(project.getName());
 
@@ -276,11 +284,12 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
                 case MyProjectModel.STATUS_FIRST_AUDITING:
                     viewHolder.tvStatus.setText(getString(R.string.home_investment_listview_developer_auditing));
                     viewHolder.tvParam.setVisibility(View.INVISIBLE);
+                    viewHolder.tvGotoEdit.setVisibility(View.INVISIBLE);
                     break;
-                case MyProjectModel.STATUS_AUDITOR_NOT_PASS:
+                case MyProjectModel.STATUS_NEED_REVAMP:
                     viewHolder.tvStatus.setText(getString(R.string.home_investment_listview_developer_notpass));
                     viewHolder.tvParam.setVisibility(View.VISIBLE);
-                    viewHolder.tvParam.setText(project.getNoaudireason());
+                    viewHolder.tvParam.setText( "驳回原因: " + project.getNoaudireason());
                     break;
             }
 

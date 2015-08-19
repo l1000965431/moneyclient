@@ -60,7 +60,7 @@
                 android:text="获取验证码"
                 android:id="@+id/fragment_register_Enter_SecurityCode_button"
                 android:textSize="15sp"
-                android:background="@drawable/bg_rounded12"
+                android:background="@drawable/bg_rounded10blue"
                 android:gravity="center_vertical|center_horizontal"
                 android:textColor="#ffffffff"
                 android:layout_alignParentBottom="true"
@@ -83,7 +83,8 @@
             android:layout_above="@+id/change_password_et_newPassword"
             android:layout_alignLeft="@+id/fragment_login_account"
             android:layout_alignStart="@+id/fragment_login_account"
-            android:layout_marginTop="7dp" />
+            android:layout_marginTop="7dp"
+            android:inputType="textPassword"/>
 
         <EditText
             android:layout_width="300dp"
@@ -98,7 +99,8 @@
             android:gravity="center_vertical|center_horizontal"
             android:layout_above="@+id/fragment_login_buttonlogin"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:inputType="textPassword"/>
 
     </LinearLayout>
 
@@ -192,7 +194,7 @@
         android:id="@+id/fragment_register_buttonlogin"
         android:layout_gravity="center"
         android:textSize="15dp"
-        android:background="@drawable/bg_rounded10blue"
+        android:background="@drawable/bg_rounded12"
         android:gravity="center_vertical|center_horizontal"
         android:textColor="#ffffffff"
         android:layout_marginTop="26dp"

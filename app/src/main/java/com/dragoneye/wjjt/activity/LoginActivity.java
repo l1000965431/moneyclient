@@ -1,5 +1,6 @@
 package com.dragoneye.wjjt.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,6 +42,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private String mLoginUserId;
     private String mLoginUserPassword;
 
+    ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
         mETUserId.setText(getLastLoginUserId());
         mETUserPassword.setText(getLastLoginUserPassword());
+
+        mProgressDialog = new ProgressDialog(this);
     }
 
     private void initData(){
@@ -114,18 +118,26 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         mLoginUserId = mETUserId.getText().toString();
         mLoginUserPassword = mETUserPassword.getText().toString();
 
+        mProgressDialog.setMessage("登陆中");
+        mProgressDialog.show();
         HttpParams params = new HttpParams();
         params.put(UserProtocol.PASSWORD_LOGIN_PARAM_USER_ID, mLoginUserId);
         params.put(UserProtocol.PASSWORD_LOGIN_PARAM_USER_PASSWORD, mLoginUserPassword);
 
         HttpClient.atomicPost(this, UserProtocol.URL_LOGIN, params, new HttpClient.MyHttpHandler() {
             @Override
+            public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+                mProgressDialog.dismiss();
+            }
+
+            @Override
             public void onSuccess(int i, Header[] headers, String s) {
+                mProgressDialog.dismiss();
                 String result = HttpClient.getValueFromHeader(headers, UserProtocol.PASSWORD_LOGIN_RESULT_KEY);
                 String response = HttpClient.getValueFromHeader(headers, UserProtocol.PASSWORD_LOGIN_RESULT_INFO_KEY);
                 String token = s;
                 if (result == null || s == null) {
-                    UIHelper.toast(LoginActivity.this, "服务器异常");
+                    UIHelper.toast(LoginActivity.this, "服务器繁忙，请稍后再试");
                     return;
                 }
                 onLoginResult(result, response, token);

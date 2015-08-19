@@ -26,7 +26,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="微聚镜头 1.0"
             android:id="@+id/home_self_group_instal_zixin_p_textViewname"
             android:layout_gravity="center"
             android:layout_marginTop="55dp"

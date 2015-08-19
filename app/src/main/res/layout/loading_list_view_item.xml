@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:text="没有更多内容"
             android:id="@+id/loading_list_view_item_tv_noMore"
-            />
+            android:textColor="#ffffffff"/>
     </LinearLayout>
 
     <LinearLayout
