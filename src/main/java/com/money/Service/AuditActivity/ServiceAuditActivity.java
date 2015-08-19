@@ -11,6 +11,7 @@ import com.money.model.ActivityVerifyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,11 +46,16 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
     }
 
     public List<ActivityVerifyModel> getAuditingActivityList(int pageIndex, int pageNum){
-        return auditActivityDao.getActivityList(ActivityVerifyModel.STATUS_FIRST_AUDITING, pageIndex, pageNum);
+        ArrayList<Integer> status = new ArrayList<Integer>();
+        status.add(ActivityVerifyModel.STATUS_FIRST_AUDITING);
+        status.add(ActivityVerifyModel.STATUS_REVAMPED);
+        return auditActivityDao.getActivityList(status, pageIndex, pageNum);
     }
 
     public List<ActivityVerifyModel> getNotPassedActivityList(int pageIndex, int pageNum){
-        return auditActivityDao.getActivityList(ActivityVerifyModel.STATUS_AUDITOR_NOT_PASS, pageIndex, pageNum);
+        ArrayList<Integer> status = new ArrayList<Integer>();
+        status.add(ActivityVerifyModel.STATUS_AUDITOR_NOT_PASS);
+        return auditActivityDao.getActivityList(status, pageIndex, pageNum);
     }
 
     public List<ActivityVerifyModel> getUserActivityList(String userId, int pageIndex, int pageNum){
@@ -75,7 +81,7 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
             case ActivityVerifyModel.STATUS_AUDITOR_NOT_PASS:
                 setActivityNotPass(activityVerifyModel);
                 break;
-            case ActivityVerifyModel.STATUS_AUDITOR_PASS:
+            case ActivityVerifyModel.STATUS_AUDITOR_PASS_AND_KEEP:
                 return setActivityPass(activityVerifyModel);
             default:
                 activityVerifyModel.setAuditorStatus(status);
@@ -103,6 +109,7 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
     public void setActivityNeedRevamp(ActivityVerifyModel activityVerifyModel, String reason){
         activityVerifyModel.setAuditorStatus(ActivityVerifyModel.STATUS_NEED_REVAMP);
         activityVerifyModel.setRevampCount(activityVerifyModel.getRevampCount() + 1);
+        activityVerifyModel.setNoaudireason(reason);
         auditActivityDao.update(activityVerifyModel);
     }
 
@@ -111,7 +118,7 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
      * @param activityVerifyModel
      */
     public boolean setActivityPass(ActivityVerifyModel activityVerifyModel){
-        activityVerifyModel.setAuditorStatus(ActivityVerifyModel.STATUS_AUDITOR_PASS);
+        activityVerifyModel.setAuditorStatus(ActivityVerifyModel.STATUS_AUDITOR_PASS_AND_KEEP);
         ActivityVerifyCompleteModel completeModel = verifyComplete(activityVerifyModel);
         return auditActivityDao.setActivityPass(activityVerifyModel, completeModel);
     }
@@ -160,11 +167,13 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
         completeModel.setRaiseDay(activity.getRaiseDay());
         completeModel.setSummary(activity.getSummary());
         completeModel.setTags(activity.getTags());
-        completeModel.setTargetFund(activity.getTargetFund());
+        completeModel.setOriginalFund(activity.getTargetFund());
+//        completeModel.setTargetFund(activity.getTargetFund());
         completeModel.setTeamIntroduce(activity.getTeamIntroduce());
         completeModel.setTeamSize(activity.getTeamSize());
         completeModel.setVideoUrl(activity.getVideoUrl());
         completeModel.setCreateDate(activity.getCreateDate());
+        completeModel.setProfitMode(activity.getProfitMode());
 
         return completeModel;
     }

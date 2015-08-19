@@ -1,8 +1,11 @@
 package com.money.Service.SubmitActivity;
 
 import com.money.Service.ServiceBase;
+import com.money.config.Config;
 import com.money.dao.GeneraDAO;
+import com.money.dao.TransactionSessionCallback;
 import com.money.model.ActivityVerifyModel;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
@@ -30,6 +33,21 @@ public class ServiceSubmitActivity extends ServiceBase {
         if( result == null ){
             return "failure";
         }
+        return "success";
+    }
+
+    public String reeditActivity( final ActivityVerifyModel model ){
+        String ret = baseDao.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                session.update(model);
+                return true;
+            }
+        });
+
+        if( ret.compareTo(Config.SERVICE_FAILED) == 0 ){
+            return "failure";
+        }
+
         return "success";
     }
 

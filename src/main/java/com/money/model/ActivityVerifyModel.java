@@ -28,14 +28,29 @@ public class ActivityVerifyModel extends BaseModel {
     public static final int STATUS_REVAMPED = 2;
 
     /**
-     * 通过审核
+     * 通过审核(进入项目库保留)
      */
-    public static final int STATUS_AUDITOR_PASS = 3;
+    public static final int STATUS_AUDITOR_PASS_AND_KEEP = 3;
+
+    /**
+     * 等待客服联系
+     */
+    public static final int STATUS_WILL_BE_USE = 4;
+
+    /**
+     * 已开始上线筹款
+     */
+    public static final int STATUS_START_RAISE = 5;
+
+    /**
+     * 筹款结束
+     */
+    public static final int STATUS_RAISE_FINISH = 6;
 
     /**
      * 未通过审核
      */
-    public static final int STATUS_AUDITOR_NOT_PASS = 4;
+    public static final int STATUS_AUDITOR_NOT_PASS = 7;
 
     /**
      * 项目ID

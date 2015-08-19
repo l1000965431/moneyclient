@@ -106,7 +106,18 @@ public class AuditActivityController extends ControllerBase implements IControll
             return Config.SERVICE_FAILED;
         }
 
-        if( serviceAuditActivity.setActivityAuditorResult(9l, ActivityVerifyModel.STATUS_AUDITOR_PASS, "") ){
+        long activityId;
+        int result;
+        String param;
+        try{
+            activityId = Long.parseLong(request.getParameter("activityId"));
+            result = Integer.parseInt(request.getParameter("result"));
+            param = request.getParameter("param");
+        }catch (Exception e){
+            return "paramIncorrect";
+        }
+
+        if( serviceAuditActivity.setActivityAuditorResult(activityId, result, param) ){
             return Config.SERVICE_SUCCESS;
         }else {
             return Config.SERVICE_FAILED;

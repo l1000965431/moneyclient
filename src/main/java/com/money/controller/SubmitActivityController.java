@@ -30,4 +30,12 @@ public class SubmitActivityController extends ControllerBase implements IControl
         ActivityVerifyModel activityModel = GsonUntil.jsonToJavaClass(param, ActivityVerifyModel.class);
         return serviceSubmitActivity.submitActivity(activityModel);
     }
+
+    @RequestMapping("reeditActivity")
+    @ResponseBody
+    public String reeditProject(HttpServletRequest request, HttpServletResponse response){
+        String param = request.getParameter("data");
+        ActivityVerifyModel activityModel = GsonUntil.jsonToJavaClass(param, ActivityVerifyModel.class);
+        return serviceSubmitActivity.reeditActivity(activityModel);
+    }
 }

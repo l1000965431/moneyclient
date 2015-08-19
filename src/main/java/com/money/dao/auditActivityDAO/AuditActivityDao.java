@@ -11,7 +11,9 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by happysky on 15-7-22.
@@ -75,12 +77,12 @@ public class AuditActivityDao extends BaseDao {
     }
 
     @SuppressWarnings("unchecked")
-    public List<ActivityVerifyModel> getActivityList(int status, int pageIndex, int pageNum){
+    public List<ActivityVerifyModel> getActivityList(ArrayList<Integer> status, int pageIndex, int pageNum){
         Session session = getNewSession();
         Transaction t = session.beginTransaction();
         List<ActivityVerifyModel> activityVerifyModels = session.createCriteria(ActivityVerifyModel.class)
                 .addOrder(Order.asc("id"))
-                .add(Restrictions.eq("auditorStatus", status))
+                .add(Restrictions.in("auditorStatus", status))
                 .setFirstResult(pageIndex * pageNum)
                 .setMaxResults(pageNum)
                 .list();
