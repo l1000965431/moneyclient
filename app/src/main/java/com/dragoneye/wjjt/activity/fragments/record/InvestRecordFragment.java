@@ -1,6 +1,7 @@
 package com.dragoneye.wjjt.activity.fragments.record;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -26,9 +27,11 @@ import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
+import com.dragoneye.wjjt.model.EarningModel;
 import com.dragoneye.wjjt.model.OrderModel;
 import com.dragoneye.wjjt.model.ProjectDetailModel;
 import com.dragoneye.wjjt.protocol.GetProjectListProtocol;
+import com.dragoneye.wjjt.protocol.InvestProjectProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.view.LoadingMoreFooterProxy;
@@ -41,7 +44,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,6 +65,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
     private ArrayList<OrderModel> mInvestedProjects = new ArrayList<>();
     private InvestmentListViewAdapter mAdapter;
 
+    ProgressDialog progressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,7 +111,24 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
         mAdapter = new InvestmentListViewAdapter(getActivity(), mInvestedProjects);
         mListView.setAdapter(mAdapter);
 
-        handler.post(onUpdateOrderList_r);
+        progressDialog = new ProgressDialog(getActivity());
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            if( refreshableView != null ){
+                refreshableView.doRefreshImmediately();
+            }
+        }
+    }
+
+    @Override
+    public void onShow(){
+        if( refreshableView != null ){
+            refreshableView.doRefreshImmediately();
+        }
     }
 
     @Override
@@ -115,10 +141,126 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
         }
     }
 
-    private void onShowProportion(OrderModel orderModel){
+    private void onShowProportion(final OrderModel orderModel){
+        if( orderModel.getProportionInfo() != null ){
+            showProportionDialog(orderModel.getProportionInfo());
+            return;
+        }
+
+        progressDialog.show();
+        HttpParams httpParams = new HttpParams();
+        httpParams.put(InvestProjectProtocol.GET_INVEST_INFO_PARAM_ACTIVITY_STAGE_ID, orderModel.getActivityStageId());
+
+        HttpClient.atomicPost(getActivity(), InvestProjectProtocol.URL_GET_INVEST_INFO,
+                httpParams, new HttpClient.MyHttpHandler() {
+                    @Override
+                    public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+                        progressDialog.dismiss();
+                    }
+                    @Override
+                    public void onSuccess(int i1, Header[] headers, String s) {
+                        progressDialog.dismiss();
+                        String response = HttpClient.getValueFromHeader(headers, "response");
+                        if( response == null || s == null ){
+                            return;
+                        }
+                        switch (response){
+                            case InvestProjectProtocol.GET_INVEST_INFO_SUCCESS:
+                                try{
+                                    JSONObject object = new JSONObject(s);
+                                    int leadInvestPrice = object.getInt("TotalLinePeoples");
+                                    int fallowInvestPrice = object.getInt("TotalLines");;
+                                    JSONArray srEarnings = object.getJSONArray("SREarning");
+                                    if(orderModel.getPurchaseType() == 2){
+                                        ArrayList<EarningModel> srEarningModels = new ArrayList<>();
+                                        for(int i = 0; i < srEarnings.length(); i++){
+                                            JSONObject object1 = srEarnings.getJSONObject(i);
+                                            int earningType = object1.getInt("srEarningType");
+                                            if( earningType == 2 ){
+                                                EarningModel earningModel = new EarningModel();
+                                                earningModel.setNum( srEarnings.getJSONObject(i).getInt("srEarningNum"));
+                                                earningModel.setPrice(srEarnings.getJSONObject(i).getInt("srEarningPrice"));
+                                                srEarningModels.add(earningModel);
+                                            }
+                                        }
+                                        Collections.sort(srEarningModels, new Comparator<EarningModel>() {
+                                            @Override
+                                            public int compare(EarningModel lhs, EarningModel rhs) {
+                                                return lhs.getPrice() > rhs.getPrice() ? -1 : 0;
+                                            }
+                                        });
+                                        showSrProportion(orderModel, srEarningModels, fallowInvestPrice);
+
+                                    }else if(orderModel.getPurchaseType() == 1){
+                                        JSONArray brEarnings = object.getJSONArray("EarningPeoples");
+                                        ArrayList<EarningModel> brEarningModels = new ArrayList<>();
+                                        for( int i = 0; i < brEarnings.length(); i++ ){
+                                            JSONObject object1 = brEarnings.getJSONObject(i);
+                                            int earningType = object1.getInt("srEarningType");
+                                            if( earningType == 1 ){
+                                                EarningModel earningModel = new EarningModel();
+                                                earningModel.setNum( brEarnings.getJSONObject(i).getInt("srEarningNum"));
+                                                earningModel.setPrice(brEarnings.getJSONObject(i).getInt("srEarningPrice"));
+                                                brEarningModels.add(earningModel);
+                                            }
+                                        }
+                                        showBrProportion(orderModel, brEarningModels);
+                                    }
+
+
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                                break;
+                            case InvestProjectProtocol.GET_INVEST_INFO_FAILED:
+                                break;
+                        }
+                    }
+                });
+    }
+
+    private void showSrProportion(OrderModel orderModel, ArrayList<EarningModel> models, int fallowInvestPrice){
+        String proportionStr = "";
+        for(EarningModel model : models){
+            float proportion = (float)orderModel.getPurchaseNum() / fallowInvestPrice * model.getNum() * 100;
+            String text = getProportionString(proportion, model.getPrice());
+            proportionStr += (text + "\n");
+        }
+        orderModel.setProportionInfo(proportionStr);
+        showProportionDialog(proportionStr);
+    }
+
+    private void showBrProportion(OrderModel orderModel, ArrayList<EarningModel> models){
+        String proportionStr = "";
+        for(EarningModel model : models){
+            float proportion = 1.0f / models.size() * 100;
+            String text = getProportionString(proportion, model.getPrice());
+            proportionStr += (text + "\n");
+        }
+        orderModel.setProportionInfo(proportionStr);
+        showProportionDialog(proportionStr);
+    }
+
+    private void showProportionDialog(String text){
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-        alertDialog.setMessage("fdasfksa\nfdafasdf\nfdasfdasf\nfdasfsadfasdf");
+        alertDialog.setMessage(text);
         alertDialog.show();
+    }
+
+    private String getProportionString(float proportion, int price){
+        if( proportion > 99.0f ){
+            proportion = 99.0f;
+        }
+        if( proportion == 0 ){
+            proportion = 0.1f;
+        }
+
+        if( proportion < 1.0f ){
+            int ip = (int)(100 / proportion);
+            return String.format("1/%d几率获得%s", ip, price);
+        }else {
+            return String.format("%.2f%%几率获得%s", proportion, price);
+        }
     }
 
     @Override
@@ -199,6 +341,14 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 orderModel.setPurchaseNum(object.getInt("PurchaseNum"));
                 orderModel.setAdvanceNum(object.getInt("AdvanceNum"));
                 orderModel.setOrderLines(object.getInt("orderLines"));
+                orderModel.setPurchaseType(object.getInt("purchaseType"));
+                String dateString = object.getString("orderDate");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try{
+                    orderModel.setOrderDate(sdf.parse(dateString));
+                }catch (ParseException e){
+                    e.printStackTrace();
+                }
                 JSONObject detail = object.getJSONObject("activityDetailModel");
                 orderModel.setActivityStageId(detail.getString("activityStageId"));
                 orderModel.setActivityId(detail.getString("activityId"));
@@ -210,6 +360,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 orderModel.setCurrentFund(detail.getInt("currentFund"));
                 orderModel.setCurrentStage(detail.getInt("currentStage"));
                 orderModel.setTotalStage(detail.getInt("totalStage"));
+
 
                 orderModels.add(orderModel);
             }
@@ -276,6 +427,8 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 viewHolder.tvTargetFund = (TextView)convertView.findViewById(R.id.home_record_listview_tv_targetFund);
                 viewHolder.progressBar = (ProgressBar)convertView.findViewById(R.id.invest_record_list_view_item_progressbar);
                 viewHolder.tvProgress = (TextView)convertView.findViewById(R.id.invest_record_list_view_tv_progress);
+                viewHolder.tvOrderDate = (TextView)convertView.findViewById(R.id.home_record_listview_tv_orderDate);
+                viewHolder.tvStageInfo = (TextView)convertView.findViewById(R.id.home_record_listview_tv_stageInfo);
 
                 convertView.setTag(viewHolder);
             }else{
@@ -283,8 +436,19 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             }
 
             viewHolder.tvProjectName.setText(orderModel.getActivityName());
-            viewHolder.tvInvestAmount.setText(String.format(getString(R.string.invest_project_invested_price),
-                    ToolMaster.convertToPriceString(orderModel.getOrderLines())));
+
+            String strCurrentStage = String.format(getString(R.string.project_list_item_stage_info,
+                    (String.valueOf(orderModel.getCurrentStage()) + "/" + orderModel.getTotalStage())));
+            viewHolder.tvStageInfo.setText(strCurrentStage);
+
+//            viewHolder.tvInvestAmount.setText(String.format(getString(R.string.invest_project_invested_price),
+//                    ToolMaster.convertToPriceString(orderModel.getOrderLines())));
+            if(orderModel.getPurchaseType() == 1){
+                viewHolder.tvInvestAmount.setText(String.format("您已领投：%s", ToolMaster.convertToPriceString(orderModel.getOrderLines())));
+            }else {
+                viewHolder.tvInvestAmount.setText(String.format("您已跟投：%s", ToolMaster.convertToPriceString(orderModel.getOrderLines())));
+            }
+
             viewHolder.tvInvestPriceNum.setText(String.format(getString(R.string.invest_project_invested_quantity), orderModel.getPurchaseNum()));
             viewHolder.tvInvestStageNum.setText(String.format(getString(R.string.invest_project_invested_installments), orderModel.getAdvanceNum()));
             viewHolder.tvEarningProportion.setTag(orderModel);
@@ -313,6 +477,8 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             int progress = (int)((float)orderModel.getCurrentFund() / orderModel.getTargetFund() * 100 + 0.5f);
             viewHolder.progressBar.setProgress(progress);
             viewHolder.tvProgress.setText(String.format("筹款进度: %d%%", progress));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            viewHolder.tvOrderDate.setText(sdf.format(orderModel.getOrderDate()));
 
             return convertView;
         }
@@ -325,8 +491,10 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             TextView tvInvestStageNum;
             TextView tvEarningProportion;
             TextView tvTargetFund;
+            TextView tvStageInfo;
             ProgressBar progressBar;
             TextView tvProgress;
+            TextView tvOrderDate;
         }
     }
 }

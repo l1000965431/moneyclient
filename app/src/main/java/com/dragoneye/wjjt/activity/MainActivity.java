@@ -26,6 +26,7 @@ import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.user.CurrentUser;
+import com.umeng.update.UmengUpdateAgent;
 
 import cn.smssdk.SMSSDK;
 
@@ -69,6 +70,7 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.function_switch_bottom);
         initView();
+        UmengUpdateAgent.update(this);
     }
 
     private void initView(){
@@ -179,23 +181,23 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.main_menu_submit_project) {
-            Intent intent = new Intent(this, ProjectEditActivity.class);
-            startActivity(intent);
-            return true;
-        }
-
-        if(id == R.id.main_menu_project_detail){
-            Intent intent = new Intent(this, InvestProjectActivity.class);
-            startActivity(intent);
-            return true;
-        }
-
-        if(id == R.id.main_menu_improve_user_info){
-            Intent intent = new Intent(this, ImproveUserInfoActivity.class);
-            startActivity(intent);
-            return true;
-        }
+//        if (id == R.id.main_menu_submit_project) {
+//            Intent intent = new Intent(this, ProjectEditActivity.class);
+//            startActivity(intent);
+//            return true;
+//        }
+//
+//        if(id == R.id.main_menu_project_detail){
+//            Intent intent = new Intent(this, InvestProjectActivity.class);
+//            startActivity(intent);
+//            return true;
+//        }
+//
+//        if(id == R.id.main_menu_improve_user_info){
+//            Intent intent = new Intent(this, ImproveUserInfoActivity.class);
+//            startActivity(intent);
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }

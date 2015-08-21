@@ -1,5 +1,7 @@
 package com.dragoneye.wjjt.model;
 
+import java.util.Date;
+
 /**
  * Created by happysky on 15-7-29.
  */
@@ -24,6 +26,16 @@ public class OrderModel {
      */
     private int orderLines;
 
+    /**
+     * 领投还是跟投
+     */
+    private int purchaseType;
+
+    /***
+     * 中奖信息缓存
+     */
+    private String proportionInfo;
+
     private String activityStageId;
 
     private String activityId;
@@ -43,6 +55,8 @@ public class OrderModel {
     private int currentStage;
 
     private int totalStage;
+
+    private Date orderDate;
 
 
     public int getOrderState() {
@@ -155,5 +169,29 @@ public class OrderModel {
 
     public void setTotalStage(int totalStage) {
         this.totalStage = totalStage;
+    }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public int getPurchaseType() {
+        return purchaseType;
+    }
+
+    public void setPurchaseType(int purchaseType) {
+        this.purchaseType = purchaseType;
+    }
+
+    public String getProportionInfo() {
+        return proportionInfo;
+    }
+
+    public void setProportionInfo(String proportionInfo) {
+        this.proportionInfo = proportionInfo;
     }
 }

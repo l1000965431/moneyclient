@@ -1,5 +1,7 @@
 package com.dragoneye.wjjt.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -20,6 +22,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ChargeActivity extends BaseActivity implements View.OnClickListener{
+
+    public static void CallActivity(Activity activity){
+        Intent intent = new Intent(activity, ChargeActivity.class);
+        activity.startActivity(intent);
+    }
 
     EditText mETChargeNum;
 
@@ -66,9 +73,10 @@ public class ChargeActivity extends BaseActivity implements View.OnClickListener
         }
 
         //计算总金额（以分为单位）
-        int amount = num;
+        int amount = num * 100;
+        String amountStr = String.format("￥%.2f", amount / 100.0f);
         JSONArray billList = new JSONArray();
-        billList.put("人民币: " + " x " + 1);
+        billList.put("人民币: " + " x " + amountStr);
 //        billList.put("每期金额: " + " x " + mInvestPriceNum);
 //        amount = mInvestStageNum * mInvestPriceNum * 100;
 

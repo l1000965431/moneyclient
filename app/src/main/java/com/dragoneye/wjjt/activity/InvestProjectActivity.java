@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
@@ -27,7 +28,7 @@ import com.dragoneye.wjjt.config.HttpUrlConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.model.ProjectDetailModel;
-import com.dragoneye.wjjt.model.SrEarningModel;
+import com.dragoneye.wjjt.model.EarningModel;
 import com.dragoneye.wjjt.protocol.InvestProjectProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
@@ -39,6 +40,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class InvestProjectActivity extends DotViewPagerActivity implements View.OnClickListener {
 
@@ -68,7 +71,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     private int mLeadInvestPrice;
     private int mFallowInvestPrice;
     private int mFallowInvestTicketLeft;
-    private int mFallowInvestMaxtPrice = 0;
+    private int mFallowInvestMaxPrice = 0;
     private int mFallowStageLeft;
     private int mLeadStageLeft;
 
@@ -79,13 +82,18 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     private View mLLFallowButton;
     private View mLLFallowPanel;
     private ImageView mIVFallowArrow;
+    private ScrollView mScrollView;
 
-    private ArrayList<SrEarningModel> mSrEarningModels = new ArrayList<>();
-    private ArrayList<Integer> mBrEarningList = new ArrayList<>();
+    private ArrayList<EarningModel> mSrEarningModels = new ArrayList<>();
+    private ArrayList<EarningModel> mBrEarningModels = new ArrayList<>();
 
     private Handler handler = new Handler();
 
     ProgressDialog mProgressDialog;
+
+    int flInvestType;
+    int flInvestStageNum;
+    int flInvestPriceNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +132,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mTVTargetFund = (TextView)findViewById(R.id.textView3);
         mTVTargetFundNum = (TextView)findViewById(R.id.textView5);
 
+        mScrollView = (ScrollView)findViewById(R.id.invest_project_scrollView);
+
         // 确认投资按钮
         mTextViewConfirm = (TextView)findViewById(R.id.invest_project_tv_confirm);
         mTextViewConfirm.setOnClickListener(this);
@@ -157,7 +167,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             public void afterTextChanged(Editable s) {
                 try{
                     int price = Integer.parseInt(s.toString());
-                    if( price > mFallowInvestMaxtPrice ){
+                    if( price > mFallowInvestMaxPrice){
                         AlertDialog alertDialog = new AlertDialog.Builder(InvestProjectActivity.this)
                                 .setTitle("数额过大")
                                 .setMessage("输入的金额超过了可跟投的最大金额,请更正")
@@ -281,6 +291,16 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             mIVFallowArrow.setRotation(0);
             mSelectedFallowStageNum = 1;
             setFallowStageNum(mSelectedFallowStageNum);
+            if( mFallowInvestMaxPrice >= 1 ){
+                mETInvestPrice.setText(String.valueOf(1));
+                updateSrEarningProportion(1);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mScrollView.fullScroll(View.FOCUS_DOWN);
+                    }
+                });
+            }
         }
     }
 
@@ -380,19 +400,33 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                         JSONObject object1 = srEarnings.getJSONObject(i);
                         int earningType = object1.getInt("srEarningType");
                         if( earningType == 2 ){
-                            SrEarningModel srEarningModel = new SrEarningModel();
-                            srEarningModel.setNum( srEarnings.getJSONObject(i).getInt("srEarningNum"));
-                            srEarningModel.setPrice(srEarnings.getJSONObject(i).getInt("srEarningPrice"));
-                            if( srEarningModel.getPrice() > mFallowInvestMaxtPrice ){
-                                mFallowInvestMaxtPrice = srEarningModel.getPrice();
+                            EarningModel earningModel = new EarningModel();
+                            earningModel.setNum( srEarnings.getJSONObject(i).getInt("srEarningNum"));
+                            earningModel.setPrice(srEarnings.getJSONObject(i).getInt("srEarningPrice"));
+                            if( earningModel.getPrice() > mFallowInvestMaxPrice){
+                                mFallowInvestMaxPrice = earningModel.getPrice();
                             }
-                            mSrEarningModels.add(srEarningModel);
+                            mSrEarningModels.add(earningModel);
                         }
                     }
-//                    JSONArray brEarnings = object.getJSONArray("EarningPeoples");
-                    mBrEarningList.clear();
-                    for( int i = 0; i < 3; i++ ){
-                        mBrEarningList.add( (i+1) * 1000 );
+                    Collections.sort(mSrEarningModels, new Comparator<EarningModel>() {
+                        @Override
+                        public int compare(EarningModel lhs, EarningModel rhs) {
+                            return lhs.getPrice() > rhs.getPrice() ? -1 : 0;
+                        }
+                    });
+
+                    JSONArray brEarnings = object.getJSONArray("EarningPeoples");
+                    mBrEarningModels.clear();
+                    for( int i = 0; i < brEarnings.length(); i++ ){
+                        JSONObject object1 = brEarnings.getJSONObject(i);
+                        int earningType = object1.getInt("srEarningType");
+                        if( earningType == 1 ){
+                            EarningModel earningModel = new EarningModel();
+                            earningModel.setNum( brEarnings.getJSONObject(i).getInt("srEarningNum"));
+                            earningModel.setPrice(brEarnings.getJSONObject(i).getInt("srEarningPrice"));
+                            mBrEarningModels.add(earningModel);
+                        }
                     }
                     String leadInvestInfo = String.format(getString(R.string.invest_project_lead_invest_info),
                             ToolMaster.convertToPriceString(mLeadInvestPrice));
@@ -435,10 +469,29 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                         mFallowInvestTicketLeft = array.getInt(0);
                         mFallowStageLeft = array.getInt(1);
                         mLeadStageLeft = array.getInt(2);
-                        if(mFallowInvestTicketLeft < mFallowInvestMaxtPrice){
-                            mFallowInvestMaxtPrice = mFallowInvestTicketLeft;
+                        if(mFallowInvestTicketLeft < mFallowInvestMaxPrice){
+                            mFallowInvestMaxPrice = mFallowInvestTicketLeft;
                         }
-                        mTVMaxFallowPrice.setText(String.format("(最大跟投数额:%d)", mFallowInvestMaxtPrice));
+
+                        if( mLeadStageLeft == 0 && mFallowStageLeft == 0 ){
+                            UIHelper.toast(InvestProjectActivity.this, "此项目筹款已结束");
+                            setResult(RESULT_OK);
+                            finish();
+                            return;
+                        }
+
+                        if( mLeadStageLeft == 0 ){
+                            mLLLeadButton.setVisibility(View.GONE);
+                            mLLLeadPanel.setVisibility(View.GONE);
+                        }
+
+                        if( mFallowStageLeft == 0 ){
+                            mLLFallowButton.setVisibility(View.GONE);
+                            mLLFallowPanel.setVisibility(View.GONE);
+                        }
+
+
+                        mTVMaxFallowPrice.setText(String.format("(最大跟投数额:%d)", mFallowInvestMaxPrice));
                         finishLoading(true);
                     }catch (Exception e){
                         finishLoading(false);
@@ -455,7 +508,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         if( investPrice == 0 ){
 
         }else {
-            for(SrEarningModel model : mSrEarningModels){
+            for(EarningModel model : mSrEarningModels){
                 TextView textView = new TextView(this);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -463,7 +516,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                 mLinearLayoutResultRoot.addView(textView, layoutParams);
 
                 float proportion = (float)investPrice / mFallowInvestPrice * model.getNum() * 100;
-                setProportion(textView, proportion, model.getPrice());
+                setProportion(textView, proportion, model.getPrice(), false);
             }
         }
     }
@@ -473,21 +526,21 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         if( stageNum == 0 ){
 
         }else {
-            for(Integer price : mBrEarningList){
+            for(EarningModel model : mBrEarningModels){
                 TextView textView = new TextView(this);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(0, 5, 0, 0);
                 mLinearLayoutResultRoot.addView(textView, layoutParams);
 
-                float proportion = 1.0f / mBrEarningList.size() * 100;
-                setProportion(textView, proportion, price);
+                float proportion = 1.0f / mBrEarningModels.size() * 100;
+                setProportion(textView, proportion, model.getPrice(), true);
             }
         }
 
     }
 
-    private void setProportion(TextView textView, float proportion, int price){
+    private void setProportion(TextView textView, float proportion, int price, boolean isBr){
         if( proportion > 99.0f ){
             proportion = 99.0f;
         }
@@ -495,7 +548,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             proportion = 0.1f;
         }
 
-        if( proportion < 1.0f ){
+        if( proportion < 1.0f || isBr ){
             int ip = (int)(100 / proportion);
             String text = String.format("1/%d几率获得%s", ip, price);
             textView.setText(text);
@@ -530,9 +583,9 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             investStageNum = mSelectedFallowStageNum;
         }
 
-        final int flInvestType = investType;
-        final int flInvestStageNum = investStageNum;
-        final int flInvestPriceNum = investPriceNum;
+        flInvestType = investType;
+        flInvestStageNum = investStageNum;
+        flInvestPriceNum = investPriceNum;
 
         new AlertDialog.Builder(this).setTitle(AppInfoManager.getApplicationName(this))
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -544,7 +597,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
 //                        intent.putExtra(PaymentActivity.EXTRA_INVEST_STAGE_NUM, flInvestStageNum);
 //                        intent.putExtra(PaymentActivity.EXTRA_INVEST_PRICE_NUM, flInvestPriceNum);
 //                        startActivity(intent);
-                        onInvest(flInvestType, flInvestStageNum, flInvestPriceNum);
+                        onInvest(flInvestType, flInvestStageNum, flInvestPriceNum, 1);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -588,7 +641,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         return mSelectedFallowStageNum > 0;
     }
 
-    private void onInvest(int investType, int investStageNum, int investPriceNum){
+    private void onInvest(int investType, int investStageNum, int investPriceNum, int messageType){
         mProgressDialog.setMessage("正在提交");
         mProgressDialog.show();
         HttpParams params = new HttpParams();
@@ -598,6 +651,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_TYPE, investType);
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_STAGE_NUM, investStageNum);
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_PRICE_NUM, investPriceNum);
+        params.put("MessageType", messageType);
 
         HttpClient.atomicPost(this, InvestProjectProtocol.URL_INVEST_PROJECT, params, new HttpClient.MyHttpHandler() {
             @Override
@@ -626,21 +680,63 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             return;
         }
 
+        AlertDialog alertDialog;
         switch (resultCode){
             case InvestProjectProtocol.INVEST_RESULT_SUCCESS:
                 UIHelper.toast(this, "投资成功");
                 break;
+            case InvestProjectProtocol.INVEST_RESULT_SUCCESS_AND_REFRESH:
+                UIHelper.toast(this, "投资成功");
+                setResult(RESULT_OK, null);
+                break;
             case InvestProjectProtocol.INVEST_RESULT_IMPROVE_INFO:
-                UIHelper.toast(this, "需要完善个人信息");
+                alertDialog = new AlertDialog.Builder(this)
+                        .setTitle("个人信息需完善")
+                        .setMessage("需要先完善个人信息，是否现在去完善?")
+                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(InvestProjectActivity.this, ImproveUserInfoActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("否", null)
+                        .create();
+                alertDialog.show();
                 break;
             case InvestProjectProtocol.INVEST_RESULT_FAILED:
                 UIHelper.toast(this, "投资失败");
                 break;
             case InvestProjectProtocol.INVEST_RESULT_MONEY_NOT_ENOUGH:
-                UIHelper.toast(this, "资金不足");
+                alertDialog = new AlertDialog.Builder(this)
+                        .setTitle("资金不足")
+                        .setMessage("资金不足，是否前往充值?")
+                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ChargeActivity.CallActivity(InvestProjectActivity.this);
+                            }
+                        })
+                        .setNegativeButton("否", null)
+                        .create();
+                alertDialog.show();
                 break;
             case InvestProjectProtocol.INVEST_RESULT_TICKET_SOLD_OUT:
                 UIHelper.toast(this, "期或票不够");
+                break;
+            case InvestProjectProtocol.INVEST_RESULT_THIS_STAGE_NOT_ENOUGH:
+                alertDialog = new AlertDialog.Builder(this)
+                        .setTitle("本期已满")
+                        .setMessage("本期已满，是否预购下一期?")
+                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                onInvest(flInvestType, flInvestStageNum, flInvestPriceNum, 2);
+                            }
+                        })
+                        .setNegativeButton("否", null)
+                        .create();
+                alertDialog.show();
                 break;
             default:
                 UIHelper.toast(this, "服务器异常");

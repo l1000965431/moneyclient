@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
-import com.dragoneye.wjjt.activity.ProjectDetailActivity;
 import com.dragoneye.wjjt.activity.fragments.BaseFragment;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.HttpUrlConfig;
@@ -34,6 +33,8 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,14 +95,29 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
         mListView.setOnItemClickListener(this);
         mAdapter = new EarningProjectListViewAdapter(getActivity(), mEarningProjects);
         mListView.setAdapter(mAdapter);
-
-        handler.post(onUpdateEarningList_r);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
         if( position >= mEarningProjects.size() ){
             return;
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            if( refreshableView != null ){
+                refreshableView.doRefreshImmediately();
+            }
+        }
+    }
+
+    @Override
+    public void onShow(){
+        if( refreshableView != null ){
+            refreshableView.doRefreshImmediately();
         }
     }
 
@@ -156,18 +172,21 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
             JSONArray jsonArray = new JSONArray(response);
             for(int i = 0; i < jsonArray.length(); i++) {
                 JSONArray jsonArray1 = jsonArray.getJSONArray(i);
-                JSONArray earningArray = jsonArray1.getJSONArray(1);
-                JSONArray activityInfo = jsonArray1.getJSONArray(0);
-                for(int j = 0; j < earningArray.length(); j++){
-                    MyEarningModel earningModel = new MyEarningModel();
-                    earningModel.setEarningPrice(earningArray.getInt(j));
-                    earningModel.setActivityStageId(activityInfo.getString(0));
-                    earningModel.setActivityName(activityInfo.getString(1));
-                    earningModel.setActvityStageIndex(activityInfo.getInt(3));
-                    earningModel.setActivityId(activityInfo.getString(4));
-                    earningModel.setImageUrl(activityInfo.getString(5));
-                    earningModels.add(earningModel);
+                MyEarningModel earningModel = new MyEarningModel();
+                earningModel.setActivityStageId(jsonArray1.getString(0));
+                earningModel.setActivityName(jsonArray1.getString(1));
+                earningModel.setActivityTotalStage(jsonArray1.getInt(2));
+                earningModel.setActivityStageIndex(jsonArray1.getInt(3));
+                earningModel.setActivityId(jsonArray1.getString(4));
+                earningModel.setImageUrl(jsonArray1.getString(5));
+                earningModel.setEarningPrice(jsonArray1.getInt(6));
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try{
+                    earningModel.setEarningDate(sdf.parse(jsonArray1.getString(7)));
+                }catch (ParseException e){
+                    e.printStackTrace();
                 }
+                earningModels.add(earningModel);
             }
 
         }catch (JSONException e){
@@ -235,7 +254,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
 
             viewHolder.tvProjectName.setText(myEarningModel.getActivityName());
             viewHolder.tvEarningPrice.setText(String.format("您的收益:%s", ToolMaster.convertToPriceString(myEarningModel.getEarningPrice())));
-            viewHolder.tvStageIndex.setText(String.format("第%d期", myEarningModel.getActvityStageIndex()));
+            viewHolder.tvStageIndex.setText(String.format("第%d期", myEarningModel.getActivityStageIndex()));
             try{
                 JSONArray jsonArray = new JSONArray(myEarningModel.getImageUrl());
                 if( jsonArray.length() > 0 ){
@@ -255,6 +274,9 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
             }catch (JSONException e){
                 e.printStackTrace();
             }
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            viewHolder.tvEarningDate.setText(sdf.format(myEarningModel.getEarningDate()));
 
             return convertView;
         }

@@ -1,5 +1,6 @@
 package com.dragoneye.wjjt.activity.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -234,7 +235,16 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         ProjectDetailModel project = (ProjectDetailModel) mGridView.getItemAtPosition(position);
         Intent intent = new Intent(getActivity(), InvestProjectActivity.class);
         intent.putExtra(InvestProjectActivity.EXTRA_PROJECT_MODEL, project);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode == 1){
+            if(resultCode == Activity.RESULT_OK){
+                refreshableView.doRefreshImmediately();
+            }
+        }
     }
 
     private class InvestmentListViewAdapter extends BaseAdapter {
@@ -282,7 +292,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
             if(convertView == null){
                 viewHolder = new ViewHolder();
 
-                convertView = mInflater.inflate(R.layout.home_investment_listview_first, parent, true);
+                convertView = mInflater.inflate(R.layout.home_investment_listview_first, parent, false);
                 viewHolder.ivLogo = (ImageView)convertView.findViewById(R.id.home_investment_list_view_item_iv_logo);
                 viewHolder.tvSummary = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_summary);
                 viewHolder.tvTargetFundNum = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_currentFund);

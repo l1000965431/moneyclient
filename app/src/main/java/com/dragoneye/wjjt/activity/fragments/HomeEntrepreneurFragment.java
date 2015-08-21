@@ -280,16 +280,30 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
                 e.printStackTrace();
             }
 
+            viewHolder.tvGotoEdit.setVisibility(View.INVISIBLE);
+            viewHolder.tvParam.setVisibility(View.INVISIBLE);
             switch (project.getAuditorStatus()){
                 case MyProjectModel.STATUS_FIRST_AUDITING:
+                case MyProjectModel.STATUS_REVAMPED:
                     viewHolder.tvStatus.setText(getString(R.string.home_investment_listview_developer_auditing));
-                    viewHolder.tvParam.setVisibility(View.INVISIBLE);
-                    viewHolder.tvGotoEdit.setVisibility(View.INVISIBLE);
                     break;
                 case MyProjectModel.STATUS_NEED_REVAMP:
                     viewHolder.tvStatus.setText(getString(R.string.home_investment_listview_developer_notpass));
+                    viewHolder.tvGotoEdit.setVisibility(View.VISIBLE);
                     viewHolder.tvParam.setVisibility(View.VISIBLE);
                     viewHolder.tvParam.setText( "驳回原因: " + project.getNoaudireason());
+                    break;
+                case MyProjectModel.STATUS_AUDITOR_PASS_AND_KEEP:
+                    viewHolder.tvStatus.setText(getString(R.string.home_investment_listview_developer_reservedwait));
+                    break;
+                case MyProjectModel.STATUS_WILL_BE_USE:
+                    viewHolder.tvStatus.setText(getString(R.string.home_investment_listview_developer_sign));
+                    break;
+                case MyProjectModel.STATUS_START_RAISE:
+                    viewHolder.tvStatus.setText(getString(R.string.home_investment_listview_developer_fundraising));
+                    break;
+                case MyProjectModel.STATUS_RAISE_FINISH:
+                    viewHolder.tvStatus.setText(getString(R.string.home_investment_listview_developer_end));
                     break;
             }
 

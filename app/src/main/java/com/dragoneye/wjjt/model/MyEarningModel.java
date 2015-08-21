@@ -1,5 +1,7 @@
 package com.dragoneye.wjjt.model;
 
+import java.util.Date;
+
 /**
  * Created by happysky on 15-8-17.
  * 收益记录
@@ -7,10 +9,12 @@ package com.dragoneye.wjjt.model;
 public class MyEarningModel {
     private String activityId;
     private String activityStageId;
-    private int actvityStageIndex;
+    private int activityStageIndex;
+    private int activityTotalStage;
     private String imageUrl;
     private int earningPrice;
     private String activityName;
+    private Date earningDate;
 
     public String getActivityId() {
         return activityId;
@@ -28,12 +32,12 @@ public class MyEarningModel {
         this.activityStageId = activityStageId;
     }
 
-    public int getActvityStageIndex() {
-        return actvityStageIndex;
+    public int getActivityStageIndex() {
+        return activityStageIndex;
     }
 
-    public void setActvityStageIndex(int actvityStageIndex) {
-        this.actvityStageIndex = actvityStageIndex;
+    public void setActivityStageIndex(int activityStageIndex) {
+        this.activityStageIndex = activityStageIndex;
     }
 
     public String getImageUrl() {
@@ -58,5 +62,21 @@ public class MyEarningModel {
 
     public void setActivityName(String activityName) {
         this.activityName = activityName;
+    }
+
+    public Date getEarningDate() {
+        return earningDate;
+    }
+
+    public void setEarningDate(Date earningDate) {
+        this.earningDate = earningDate;
+    }
+
+    public int getActivityTotalStage() {
+        return activityTotalStage;
+    }
+
+    public void setActivityTotalStage(int activityTotalStage) {
+        this.activityTotalStage = activityTotalStage;
     }
 }

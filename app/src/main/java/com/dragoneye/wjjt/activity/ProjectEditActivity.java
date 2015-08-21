@@ -43,6 +43,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.UUID;
 
 
@@ -68,6 +69,7 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
     private TextView mTVSelectedImage;
 
     private ArrayList<Uri> mImageUri = new ArrayList<>();
+    private ArrayList<Uri> mUploadImageUri = new ArrayList<>();
     private ArrayList<String> mImagesURL = new ArrayList<>();
     private String mUploadToken;
 
@@ -76,7 +78,7 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
 
     private ImageView mIVImageViews[] = new ImageView[MAX_IMAGE_NUM];
 
-    ProjectDetailModel mDetailModel = new ProjectDetailModel();
+    MyProjectModel mDetailModel = new MyProjectModel();
     ProgressDialog progressDialog;
 
     private int uploadingImageIndex = 0;
@@ -92,17 +94,17 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
     }
 
     private void readIntent(){
-        MyProjectModel myProjectModel = (MyProjectModel)getIntent().getSerializableExtra("myProjectModel");
-        if( myProjectModel != null ){
+        mDetailModel = (MyProjectModel)getIntent().getSerializableExtra("myProjectModel");
+        if( mDetailModel != null ){
             mIsReeditMode = true;
-            mETProjectName.setText(myProjectModel.getName());
-            mETProjectTargetPrice.setText(String.valueOf(myProjectModel.getTargetFund()));
-            mETRaiseDay.setText(String.valueOf(myProjectModel.getRaiseDay()));
-            mETTeamSize.setText(String.valueOf(myProjectModel.getTeamSize()));
-            mETAddress.setText(myProjectModel.getAddress());
+            mETProjectName.setText(mDetailModel.getName());
+            mETProjectTargetPrice.setText(String.valueOf(mDetailModel.getTargetFund()));
+            mETRaiseDay.setText(String.valueOf(mDetailModel.getRaiseDay()));
+            mETTeamSize.setText(String.valueOf(mDetailModel.getTeamSize()));
+            mETAddress.setText(mDetailModel.getAddress());
             mImageUri.clear();
             try{
-                JSONArray array = new JSONArray(myProjectModel.getImageUrl());
+                JSONArray array = new JSONArray(mDetailModel.getImageUrl());
                 for(int i = 0; i < array.length(); i++){
                     Uri uri = Uri.parse(array.getString(i));
                     addImageToShow(uri);
@@ -110,14 +112,15 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
             }catch (JSONException e){
 
             }
-            mETVideoUrl.setText(myProjectModel.getVideoUrl());
-            mETProjectSummary.setText(myProjectModel.getSummary());
-            mETProjectIntroduce.setText(myProjectModel.getActivityIntroduce());
-            mETMarketAnalysis.setText(myProjectModel.getMarketAnalysis());
-            mETProfitModel.setText(myProjectModel.getProfitMode());
-            mETTeamIntroduce.setText(myProjectModel.getTeamIntroduce());
-            mETTags.setText(myProjectModel.getTags());
+            mETVideoUrl.setText(mDetailModel.getVideoUrl());
+            mETProjectSummary.setText(mDetailModel.getSummary());
+            mETProjectIntroduce.setText(mDetailModel.getActivityIntroduce());
+            mETMarketAnalysis.setText(mDetailModel.getMarketAnalysis());
+            mETProfitModel.setText(mDetailModel.getProfitMode());
+            mETTeamIntroduce.setText(mDetailModel.getTeamIntroduce());
+            mETTags.setText(mDetailModel.getTags());
         }
+        mDetailModel = new MyProjectModel();
     }
 
     @Override
@@ -322,7 +325,7 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
             return;
         }
 
-        if( mImageUri.size() == 0 ){
+        if( mImageUri.size() == 0){
             UIHelper.toast(this, "请添加一张或多张项目图片");
             return;
         }
@@ -362,11 +365,23 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
         uploadManager = new UploadManager();
         progressDialog.show();
         mImagesURL.clear();
+        mUploadImageUri.clear();
         if( mIsReeditMode ){
-            for(Uri uri : mImageUri){
-                if( uri.toString().startsWith("http") ){
-                    mImagesURL.add(uri.toString());
+            Iterator<Uri> iterator = mImageUri.iterator();
+            while(iterator.hasNext()){
+                Uri uri = iterator.next();
+                String uriString = uri.toString();
+                if( uriString.startsWith("http") ){
+                    mImagesURL.add(uriString);
+                }else {
+                    mUploadImageUri.add(uri);
                 }
+            }
+
+            if( mUploadImageUri.isEmpty() ){
+                handler.post(uploadProject_r);
+            }else {
+                handler.post(uploadOneImage_r);
             }
         }else {
             handler.post(uploadOneImage_r);
@@ -382,8 +397,8 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
         @Override
         public void run() {
             try{
-                progressDialog.setMessage("正在上传图片: " + (uploadingImageIndex + 1) + "/" + mImageUri.size());
-                String filePath = ToolMaster.getRealPathFromURI(ProjectEditActivity.this, mImageUri.get(uploadingImageIndex));
+                progressDialog.setMessage("正在上传图片: " + (uploadingImageIndex + 1) + "/" + mUploadImageUri.size());
+                String filePath = ToolMaster.getRealPathFromURI(ProjectEditActivity.this, mUploadImageUri.get(uploadingImageIndex));
                 if(filePath == null){
                     throw new Exception();
                 }
@@ -394,7 +409,7 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
                     public void complete(String s, ResponseInfo responseInfo, JSONObject jsonObject) {
                         ++uploadingImageIndex;
                         mImagesURL.add(HttpUrlConfig.URL_IMAGE_SERVER_HEAD + s);
-                        if(uploadingImageIndex < mImageUri.size()){
+                        if(uploadingImageIndex < mUploadImageUri.size()){
                             handler.post(uploadOneImage_r);
                         }else {
                             handler.post(uploadProject_r);
@@ -425,10 +440,20 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
             progressDialog.setMessage("正在提交项目...");
             String json = ToolMaster.gsonInstance().toJson(mImagesURL);
             mDetailModel.setImageUrl(json);
+
+
+            String url;
+            if(mIsReeditMode){
+                url = HttpUrlConfig.URL_ROOT + "SubmitActivity/reeditActivity";
+                mDetailModel.setAuditorStatus(MyProjectModel.STATUS_REVAMPED);
+            }else {
+                url = UploadProjectProtocol.URL_SUBMIT_PROJECT;
+            }
+
             HttpParams httpParams = new HttpParams();
             httpParams.putGsonData(mDetailModel);
 
-            HttpClient.post(UploadProjectProtocol.URL_SUBMIT_PROJECT, httpParams, new TextHttpResponseHandler() {
+            HttpClient.post(url, httpParams, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     UIHelper.toast(ProjectEditActivity.this, "无法连接到服务器");
@@ -437,23 +462,30 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
-                    Log.d("SubmitProject Success", s);
                     progressDialog.dismiss();
-                    if( s != null && s.compareTo("success") == 0 ){
-                        UIHelper.toast(ProjectEditActivity.this, "项目提交成功");
-                        finish();
+                    if( mIsReeditMode ){
+                        if( s != null && s.compareTo("success") == 0 ){
+                            UIHelper.toast(ProjectEditActivity.this, "项目更新成功");
+                            finish();
+                        }else {
+                            UIHelper.toast(ProjectEditActivity.this, "项目更新失败, 可能某些内容长度过长。");
+                        }
                     }else {
-                        UIHelper.toast(ProjectEditActivity.this, "项目提交失败, 可能某些内容长度过长。");
+                        if( s != null && s.compareTo("success") == 0 ){
+                            UIHelper.toast(ProjectEditActivity.this, "项目提交成功");
+                            finish();
+                        }else {
+                            UIHelper.toast(ProjectEditActivity.this, "项目提交失败, 可能某些内容长度过长。");
+                        }
                     }
                 }
             });
         }
     };
 
-    private boolean getProjectInput(ProjectDetailModel projectDetail){
+    private boolean getProjectInput(MyProjectModel projectDetail){
         if(mETProjectName.getText().length() == 0 || mETProjectName.getText().length() > 15){
             UIHelper.toast(this, String.format("%s格式不正确, 1到%d个中文或英文字符。", "", 15));
-            UIHelper.toast(this, "请输入项目名称");
             return false;
         }
         projectDetail.setName(mETProjectName.getText().toString());
