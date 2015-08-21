@@ -3,9 +3,9 @@
     android:layout_width="fill_parent" android:layout_height="wrap_content"
     android:background="#ff1e1e1e"
     android:orientation="vertical"
-    android:paddingLeft="7dp"
-    android:paddingRight="7dp"
-    android:id="@+id/home_investment_list_view_root">
+    android:id="@+id/home_investment_list_view_root"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
 
     <ImageView
         android:layout_width="fill_parent"
