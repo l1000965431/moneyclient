@@ -56,6 +56,7 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
             }else {
                 dot.setVisibility(View.INVISIBLE);
             }
+
         }
     }
 
