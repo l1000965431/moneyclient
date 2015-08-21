@@ -41,13 +41,16 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         public ImageView imageView;
         public ImageView dot;
         public TextView textView;
+        public LinearLayout background;
         public void setChecked(boolean checked){
             if(checked){
                 imageView.setColorFilter(getResources().getColor(R.color.home_bottom_button_selected));
                 textView.setTextColor(getResources().getColor(R.color.home_bottom_button_selected));
+                background.setBackgroundColor(0xffd34455);
             }else {
                 imageView.setColorFilter(getResources().getColor(R.color.home_bottom_button_unselected));
                 textView.setTextColor(getResources().getColor(R.color.home_bottom_button_unselected));
+                background.setBackgroundColor(0xffda2d4e);
             }
         }
         public void setShowDot(boolean isShow){
@@ -81,22 +84,22 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         investButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_investment_imageView);
         investButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_investment_textView);
         investButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_investment_red);
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_investment);
-        linearLayout.setOnClickListener(this);
+        investButton.background = (LinearLayout)findViewById(R.id.function_switch_bottom_button_investment);
+        investButton.background.setOnClickListener(this);
 
         recordButton = new BottomButton();
         recordButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_record_imageView);
         recordButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_record_textView);
         recordButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_record_red);
-        linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_record);
-        linearLayout.setOnClickListener(this);
+        recordButton.background = (LinearLayout)findViewById(R.id.function_switch_bottom_button_record);
+        recordButton.background.setOnClickListener(this);
 
         myselfButton = new BottomButton();
         myselfButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_me_imageView);
         myselfButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_me_textView);
         myselfButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_me_red);
-        linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_me);
-        linearLayout.setOnClickListener(this);
+        myselfButton.background = (LinearLayout)findViewById(R.id.function_switch_bottom_button_me);
+        myselfButton.background.setOnClickListener(this);
 
         mFragmentAdapter = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mFragmentAdapter);

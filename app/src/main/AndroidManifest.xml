@@ -113,6 +113,7 @@
             android:name="com.umeng.update.net.DownloadingService"
             android:process=":DownloadingService" >
         </service>
+
         <activity
             android:name="com.umeng.update.UpdateDialogActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
@@ -148,14 +149,13 @@
             android:exported="false"
             android:theme="@style/EbpayThemeActivityWelcome"
             android:windowSoftInputMode="stateHidden" />
-
         <activity
             android:name="com.baidu.paysdk.ui.WelcomeActivity"
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:theme="@style/EbpayThemeActivityWelcome"
             android:screenOrientation="portrait"
+            android:theme="@style/EbpayThemeActivityWelcome"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.baidu.paysdk.ui.OrderHomeActivity"
@@ -179,16 +179,16 @@
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:theme="@style/EbpayThemeActivit"
             android:screenOrientation="portrait"
+            android:theme="@style/EbpayThemeActivit"
             android:windowSoftInputMode="stateVisible" />
         <activity
             android:name="com.baidu.paysdk.ui.PwdCheckActivity"
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:theme="@style/EbpayThemeActivit"
             android:screenOrientation="portrait"
+            android:theme="@style/EbpayThemeActivit"
             android:windowSoftInputMode="stateVisible" />
         <activity
             android:name="com.baidu.paysdk.ui.PwdSetAndConfirmActivity"
@@ -202,16 +202,16 @@
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:theme="@style/EbpayThemeActivitTranslucent"
             android:screenOrientation="portrait"
+            android:theme="@style/EbpayThemeActivitTranslucent"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name="com.baidu.paysdk.ui.PwdPaySmsActivity"
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:theme="@style/EbpayThemeActivitTranslucent"
             android:screenOrientation="portrait"
+            android:theme="@style/EbpayThemeActivitTranslucent"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.baidu.paysdk.ui.WebViewActivity"
@@ -226,16 +226,16 @@
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:theme="@style/EbpayThemeActivit"
             android:screenOrientation="portrait"
+            android:theme="@style/EbpayThemeActivit"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.baidu.paysdk.ui.BindCardDetailActivity"
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:theme="@style/EbpayThemeActivit"
             android:screenOrientation="portrait"
+            android:theme="@style/EbpayThemeActivit"
             android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name="com.baidu.paysdk.ui.BindCardDetailCredit2Activity"
@@ -257,8 +257,8 @@
             android:name="com.baidu.paysdk.ui.BindSmsActivity"
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
-            android:screenOrientation="portrait"
             android:exported="@bool/bd_wallet_switch_global_debug"
+            android:screenOrientation="portrait"
             android:theme="@style/EbpayThemeActivit"
             android:windowSoftInputMode="adjustResize" />
         <activity
@@ -290,8 +290,8 @@
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:theme="@style/EbpayThemeActivit"
             android:screenOrientation="portrait"
+            android:theme="@style/EbpayThemeActivit"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <!-- ********************************** End Ping++ SDK ******************************** -->
         <!-- 推送配置开始 -->
@@ -310,6 +310,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
@@ -326,6 +327,7 @@
             android:process=":push" >
             <intent-filter>
                 <action android:name="org.agoo.android.intent.action.ELECTION_RESULT_V4" />
+
                 <category android:name="umeng" />
             </intent-filter>
         </receiver>
@@ -344,8 +346,8 @@
 
         <service
             android:name="com.umeng.message.UmengService"
-            android:label="PushService"
             android:exported="true"
+            android:label="PushService"
             android:process=":push" >
             <intent-filter>
                 <action android:name="com.dragoneye.wjjt.intent.action.START" />
@@ -355,17 +357,17 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="org.agoo.android.intent.action.PING_V4" />
+
                 <category android:name="umeng" />
             </intent-filter>
         </service>
-
-        <service android:name="com.umeng.message.UmengIntentService"
+        <service
+            android:name="com.umeng.message.UmengIntentService"
             android:process=":push" />
-
         <service
             android:name="com.umeng.message.UmengMessageIntentReceiverService"
-            android:process=":push"
-            android:exported="true" >
+            android:exported="true"
+            android:process=":push" >
             <intent-filter>
                 <action android:name="org.android.agoo.client.MessageReceiverService" />
             </intent-filter>
@@ -373,20 +375,20 @@
                 <action android:name="org.android.agoo.client.ElectionReceiverService" />
             </intent-filter>
         </service>
-
-        <service android:name="com.umeng.message.UmengMessageCallbackHandlerService"
-            android:exported="false">
+        <service
+            android:name="com.umeng.message.UmengMessageCallbackHandlerService"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.umeng.messge.registercallback.action" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.umeng.message.unregistercallback.action"/>
+                <action android:name="com.umeng.message.unregistercallback.action" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.umeng.message.message.handler.action"/>
+                <action android:name="com.umeng.message.message.handler.action" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.umeng.message.autoupdate.handler.action"/>
+                <action android:name="com.umeng.message.autoupdate.handler.action" />
             </intent-filter>
         </service>
         <service android:name="com.umeng.message.UmengDownloadResourceService" />
@@ -405,13 +407,15 @@
             android:name=".activity.EntrepreneurActivity"
             android:label="@string/title_activity_entrepreneur" >
         </activity>
-
         <activity
             android:name="com.mob.tools.MobUIShell"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
-
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".activity.RetrievePasswordActivity"
+            android:label="@string/title_activity_retrieve_password" >
+        </activity>
     </application>
 
 </manifest>

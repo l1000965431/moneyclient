@@ -223,14 +223,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         switch (result){
             case UserProtocol.REGISTER_RESULT_SUCCESS:
                 UIHelper.toast(this, "注册成功");
-
-                //注册推送
-                PushAgent mPushAgent = PushAgent.getInstance( this );
-                try {
-                    mPushAgent.addAlias(UserID, ALIAS_TYPE.SINA_WEIBO);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 Intent intent = new Intent();
                 intent.putExtra("userId", mUserIdTextField.getText().toString());
                 intent.putExtra("userPassword", mUserPasswordConfirmTextFiled.getText().toString());

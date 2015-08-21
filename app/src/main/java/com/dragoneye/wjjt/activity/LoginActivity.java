@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,8 @@ import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
 import com.dragoneye.wjjt.user.UserBase;
+import com.umeng.message.ALIAS_TYPE;
+import com.umeng.message.PushAgent;
 import com.umeng.message.UmengRegistrar;
 
 import org.apache.http.Header;
@@ -43,6 +46,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private String mLoginUserPassword;
 
     ProgressDialog mProgressDialog;
+
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,6 +214,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         }
 
         UIHelper.toast(this, "登录成功");
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                //注册推送
+                PushAgent mPushAgent = PushAgent.getInstance( LoginActivity.this );
+                try {
+                    mPushAgent.removeAlias( mLoginUserId, ALIAS_TYPE.SINA_WEIBO );
+                    boolean a = mPushAgent.addAlias(mLoginUserId, ALIAS_TYPE.SINA_WEIBO);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(runnable).start();
         ((MyApplication)getApplication()).setUserLoginSuccess(this);
         MainActivity.CallMainActivity(this);
         finish();
@@ -236,7 +255,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             String password = data.getStringExtra("userPassword");
             mETUserId.setText(userId);
             mETUserPassword.setText(password);
-            onLogin();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onLogin();
+                }
+            }, 300);
         }
     }
 

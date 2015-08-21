@@ -307,7 +307,11 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                 viewHolder = (ViewHolder)convertView.getTag();
             }
 
-            viewHolder.tvSummary.setText(project.getSummary());
+            String summary = project.getSummary();
+            if( summary.length() > 20 ){
+                summary = summary.substring(0, 20) + "...";
+            }
+            viewHolder.tvSummary.setText(summary);
             viewHolder.tvName.setText(project.getName());
 
             String strCurrentStage = String.format(getString(R.string.project_list_item_stage_info,
