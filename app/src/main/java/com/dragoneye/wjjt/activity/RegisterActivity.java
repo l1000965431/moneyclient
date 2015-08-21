@@ -16,11 +16,13 @@ import android.widget.TextView;
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.BaseActivity;
 import com.dragoneye.wjjt.config.HttpUrlConfig;
+import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.InputChecker;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.umeng.message.ALIAS_TYPE;
 import com.umeng.message.PushAgent;
 
 import org.apache.http.Header;
@@ -225,7 +227,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 //注册推送
                 PushAgent mPushAgent = PushAgent.getInstance( this );
                 try {
-                    mPushAgent.addAlias(UserID, "1");
+                    mPushAgent.addAlias(UserID, ALIAS_TYPE.SINA_WEIBO);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -294,6 +296,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initSMS(){
+        SMSSDK.initSDK(this, PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET);
         SMSSDK.registerEventHandler( new EventHandler(){
             @Override
             public void afterEvent(int event, int result, Object data) {

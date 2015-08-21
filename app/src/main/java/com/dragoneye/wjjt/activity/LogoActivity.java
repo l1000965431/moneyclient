@@ -35,7 +35,6 @@ public class LogoActivity extends BaseActivity {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         handler.postDelayed(startNextActivity_r, 3000);
         getSupportActionBar().hide();
-        SMSSDK.initSDK(this, PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET);
 //        try{
 //            Log.d("------", InputChecker.IDCardValidate("11010120050101451X"));
 //        }catch (Exception e){
