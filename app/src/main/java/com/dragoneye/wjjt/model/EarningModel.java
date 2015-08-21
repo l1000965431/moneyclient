@@ -3,7 +3,7 @@ package com.dragoneye.wjjt.model;
 /**
  * Created by happysky on 15-8-3.
  */
-public class SrEarningModel {
+public class EarningModel {
     private int num;
     private int price;
 

@@ -21,4 +21,8 @@ public class BaseFragment extends Fragment{
     public void onSelected(){
 
     }
+
+    public void onShow(){
+
+    }
 }

@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -15,11 +16,13 @@ import android.widget.TextView;
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.BaseActivity;
 import com.dragoneye.wjjt.config.HttpUrlConfig;
+import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.InputChecker;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.umeng.message.ALIAS_TYPE;
 import com.umeng.message.PushAgent;
 
 import org.apache.http.Header;
@@ -86,6 +89,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.fragment_register);
         registerActivity = this;
         initView();
@@ -128,6 +132,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     private void initData(){
 
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        SMSSDK.unregisterAllEventHandler();
     }
 
     @Override
@@ -217,11 +227,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 //注册推送
                 PushAgent mPushAgent = PushAgent.getInstance( this );
                 try {
-                    mPushAgent.addAlias(UserID, "1");
+                    mPushAgent.addAlias(UserID, ALIAS_TYPE.SINA_WEIBO);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                SMSSDK.unregisterAllEventHandler();
+                Intent intent = new Intent();
+                intent.putExtra("userId", mUserIdTextField.getText().toString());
+                intent.putExtra("userPassword", mUserPasswordConfirmTextFiled.getText().toString());
+                setResult(RESULT_OK, intent);
                 finish();
                 break;
             case UserProtocol.REGISTER_RESULT_OCCUPIED:
@@ -283,6 +296,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initSMS(){
+        SMSSDK.initSDK(this, PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET);
         SMSSDK.registerEventHandler( new EventHandler(){
             @Override
             public void afterEvent(int event, int result, Object data) {

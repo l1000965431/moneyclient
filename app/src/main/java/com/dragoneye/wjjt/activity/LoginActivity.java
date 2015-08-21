@@ -133,14 +133,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             @Override
             public void onSuccess(int i, Header[] headers, String s) {
                 mProgressDialog.dismiss();
-                String result = HttpClient.getValueFromHeader(headers, UserProtocol.PASSWORD_LOGIN_RESULT_KEY);
-                String response = HttpClient.getValueFromHeader(headers, UserProtocol.PASSWORD_LOGIN_RESULT_INFO_KEY);
-                String token = s;
-                if (result == null || s == null) {
+//                String result = HttpClient.getValueFromHeader(headers, UserProtocol.PASSWORD_LOGIN_RESULT_KEY);
+//                String response = HttpClient.getValueFromHeader(headers, UserProtocol.PASSWORD_LOGIN_RESULT_INFO_KEY);
+//                String token = s;
+                if (s == null || s.isEmpty()) {
                     UIHelper.toast(LoginActivity.this, "服务器繁忙，请稍后再试");
                     return;
                 }
-                onLoginResult(result, response, token);
+                try{
+                    JSONObject object = new JSONObject(s);
+                    String result = object.getString("LoginResult");
+                    String token = object.getString("token");
+                    String response = object.getString("UserResponse");
+                    onLoginResult(result, response, token);
+                }catch (JSONException e){
+                    e.printStackTrace();
+                    UIHelper.toast(LoginActivity.this, "登录失败");
+                    return;
+                }
+
             }
         });
     }
@@ -215,7 +226,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private void onRegister(){
         Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if( requestCode == 1 && resultCode == RESULT_OK ){
+            String userId = data.getStringExtra("userId");
+            String password = data.getStringExtra("userPassword");
+            mETUserId.setText(userId);
+            mETUserPassword.setText(password);
+            onLogin();
+        }
     }
 
     private void InitPush(){

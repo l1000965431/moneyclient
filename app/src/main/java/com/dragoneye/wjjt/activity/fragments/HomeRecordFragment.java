@@ -33,6 +33,9 @@ public class HomeRecordFragment extends BaseFragment {
     private ViewPager mViewPager;
     private FragmentAdapter mFragmentAdapter;
 
+    EarningRecordFragment mEarningRecordFragment;
+    InvestRecordFragment mInvestRecordFragment;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -44,6 +47,18 @@ public class HomeRecordFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
         initView();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            if(mViewPager != null){
+                int curPos = mViewPager.getCurrentItem();
+                BaseFragment baseFragment = (BaseFragment)((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(curPos);
+                baseFragment.onShow();
+            }
+        }
     }
 
     private void initView(){
@@ -128,9 +143,15 @@ public class HomeRecordFragment extends BaseFragment {
         public Fragment getItem(int id) {
             switch (id) {
                 case TAB_INVEST_RECORD:
-                    return new InvestRecordFragment();
+                    if(mInvestRecordFragment == null){
+                        mInvestRecordFragment = new InvestRecordFragment();
+                    }
+                    return mInvestRecordFragment;
                 case TAB_EARNING_RECORD:
-                    return new EarningRecordFragment();
+                    if(mEarningRecordFragment == null){
+                        mEarningRecordFragment = new EarningRecordFragment();
+                    }
+                    return mEarningRecordFragment;
 
             }
             return null;
