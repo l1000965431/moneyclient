@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.BaseActivity;
 import com.dragoneye.wjjt.application.MyApplication;
+import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
@@ -20,6 +21,9 @@ import org.apache.http.Header;
 
 import java.lang.ref.WeakReference;
 
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
+
 public class ChangePasswordActivity extends BaseActivity implements View.OnClickListener {
 
     private EditText mETOldPassword;
@@ -28,6 +32,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
     private EditText mETCode;
     private TextView mTVSendCode;
     private TextView mTVConfirmChange;
+    private ChangePasswordActivity changePasswordActivity;
 
     private static final int MESSAGE_TICK = 1;
     private static final int SEND_CODE_INTERVAL = 60;
@@ -63,6 +68,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_self_group_password);
+        changePasswordActivity = this;
         initView();
         initData();
     }
@@ -91,13 +97,15 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                 onSendCode();
                 break;
             case R.id.change_password_tv_confirmChange:
-                onConfirmChange();
+                //onConfirmChange();
+                SMSSDK.submitVerificationCode("86",((MyApplication)getApplication()).getCurrentUser(this).getUserId(), mETCode.getText().toString());
                 break;
         }
     }
 
     private void onSendCode(){
        onSendCodeSuccess();
+        SMSSDK.getVerificationCode("86", ((MyApplication) getApplication()).getCurrentUser(this).getUserId());
     }
 
     /**
@@ -223,5 +231,44 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
         }
 
         return true;
+    }
+
+    Runnable SendCode_r = new Runnable() {
+        @Override
+        public void run() {
+            UIHelper.toast(changePasswordActivity, "短信已经发送,请注意查收");
+        }
+    };
+
+    Runnable SendCodeError_r = new Runnable() {
+        @Override
+        public void run() {
+            UIHelper.toast(changePasswordActivity, "短信验证失败");
+        }
+    };
+
+    private void initSMS(){
+        SMSSDK.initSDK(this, PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET);
+        SMSSDK.registerEventHandler( new EventHandler(){
+            @Override
+            public void afterEvent(int event, int result, Object data) {
+                if (result == SMSSDK.RESULT_COMPLETE) {
+                    //回调完成
+                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                        //提交验证码成功
+                        onConfirmChange();
+                    }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+                        //获取验证码成功
+                        handler.post(SendCode_r);
+                        //UIHelper.toast(registerActivity, "短信已经发送,请注意查收");
+                    }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
+                        //返回支持发送验证码的国家列表
+                    }
+                }else{
+                    handler.post(SendCodeError_r);
+                    //((Throwable)data).printStackTrace();
+                }
+            }
+        });
     }
 }

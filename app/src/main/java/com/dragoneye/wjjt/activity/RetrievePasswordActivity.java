@@ -22,6 +22,8 @@ import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
 
+import cn.smssdk.SMSSDK;
+
 public class RetrievePasswordActivity extends ActionBarActivity implements View.OnClickListener{
 
     private EditText mETUserId;
@@ -81,13 +83,15 @@ public class RetrievePasswordActivity extends ActionBarActivity implements View.
                 onSendCode();
                 break;
             case R.id.retrieve_password_tv_confirm:
-                onConfirmChange();
+                //onConfirmChange();
+                SMSSDK.submitVerificationCode("86",((MyApplication)getApplication()).getCurrentUser(this).getUserId(), mETCode.getText().toString());
                 break;
         }
     }
 
     private void onSendCode(){
         onSendCodeSuccess();
+        SMSSDK.getVerificationCode("86", ((MyApplication) getApplication()).getCurrentUser(this).getUserId());
     }
 
     /**
