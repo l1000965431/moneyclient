@@ -274,10 +274,19 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      */
     public void SetInstallmentActivityEnd(final String InstallmentActivityID) {
 
-        activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
+        final boolean[] activityDynamicModelIsEnough = {false};
+        final boolean[] activityVerifyCompleteModelIsEnoughInstallmentNum = {false};
+
+        final String[] ActivityID = {""};
+        final int[] Installment = {0};
+
+       if( activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
                 ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamicModelNoTransaction(InstallmentActivityID);
                 if (activityDynamicModel.IsEnough()) {
+
+                    activityDynamicModelIsEnough[0] = true;
+
                     SetInstallmentActivityStatus(InstallmentActivityID, ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE);
 
                     ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDynamicModel.getActivityVerifyCompleteModel();
@@ -291,18 +300,13 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 /*                    if(lotteryService.StartLottery( InstallmentActivityID ) == null){
                         return false;
                     }*/
-                    MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_LOTTERY_TOPIC,
-                            MoneyServerMQ_Topic.MONEYSERVERMQ_LOTTERY_TAG, InstallmentActivityID, "1"));
+
 
                     if (!activityVerifyCompleteModel.IsEnoughInstallmentNum()) {
                         //开启下一期
-                        Map<String, Object> map = new HashMap<String, Object>();
-                        map.put("ActivityID", activityVerifyCompleteModel.getActivityId());
-                        map.put("Installment", CurInstallmentNum);
-
-                        String json = GsonUntil.JavaClassToJson( map );
-                        MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_INSTALLMENT_TOPIC,
-                                MoneyServerMQ_Topic.MONEYSERVERMQ_INSTALLMENT_TAG,json, "1"));
+                        activityVerifyCompleteModelIsEnoughInstallmentNum[0] = true;
+                        ActivityID[0] = activityVerifyCompleteModel.getActivityId();
+                        Installment[0] = CurInstallmentNum+1;
                     }
 
                     //如果所有分期项目完成  设置父项目完成
@@ -310,7 +314,25 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
                 }
                 return true;
             }
-        });
+        })== Config.SERVICE_SUCCESS){
+
+           if( activityDynamicModelIsEnough[0] == true ){
+               MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_LOTTERY_TOPIC,
+                       MoneyServerMQ_Topic.MONEYSERVERMQ_LOTTERY_TAG, InstallmentActivityID, InstallmentActivityID));
+           }
+
+
+           if( activityVerifyCompleteModelIsEnoughInstallmentNum[0] == true ){
+               Map<String, Object> map = new HashMap<String, Object>();
+               map.put("ActivityID", ActivityID[0]);
+               map.put("Installment", Installment[0]);
+
+               String json = GsonUntil.JavaClassToJson( map );
+               MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_INSTALLMENT_TOPIC,
+                       MoneyServerMQ_Topic.MONEYSERVERMQ_INSTALLMENT_TAG,json, InstallmentActivityID));
+           }
+       }
+
     }
 
     /**
@@ -376,6 +398,10 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
             }
         });
 
+        if( TotalLines[0] == 0 || InstallmentTotalLinesPeoplse[0] == 0 ){
+            return null;
+        }
+
         int InstallmentPurchNum = 0;
         int InstallmentAdvance = 0;
         int LinePeoples = 0;
@@ -397,4 +423,12 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
         return GsonUntil.JavaClassToJson( list );
     }
+
+    public void Test( String ActivityID,String josn ){
+
+        ActivityVerifyCompleteModel activityVerifyCompleteModel = (ActivityVerifyCompleteModel)activityDao.load( ActivityVerifyCompleteModel.class,ActivityID );
+        activityVerifyCompleteModel.setEarningPeoples( josn );
+        activityDao.update( activityVerifyCompleteModel );
+    }
+
 }

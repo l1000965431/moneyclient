@@ -42,14 +42,17 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
 
     /**
      * 项目分期操作
+     * @param ActicityID
+     * @param AdvanceNum 多少组
+     * @param PurchaseNum 一组多少个
      */
     public void splitActivityByStage(String ActicityID, final int AdvanceNum, final int PurchaseNum) {
 
         final ActivityVerifyCompleteModel completeModel = (ActivityVerifyCompleteModel) generaDAO.load(ActivityVerifyCompleteModel.class, ActicityID);
 
         int targetFund = completeModel.getTargetFund();
-        float srInvestProportion = completeModel.getSrInvestProportion();
-        float brInvestProportion = completeModel.getBrInvestProportion();
+        int srInvestProportion = completeModel.getTotalLines();
+        int brInvestProportion = completeModel.getTotalLinePeoples();
 
         final List list = CalculateActivityEarnings(targetFund, AdvanceNum * PurchaseNum, srInvestProportion, brInvestProportion);
 
@@ -102,9 +105,6 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
 
         completeModel.setTotalInstallmentNum(AdvanceNum * PurchaseNum);
         generaDAO.update(completeModel);
-        //completeModel.setActivityDetailModels( activityDetailModels );
-        //completeModel.setActivityDynamicModels( activityDynamicModels );
-        //generaDAO.update(completeModel);
     }
 
     public HashSet<SREarningModel> calcEarningPrize(int earningAmount, List<Integer> earningLevelList, List<Float> earningProportionList, int ticketsNum) {
@@ -177,10 +177,10 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
      * @param InstallmentNum 期数
      * @return 0:小R每期 1:小R最后一期 2:大R每期 3:大R 最后一期
      */
-    public List CalculateActivityEarnings(int targetFund, int InstallmentNum, float srInvestProportion, float brInvestProportion) {
+    public List CalculateActivityEarnings(int targetFund, int InstallmentNum, int srInvestProportion, int brInvestProportion) {
         List list = new ArrayList();
-        int srInvestProportionLines = (int) (targetFund * srInvestProportion);
-        int brInvestProportionLines = (int) (targetFund * brInvestProportion);
+        int srInvestProportionLines = srInvestProportion;
+        int brInvestProportionLines = brInvestProportion;
 
         int temp = targetFund - (srInvestProportionLines + brInvestProportionLines);
         srInvestProportionLines += temp;
@@ -218,11 +218,53 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
                     return false;
                 }
 
-                List<SREarningModel> LinesSREarningList = GsonUntil.jsonToJavaClass( LinesEarnings,new TypeToken<List<SREarningModel>>(){}.getType());
-                List<SREarningModel> LinePeoplesSREarningList = GsonUntil.jsonToJavaClass( LinePeoplesEarnings,new TypeToken<List<SREarningModel>>(){}.getType());
+/*                List<SREarningModel> LinesSREarningList = GsonUntil.jsonToJavaClass( LinesEarnings,new TypeToken<List<SREarningModel>>(){}.getType());
+                List<SREarningModel> LinePeoplesSREarningList = GsonUntil.jsonToJavaClass( LinePeoplesEarnings,new TypeToken<List<SREarningModel>>(){}.getType());*/
 
-                activityVerifyCompleteModel.setEarningPeoples( LinePeoplesEarnings );
+                //Test
+                List<SREarningModel> LinesSREarningList = new ArrayList<SREarningModel>();
+                List<SREarningModel> LinePeoplesSREarningList = new ArrayList<SREarningModel>();
+                SREarningModel srEarningModel = new SREarningModel();
+                srEarningModel.setEarningPrice(10);
+                srEarningModel.setEarningType(2);
+                srEarningModel.setNum(1);
+                LinesSREarningList.add(srEarningModel);
+
+                srEarningModel = new SREarningModel();
+                srEarningModel.setEarningPrice(2);
+                srEarningModel.setEarningType(2);
+                srEarningModel.setNum(7);
+                LinesSREarningList.add(srEarningModel);
+
+
+                SREarningModel srEarningModel1 = new SREarningModel();
+                srEarningModel1.setEarningType(1);
+                srEarningModel1.setEarningPrice(0);
+                srEarningModel1.setNum(1);
+                LinePeoplesSREarningList.add(srEarningModel1);
+
+                srEarningModel1 = new SREarningModel();
+                srEarningModel1.setEarningType(1);
+                srEarningModel1.setEarningPrice(60);
+                srEarningModel1.setNum(1);
+                LinePeoplesSREarningList.add(srEarningModel1);
+
+
+                String json = GsonUntil.JavaClassToJson( LinePeoplesSREarningList );
+
+                activityVerifyCompleteModel.setEarningPeoples( json );
                 generaDAO.saveNoTransaction( activityVerifyCompleteModel );
+
+
+                //小R发奖
+                String tempInstallmentActivityID = ActivityID + "_" + Integer.toString(1);
+                ActivityDetailModel tempactivityDetailModel = generaDAO.getActivityDetaillNoTransaction(tempInstallmentActivityID);
+                for (SREarningModel LinesSREarning : LinesSREarningList) {
+                    SREarningModel newSREarningModel = new SREarningModel(LinesSREarning);
+                    newSREarningModel.setActivityVerifyCompleteModel(activityVerifyCompleteModel);
+                    generaDAO.saveNoTransaction(newSREarningModel);
+                }
+
 
                 int PurchaseNumIndex = 0;
                 for (int i = 0; i < AdvanceNum * PurchaseNum; i++) {
@@ -233,14 +275,6 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
                         return false;
                     }
 
-                    //小R发奖
-                    for (SREarningModel LinesSREarning : LinesSREarningList) {
-                        SREarningModel newSREarningModel = new SREarningModel(LinesSREarning);
-                        newSREarningModel.setActivityDetailModel(activityDetailModel);
-                        generaDAO.saveNoTransaction(newSREarningModel);
-                    }
-
-
                     //大R发奖
                     if (PurchaseNumIndex >= PurchaseNum) {
                         PurchaseNumIndex = 0;
@@ -250,6 +284,7 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
                     SREarningModel newSREarningModel = new SREarningModel(LinePeoplesSREarningList.get(PurchaseNumIndex));
                     newSREarningModel.setActivityDetailModel(activityDetailModel);
                     generaDAO.saveNoTransaction(newSREarningModel);
+                    PurchaseNumIndex++;
                 }
                 return true;
             }

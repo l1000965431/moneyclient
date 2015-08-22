@@ -6,6 +6,7 @@ import com.money.dao.TransactionSessionCallback;
 import com.money.model.ActivityDetailModel;
 import com.money.model.OrderModel;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -31,19 +32,20 @@ public class OrderDAO extends BaseDao {
                         .setMaxResults(Num)
                         .setFirstResult(firstPage * Num)
                         .add(Restrictions.eq("userId", UserID))
+                        .addOrder(Order.desc("orderDate"))
                         .list();
 
-                for( Object o: list[0] ){
-                    OrderModel orderModel = (OrderModel)o;
+                for (Object o : list[0]) {
+                    OrderModel orderModel = (OrderModel) o;
                     orderModel.getActivityDetailModel().getActivityVerifyCompleteModel().getStatus();
                     orderModel.getActivityDetailModel().getDynamicModel().getActivityState();
+                    orderModel.getActivityDetailModel().getActivityVerifyCompleteModel().getSrEarningModels().size();
+                    orderModel.getActivityDetailModel().getSrEarningModels().size();
                 }
 
                 return true;
             }
         });
-
         return list[0];
     }
-
 }

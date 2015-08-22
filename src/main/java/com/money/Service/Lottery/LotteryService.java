@@ -11,12 +11,15 @@ import com.money.dao.PrizeListDAO.PrizeListDAO;
 import com.money.dao.TicketDAO.TicketDAO;
 import com.money.dao.TransactionSessionCallback;
 import com.money.dao.activityDAO.activityDAO;
+import com.money.dao.userDAO.UserDAO;
 import com.money.model.*;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
+import until.MoneyServerDate;
 
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -47,6 +50,9 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
     @Autowired
     PrizeListDAO prizeListDAO;
 
+    @Autowired
+    UserDAO userDAO;
+
     /**
      * 根据项目组的中奖列表发奖
      *
@@ -61,8 +67,19 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
                     return false;
                 }
 
+                ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
+
+                if (activityVerifyCompleteModel == null) {
+                    return false;
+                }
+
                 Set<SREarningModel> srEarningModelSet = activityDetailModel.getSrEarningModels();
-                StartLottery(InstallmentActivityID, srEarningModelSet);
+                Set<SREarningModel> srEarningModelSet1 = activityDetailModel.getActivityVerifyCompleteModel().getSrEarningModels();
+                srEarningModelSet.addAll(srEarningModelSet1);
+
+                if (StartLottery(InstallmentActivityID, srEarningModelSet) == null) {
+                    return false;
+                }
 
                 //同组完成后 给人打钱
                 if (IsGroupCompelete(activityDetailModel)) {
@@ -91,10 +108,12 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
 
         int Index = 0;
         Iterator<SREarningModel> it = srEarningModelSet.iterator();
+        int EarningNum = 0;
         while (it.hasNext()) {
             SREarningModel str = it.next();
             int LotteryLines = str.getEarningPrice();
             int PeoplesLines = str.getNum();
+            EarningNum += LotteryLines*PeoplesLines;
 
             if (str.getEarningType() == Config.PURCHASELOCALTYRANTS) {
                 for (LotteryPeoples TempListPeople : listPeoples) {
@@ -114,22 +133,48 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
                     }
 
                     listPeoples.get(Index).setLotteryLines(LotteryLines);
-                    listPeoples.get(Index).setActivityID( InstallmentActivityID );
+                    listPeoples.get(Index).setActivityID(InstallmentActivityID);
                     Index++;
                 }
             }
         }
 
         //刷新个人的收益记录
-        updateEarnings(listPeoples);
+        if (!updateEarnings(listPeoples)) {
+            return null;
+        }
 
         String json = GsonUntil.JavaClassToJson(listPeoples);
         PrizeListModel prizeListModel = new PrizeListModel();
         prizeListModel.setActivityIID(InstallmentActivityID);
         prizeListModel.setIsPrize(false);
         prizeListModel.setPrizeSituation(json);
-        lotteryDAO.saveNoTransaction(prizeListModel);
+        try {
+            prizeListModel.setPrizeDate(MoneyServerDate.getDateCurDate());
+        } catch (ParseException e) {
 
+        }
+        lotteryDAO.saveOrupdateNoTransaction(prizeListModel);
+
+        //刷新领奖的记录
+        EarningsRecordModel earningsRecordModel = new EarningsRecordModel();
+        earningsRecordModel.setActivityStageId( InstallmentActivityID );
+        try {
+            earningsRecordModel.setEndDate( MoneyServerDate.getDateCurDate() );
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        ActivityDetailModel activityDetailModel = activityDAO.getActivityDetaillNoTransaction(InstallmentActivityID);
+
+        if( activityDetailModel == null ){
+            return null;
+        }
+
+        earningsRecordModel.setTotalPrize( EarningNum );
+        earningsRecordModel.setTotalFund( activityDetailModel.getTargetFund() );
+        earningsRecordModel.setActivityID( activityDetailModel.getActivityVerifyCompleteModel().getActivityId() );
+        lotteryDAO.saveNoTransaction( earningsRecordModel );
         return json;
     }
 
@@ -159,19 +204,25 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
      * @param InstallmentActivityID
      */
     void SomeFarmByPrizeList(String InstallmentActivityID) throws Exception {
-        ActivityDetailModel activityDetailModel = activityDAO.getActivityDetails(InstallmentActivityID);
+        ActivityDetailModel activityDetailModel = activityDAO.getActivityDetaillNoTransaction(InstallmentActivityID);
 
         String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
         int GroupID = activityDetailModel.getGroupId();
 
         List<ActivityDetailModel> list = activityDAO.getActivityDetailByGroupID(ActivityID, GroupID);
-        list.add(activityDetailModel);
-
 
         for (ActivityDetailModel it : list) {
             String ActivityStageId = it.getActivityStageId();
 
-            PrizeListModel prizeListModel = prizeListDAO.getListPrizeListModel(ActivityStageId);
+            PrizeListModel prizeListModel = (PrizeListModel)prizeListDAO.loadNoTransaction(PrizeListModel.class, ActivityStageId);
+
+            if( prizeListModel == null ){
+                continue;
+            }
+
+            if( prizeListModel.isPrize() ){
+                continue;
+            }
 
             String json = prizeListModel.getPrizeSituation();
             List<LotteryPeoples> LotteryPeoplesList = GsonUntil.jsonToJavaClass(json, new TypeToken<List<LotteryPeoples>>() {
@@ -184,43 +235,36 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
             for (LotteryPeoples Peoples : LotteryPeoplesList) {
                 walletService.RechargeWallet(Peoples.getUserId(), Peoples.getLotteryLines());
             }
-
+            prizeListModel.setIsPrize( true );
+            prizeListDAO.updateNoTransaction( prizeListModel );
         }
     }
 
 
-    private void updateEarnings(List<LotteryPeoples> listPeoples) {
+    private boolean updateEarnings(List<LotteryPeoples> listPeoples) {
         if (listPeoples == null) {
-            return;
+            return false;
         }
 
         for (LotteryPeoples itLotteryPeoples : listPeoples) {
             String UserID = itLotteryPeoples.getUserId();
 
-            UserEarningsModel userEarningsModel = (UserEarningsModel) lotteryDAO.loadNoTransaction(UserEarningsModel.class, UserID);
-            if (userEarningsModel == null) {
-                return;
+            if( userDAO.getUSerModelNoTransaction( UserID ) == null ){
+                return false;
             }
 
-            String json = userEarningsModel.getUserEarnings();
-            Map<String, Object> map = GsonUntil.jsonToJavaClass(json, new TypeToken<Map<String, Object>>() {
-            }.getType());
-            List list;
-            if (map == null) {
-                list = new ArrayList<Integer>();
-                map = new HashMap<String, Object>();
-                list.add( itLotteryPeoples.getLotteryLines() );
-                map.put(itLotteryPeoples.getActivityID(), list);
-            }else{
-                list = (List)map.get( itLotteryPeoples.getActivityID() );
-                list.add( itLotteryPeoples.getLotteryLines() );
-                map.put( itLotteryPeoples.getActivityID(),list );
+            UserEarningsModel userEarningsModel = new UserEarningsModel();
+            userEarningsModel.setUserID( UserID );
+            userEarningsModel.setUserEarningLines( itLotteryPeoples.getLotteryLines() );
+            try {
+                userEarningsModel.setUserEarningsDate( MoneyServerDate.getDateCurDate() );
+            } catch (ParseException e) {
             }
+            userEarningsModel.setActivityStageId( itLotteryPeoples.getActivityID() );
 
-            String Json = GsonUntil.JavaClassToJson( map );
-            userEarningsModel.setUserEarnings( Json );
-            lotteryDAO.getNewSession().save( userEarningsModel );
-            lotteryDAO.getNewSession().flush();
+            userDAO.saveNoTransaction( userEarningsModel );
         }
+
+        return true;
     }
 }

@@ -159,7 +159,7 @@ public class ActivityDynamicModel extends BaseModel {
     }
 
     public boolean IsEnoughLines( int Lines ){
-        if( activityTotalLines - activityCurLines >= Lines ){
+        if( activityTotalLines - activityCurLines == Lines ){
             return true;
         }else{
             return false;
@@ -175,7 +175,7 @@ public class ActivityDynamicModel extends BaseModel {
     }
 
     public boolean IsEnough(){
-        return ( activityCurLines+activityCurLinesPeoples >= activityTotalAmount );
+        return ( activityCurLines+activityCurLinesPeoples == activityTotalAmount );
     }
 
 }

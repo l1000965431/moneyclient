@@ -39,6 +39,13 @@ public class ActivityVerifyCompleteModel extends BaseModel {
     Set<ActivityDynamicModel> activityDynamicModels = new HashSet<ActivityDynamicModel>();
 
     /**
+     *  项目分期动态列表
+     */
+    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Set<SREarningModel> srEarningModels = new HashSet<SREarningModel>();
+
+
+    /**
      *  项目需要筹集的原始金额
      */
     int originalFund;
@@ -190,6 +197,7 @@ public class ActivityVerifyCompleteModel extends BaseModel {
     /**
      * 大R的中奖收益概况
      */
+    @Column(length = 1000)
     String EarningPeoples;
 
     public int getStatus() {
@@ -477,5 +485,13 @@ public class ActivityVerifyCompleteModel extends BaseModel {
 
     public void setEarningPeoples(String earningPeoples) {
         EarningPeoples = earningPeoples;
+    }
+
+    public Set<SREarningModel> getSrEarningModels() {
+        return srEarningModels;
+    }
+
+    public void setSrEarningModels(Set<SREarningModel> srEarningModels) {
+        this.srEarningModels = srEarningModels;
     }
 }

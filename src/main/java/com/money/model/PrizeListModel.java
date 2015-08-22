@@ -1,6 +1,7 @@
 package com.money.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by liumin on 15/7/25.
@@ -27,6 +28,12 @@ public class PrizeListModel extends BaseModel {
      */
     boolean IsPrize;
 
+    /**
+     * 发奖日期
+     */
+    Date PrizeDate;
+
+
     public String getPrizeSituation() {
         return PrizeSituation;
     }
@@ -49,5 +56,13 @@ public class PrizeListModel extends BaseModel {
 
     public void setActivityIID(String activityIID) {
         ActivityIID = activityIID;
+    }
+
+    public Date getPrizeDate() {
+        return PrizeDate;
+    }
+
+    public void setPrizeDate(Date prizeDate) {
+        PrizeDate = prizeDate;
     }
 }

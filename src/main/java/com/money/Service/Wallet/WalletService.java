@@ -7,6 +7,7 @@ import com.money.model.WalletModel;
 import com.money.model.WalletOrderModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import until.MoneyServerDate;
 
 /**
  * 钱包服务
@@ -94,7 +95,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         walletOrderModel.setOrderID( OrderID );
         walletOrderModel.setWalletLines( Lines );
         walletOrderModel.setWalletChannel( ChannelID );
-
+        walletOrderModel.setOrderDate(MoneyServerDate.getDateCurDate());
         generaDAO.saveNoTransaction( walletOrderModel );
 
     }

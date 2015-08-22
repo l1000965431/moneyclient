@@ -30,10 +30,7 @@ public class OrderModel extends BaseModel {
     public final static int ORDER_STATE_SUBMITTECANEL = 4;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    private long orderId;
+    String orderId;
 
     private String userId;
 
@@ -66,24 +63,13 @@ public class OrderModel extends BaseModel {
     @JoinColumn( name = "orderactivityId", referencedColumnName = "activityStageId")
     private ActivityDetailModel activityDetailModel;
 
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(long orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
-
-
 
     public String getUserId() {
         return userId;

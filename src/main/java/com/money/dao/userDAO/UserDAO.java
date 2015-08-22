@@ -119,14 +119,10 @@ public class UserDAO extends BaseDao {
                 userModel.setUserType(userType);
                 basedao.getNewSession().save(userModel);
 
-                if( userType == Config.INVESTOR ){
+                if (userType == Config.INVESTOR) {
                     WalletModel walletModel = new WalletModel();
-                    walletModel.setUserID( userID );
+                    walletModel.setUserID(userID);
                     basedao.getNewSession().save(walletModel);
-
-                    UserEarningsModel userEarningsModel = new UserEarningsModel();
-                    userEarningsModel.setUserID( userID );
-                    basedao.getNewSession().save(userEarningsModel);
                 }
             }
         }).equals(Config.SERVICE_SUCCESS)) {
@@ -208,7 +204,7 @@ public class UserDAO extends BaseDao {
     public boolean checkPassWord(String userID, String passWord) {
         UserModel userModel = this.getUSerModel(userID);
 
-        if( userModel == null ){
+        if (userModel == null) {
             return false;
         }
 
@@ -297,18 +293,18 @@ public class UserDAO extends BaseDao {
         userModel.setSex(sex);
         userModel.setLocation(location);
         userModel.setRealName(RealName);
-        userModel.setEduInfo(education );
-        userModel.setIdentityId( identity );
-        userModel.setCareer( personalProfile );
-        userModel.setIntroduction( selfIntroduce );
-        userModel.setExpertise( goodAtField );
+        userModel.setEduInfo(education);
+        userModel.setIdentityId(identity);
+        userModel.setCareer(personalProfile);
+        userModel.setIntroduction(selfIntroduce);
+        userModel.setExpertise(goodAtField);
         userModel.setIsPerfect(true);
         this.update(userModel);
     }
 
     //查看用户昵称是否合法
     public boolean userIsRight(String user) {
-        if( user == null ){
+        if (user == null) {
             return false;
         }
 
@@ -319,7 +315,7 @@ public class UserDAO extends BaseDao {
 
     //检查登录密码是否合法
     public boolean passwordIsRight(String password) {
-        if( password == null ){
+        if (password == null) {
             return false;
         }
 
@@ -341,5 +337,16 @@ public class UserDAO extends BaseDao {
         });
 
         return userModel[0];
+    }
+
+    public UserModel getUSerModelNoTransaction(final String UserID) {
+        final UserModel userModel;
+
+        userModel = (UserModel) getNewSession().createCriteria(UserModel.class)
+                .setMaxResults(1)
+                .add(Restrictions.eq("userId", UserID))
+                .uniqueResult();
+
+        return userModel;
     }
 }

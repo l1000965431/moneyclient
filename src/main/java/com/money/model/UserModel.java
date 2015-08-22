@@ -17,6 +17,7 @@ public class UserModel extends BaseModel {
     private int id;
 
     //主键，手机号
+    //@Index(  )
     private String userId = "";//service里的username
     //登录密码
     private String password = "";

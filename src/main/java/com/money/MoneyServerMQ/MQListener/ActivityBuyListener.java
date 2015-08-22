@@ -47,10 +47,10 @@ public class ActivityBuyListener extends MoneyServerListener {
             int PurchaseNum = Integer.valueOf( map.get( "PurchaseNum" ));
             int AdvanceNum = Integer.valueOf( map.get( "AdvanceNum" ));
             int PurchaseType = Integer.valueOf( map.get( "PurchaseType" ) );
-            //String OrderID = (String)map.get( "OrderID" );
+            String OrderID = map.get( "OrderID" ).toString();
 
             //修改订单状态 修改项目参与人数 修改项目当前金额
-            ActivityBuy( InstallmentActivityID,UserID,PurchaseNum,AdvanceNum,PurchaseType,"" );
+            ActivityBuy( InstallmentActivityID,UserID,PurchaseNum,AdvanceNum,PurchaseType,OrderID );
             return Action.CommitMessage;
         } catch (Exception e) {
             return Action.CommitMessage;
@@ -67,16 +67,21 @@ public class ActivityBuyListener extends MoneyServerListener {
      * @throws Exception
      */
     public void ActivityBuy( String InstallmentActivityID,String UserID,int PurchaseNum ,int AdvanceNum,int PurchaseType,String OrderID ) throws Exception {
+
+        int Result = 0;
         switch( PurchaseType ){
             case Config.PURCHASEPRICKSILK:
-                purchaseInAdvance.PurchaseInAdvance( InstallmentActivityID, UserID,PurchaseNum,AdvanceNum );
+                Result = purchaseInAdvance.PurchaseInAdvance( InstallmentActivityID, UserID,PurchaseNum,AdvanceNum,OrderID );
                 break;
             case Config.PURCHASELOCALTYRANTS:
-                purchaseInAdvance.LocalTyrantsPurchaseActivity( InstallmentActivityID,UserID,AdvanceNum );
+                Result = purchaseInAdvance.LocalTyrantsPurchaseActivity( InstallmentActivityID,UserID,AdvanceNum,OrderID );
                 break;
         }
 
-        //项目购买完成 开始计算开奖
-        activityService.SetInstallmentActivityEnd( InstallmentActivityID );
+        if( Result == 1){
+            //项目购买完成 开始计算开奖
+            activityService.SetInstallmentActivityEnd( InstallmentActivityID );
+        }
+
     }
 }

@@ -37,11 +37,11 @@ public class PurchaseInAdvanceDAO extends BaseDao {
      * @param PurchaseNum
      * @param AdvanceNum
      */
-    public void InsertPurchaseInAdvance(String ActivityID, String UserID, int PurchaseNum, int AdvanceNum, int PurchaseType) {
+    public void InsertPurchaseInAdvance(String ActivityID, String UserID, int PurchaseNum, int AdvanceNum, int PurchaseType,String OrderID ) {
         String DBName = Config.ACTIVITYPURCHASE + ActivityID;
 
         String sql = "insert into " + DBName +
-                " ( UserID,PurchaseInAdvanceNum,CurPurchaseInAdvanceNum,PurchaseNum,PurchaseType ) values ( ?,?,?,?,? )";
+                " ( UserID,PurchaseInAdvanceNum,CurPurchaseInAdvanceNum,PurchaseNum,PurchaseType,PurchaseInAdvanceNumID ) values ( ?,?,?,?,?,? )";
         Session session = this.getNewSession();
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, UserID);
@@ -49,6 +49,7 @@ public class PurchaseInAdvanceDAO extends BaseDao {
         query.setParameter(2, 0);
         query.setParameter(3, PurchaseNum);
         query.setParameter(4, PurchaseType);
+        query.setParameter(5, OrderID);
         query.executeUpdate();
     }
 
@@ -113,16 +114,16 @@ public class PurchaseInAdvanceDAO extends BaseDao {
         //刷新项目票的表 票的所有者
         String DBNmae = Config.ACTIVITYGROUPTICKETNAME + ActivityID;
 
-        String sqlCount = "select count(TickID) from " + DBNmae + " where UserId='0' and PurchaseType=?;";
-        Session session = this.getNewSession();
+/*        String sqlCount = "select count(TickID) from " + DBNmae + " where UserId='0' and PurchaseType=?;";
+
         SQLQuery queryCount = session.createSQLQuery(sqlCount);
         queryCount.setParameter( 0,PurchaseType );
         int count = queryCount.executeUpdate();
 
         if( count < PurchaseNum ){
             return ServerReturnValue.SERVERRETURNERROR;
-        }
-
+        }*/
+        Session session = this.getNewSession();
         String sql = "update " + DBNmae + " set userId=? where userId='0' and PurchaseType=? limit ?";
 
         SQLQuery query = session.createSQLQuery(sql);

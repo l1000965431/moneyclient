@@ -72,6 +72,23 @@ public class activityDAO extends BaseDao {
         }
     }
 
+    /**
+     * 获得项目动态内容:当前的投资的金额 投资的人数
+     *
+     * @param ActivityID
+     * @return
+     */
+    public ActivityDynamicModel getActivityCompelete(String ActivityID) {
+
+        try {
+            ActivityDynamicModel activitydynamicmodel = this.getActivityDynamicModel(ActivityID);
+            return activitydynamicmodel;
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
 
     /**
      * 插入项目购买人
@@ -269,8 +286,9 @@ public class activityDAO extends BaseDao {
 
         Session session = getNewSession();
         String DBName = Config.ACTIVITYPURCHASE + ActivityID;
-        String Sql = "CREATE TABLE " + DBName + " ( Id INT NOT NULL AUTO_INCREMENT,UserID VARCHAR(45) NOT NULL,PurchaseInAdvanceNum INT(5) NOT NULL, " +
-                "CurPurchaseInAdvanceNum INT(5) NOT NULL,PurchaseNum INT(5) NOT NULL,PurchaseType INT(5) NOT NULL, PRIMARY KEY (Id));";
+        String Sql = "CREATE TABLE " + DBName + " ( UserID VARCHAR(45) NOT NULL,PurchaseInAdvanceNum INT(5) NOT NULL, " +
+                "CurPurchaseInAdvanceNum INT(5) NOT NULL,PurchaseNum INT(5) NOT NULL," +
+                "PurchaseType INT(5) NOT NULL, PurchaseInAdvanceNumID VARCHAR(255) NOT NULL, PRIMARY KEY (PurchaseInAdvanceNumID));";
         SQLQuery sqlQuery = session.createSQLQuery(Sql);
 
         sqlQuery.executeUpdate();

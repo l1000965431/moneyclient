@@ -1,9 +1,7 @@
 package com.money.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by liumin on 15/8/13.
@@ -13,11 +11,24 @@ import javax.persistence.Table;
 public class UserEarningsModel extends BaseModel {
 
     @Id
-   String UserID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    int Id;
 
-    @Column(columnDefinition="TEXT")
-    String UserEarnings = "";
+    String UserID;
 
+    Date UserEarningsDate;
+
+    int UserEarningLines;
+
+    String ActivityStageId;
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
 
     public String getUserID() {
         return UserID;
@@ -27,11 +38,27 @@ public class UserEarningsModel extends BaseModel {
         UserID = userID;
     }
 
-    public String getUserEarnings() {
-        return UserEarnings;
+    public Date getUserEarningsDate() {
+        return UserEarningsDate;
     }
 
-    public void setUserEarnings(String userEarnings) {
-        UserEarnings = userEarnings;
+    public void setUserEarningsDate(Date userEarningsDate) {
+        UserEarningsDate = userEarningsDate;
+    }
+
+    public int getUserEarningLines() {
+        return UserEarningLines;
+    }
+
+    public void setUserEarningLines(int userEarningLines) {
+        UserEarningLines = userEarningLines;
+    }
+
+    public String getActivityStageId() {
+        return ActivityStageId;
+    }
+
+    public void setActivityStageId(String activityStageId) {
+        ActivityStageId = activityStageId;
     }
 }

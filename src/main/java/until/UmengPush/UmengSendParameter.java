@@ -36,7 +36,7 @@ public class UmengSendParameter {
         this.appkey = "55c5affbe0f55a4474006226";
         this.timestamp = Integer.toString((int)(System.currentTimeMillis() / 1000));
         this.type = "customizedcast";
-        this.alias_type = "1";
+        this.alias_type = "SINA_WEIBO";
         this.alias = Alias;
         this.payload = new HashMap<String, Object>();
         this.payload.put( "display_type","notification" );

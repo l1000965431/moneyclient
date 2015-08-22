@@ -50,10 +50,7 @@ public class OrderService extends ServiceBase implements ServiceInterface {
      *
      * @return
      */
-    public String createOrder( String userID,String activityID,int lines,int PurchaseNum,int AdvanceNum,int purchasType ){
-
-        Long OrderID = createOrderID();
-
+    public String createOrder( String userID,String activityID,int lines,int PurchaseNum,int AdvanceNum,int purchasType,String OrderID ){
         OrderModel orderModel = new OrderModel();
         ActivityDetailModel activityDetailModel =  activityDAO.getActivityDetaillNoTransaction(activityID);
         orderModel.setActivityDetailModel(activityDetailModel);
@@ -68,12 +65,6 @@ public class OrderService extends ServiceBase implements ServiceInterface {
         } catch (ParseException e) {
             return Config.SERVICE_FAILED;
         }
-        //orderModel.setOrderState(OrderModel.ORDER_STATE_NOSUBMITTED);
-
-        //插入消息队列
-       /* String messagebody = GsonUntil.JavaClassToJson( orderModel );
-        MoneyServerMQManager.SendMessage( new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TOPIC,
-                MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TAG,messagebody,Long.toString(OrderID)) );*/
 
         orderDAO.saveNoTransaction( orderModel );
         return Config.SERVICE_SUCCESS;

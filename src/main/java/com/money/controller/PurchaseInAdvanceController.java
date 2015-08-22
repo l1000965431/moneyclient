@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by liumin on 15/7/27.
@@ -59,13 +60,15 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
 
     @RequestMapping("/PurchaseActivity")
     @ResponseBody
-    //1:期或票不够 2:钱不够 100:支付成功
+    //1:期或票不够 2:钱不够 3:本期不够 预购后边的期 100:支付成功 103:支付成功客户端需要刷新 MessageType:1:判断本期 2:不判断本期
     public int PurchaseActivity(HttpServletRequest request, HttpServletResponse response) {
         final String UserID = request.getParameter("UserID");
         final String InstallmentActivityID = request.getParameter("InstallmentActivityID");
         final int PurchaseType = Integer.valueOf(request.getParameter("PurchaseType"));
         final int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
         final int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
+        final int MessageType = Integer.valueOf(request.getParameter("MessageType"));
+        final int[] Refresh = {0};
 
         if (!userService.IsPerfectInfo(UserID)) {
             return ServerReturnValue.PERFECTINFO;
@@ -81,42 +84,59 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
 
                     int costLines = 0;
 
-                    switch ( PurchaseType ){
+                    switch (PurchaseType) {
                         case Config.PURCHASEPRICKSILK:
                             int remainingNum = purchaseInAdvance.getInstallmentActivityRemainingTicket(InstallmentActivityID);
-
-                            if (remainingNum == 0) {
-                                state[0] = 1;
-                                return false;
+                            costLines = PurchaseNum * AdvanceNum;
+                            if (remainingNum == PurchaseNum) {
+                                Refresh[0] = 1;
                             }
-
-                            int tempPurchaseNum = remainingNum < PurchaseNum ? remainingNum : PurchaseNum;
-                            costLines = tempPurchaseNum + (PurchaseNum * (AdvanceNum - 1));
-                            if (!purchaseInAdvance.IsRemainingInstallment(ActivityID, AdvanceNum) ||
-                                    activityVerifyCompleteModel.IsEnoughLines(costLines)) {
-                                state[0] = 1;
+                            if (remainingNum < PurchaseNum && MessageType == 1) {
+                                state[0] = 3;
+                                if (!purchaseInAdvance.IsRemainingInstallment(ActivityID, AdvanceNum) ||
+                                        activityVerifyCompleteModel.IsEnoughLines(costLines + remainingNum)) {
+                                    state[0] = 1;
+                                }
                                 return false;
+                            } else {
+                                state[0] = 0;
+                                if (!purchaseInAdvance.IsRemainingInstallment(ActivityID, AdvanceNum) ||
+                                        activityVerifyCompleteModel.IsEnoughLines(costLines)) {
+                                    state[0] = 1;
+                                    return false;
+                                }
+                                break;
                             }
-                            break;
                         case Config.PURCHASELOCALTYRANTS:
                             int Lines = activityDynamicModel.getActivityTotalLinesPeoples() * AdvanceNum;
-
-                            if (!activityVerifyCompleteModel.IsEnoughAdvance(AdvanceNum) ||
-                                    activityVerifyCompleteModel.IsEnoughLinePoples(Lines) ) {
-                                state[0] = 1;
+                            if (!purchaseInAdvance.IsEnoughLocalTyrantsTickets(InstallmentActivityID) && MessageType == 1) {
+                                state[0] = 3;
+                                if (!activityVerifyCompleteModel.IsEnoughAdvance(AdvanceNum) ||
+                                        activityVerifyCompleteModel.IsEnoughLinePoples(Lines + activityDynamicModel.getActivityTotalLinesPeoples())) {
+                                    state[0] = 1;
+                                }
                                 return false;
+                            } else {
+                                if (!activityVerifyCompleteModel.IsEnoughAdvance(AdvanceNum) ||
+                                        activityVerifyCompleteModel.IsEnoughLinePoples(Lines)) {
+                                    state[0] = 1;
+                                    return false;
+                                }
                             }
+
+                            Refresh[0] = 1;
                             break;
                     }
 
-                    if( !walletService.IsWalletEnough( UserID,costLines ) ){
+                    if (!walletService.IsWalletEnough(UserID, costLines)) {
                         state[0] = 2;
                         return false;
                     }
-                    state[0] = 0;
+
+
                     return true;
                 }
-            })!=Config.SERVICE_SUCCESS){
+            }) != Config.SERVICE_SUCCESS) {
                 return state[0];
             }
 
@@ -126,21 +146,25 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
             map.put("AdvanceNum", AdvanceNum);
             map.put("UserID", UserID);
             map.put("PurchaseType", PurchaseType);
+            map.put("OrderID", UUID.randomUUID().toString());
             String messageBody = GsonUntil.JavaClassToJson(map);
 
-
             MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_ACTIVITYBUY_TOPIC,
-                    MoneyServerMQ_Topic.MONEYSERVERMQ_ACTIVITYBUY_TAG, messageBody, "1"));
+                    MoneyServerMQ_Topic.MONEYSERVERMQ_ACTIVITYBUY_TAG, messageBody, UserID));
 
-            return ServerReturnValue.PERFECTSUCCESS;
+            if( Refresh[0] == 1 ){
+                return ServerReturnValue.PERFECTREFRESH;
+            }else{
+                return ServerReturnValue.PERFECTSUCCESS;
+            }
         }
     }
 
     @RequestMapping("/PurchaseActivityNum")
     @ResponseBody
-    public String PurchaseActivityNum( HttpServletRequest request, HttpServletResponse response ){
+    public String PurchaseActivityNum(HttpServletRequest request, HttpServletResponse response) {
         final String InstallmentActivityID = request.getParameter("installmentActivityID");
-        return activityService.GetInstaInstallmentActivityInfo( InstallmentActivityID );
+        return activityService.GetInstaInstallmentActivityInfo(InstallmentActivityID);
     }
 
 }

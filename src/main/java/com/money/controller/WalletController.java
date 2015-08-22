@@ -81,11 +81,11 @@ public class WalletController {
 
         Map<String,Object> MapExtra = (Map<String,Object>)mapJson.get("extras");
         String UserID = (String)MapExtra.get( "UserId" );
-        String userModel = userService.getUserInfo(UserID);
-        if (userModel == null || userModel.length() == 0) {
+        UserModel userModel = userService.getUserInfo(UserID);
+        if (userModel == null ) {
              return null;
         }
-        double Lines = (Double)mapJson.get("amount")*100.0;
+        double Lines = (Double)mapJson.get("amount");
         if( Lines <= 0 ){
             return null;
         }

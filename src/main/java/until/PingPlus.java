@@ -33,7 +33,7 @@ import java.util.Map;
 @Component
 public class PingPlus {
     public static String CreateChargeParams(String UserID,int amount, String channel, String client_ip, String subject, String body,String order_no ) {
-        Pingpp.apiKey = Config.PINGPLUSLIVEID;
+        Pingpp.apiKey = Config.PINGPLUSTESTID;
         Map<String, Object> chargeParams = new HashMap<String, Object>();
         chargeParams.put("order_no", order_no);
         chargeParams.put("amount", amount);

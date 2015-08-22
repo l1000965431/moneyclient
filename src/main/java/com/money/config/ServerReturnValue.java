@@ -116,6 +116,11 @@ public class ServerReturnValue {
     public static final int PERFECTFAILED = 102;
 
     /**
+     * 购买刷新
+     */
+    public static final int PERFECTREFRESH = 103;
+
+    /**
      * 获取项目详情成功
      */
     public static final String ACTIVITY_INFO_SUCCESS = "100";

@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import until.GsonUntil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by fisher on 2015/7/13.
@@ -32,17 +35,16 @@ public class UserController extends ControllerBase implements IController
 
         String LoginResult = userService.userLand(UserName,PassWord);
 
-        if( LoginResult.length() >= 8 ){
-            response.setHeader( "LoginResult", ServerReturnValue.LANDSUCCESS );
-
-            response.setHeader( "UserResponse",userService.getUserInfo(UserName) );
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put( "token",LoginResult );
+        map.put( "UserResponse",userService.getUserInfo(UserName) );
+        if( LoginResult.length() >= 8 ) {
+            map.put( "LoginResult",ServerReturnValue.LANDSUCCESS );
         }else{
-            response.setHeader( "LoginResult",LoginResult );
-            response.setHeader( "UserResponse","" );
-            return null;
+            map.put( "LoginResult",ServerReturnValue.LANDFAILED );
         }
 
-        return LoginResult;
+        return GsonUntil.JavaClassToJson( map );
     }
 
     @RequestMapping("/tokenLogin")
@@ -52,8 +54,7 @@ public class UserController extends ControllerBase implements IController
     {
         String token = request.getParameter( "token" );
         String userId = request.getParameter( "userId" );
-        return 1;
-        //return userService.tokenLand(userId,token);
+        return userService.tokenLand(userId,token);
     }
 
     @RequestMapping("/perfectInfo")

@@ -5,10 +5,7 @@ import com.money.Service.GroupActivity.ServiceGroupActivity;
 import com.money.Service.ServiceFactory;
 import com.money.Service.activity.ActivityService;
 import com.money.config.Config;
-import com.money.model.ActivityDetailModel;
-import com.money.model.ActivityDynamicModel;
-import com.money.model.ActivityVerifyModel;
-import com.money.model.SREarningModel;
+import com.money.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,8 +60,7 @@ public class AuditActivityController extends ControllerBase implements IControll
     }
 
     /**
-     *  获取用户所有的提交过的项目
-     *
+     * 获取用户所有的提交过的项目
      */
     @RequestMapping("/getUserActivityList")
     @ResponseBody
@@ -126,27 +122,27 @@ public class AuditActivityController extends ControllerBase implements IControll
 
     @RequestMapping("/splitActivity")
     @ResponseBody
-    public String splitActivity(HttpServletRequest request, HttpServletResponse response){
-        String ActivityID = request.getParameter( "ActivityID" );
+    public String splitActivity(HttpServletRequest request, HttpServletResponse response) {
+        String ActivityID = request.getParameter("ActivityID");
         int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
         int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
-        serviceGroupActivity.splitActivityByStage( ActivityID,AdvanceNum,PurchaseNum );
+        serviceGroupActivity.splitActivityByStage(ActivityID, AdvanceNum, PurchaseNum);
         return "1";
     }
 
     @RequestMapping("/ActivityStart")
     @ResponseBody
-    public String ActivityStart(HttpServletRequest request, HttpServletResponse response){
-        String ActivityID = request.getParameter( "ActivityID" );
-        activityService.ActivityCompleteStart( ActivityID );
+    public String ActivityStart(HttpServletRequest request, HttpServletResponse response) {
+        String ActivityID = request.getParameter("ActivityID");
+        activityService.ActivityCompleteStart(ActivityID);
         return "1";
     }
 
 
     @RequestMapping("/SetActivityInformationEarnings")
     @ResponseBody
-    public int SetActivityInformationEarnings(HttpServletRequest request, HttpServletResponse response){
-        String ActivityID = request.getParameter( "ActivityID" );
+    public int SetActivityInformationEarnings(HttpServletRequest request, HttpServletResponse response) {
+        String ActivityID = request.getParameter("ActivityID");
         int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
         int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
 
@@ -155,31 +151,30 @@ public class AuditActivityController extends ControllerBase implements IControll
         List<SREarningModel> LinePeoplesSREarningList = new ArrayList<SREarningModel>();
 
 
-
-
-        for( int i= 0; i < 3; ++i ){
-            SREarningModel srEarningModel = new SREarningModel();
-            srEarningModel.setEarningPrice( 20 );
-            srEarningModel.setEarningType(2);
-            srEarningModel.setNum(3);
-            LinesSREarningList.add( srEarningModel );
-        }
-
-        for( int i= 0; i < PurchaseNum; ++i ){
-            SREarningModel srEarningModel = new SREarningModel();
-            srEarningModel.setEarningType( 1 );
-            srEarningModel.setEarningPrice(1000/ MoneySeverRandom.getRandomNum( 2,10 ));
-            srEarningModel.setNum(1);
-            LinePeoplesSREarningList.add( srEarningModel );
-        }
-
-
-
         String LinesEarnings = GsonUntil.JavaClassToJson(LinesSREarningList); //request.getParameter("LinesEarnings");
         String LinePeoplesEarnings = GsonUntil.JavaClassToJson(LinePeoplesSREarningList);//request.getParameter("LinePeoplesEarnings");
-        serviceGroupActivity.SetActivityInformationEarnings(ActivityID,AdvanceNum,PurchaseNum,LinesEarnings,LinePeoplesEarnings );
+        serviceGroupActivity.SetActivityInformationEarnings(ActivityID, AdvanceNum, PurchaseNum, LinesEarnings, LinePeoplesEarnings);
         return 1;
     }
 
+
+    @RequestMapping("/Test")
+    @ResponseBody
+    public void Test(HttpServletRequest request, HttpServletResponse response) {
+
+        String id = request.getParameter("ID");
+
+        List<SREarningModel> LinePeoplesSREarningList = new ArrayList<SREarningModel>();
+        for (int i = 0; i < 3; ++i) {
+            SREarningModel srEarningModel = new SREarningModel();
+            srEarningModel.setEarningType(1);
+            srEarningModel.setEarningPrice(1000 / MoneySeverRandom.getRandomNum(2, 10));
+            srEarningModel.setNum(1);
+            LinePeoplesSREarningList.add(srEarningModel);
+        }
+
+        String json = GsonUntil.JavaClassToJson(LinePeoplesSREarningList);
+        int a = 0;
+    }
 
 }

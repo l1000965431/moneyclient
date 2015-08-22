@@ -11,11 +11,9 @@ import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import com.money.dao.GeneraDAO;
 import com.money.dao.TransactionSessionCallback;
-import com.money.model.ActivityDetailModel;
-import com.money.model.ActivityDynamicModel;
-import com.money.model.ActivityVerifyCompleteModel;
-import com.money.model.UserEarningsModel;
+import com.money.model.*;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -138,10 +136,6 @@ public class ActivityController extends ControllerBase implements IController {
         UserService userService = ServiceFactory.getService("UserService");
         OrderService orderService = ServiceFactory.getService("OrderService");
 
-        if (userService.tokenLand(UserID, Token) == 0) {
-            return Integer.toString(ServerReturnValue.USERNOTLAND);
-        }
-
         List ActivityHasEarnings = orderService.getOrderByUserID(UserID, page, findNum);
         String Json = GsonUntil.JavaClassToJson(ActivityHasEarnings);
         return Json;
@@ -191,9 +185,9 @@ public class ActivityController extends ControllerBase implements IController {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("TotalLines", activityDynamicModel.getActivityTotalLines());
                 map.put("TotalLinePeoples", activityDynamicModel.getActivityTotalLinesPeoples());
-                map.put("EarningPeoples", activityVerifyCompleteModel.getEarningPeoples());
-                map.put("SREarning", activityDetailModel.getSrEarningModels());
-
+                map.put("EarningPeoples", GsonUntil.jsonToJavaClass(activityVerifyCompleteModel.getEarningPeoples(), new TypeToken<List>() {
+                }.getType()));
+                map.put("SREarning", activityDetailModel.getActivityVerifyCompleteModel().getSrEarningModels());
                 Json[0] = GsonUntil.JavaClassToJson(map);
 
                 response.setHeader("response", ServerReturnValue.ACTIVITY_INVEST_INFO_SUCCESS);
@@ -222,76 +216,37 @@ public class ActivityController extends ControllerBase implements IController {
 
         generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
-                UserEarningsModel userEarningsModel = (UserEarningsModel) session.createCriteria(UserEarningsModel.class)
-                        .setMaxResults(1)
+                List<UserEarningsModel> userEarningsModelList = session.createCriteria(UserEarningsModel.class)
+                        .setMaxResults(FindNum)
+                        .setFirstResult(Page * FindNum)
+                        .addOrder(Order.desc("UserEarningsDate"))
                         .add(Restrictions.eq("UserID", UserID))
-                        .uniqueResult();
+                        .list();
+                ActivityService activityService = ServiceFactory.getService("ActivityService");
 
-
-                String Earnings = userEarningsModel.getUserEarnings();
-                Map<String, Object> map = GsonUntil.jsonToJavaClass(Earnings, new TypeToken<Map<String, Object>>() {
-                }.getType());
-
-                int MapStartIndex = Page * FindNum;
-                int tempStartIndex = 0;
-                int tempFindNum = 0;
-                boolean IsEnough = false;
-                Iterator it = map.entrySet().iterator();
-
-                Map<String, Object> mapTemp = new HashMap<String, Object>();
-
-                while (it.hasNext()) {
-                    if( IsEnough ){
-                        break;
+                for (UserEarningsModel userEarningsModel : userEarningsModelList) {
+                    ActivityDetailModel activityDetailModel = activityService.getActivityDetailsNoTran(userEarningsModel.getActivityStageId());
+                    if (activityDetailModel == null) {
+                        return false;
                     }
 
-                    Map.Entry entry = (Map.Entry) it.next();
-                    if (tempStartIndex < MapStartIndex) {
-                        tempStartIndex++;
-                    } else {
-                        List<Object> listTemp = null;
-                        for (Double lines : (List<Double>) entry.getValue()) {
-                            tempFindNum++;
-                            if( tempFindNum > FindNum ){
-                                IsEnough = true;
-                                break;
-                            }
-
-                            if( mapTemp.get( entry.getKey().toString() ) == null ){
-                                listTemp  = new ArrayList<Object>();
-                                ActivityService activityService = ServiceFactory.getService("ActivityService");
-                                List<String> ActivityChidInfo = new ArrayList<String>();
-                                List<Double> LinesList = new ArrayList<Double>();
-                                ActivityDetailModel activityDetailModel = activityService.getActivityDetailsNoTran( entry.getKey().toString() );
-                                if( activityDetailModel == null ){
-                                    return false;
-                                }
-                                ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
-                                ActivityChidInfo.add(activityDetailModel.getActivityStageId());
-                                ActivityChidInfo.add(activityVerifyCompleteModel.getName());
-                                ActivityChidInfo.add(Integer.toString(activityVerifyCompleteModel.getTotalInstallmentNum()));
-                                ActivityChidInfo.add(Integer.toString(activityDetailModel.getStageIndex()));
-                                ActivityChidInfo.add(activityVerifyCompleteModel.getActivityId());
-                                ActivityChidInfo.add(activityVerifyCompleteModel.getImageUrl());
-                                listTemp.add(ActivityChidInfo);
-                                LinesList.add(lines);
-                                listTemp.add( LinesList );
-                                mapTemp.put( entry.getKey().toString(),listTemp );
-                            }else{
-                                listTemp = (List)mapTemp.get( entry.getKey().toString() );
-                                List<Double> LinesList = (List)listTemp.get( 1 );
-                                LinesList.add(lines);
-                                mapTemp.put( entry.getKey().toString(),listTemp );
-                            }
-                        }
-                        ListJson.add(listTemp);
-                    }
+                    List<String> ActivityChildInfo = new ArrayList<String>();
+                    ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
+                    ActivityChildInfo.add(activityDetailModel.getActivityStageId());
+                    ActivityChildInfo.add(activityVerifyCompleteModel.getName());
+                    ActivityChildInfo.add(Integer.toString(activityVerifyCompleteModel.getTotalInstallmentNum()));
+                    ActivityChildInfo.add(Integer.toString(activityDetailModel.getStageIndex()));
+                    ActivityChildInfo.add(activityVerifyCompleteModel.getActivityId());
+                    ActivityChildInfo.add(activityVerifyCompleteModel.getImageUrl());
+                    ActivityChildInfo.add(Integer.toString(userEarningsModel.getUserEarningLines()));
+                    ActivityChildInfo.add( userEarningsModel.getUserEarningsDate().toString() );
+                    ListJson.add( ActivityChildInfo );
                 }
                 return true;
             }
         });
 
-        String Json = GsonUntil.JavaClassToJson( ListJson );
+        String Json = GsonUntil.JavaClassToJson(ListJson);
         return Json;
     }
 

@@ -189,9 +189,8 @@ public class UserService extends ServiceBase implements ServiceInterface {
      * @param UserID
      * @return
      */
-    public String getUserInfo(String UserID) {
-        UserModel userModel = userDAO.getUSerModel(UserID);
-        return GsonUntil.JavaClassToJson(userModel);
+    public UserModel getUserInfo(String UserID) {
+        return userDAO.getUSerModel(UserID);
     }
 
     /**

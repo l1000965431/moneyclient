@@ -27,8 +27,8 @@ public class StartInstallmentActivityListener extends MoneyServerListener {
             Map<String,Object> map = GsonUntil.jsonToJavaClass( body,new TypeToken<Map<String,Object>>(){}.getType() );
 
             String ActivityID = map.get( "ActivityID" ).toString();
-            int Installment = (Integer)map.get( "Installment" );
-            activityService.InstallmentActivityStart( ActivityID,Installment );
+            Double Installment = (Double)map.get( "Installment" );
+            activityService.InstallmentActivityStart( ActivityID,Installment.intValue() );
             return Action.CommitMessage;
         } catch (Exception e) {
             return Action.CommitMessage;

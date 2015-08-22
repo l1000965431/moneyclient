@@ -20,11 +20,19 @@ public class SREarningModel extends BaseModel {
     Long id = Long.valueOf(0);
 
     /**
-     *  项目组ID
+     *  大R项目组ID
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn( name = "activityStageId",referencedColumnName = "activityStageId")
     ActivityDetailModel activityDetailModel=null;
+
+
+    /**
+     * 小R的项目组数据
+     */
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn( name = "activityId",referencedColumnName = "activityId")
+    ActivityVerifyCompleteModel activityVerifyCompleteModel=null;
 
     /**
      *  收益金额
@@ -90,5 +98,13 @@ public class SREarningModel extends BaseModel {
 
     public void setEarningType(int earningType) {
         this.earningType = earningType;
+    }
+
+    public ActivityVerifyCompleteModel getActivityVerifyCompleteModel() {
+        return activityVerifyCompleteModel;
+    }
+
+    public void setActivityVerifyCompleteModel(ActivityVerifyCompleteModel activityVerifyCompleteModel) {
+        this.activityVerifyCompleteModel = activityVerifyCompleteModel;
     }
 }

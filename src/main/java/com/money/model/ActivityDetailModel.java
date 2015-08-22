@@ -52,10 +52,11 @@ public class ActivityDetailModel extends BaseModel {
     ActivityVerifyCompleteModel activityVerifyCompleteModel;
 
     /**
-     * 项目组中小R收益层次
+     * 项目组中大R收益层次
      */
     @OneToMany(mappedBy = "activityDetailModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<SREarningModel> srEarningModels = new HashSet<SREarningModel>();
+
 
     /**
      * 项目状态
@@ -200,4 +201,6 @@ public class ActivityDetailModel extends BaseModel {
     public void setLocaltyrantsLotteryLines(int localtyrantsLotteryLines) {
         LocaltyrantsLotteryLines = localtyrantsLotteryLines;
     }
+
+
 }
