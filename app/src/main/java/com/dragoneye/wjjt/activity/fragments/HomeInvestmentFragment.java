@@ -85,7 +85,6 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
                     public void run() {
                         mLoadingMoreProxy.reset();
                         mCurPageIndex = -1;
-                        mProjectList.clear();
                         handler.post(updateInvestmentList_r);
                     }
                 });

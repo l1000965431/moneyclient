@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
+import com.dragoneye.wjjt.activity.ProjectDetailActivity;
 import com.dragoneye.wjjt.activity.fragments.BaseFragment;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.HttpUrlConfig;
@@ -27,6 +28,7 @@ import com.dragoneye.wjjt.protocol.GetProjectListProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.view.LoadingMoreFooterProxy;
 import com.dragoneye.wjjt.view.RefreshableView;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
@@ -72,7 +74,6 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                     public void run() {
                         mLoadingMoreProxy.reset();
                         mCurEarningRecordPageIndex = -1;
-                        mEarningProjects.clear();
                         handler.post(onUpdateEarningList_r);
                     }
                 });
@@ -102,6 +103,17 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
         if( position >= mEarningProjects.size() ){
             return;
         }
+
+        MyEarningModel myEarningModel = (MyEarningModel)mListView.getItemAtPosition(position);
+        ArrayList<String> img = new ArrayList<>();
+        try{
+            img = ToolMaster.gsonInstance().fromJson(myEarningModel.getImageUrl(),
+                    new TypeToken<ArrayList<String>>(){}.getType());
+        }catch (Exception e){
+
+        }
+        ProjectDetailActivity.CallProjectDetailActivity(getActivity(), myEarningModel.getActivityId(), img,
+                1, 1);
     }
 
     @Override

@@ -51,6 +51,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     private ProgressBar mProgressBar;
     private TextView mTextViewProjectProgress;
     private LinearLayout mLinearLayoutResultRoot;
+    private LinearLayout mLinearLayoutProportion;
     private ProjectDetailModel mProjectDetailModel;
 
     private TextView mTVStageInfo;
@@ -143,6 +144,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mTextViewProjectProgress = (TextView)findViewById(R.id.invest_project_tv_project_progress);
 
         // 投资收益几率显示
+        mLinearLayoutProportion = (LinearLayout)findViewById(R.id.investment_ll_proportion_layout);
         mLinearLayoutResultRoot = (LinearLayout)findViewById(R.id.investment_ll_result_root);
 
         // 投资期数显示标签
@@ -505,8 +507,9 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
 
     private void updateSrEarningProportion(int investPrice){
         mLinearLayoutResultRoot.removeAllViews();
+        mLinearLayoutProportion.setVisibility(View.VISIBLE);
         if( investPrice == 0 ){
-
+            mLinearLayoutProportion.setVisibility(View.GONE);
         }else {
             for(EarningModel model : mSrEarningModels){
                 TextView textView = new TextView(this);
@@ -523,8 +526,9 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
 
     private void updateBrEarningProportion(int stageNum){
         mLinearLayoutResultRoot.removeAllViews();
+        mLinearLayoutProportion.setVisibility(View.VISIBLE);
         if( stageNum == 0 ){
-
+            mLinearLayoutProportion.setVisibility(View.GONE);
         }else {
             for(EarningModel model : mBrEarningModels){
                 TextView textView = new TextView(this);

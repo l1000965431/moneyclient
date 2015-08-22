@@ -22,6 +22,7 @@ import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
 import com.dragoneye.wjjt.user.UserBase;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.message.ALIAS_TYPE;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UmengRegistrar;
@@ -230,6 +231,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         new Thread(runnable).start();
         ((MyApplication)getApplication()).setUserLoginSuccess(this);
         MainActivity.CallMainActivity(this);
+        ImageLoader.getInstance().clearMemoryCache();
         finish();
     }
 

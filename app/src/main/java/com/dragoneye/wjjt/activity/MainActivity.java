@@ -46,7 +46,7 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
             if(checked){
                 imageView.setColorFilter(getResources().getColor(R.color.home_bottom_button_selected));
                 textView.setTextColor(getResources().getColor(R.color.home_bottom_button_selected));
-                background.setBackgroundColor(0xffd34455);
+                background.setBackgroundColor(0xffca0025);
             }else {
                 imageView.setColorFilter(getResources().getColor(R.color.home_bottom_button_unselected));
                 textView.setTextColor(getResources().getColor(R.color.home_bottom_button_unselected));

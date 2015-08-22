@@ -2,6 +2,7 @@ package com.dragoneye.wjjt.activity;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -45,6 +46,7 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
     private boolean isCancelUpload = true;
     UploadManager uploadManager;
     File mSelectedFile;
+    Uri mPortraitTemp;
     private String uploadPortraitUrl;
 
     @Override
@@ -175,7 +177,7 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
             Integer integer = Integer.parseInt(s);
             switch (integer){
                 case UserProtocol.CHANGE_PORTRAIT_RESULT_SUCCESS:
-                    ((MyApplication)getApplication()).getCurrentUser(this).setUserHeadPortrait(uploadPortraitUrl);
+                    ((MyApplication)getApplication()).getCurrentUser(this).setUserHeadPortrait(mPortraitTemp.toString());
                     DisplayImageOptions options = new DisplayImageOptions.Builder()
                             .cacheOnDisk(false)
                             .cacheInMemory(true)
@@ -183,7 +185,7 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
                             .imageScaleType(ImageScaleType.EXACTLY)
                             .displayer(new FadeInBitmapDisplayer(300))
                             .build();
-                    ImageLoader.getInstance().displayImage(uploadPortraitUrl, mIBPortrait, options);
+                    ImageLoader.getInstance().displayImage(mPortraitTemp.toString(), mIBPortrait, options);
                     cancelUpload();
                     UIHelper.toast(this, "更换头像成功");
                     break;
@@ -209,6 +211,7 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
     @Override
     protected void onSelectedCropFinish(Bitmap bitmap, File file){
         mSelectedFile = file;
+        mPortraitTemp = Uri.fromFile(file);
         if( mUploadToken == null ){
             progressDialog.setMessage("正在连接服务器");
             progressDialog.show();

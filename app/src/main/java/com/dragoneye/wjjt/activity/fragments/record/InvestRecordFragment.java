@@ -3,7 +3,6 @@ package com.dragoneye.wjjt.activity.fragments.record;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,12 +14,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
-import com.dragoneye.wjjt.activity.InvestProjectActivity;
 import com.dragoneye.wjjt.activity.ProjectDetailActivity;
 import com.dragoneye.wjjt.activity.fragments.BaseFragment;
 import com.dragoneye.wjjt.application.MyApplication;
@@ -29,11 +28,9 @@ import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.model.EarningModel;
 import com.dragoneye.wjjt.model.OrderModel;
-import com.dragoneye.wjjt.model.ProjectDetailModel;
 import com.dragoneye.wjjt.protocol.GetProjectListProtocol;
 import com.dragoneye.wjjt.protocol.InvestProjectProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
-import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.view.LoadingMoreFooterProxy;
 import com.dragoneye.wjjt.view.RefreshableView;
 import com.google.gson.reflect.TypeToken;
@@ -49,7 +46,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -87,7 +83,6 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                     public void run() {
                         mLoadingMoreProxy.reset();
                         mCurInvestRecordPageIndex = -1;
-                        mInvestedProjects.clear();
                         handler.post(onUpdateOrderList_r);
                     }
                 });
@@ -133,9 +128,11 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
 
     @Override
     public void onClick(View v){
+        OrderModel orderModel;
         switch (v.getId()){
             case R.id.home_record_listview_tv_earning_proportion:
-                OrderModel orderModel = (OrderModel)v.getTag();
+            case R.id.home_record_invest_listview_ll_proportion:
+                orderModel = (OrderModel)v.getTag();
                 onShowProportion(orderModel);
                 break;
         }
@@ -268,16 +265,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
         if( position >= mInvestedProjects.size() ){
             return;
         }
-        OrderModel orderModel = mInvestedProjects.get(position);
-        ArrayList<String> img = new ArrayList<>();
-        try{
-            img = ToolMaster.gsonInstance().fromJson(orderModel.getImageUrl(),
-                    new TypeToken<ArrayList<String>>(){}.getType());
-        }catch (Exception e){
 
-        }
-        ProjectDetailActivity.CallProjectDetailActivity(getActivity(), orderModel.getActivityId(), img,
-                orderModel.getTargetFund(), orderModel.getCurrentFund());
     }
 
     Runnable onUpdateOrderList_r = new Runnable() {
@@ -409,7 +397,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
-            OrderModel orderModel = (OrderModel)getItem(position);
+            final OrderModel orderModel = (OrderModel)getItem(position);
 
 
             ViewHolder viewHolder;
@@ -420,8 +408,8 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 viewHolder.ivLogo = (ImageView)convertView.findViewById(R.id.imageView);
                 viewHolder.tvProjectName = (TextView)convertView.findViewById(R.id.home_record_listview_tv_project_name);
                 viewHolder.tvInvestAmount = (TextView)convertView.findViewById(R.id.home_record_earning_tv_investPrice);
-                viewHolder.tvInvestPriceNum = (TextView)convertView.findViewById(R.id.home_record_listview_tv_invest_price_num);
-                viewHolder.tvInvestStageNum = (TextView)convertView.findViewById(R.id.home_record_listview_tv_invest_stage_num);
+                viewHolder.tvInvestStageNum = (TextView)convertView.findViewById(R.id.home_record_listview_tv_investStageNum);
+                viewHolder.tvInvestTotalPrice = (TextView)convertView.findViewById(R.id.home_record_listview_tv_totalPrice);
                 viewHolder.tvEarningProportion = (TextView)convertView.findViewById(R.id.home_record_listview_tv_earning_proportion);
                 viewHolder.tvEarningProportion.setOnClickListener(InvestRecordFragment.this);
                 viewHolder.tvTargetFund = (TextView)convertView.findViewById(R.id.home_record_listview_tv_targetFund);
@@ -429,6 +417,9 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 viewHolder.tvProgress = (TextView)convertView.findViewById(R.id.invest_record_list_view_tv_progress);
                 viewHolder.tvOrderDate = (TextView)convertView.findViewById(R.id.home_record_listview_tv_orderDate);
                 viewHolder.tvStageInfo = (TextView)convertView.findViewById(R.id.home_record_listview_tv_stageInfo);
+                viewHolder.tvStatus = (TextView)convertView.findViewById(R.id.home_record_listview_tv_status);
+                viewHolder.llProportion = (LinearLayout)convertView.findViewById(R.id.home_record_invest_listview_ll_proportion);
+                viewHolder.llProportion.setOnClickListener(InvestRecordFragment.this);
 
                 convertView.setTag(viewHolder);
             }else{
@@ -437,8 +428,8 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
 
             viewHolder.tvProjectName.setText(orderModel.getActivityName());
 
-            String strCurrentStage = String.format(getString(R.string.project_list_item_stage_info,
-                    (String.valueOf(orderModel.getCurrentStage()) + "/" + orderModel.getTotalStage())));
+            String strCurrentStage = String.format("第%s期",
+                    (String.valueOf(orderModel.getCurrentStage()) + "/" + orderModel.getTotalStage()));
             viewHolder.tvStageInfo.setText(strCurrentStage);
 
 //            viewHolder.tvInvestAmount.setText(String.format(getString(R.string.invest_project_invested_price),
@@ -449,9 +440,10 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 viewHolder.tvInvestAmount.setText(String.format("您已跟投：%s", ToolMaster.convertToPriceString(orderModel.getOrderLines())));
             }
 
-            viewHolder.tvInvestPriceNum.setText(String.format(getString(R.string.invest_project_invested_quantity), orderModel.getPurchaseNum()));
-            viewHolder.tvInvestStageNum.setText(String.format(getString(R.string.invest_project_invested_installments), orderModel.getAdvanceNum()));
+            viewHolder.tvInvestStageNum.setText(String.format("购买期数：%d", orderModel.getPurchaseNum()));
+            viewHolder.tvInvestTotalPrice.setText(String.format("总计：%s", ToolMaster.convertToPriceString(orderModel.getAdvanceNum())));
             viewHolder.tvEarningProportion.setTag(orderModel);
+            viewHolder.llProportion.setTag(orderModel);
             viewHolder.tvTargetFund.setText(ToolMaster.convertToPriceString(orderModel.getTargetFund()));
 
             try{
@@ -473,6 +465,20 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             }catch (JSONException e){
                 e.printStackTrace();
             }
+            viewHolder.ivLogo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ArrayList<String> img = new ArrayList<>();
+                    try{
+                        img = ToolMaster.gsonInstance().fromJson(orderModel.getImageUrl(),
+                                new TypeToken<ArrayList<String>>(){}.getType());
+                    }catch (Exception e){
+
+                    }
+                    ProjectDetailActivity.CallProjectDetailActivity(getActivity(), orderModel.getActivityId(), img,
+                            orderModel.getTargetFund(), orderModel.getCurrentFund());
+                }
+            });
 
             int progress = (int)((float)orderModel.getCurrentFund() / orderModel.getTargetFund() * 100 + 0.5f);
             viewHolder.progressBar.setProgress(progress);
@@ -487,14 +493,16 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             ImageView ivLogo;
             TextView tvProjectName;
             TextView tvInvestAmount;
-            TextView tvInvestPriceNum;
             TextView tvInvestStageNum;
+            TextView tvInvestTotalPrice;
             TextView tvEarningProportion;
             TextView tvTargetFund;
             TextView tvStageInfo;
+            TextView tvStatus;
             ProgressBar progressBar;
             TextView tvProgress;
             TextView tvOrderDate;
+            LinearLayout llProportion;
         }
     }
 }

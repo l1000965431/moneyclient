@@ -106,24 +106,34 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        updateUI();
+    }
+
+    @Override
     public void setUserVisibleHint(boolean isVisibleToUser){
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
-            if(((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserType() != UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
-                handler.post(getWalletBalance_r);
-            }
+            updateUI();
+        }
+    }
 
-            String userPortrait = ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserHeadPortrait();
-            if( userPortrait != null && userPortrait.length() > 0 ){
-                DisplayImageOptions options = new DisplayImageOptions.Builder()
-                        .cacheOnDisk(false)
-                        .cacheInMemory(true)
-                        .showImageOnLoading(R.mipmap.icon_albums)
-                        .imageScaleType(ImageScaleType.EXACTLY)
-                        .displayer(new FadeInBitmapDisplayer(300))
-                        .build();
-                ImageLoader.getInstance().displayImage(userPortrait, mIVPortrait, options);
-            }
+    private void updateUI(){
+        if(((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserType() != UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+            handler.post(getWalletBalance_r);
+        }
+
+        String userPortrait = ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserHeadPortrait();
+        if( userPortrait != null && userPortrait.length() > 0 ){
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .cacheOnDisk(false)
+                    .cacheInMemory(true)
+                    .showImageOnLoading(R.mipmap.icon_albums)
+                    .imageScaleType(ImageScaleType.EXACTLY)
+                    .displayer(new FadeInBitmapDisplayer(300))
+                    .build();
+            ImageLoader.getInstance().displayImage(userPortrait, mIVPortrait, options);
         }
     }
 
