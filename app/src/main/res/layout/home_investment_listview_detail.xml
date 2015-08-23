@@ -306,7 +306,7 @@
                                 android:layout_height="30dp"
                                 android:id="@+id/imageView6"
                                 android:src="@mipmap/icon_editor"
-                                android:tint="#ff7cff00"
+                                android:tint="#ff494949"
                                 android:layout_gravity="center" />
 
                             <TextView
