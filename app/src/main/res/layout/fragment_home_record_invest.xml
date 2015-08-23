@@ -2,13 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent" android:layout_height="wrap_content"
                 android:orientation="horizontal"
-    >
+    android:background="@mipmap/bg">
 
     <com.dragoneye.wjjt.view.RefreshableView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/home_record_invest_refreshableView"
-        android:background="#ff1e1e1e"
         android:paddingLeft="7dp"
         android:paddingRight="7dp">
         <ListView
