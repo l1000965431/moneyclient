@@ -311,6 +311,60 @@
                     android:tint="#7b000000" />
             </LinearLayout>
 
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="57dp"
+                android:orientation="horizontal"
+                android:measureWithLargestChild="false"
+                android:id="@+id/linearLayout21"
+                android:columnCount="10"
+                android:rowCount="10"
+                android:touchscreenBlocksFocus="false"
+                android:background="#18000000"
+                android:paddingRight="10dp"
+                android:paddingLeft="40dp" >
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/imageView8"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/logo2"
+                    android:scaleType="fitXY" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:id="@+id/imageView9"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/icon_point"
+                    android:tint="#ffff4330"
+                    android:layout_marginLeft="-10dp"
+                    android:layout_marginTop="-20dp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="项目提交流程与注意事项"
+                    android:id="@+id/textView"
+                    android:textColor="#ff332b38"
+                    android:textSize="17dp"
+                    android:paddingRight="3dp"
+                    android:paddingLeft="7dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.8" />
+
+                <ImageView
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:id="@+id/imageView13"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/icon_triangle"
+                    android:scaleType="fitXY"
+                    android:tint="#7b000000" />
+            </LinearLayout>
+
         </LinearLayout>
 
 
