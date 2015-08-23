@@ -12,6 +12,7 @@ public interface PreferencesConfig {
     int FRAGMENT_HOME_INVESTMENT = 1;
     int FRAGMENT_HOME_RECORD_INVEST = 2;
     int FRAGMENT_HOME_RECORD_EARNING = 3;
+    int FRAGMENT_HOME_ENTREPRENEUR_RECORD = 4;
 
 
     /**

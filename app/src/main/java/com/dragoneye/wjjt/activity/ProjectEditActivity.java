@@ -119,8 +119,9 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
             mETProfitModel.setText(mDetailModel.getProfitMode());
             mETTeamIntroduce.setText(mDetailModel.getTeamIntroduce());
             mETTags.setText(mDetailModel.getTags());
+        }else {
+            mDetailModel = new MyProjectModel();
         }
-        mDetailModel = new MyProjectModel();
     }
 
     @Override
@@ -269,8 +270,6 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
 
     private void onSelectedImage(){
         goToGallerySelect();
-//        Intent intent = new Intent(this, ImageMulSelectedActivity.class);
-//        startActivity(intent);
     }
 
     private void addImageToShow(Uri uri){
@@ -281,7 +280,6 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
         int currentSize = mImageUri.size();
         mIVImageViews[currentSize].setVisibility(View.VISIBLE);
         ImageLoader.getInstance().displayImage(uri.toString(), mIVImageViews[currentSize]);
-//        mIVImageViews[currentSize].setImageBitmap(ToolMaster.getBitmapFromUri(this, uri));
 
         mImageUri.add(uri);
     }
@@ -299,7 +297,6 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
         for(int i = 0; i < mImageUri.size(); i++){
             mIVImageViews[i].setVisibility(View.VISIBLE);
             ImageLoader.getInstance().displayImage(mImageUri.get(i).toString(), mIVImageViews[i]);
-//            mIVImageViews[i].setImageBitmap(ToolMaster.getBitmapFromUri(this, mImageUri.get(i)));
         }
     }
 
@@ -366,23 +363,19 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
         progressDialog.show();
         mImagesURL.clear();
         mUploadImageUri.clear();
-        if( mIsReeditMode ){
-            Iterator<Uri> iterator = mImageUri.iterator();
-            while(iterator.hasNext()){
-                Uri uri = iterator.next();
-                String uriString = uri.toString();
-                if( uriString.startsWith("http") ){
-                    mImagesURL.add(uriString);
-                }else {
-                    mUploadImageUri.add(uri);
-                }
-            }
-
-            if( mUploadImageUri.isEmpty() ){
-                handler.post(uploadProject_r);
+        Iterator<Uri> iterator = mImageUri.iterator();
+        while(iterator.hasNext()){
+            Uri uri = iterator.next();
+            String uriString = uri.toString();
+            if( uriString.startsWith("http") ){
+                mImagesURL.add(uriString);
             }else {
-                handler.post(uploadOneImage_r);
+                mUploadImageUri.add(uri);
             }
+        }
+
+        if( mUploadImageUri.isEmpty() ){
+            handler.post(uploadProject_r);
         }else {
             handler.post(uploadOneImage_r);
         }
@@ -440,6 +433,10 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
             progressDialog.setMessage("正在提交项目...");
             String json = ToolMaster.gsonInstance().toJson(mImagesURL);
             mDetailModel.setImageUrl(json);
+            mImageUri.clear();
+            for(String url : mImagesURL) {
+                addImageToShow(Uri.parse(url));
+            }
 
 
             String url;
