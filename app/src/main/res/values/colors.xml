@@ -14,4 +14,6 @@
 
     <!-- ProgressActionBarActivity 刷新控件颜色 -->
     <color name="progress_action_bar_progress">#ffffffff</color>
+    <!-- 界面标题栏红色标示 -->
+    <color name="home_red">#ffda233d</color>
 </resources>
