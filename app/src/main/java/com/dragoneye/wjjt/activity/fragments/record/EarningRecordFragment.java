@@ -92,6 +92,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
             }
         });
         mLoadingMoreProxy.reset();
+        mListView.setDividerHeight(0);
 
         mListView.setOnItemClickListener(this);
         mAdapter = new EarningProjectListViewAdapter(getActivity(), mEarningProjects);
@@ -112,7 +113,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
         }catch (Exception e){
 
         }
-        ProjectDetailActivity.CallProjectDetailActivity(getActivity(), myEarningModel.getActivityId(), img,
+        ProjectDetailActivity.CallProjectDetailActivity(getActivity(), myEarningModel.getActivityId(), myEarningModel.getActivityName(),img,
                 1, 1);
     }
 

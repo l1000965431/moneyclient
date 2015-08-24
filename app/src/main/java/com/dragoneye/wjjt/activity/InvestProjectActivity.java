@@ -2,6 +2,7 @@ package com.dragoneye.wjjt.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -207,6 +209,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mIVFallowSubtract = findViewById(R.id.invest_project_iv_fallowSubtract);
         mIVFallowSubtract.setOnClickListener(this);
         mIVFallowArrow = (ImageView)findViewById(R.id.invest_project_iv_fallowArrow);
+
+        String title = mProjectDetailModel.getName();
+        if( title.length() > 10 ){
+            title = title.substring(0, 10) + "...";
+        }
+        setTitle(title);
     }
 
     private void initData(){
@@ -301,6 +309,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             setFallowStageNum(mSelectedFallowStageNum);
             if( mFallowInvestMaxPrice >= 1 ){
                 mETInvestPrice.setText(String.valueOf(1));
+                mETInvestPrice.setSelection(mETInvestPrice.getText().length());
                 updateSrEarningProportion(1);
                 handler.post(new Runnable() {
                     @Override
@@ -651,7 +660,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         return mSelectedFallowStageNum > 0;
     }
 
-    private void onInvest(int investType, int investStageNum, int investPriceNum, int messageType){
+    private void onInvest(int investType, final int investStageNum, final int investPriceNum, int messageType){
         mProgressDialog.setMessage("正在提交");
         mProgressDialog.show();
         HttpParams params = new HttpParams();
@@ -671,12 +680,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             @Override
             public void onSuccess(int i, Header[] headers, String s) {
                 mProgressDialog.dismiss();
-                onInvestResult(s);
+                onInvestResult(s, investStageNum, investPriceNum);
             }
         });
     }
 
-    private void onInvestResult(String s){
+    private void onInvestResult(String s, int investStageNum, int investPriceNum){
         if( s == null ){
             UIHelper.toast(this, "服务器异常");
             return;
@@ -693,10 +702,10 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         AlertDialog alertDialog;
         switch (resultCode){
             case InvestProjectProtocol.INVEST_RESULT_SUCCESS:
-                UIHelper.toast(this, "投资成功");
+                showSuccessDialog(investStageNum, investPriceNum);
                 break;
             case InvestProjectProtocol.INVEST_RESULT_SUCCESS_AND_REFRESH:
-                UIHelper.toast(this, "投资成功");
+                showSuccessDialog(investStageNum, investPriceNum);
                 setResult(RESULT_OK, null);
                 break;
             case InvestProjectProtocol.INVEST_RESULT_IMPROVE_INFO:
@@ -754,6 +763,28 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         }
     }
 
+    private void showSuccessDialog(int investStageNum, int investPriceNum){
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View dialog = inflater.inflate(R.layout.home_investment_listview_order_confirm, null);
+
+        final TextView pricePerStage = (TextView)dialog.findViewById(R.id.payment_tv_totalPrice);
+        final TextView stageNum = (TextView)dialog.findViewById(R.id.payment_tv_stageNum);
+        final TextView totalPrice = (TextView)dialog.findViewById(R.id.textView24);
+        final TextView title = (TextView)dialog.findViewById(R.id.payment_tv_stageInfo);
+
+        String titleString = mProjectDetailModel.getName();
+        titleString = String.format("您已入资 %s 项目", titleString);
+        title.setText(titleString);
+
+        pricePerStage.setText(String.valueOf(investPriceNum));
+        stageNum.setText(String.valueOf(investStageNum));
+        totalPrice.setText(String.valueOf(investStageNum * investPriceNum));
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialog);
+        builder.setCancelable(false);
+        builder.show();
+    }
 
 
     @Override
@@ -779,7 +810,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             }catch (Exception e){
 
             }
-            ProjectDetailActivity.CallProjectDetailActivity(this, mProjectDetailModel.getActivityId(),
+            ProjectDetailActivity.CallProjectDetailActivity(this, mProjectDetailModel.getActivityId(), mProjectDetailModel.getName(),
                     img, mProjectDetailModel.getTargetFund(), mProjectDetailModel.getCurrentFund());
             return true;
         }

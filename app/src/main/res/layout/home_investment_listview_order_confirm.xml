@@ -13,7 +13,9 @@
         android:orientation="vertical"
         android:id="@+id/linearLayout23"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
@@ -94,14 +96,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="入资总金额："
+                            android:text="每期入资金额："
                             android:id="@+id/textView26"
                             android:textSize="15dp"
                             android:textColor="#ffffffff"
                             android:textIsSelectable="false"
                             android:layout_gravity="center"
                             android:gravity="center_vertical"
-                            android:layout_marginLeft="25dp" />
+                            android:layout_marginLeft="10dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -206,21 +208,20 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="确定"
+            android:id="@+id/payment_tv_goToPay"
+            android:layout_gravity="center"
+            android:textSize="15dp"
+            android:background="#ffff4057"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ff2a2a2a"
+            android:layout_below="@+id/linearLayout23"
+            android:layout_centerHorizontal="true"/>
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="确定"
-        android:id="@+id/payment_tv_goToPay"
-        android:layout_gravity="center"
-        android:textSize="15dp"
-        android:background="#ffff4057"
-        android:gravity="center_vertical|center_horizontal"
-        android:textColor="#ff2a2a2a"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/linearLayout23"
-        android:layout_centerHorizontal="true" />
+    </LinearLayout>
 
 </RelativeLayout>

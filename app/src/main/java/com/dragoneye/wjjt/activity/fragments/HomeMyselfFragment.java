@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
+import com.dragoneye.wjjt.activity.AgreementActivity;
 import com.dragoneye.wjjt.activity.ChargeActivity;
 import com.dragoneye.wjjt.activity.EntrepreneurActivity;
 import com.dragoneye.wjjt.activity.ImproveUserInfoActivity;
@@ -80,6 +81,10 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         View userInfoButton = getActivity().findViewById(R.id.home_self_group_linearLayout3);
         userInfoButton.setOnClickListener(this);
 
+        // 开发者注意事项
+        View devStuff = getActivity().findViewById(R.id.home_self_group_dev_stuff);
+        devStuff.setOnClickListener(this);
+
         // 创建新项目
 //        View submitProjectButton = getActivity().findViewById(R.id.linearLayout21);
 //        submitProjectButton.setOnClickListener(this);
@@ -90,6 +95,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
             mTVWalletBalance.setVisibility(View.GONE);
         }else {
 //            submitProjectButton.setVisibility(View.GONE);
+            devStuff.setVisibility(View.GONE);
             handler.post(getWalletBalance_r);
         }
 
@@ -185,6 +191,9 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 //                break;
             case R.id.home_self_group_iv_portrait:
                 onChangePortrait();
+                break;
+            case R.id.home_self_group_dev_stuff:    // 开发者注意事项
+                AgreementActivity.OpenDevStuff(getActivity());
                 break;
         }
     }

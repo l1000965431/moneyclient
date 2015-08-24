@@ -105,6 +105,7 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
         });
         mLoadingMoreProxy.reset();
         mListView.setOnItemClickListener(this);
+        mListView.setDividerHeight(0);
 
         mAdapter = new MyProjectListListViewAdapter(getActivity(), mProjectList);
         mListView.setAdapter(mAdapter);
@@ -185,7 +186,7 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
         }catch (Exception e){
 
         }
-        ProjectDetailActivity.CallProjectDetailActivityFullInfo(getActivity(), img, project.getTargetFund(), 0, project.getMarketAnalysis(),
+        ProjectDetailActivity.CallProjectDetailActivityFullInfo(getActivity(), project.getName(), img, project.getTargetFund(), 0, project.getMarketAnalysis(),
                 project.getProfitMode(), project.getTeamIntroduce(), project.getSummary(), project.getAddress(), project.getActivityIntroduce(),
                 project.getCreateDate(), project.getCategory());
     }

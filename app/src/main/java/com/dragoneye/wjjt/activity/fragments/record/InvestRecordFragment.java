@@ -101,6 +101,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             }
         });
         mLoadingMoreProxy.reset();
+        mListView.setDividerHeight(0);
 
         mListView.setOnItemClickListener(this);
         mAdapter = new InvestmentListViewAdapter(getActivity(), mInvestedProjects);
@@ -483,7 +484,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                     }catch (Exception e){
 
                     }
-                    ProjectDetailActivity.CallProjectDetailActivity(getActivity(), orderModel.getActivityId(), img,
+                    ProjectDetailActivity.CallProjectDetailActivity(getActivity(), orderModel.getActivityId(), orderModel.getActivityName(),img,
                             orderModel.getTargetFund(), orderModel.getCurrentFund());
                 }
             });

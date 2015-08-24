@@ -111,7 +111,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 onRegister();
                 break;
             case R.id.fragment_login_button_agreement:
-                AgreementActivity.CallThisActivity(this);
+                AgreementActivity.OpenAgreement(this);
                 break;
             case R.id.fragment_login_button_ForgotPassword:
                 Intent intent = new Intent(this, RetrievePasswordActivity.class);

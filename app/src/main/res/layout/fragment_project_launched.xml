@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/linearLayout2"
                     android:layout_marginLeft="25dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="26dp"
                     android:layout_marginTop="7dp">
 
                     <TextView
@@ -94,16 +94,6 @@
                         android:layout_gravity="center"
                         android:inputType="number"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="元"
-                        android:id="@+id/textView31"
-                        android:textSize="13dp"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:textColor="#ff727272"
-                        android:layout_marginLeft="3dp"
-                        android:layout_gravity="center" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -112,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/linearLayout3"
                     android:layout_marginLeft="25dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="26dp"
                     android:layout_marginTop="7dp">
 
                     <TextView
@@ -141,16 +131,6 @@
                         android:layout_gravity="center"
                         android:inputType="number"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="天"
-                        android:id="@+id/textView33"
-                        android:textSize="13dp"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:textColor="#ff727272"
-                        android:layout_marginLeft="3dp"
-                        android:layout_gravity="center" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -159,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/linearLayout16"
                     android:layout_marginLeft="25dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="26dp"
                     android:layout_marginTop="7dp" >
 
                     <TextView
@@ -188,16 +168,6 @@
                         android:layout_gravity="center"
                         android:inputType="number"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="人"
-                        android:id="@+id/textView56"
-                        android:textSize="13dp"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:textColor="#ff727272"
-                        android:layout_marginLeft="3dp"
-                        android:layout_gravity="center" />
                 </LinearLayout>
 
                 <LinearLayout

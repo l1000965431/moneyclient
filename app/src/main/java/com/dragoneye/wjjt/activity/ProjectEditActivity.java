@@ -236,7 +236,7 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
                 }
                 break;
             case R.id.fragment_register_Agreement_text:
-                AgreementActivity.CallThisActivity(this);
+                AgreementActivity.OpenAgreement(this);
                 break;
         }
     }

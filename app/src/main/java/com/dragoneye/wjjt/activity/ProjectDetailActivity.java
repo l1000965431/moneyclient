@@ -48,20 +48,22 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
 
     Handler handler = new Handler();
 
-    public static void CallProjectDetailActivity(Context context, String activityId, ArrayList<String> imageUrl, int targetFund, int currentFund){
+    public static void CallProjectDetailActivity(Context context, String activityId, String name ,ArrayList<String> imageUrl, int targetFund, int currentFund){
         Intent intent = new Intent(context, ProjectDetailActivity.class);
         intent.putExtra("activityId", activityId);
+        intent.putExtra("name", name);
         intent.putStringArrayListExtra("imageUrl", imageUrl);
         intent.putExtra("targetFund", targetFund);
         intent.putExtra("currentFund", currentFund);
         context.startActivity(intent);
     }
 
-    public static void CallProjectDetailActivityFullInfo(Context context, ArrayList<String> imageUrl, int targetFund,
+    public static void CallProjectDetailActivityFullInfo(Context context, String name, ArrayList<String> imageUrl, int targetFund,
                                                          int currentFund, String marketAnalyze, String profitMode, String teamIntroduction,
                                                          String summary, String address, String activityIntroduction, Date createDate,
                                                          String category){
         Intent intent = new Intent(context, ProjectDetailActivity.class);
+        intent.putExtra("name", name);
         intent.putStringArrayListExtra("imageUrl", imageUrl);
         intent.putExtra("targetFund", targetFund);
         intent.putExtra("currentFund", currentFund);
@@ -88,6 +90,7 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
     private String mCategory;
 
     private boolean isFullInfo;
+    private String mName;
     private String mSummary;
     private String mAddress;
     private String mActivityIntroduction;
@@ -98,6 +101,7 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
         mTargetFund = intent.getIntExtra("targetFund", 0);
         mCurrentFund = intent.getIntExtra("currentFund", 0);
         isFullInfo = intent.getBooleanExtra("isFullInfo", false);
+        mName = intent.getStringExtra("name");
         if( isFullInfo ){
             mMarketAnalyze = intent.getStringExtra("marketAnalyze");
             mProfitMode = intent.getStringExtra("profitMode");
@@ -188,6 +192,12 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
         int percent = (int)((float)mCurrentFund / mTargetFund * 100 + 0.5f);
         mProgressBar.setProgress(percent);
         mTextViewProjectProgress.setText(String.format("筹款进度: %d%%", percent));
+
+        String title = mName;
+        if( title.length() > 10 ){
+            title = title.substring(0, 10) + "...";
+        }
+        setTitle(title);
     }
 
     private void initData(){

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.BaseActivity;
@@ -35,6 +36,8 @@ public class LogoActivity extends BaseActivity {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         handler.postDelayed(startNextActivity_r, 3000);
         getSupportActionBar().hide();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        try{
 //            Log.d("------", InputChecker.IDCardValidate("11010120050101451X"));
 //        }catch (Exception e){

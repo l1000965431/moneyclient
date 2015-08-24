@@ -2,12 +2,17 @@ package com.dragoneye.wjjt.activity.base;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 
@@ -39,6 +44,16 @@ public class BaseActivity extends ActionBarActivity {
         if( savedInstanceState != null ){
             UserBase userBase = (UserBase)savedInstanceState.getSerializable("currentUser");
             ((MyApplication)getApplication()).setCurrentUser(this, userBase);
+        }
+
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xffda2d4e));
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(0xffda2d4e);
         }
     }
 

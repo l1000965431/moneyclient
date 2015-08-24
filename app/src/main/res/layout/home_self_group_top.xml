@@ -4,6 +4,11 @@
     android:orientation="vertical"
     android:id="@+id/home_investment_listview_detail_late">
 
+    <!--<View-->
+        <!--android:id="@+id/statusBarBackground"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"/>-->
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
@@ -43,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="钱包余额：￥999"
-                        android:id="@+id/textView11"
+                        android:id="@+id/charge_tv_wallet_balance"
                         android:textSize="17dp"
                         android:textColor="#ff585858"
                         android:textIsSelectable="false"

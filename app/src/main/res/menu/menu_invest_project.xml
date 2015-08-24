@@ -3,7 +3,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.dragoneye.wjjt.activity.ProjectDetailActivity">
     <item android:id="@+id/menu_invest_project_detail"
-          android:title="详情"
+          android:title="项目详情"
           android:orderInCategory="100"
           app:showAsAction="ifRoom"/>
 </menu>

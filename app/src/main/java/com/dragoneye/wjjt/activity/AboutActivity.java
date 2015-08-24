@@ -24,7 +24,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener{
     public void onClick(View v){
         switch (v.getId()){
             case R.id.home_self_group_instal_zixin_Provision:
-                AgreementActivity.CallThisActivity(this);
+                AgreementActivity.OpenAgreement(this);
                 break;
         }
     }

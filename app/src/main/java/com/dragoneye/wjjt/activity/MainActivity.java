@@ -3,14 +3,18 @@ package com.dragoneye.wjjt.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -78,6 +82,8 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
     }
 
     private void initView(){
+
+
         viewPager = (ViewPager)findViewById(R.id.viewpager);
 
         investButton = new BottomButton();
