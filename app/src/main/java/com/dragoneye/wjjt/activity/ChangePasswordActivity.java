@@ -52,6 +52,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                     if( mRef.get().tick < 0 ){
                         mRef.get().mTVSendCode.setText("发送验证码");
                         mRef.get().mTVSendCode.setOnClickListener(mRef.get());
+                        mRef.get().mTVSendCode.setBackgroundDrawable(mRef.get().getResources().getDrawable(R.drawable.bg_rounded10blue));
                     }else {
                         mRef.get().mTVSendCode.setText(mRef.get().tick + "秒后再次发送");
                         mRef.get().handler.sendMessageDelayed(mRef.get().handler.obtainMessage(MESSAGE_TICK), 1000);
@@ -71,6 +72,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
         changePasswordActivity = this;
         initView();
         initData();
+        initSMS();
     }
 
     private void initView(){
@@ -97,65 +99,19 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                 onSendCode();
                 break;
             case R.id.change_password_tv_confirmChange:
-                //onConfirmChange();
-                SMSSDK.submitVerificationCode("86",((MyApplication)getApplication()).getCurrentUser(this).getUserId(), mETCode.getText().toString());
+                onConfirmChange();
                 break;
         }
     }
 
     private void onSendCode(){
-       onSendCodeSuccess();
+        onSendCodeSuccess();
         SMSSDK.getVerificationCode("86", ((MyApplication) getApplication()).getCurrentUser(this).getUserId());
-    }
-
-    /**
-     * 向服务器发送请求
-     */
-    Runnable sendRequestCode_r = new Runnable() {
-        @Override
-        public void run() {
-            String phoneNumber = ((MyApplication)getApplication()).getCurrentUser(ChangePasswordActivity.this).getUserId();
-
-            HttpParams params = new HttpParams();
-            params.put(UserProtocol.SEND_CODE_PARAM_USER_ID, phoneNumber);
-
-            HttpClient.atomicPost(ChangePasswordActivity.this, UserProtocol.URL_SEND_CODE, params, new HttpClient.MyHttpHandler() {
-                @Override
-                public void onSuccess(int i, Header[] headers, String s) {
-                    if (s == null) {
-                        UIHelper.toast(ChangePasswordActivity.this, "服务器繁忙");
-                        return;
-                    }
-                    onSendCodeResult(s);
-                }
-            });
-
-        }
-    };
-
-    /**
-     * 请求发送验证码结果
-     * @param result
-     */
-    private void onSendCodeResult(String result){
-        try{
-            int resultCode = Integer.parseInt(result);
-            switch (resultCode){
-                case UserProtocol.SEND_CODE_RESULT_SUCCESS:
-                    UIHelper.toast(this, "验证码发送成功!");
-                    onSendCodeSuccess();
-                    break;
-                case UserProtocol.SEND_CODE_RESULT_FAILED:
-                default:
-                    throw new Exception();
-            }
-        }catch (Exception e){
-            UIHelper.toast(this, "服务器繁忙");
-        }
     }
 
     private void onSendCodeSuccess(){
         mTVSendCode.setOnClickListener(null);
+        mTVSendCode.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_rounded12));
         tick = SEND_CODE_INTERVAL;
         handler.sendMessage(handler.obtainMessage(MESSAGE_TICK));
     }
@@ -165,7 +121,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
             return;
         }
 
-        handler.post(confirmChange_r);
+        SMSSDK.submitVerificationCode("86", ((MyApplication) getApplication()).getCurrentUser(this).getUserId(), mETCode.getText().toString());
     }
 
     Runnable confirmChange_r = new Runnable() {
@@ -256,7 +212,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                     //回调完成
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
                         //提交验证码成功
-                        onConfirmChange();
+                        handler.post(confirmChange_r);
                     }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
                         //获取验证码成功
                         handler.post(SendCode_r);

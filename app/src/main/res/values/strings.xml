@@ -78,6 +78,6 @@
     <string name="home_investment_listview_developer_sign">已通过（请等待我们方客服与您联系，请保持电话畅通）</string>
     <string name="home_investment_listview_developer_fundraising">已开始上线筹款</string>
     <string name="home_investment_listview_developer_end">筹款结束（募集款已发出）</string>
-    <string name="title_activity_retrieve_password">RetrievePasswordActivity</string>
+    <string name="title_activity_retrieve_password">找回密码</string>
 
 </resources>

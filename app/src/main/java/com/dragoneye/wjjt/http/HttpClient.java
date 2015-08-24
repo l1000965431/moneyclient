@@ -66,7 +66,7 @@ public class HttpClient {
 
     public static void atomicPost( final Context context, final String strHttpUrl, HttpParams params, final MyHttpHandler myHttpHandler){
         if( mPostingUrl.contains(strHttpUrl) ){
-            UIHelper.toast(context, "正在访问，请稍后");
+//            UIHelper.toast(context, "正在访问，请稍后");
             myHttpHandler.onPosting();
             return;
         }

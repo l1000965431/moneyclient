@@ -37,6 +37,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     TextView mLoginTextView;
     TextView mRegisterTextView;
+    TextView mTVForgotPassword;
 
     EditText mETUserId;
     EditText mETUserPassword;
@@ -67,6 +68,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         mRegisterTextView.setOnClickListener(this);
         View agreementButton = findViewById(R.id.fragment_login_button_agreement);
         agreementButton.setOnClickListener(this);
+        mTVForgotPassword = (TextView)findViewById(R.id.fragment_login_button_ForgotPassword);
+        mTVForgotPassword.setOnClickListener(this);
 
         mETUserId = (EditText)findViewById(R.id.fragment_login_Enter_account);
         mETUserPassword = (EditText)findViewById(R.id.fragment_login_Enter_password);
@@ -109,6 +112,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.fragment_login_button_agreement:
                 AgreementActivity.CallThisActivity(this);
+                break;
+            case R.id.fragment_login_button_ForgotPassword:
+                Intent intent = new Intent(this, RetrievePasswordActivity.class);
+                startActivity(intent);
                 break;
         }
     }

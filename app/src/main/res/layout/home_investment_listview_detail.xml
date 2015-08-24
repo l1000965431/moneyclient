@@ -22,7 +22,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="170dp"
                 android:id="@+id/investment_project_detail_dot_viewpager"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -395,9 +395,30 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/investment_ll_result_root"
                     android:paddingBottom="10dp"
-                    android:gravity="center_horizontal">
+                    android:id="@+id/investment_ll_proportion_layout">
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="获得收益概率："
+                            android:textSize="12sp"
+                            android:layout_marginTop="7dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginBottom="7dp"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/investment_ll_result_root"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
 
                 </LinearLayout>
 

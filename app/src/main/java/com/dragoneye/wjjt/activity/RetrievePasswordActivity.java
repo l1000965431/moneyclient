@@ -11,10 +11,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
+import com.dragoneye.wjjt.activity.base.BaseActivity;
 import com.dragoneye.wjjt.application.MyApplication;
+import com.dragoneye.wjjt.config.HttpUrlConfig;
+import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
+import com.dragoneye.wjjt.tool.InputChecker;
 import com.dragoneye.wjjt.tool.UIHelper;
 
 import org.apache.http.Header;
@@ -22,9 +26,10 @@ import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
 
+import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 
-public class RetrievePasswordActivity extends ActionBarActivity implements View.OnClickListener{
+public class RetrievePasswordActivity extends BaseActivity implements View.OnClickListener{
 
     private EditText mETUserId;
     private EditText mETNewPassword;
@@ -32,6 +37,8 @@ public class RetrievePasswordActivity extends ActionBarActivity implements View.
     private EditText mETCode;
     private TextView mTVSendCode;
     private TextView mTVConfirm;
+
+    private String mPhoneNumber;
 
     private static final int MESSAGE_TICK = 1;
     private static final int SEND_CODE_INTERVAL = 60;
@@ -51,6 +58,7 @@ public class RetrievePasswordActivity extends ActionBarActivity implements View.
                     if( mRef.get().tick < 0 ){
                         mRef.get().mTVSendCode.setText("发送验证码");
                         mRef.get().mTVSendCode.setOnClickListener(mRef.get());
+                        mRef.get().mTVSendCode.setBackgroundDrawable(mRef.get().getResources().getDrawable(R.drawable.bg_rounded10blue));
                     }else {
                         mRef.get().mTVSendCode.setText(mRef.get().tick + "秒后再次发送");
                         mRef.get().handler.sendMessageDelayed(mRef.get().handler.obtainMessage(MESSAGE_TICK), 1000);
@@ -73,7 +81,11 @@ public class RetrievePasswordActivity extends ActionBarActivity implements View.
         mETRepeatPassword = (EditText)findViewById(R.id.retrieve_password_et_repeatPassword);
         mETCode = (EditText)findViewById(R.id.retrieve_password_et_code);
         mTVSendCode = (TextView)findViewById(R.id.retrieve_password_tv_sendCode);
+        mTVSendCode.setOnClickListener(this);
         mTVConfirm = (TextView)findViewById(R.id.retrieve_password_tv_confirm);
+        mTVConfirm.setOnClickListener(this);
+
+        initSMS();
     }
 
     @Override
@@ -83,65 +95,23 @@ public class RetrievePasswordActivity extends ActionBarActivity implements View.
                 onSendCode();
                 break;
             case R.id.retrieve_password_tv_confirm:
-                //onConfirmChange();
-                SMSSDK.submitVerificationCode("86",((MyApplication)getApplication()).getCurrentUser(this).getUserId(), mETCode.getText().toString());
+                onConfirmChange();
                 break;
         }
     }
 
     private void onSendCode(){
+        if(!InputChecker.isPhoneNumber(mETUserId.getText().toString())){
+            UIHelper.toast(this, "请输入一个正确的手机号码！");
+            return;
+        }
         onSendCodeSuccess();
-        SMSSDK.getVerificationCode("86", ((MyApplication) getApplication()).getCurrentUser(this).getUserId());
-    }
-
-    /**
-     * 向服务器发送请求
-     */
-    Runnable sendRequestCode_r = new Runnable() {
-        @Override
-        public void run() {
-//            String phoneNumber = ((MyApplication)getApplication()).getCurrentUser(ChangePasswordActivity.this).getUserId();
-//
-//            HttpParams params = new HttpParams();
-//            params.put(UserProtocol.SEND_CODE_PARAM_USER_ID, phoneNumber);
-//
-//            HttpClient.atomicPost(ChangePasswordActivity.this, UserProtocol.URL_SEND_CODE, params, new HttpClient.MyHttpHandler() {
-//                @Override
-//                public void onSuccess(int i, Header[] headers, String s) {
-//                    if (s == null) {
-//                        UIHelper.toast(ChangePasswordActivity.this, "服务器繁忙");
-//                        return;
-//                    }
-//                    onSendCodeResult(s);
-//                }
-//            });
-
-        }
-    };
-
-    /**
-     * 请求发送验证码结果
-     * @param result
-     */
-    private void onSendCodeResult(String result){
-        try{
-            int resultCode = Integer.parseInt(result);
-            switch (resultCode){
-                case UserProtocol.SEND_CODE_RESULT_SUCCESS:
-                    UIHelper.toast(this, "验证码发送成功!");
-                    onSendCodeSuccess();
-                    break;
-                case UserProtocol.SEND_CODE_RESULT_FAILED:
-                default:
-                    throw new Exception();
-            }
-        }catch (Exception e){
-            UIHelper.toast(this, "服务器繁忙");
-        }
+        SMSSDK.getVerificationCode("86", mETUserId.getText().toString());
     }
 
     private void onSendCodeSuccess(){
         mTVSendCode.setOnClickListener(null);
+        mTVSendCode.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_rounded12));
         tick = SEND_CODE_INTERVAL;
         handler.sendMessage(handler.obtainMessage(MESSAGE_TICK));
     }
@@ -151,29 +121,27 @@ public class RetrievePasswordActivity extends ActionBarActivity implements View.
             return;
         }
 
-        handler.post(confirmChange_r);
+        SMSSDK.submitVerificationCode("86", mETUserId.getText().toString(), mETCode.getText().toString());
     }
 
     Runnable confirmChange_r = new Runnable() {
         @Override
         public void run() {
-//            HttpParams params = new HttpParams();
-//
-//            params.put(UserProtocol.CHANGE_PASSWORD_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser(ChangePasswordActivity.this).getUserId());
-//            params.put(UserProtocol.CHANGE_PASSWORD_PARAM_OLD_PASSWORD, mETOldPassword.getText());
-//            params.put(UserProtocol.CHANGE_PASSWORD_PARAM_NEW_PASSWORD, mETNewPassword.getText());
-//            params.put(UserProtocol.CHANGE_PASSWORD_PARAM_CODE, mETCode.getText());
-//
-//            HttpClient.atomicPost(ChangePasswordActivity.this, UserProtocol.URL_CHANGE_PASSWORD, params, new HttpClient.MyHttpHandler() {
-//                @Override
-//                public void onSuccess(int i, Header[] headers, String s) {
-//                    if (s == null) {
-//                        UIHelper.toast(ChangePasswordActivity.this, "服务器繁忙，请稍后再试");
-//                        return;
-//                    }
-//                    onChangeResult(s);
-//                }
-//            });
+            HttpParams params = new HttpParams();
+
+            params.put("userId", mETUserId.getText().toString());
+            params.put("newPassword", mETNewPassword.getText());
+
+            HttpClient.atomicPost(RetrievePasswordActivity.this, HttpUrlConfig.URL_ROOT + "User/RetrievePassword", params, new HttpClient.MyHttpHandler() {
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    if (s == null) {
+                        UIHelper.toast(RetrievePasswordActivity.this, "服务器繁忙，请稍后再试");
+                        return;
+                    }
+                    onChangeResult(s);
+                }
+            });
         }
     };
 
@@ -181,16 +149,12 @@ public class RetrievePasswordActivity extends ActionBarActivity implements View.
         try{
             int resultCode = Integer.parseInt(result);
             switch (resultCode){
-                case UserProtocol.CHANGE_PASSWORD_RESULT_CODE_INCORRECT:
-                    UIHelper.toast(this, "验证码错误");
-                    break;
-                case UserProtocol.CHANGE_PASSWORD_RESULT_SUCCESS:
-                    UIHelper.toast(this, "修改成功");
-                    finish();
-                    break;
-                case UserProtocol.CHANGE_PASSWORD_RESULT_FAILED:
+                case 0:
                     UIHelper.toast(this, "修改失败");
                     break;
+                case 1:
+                    UIHelper.toast(this, "找回密码成功");
+                    finish();
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -217,5 +181,44 @@ public class RetrievePasswordActivity extends ActionBarActivity implements View.
         }
 
         return true;
+    }
+
+    Runnable SendCode_r = new Runnable() {
+        @Override
+        public void run() {
+            UIHelper.toast(RetrievePasswordActivity.this, "短信已经发送,请注意查收");
+        }
+    };
+
+    Runnable SendCodeError_r = new Runnable() {
+        @Override
+        public void run() {
+            UIHelper.toast(RetrievePasswordActivity.this, "短信验证失败");
+        }
+    };
+
+    private void initSMS(){
+        SMSSDK.initSDK(this, PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET);
+        SMSSDK.registerEventHandler( new EventHandler(){
+            @Override
+            public void afterEvent(int event, int result, Object data) {
+                if (result == SMSSDK.RESULT_COMPLETE) {
+                    //回调完成
+                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                        //提交验证码成功
+                        handler.post(confirmChange_r);
+                    }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+                        //获取验证码成功
+                        handler.post(SendCode_r);
+                        //UIHelper.toast(registerActivity, "短信已经发送,请注意查收");
+                    }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
+                        //返回支持发送验证码的国家列表
+                    }
+                }else{
+                    handler.post(SendCodeError_r);
+                    //((Throwable)data).printStackTrace();
+                }
+            }
+        });
     }
 }

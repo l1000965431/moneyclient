@@ -35,7 +35,7 @@
 
                 <TextView
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="fill_parent"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="市场分析"
                     android:id="@+id/project_detail_tv_marketAnalyze"
@@ -50,7 +50,7 @@
 
                 <TextView
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="fill_parent"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="盈利模式"
                     android:id="@+id/project_detail_tv_profitMode"
@@ -65,7 +65,7 @@
 
                 <TextView
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="fill_parent"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="团队介绍"
                     android:id="@+id/project_detail_tv_teamIntroduction"

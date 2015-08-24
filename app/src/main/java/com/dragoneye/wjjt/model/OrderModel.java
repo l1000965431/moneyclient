@@ -6,6 +6,24 @@ import java.util.Date;
  * Created by happysky on 15-7-29.
  */
 public class OrderModel {
+    //上线项目未开始
+    public final static int ONLINE_ACTIVITY_NOSTART = 0;
+
+    //上线项目开始
+    public final static int ONLINE_ACTIVITY_START = 1;
+
+    //上线项目完成
+    public final static int ONLINE_ACTIVITY_COMPLETE = 2;
+
+    //上线项目结算
+    public final static int ONLINE_ACTIVITY_SETTLEMENT = 3;
+
+    //上线项目错误
+    public final static int ONLINE_ACTIVITY_ERROR = 4;
+
+    //上线项目错误
+    public final static int ONLINE_ACTIVITY_FAILED = 5;
+
     /**
      * 订单状态
      */
@@ -30,6 +48,9 @@ public class OrderModel {
      * 领投还是跟投
      */
     private int purchaseType;
+
+
+    private int orderStartAdvance;
 
     /***
      * 中奖信息缓存
@@ -193,5 +214,22 @@ public class OrderModel {
 
     public void setProportionInfo(String proportionInfo) {
         this.proportionInfo = proportionInfo;
+    }
+
+    public String getStatusString(){
+        switch (status){
+            case ONLINE_ACTIVITY_COMPLETE:
+                return "众筹已结束";
+            default:
+                return "众筹中";
+        }
+    }
+
+    public int getOrderStartAdvance() {
+        return orderStartAdvance;
+    }
+
+    public void setOrderStartAdvance(int orderStartAdvance) {
+        this.orderStartAdvance = orderStartAdvance;
     }
 }

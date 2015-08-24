@@ -328,6 +328,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 OrderModel orderModel = new OrderModel();
                 orderModel.setPurchaseNum(object.getInt("PurchaseNum"));
                 orderModel.setAdvanceNum(object.getInt("AdvanceNum"));
+                orderModel.setOrderStartAdvance(object.getInt("OrderStartAndvance"));
                 orderModel.setOrderLines(object.getInt("orderLines"));
                 orderModel.setPurchaseType(object.getInt("purchaseType"));
                 String dateString = object.getString("orderDate");
@@ -431,17 +432,24 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             String strCurrentStage = String.format("第%s期",
                     (String.valueOf(orderModel.getCurrentStage()) + "/" + orderModel.getTotalStage()));
             viewHolder.tvStageInfo.setText(strCurrentStage);
+            viewHolder.tvStatus.setText(orderModel.getStatusString());
 
 //            viewHolder.tvInvestAmount.setText(String.format(getString(R.string.invest_project_invested_price),
 //                    ToolMaster.convertToPriceString(orderModel.getOrderLines())));
             if(orderModel.getPurchaseType() == 1){
-                viewHolder.tvInvestAmount.setText(String.format("您已领投：%s", ToolMaster.convertToPriceString(orderModel.getOrderLines())));
+                viewHolder.tvInvestAmount.setText(String.format("您已领投：%s", ToolMaster.convertToPriceString(orderModel.getPurchaseNum())));
             }else {
-                viewHolder.tvInvestAmount.setText(String.format("您已跟投：%s", ToolMaster.convertToPriceString(orderModel.getOrderLines())));
+                viewHolder.tvInvestAmount.setText(String.format("您已跟投：%s", ToolMaster.convertToPriceString(orderModel.getPurchaseNum())));
             }
 
-            viewHolder.tvInvestStageNum.setText(String.format("购买期数：%d", orderModel.getPurchaseNum()));
-            viewHolder.tvInvestTotalPrice.setText(String.format("总计：%s", ToolMaster.convertToPriceString(orderModel.getAdvanceNum())));
+            if( orderModel.getAdvanceNum() > 1 ){
+                viewHolder.tvInvestStageNum.setText(String.format("购买期数：%d - %d", orderModel.getOrderStartAdvance(),
+                        orderModel.getOrderStartAdvance() + orderModel.getAdvanceNum() - 1));
+            }else {
+                viewHolder.tvInvestStageNum.setText("购买期数：1");
+            }
+
+            viewHolder.tvInvestTotalPrice.setText(String.format("总计：%s", ToolMaster.convertToPriceString(orderModel.getOrderLines())));
             viewHolder.tvEarningProportion.setTag(orderModel);
             viewHolder.llProportion.setTag(orderModel);
             viewHolder.tvTargetFund.setText(ToolMaster.convertToPriceString(orderModel.getTargetFund()));

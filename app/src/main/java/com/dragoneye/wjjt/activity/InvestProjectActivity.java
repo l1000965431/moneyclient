@@ -545,8 +545,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     }
 
     private void setProportion(TextView textView, float proportion, int price, boolean isBr){
-        if( proportion > 99.0f ){
-            proportion = 99.0f;
+        if( proportion > 99.9f ){
+            proportion = 99.9f;
         }
         if( proportion == 0 ){
             proportion = 0.1f;
