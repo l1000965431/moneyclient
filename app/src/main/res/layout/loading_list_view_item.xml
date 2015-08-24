@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/loading_list_view_item_textView"
             android:text="加载中"
-            />
+            android:textColor="#ffffffff"/>
 
         <ProgressBar
             android:layout_width="30dip"

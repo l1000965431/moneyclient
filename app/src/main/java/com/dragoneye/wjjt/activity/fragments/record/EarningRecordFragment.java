@@ -78,7 +78,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                     }
                 });
             }
-        }, PreferencesConfig.FRAGMENT_HOME_RECORD_INVEST);
+        }, PreferencesConfig.FRAGMENT_HOME_RECORD_EARNING);
         refreshableView.setTextColor(Color.WHITE);
         refreshableView.setArrowColor(Color.WHITE);
 

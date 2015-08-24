@@ -42,13 +42,16 @@ public class EntrepreneurActivity extends DoubleClickExitActivity implements Vie
         public ImageView imageView;
         public ImageView dot;
         public TextView textView;
+        public LinearLayout background;
         public void setChecked(boolean checked){
             if(checked){
                 imageView.setColorFilter(getResources().getColor(R.color.home_bottom_button_selected));
                 textView.setTextColor(getResources().getColor(R.color.home_bottom_button_selected));
+                background.setBackgroundColor(0xffca0025);
             }else {
                 imageView.setColorFilter(getResources().getColor(R.color.home_bottom_button_unselected));
                 textView.setTextColor(getResources().getColor(R.color.home_bottom_button_unselected));
+                background.setBackgroundColor(0xffda2d4e);
             }
         }
         public void setShowDot(boolean isShow){
@@ -80,15 +83,15 @@ public class EntrepreneurActivity extends DoubleClickExitActivity implements Vie
         projectListButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_record_imageView);
         projectListButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_record_textView);
         projectListButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_record_red);
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_record);
-        linearLayout.setOnClickListener(this);
+        projectListButton.background = (LinearLayout)findViewById(R.id.function_switch_bottom_dev_button_record);
+        projectListButton.background.setOnClickListener(this);
 
         myselfButton = new BottomButton();
         myselfButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_me_imageView);
         myselfButton.textView = (TextView)findViewById(R.id.function_switch_bottom_button_me_textView);
         myselfButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_me_red);
-        linearLayout = (LinearLayout)findViewById(R.id.function_switch_bottom_button_me);
-        linearLayout.setOnClickListener(this);
+        myselfButton.background = (LinearLayout)findViewById(R.id.function_switch_bottom_dev_button_me);
+        myselfButton.background.setOnClickListener(this);
 
         mFragmentAdapter = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mFragmentAdapter);
@@ -124,6 +127,8 @@ public class EntrepreneurActivity extends DoubleClickExitActivity implements Vie
             }
         };
         viewPager.setOnPageChangeListener(onPageChangeListener);
+        projectListButton.setChecked(true);
+        currentCheckedButton = projectListButton;
     }
 
 
@@ -135,10 +140,10 @@ public class EntrepreneurActivity extends DoubleClickExitActivity implements Vie
     @Override
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.function_switch_bottom_button_record:
+            case R.id.function_switch_bottom_dev_button_record:
                 viewPager.setCurrentItem(TAB_PROJECT_LIST);
                 break;
-            case R.id.function_switch_bottom_button_me:
+            case R.id.function_switch_bottom_dev_button_me:
                 viewPager.setCurrentItem(TAB_MYSELF);
                 break;
             default:

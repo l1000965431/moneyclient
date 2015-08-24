@@ -41,6 +41,7 @@ import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.user.CurrentUser;
 import com.dragoneye.wjjt.user.UserBase;
 import com.dragoneye.wjjt.view.GridViewWithHeaderAndFooter;
+import com.dragoneye.wjjt.view.LoadingMoreFooterProxy;
 import com.dragoneye.wjjt.view.RefreshableView;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -64,6 +65,8 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
 
     private Handler handler = new Handler();
 
+    LoadingMoreFooterProxy mLoadingMoreProxy;
+    private int mCurPageIndex;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -84,13 +87,23 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
         refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
             @Override
             public void onRefresh() {
+                mLoadingMoreProxy.reset();
+                mCurPageIndex = -1;
                 handler.post(updateInvestmentList_r);
             }
-        }, PreferencesConfig.FRAGMENT_HOME_INVESTMENT);
+        }, PreferencesConfig.FRAGMENT_HOME_ENTREPRENEUR_RECORD);
         refreshableView.setTextColor(Color.WHITE);
         refreshableView.setArrowColor(Color.WHITE);
 
         mListView = (ListView)getActivity().findViewById(R.id.home_entrepreneur_list_view);
+        mLoadingMoreProxy = new LoadingMoreFooterProxy(getActivity(), mListView);
+        mLoadingMoreProxy.setOnLoadingMoreListener(new LoadingMoreFooterProxy.OnLoadingMoreListener() {
+            @Override
+            public void onLoadingMore() {
+                handler.post(updateInvestmentList_r);
+            }
+        });
+        mLoadingMoreProxy.reset();
         mListView.setOnItemClickListener(this);
 
         mAdapter = new MyProjectListListViewAdapter(getActivity(), mProjectList);
@@ -98,39 +111,46 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
     }
 
     private void initData(){
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        handler.post(updateInvestmentList_r);
-    }
-
-    @Override
-    public void onSelected(){
-        super.onSelected();
+        mCurPageIndex = -1;
+        refreshableView.doRefreshImmediately();
     }
 
     Runnable updateInvestmentList_r = new Runnable() {
         @Override
         public void run() {
             HttpParams params = new HttpParams();
+            params.put("pageIndex", mCurPageIndex + 1);
+            params.put("numPerPage", 10);
             params.put("userId", ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserId());
 
             HttpClient.atomicPost(getActivity(), GetMyProjectListProtocol.URL_GET_MY_PROJECT_LIST, params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("", "update project list failure-> " + s);
                     refreshableView.finishRefreshing();
+                    if (mLoadingMoreProxy.isLoadingMore()) {
+                        mLoadingMoreProxy.setLoadingFailed();
+                    }
                 }
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
-                    ArrayList<MyProjectModel> detailModels = jsonToProjectList(s);
-                    mProjectList.clear();
-                    mProjectList.addAll(detailModels);
-                    mAdapter.notifyDataSetChanged();
                     refreshableView.finishRefreshing();
+                    ArrayList<MyProjectModel> detailModels = jsonToProjectList(s);
+                    mCurPageIndex += 1;
+                    if ( mLoadingMoreProxy.isLoadingMore() ) {
+                        if(detailModels.isEmpty()){
+                            mLoadingMoreProxy.finishLoadingMore(true);
+                        }else {
+                            mProjectList.addAll(detailModels);
+                            mAdapter.notifyDataSetChanged();
+                            mLoadingMoreProxy.finishLoadingMore(false);
+                        }
+                    } else {
+                        mLoadingMoreProxy.reset();
+                        mProjectList.clear();
+                        mProjectList.addAll(detailModels);
+                        mAdapter.notifyDataSetChanged();
+                    }
                 }
             });
         }

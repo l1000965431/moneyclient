@@ -110,34 +110,13 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
 
     private void initData(){
         mCurPageIndex = -1;
-//        handler.post(updateInvestmentList_r);
         refreshableView.doRefreshImmediately();
     }
 
-    @Override
-    public void onSelected(){
-        super.onSelected();
-        int a = 0;
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-////                refreshableView.doRefreshImmediately();
-//                refreshableView.finishRefreshing();
-//            }
-//        }, 2000);
-    }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser){
         super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser) {
-//            handler.post(new Runnable() {
-//                @Override
-//                public void run() {
-////                    refreshableView.finishRefreshing();
-//                }
-//            });
-//        }
     }
 
     Runnable updateInvestmentList_r = new Runnable() {

@@ -280,6 +280,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             mIVLeadArrow.setRotation(0);
             mSelectedLeadStageNum = 1;
             setLeadStageNum(mSelectedLeadStageNum);
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mScrollView.fullScroll(View.FOCUS_DOWN);
+                }
+            });
         }
     }
 
