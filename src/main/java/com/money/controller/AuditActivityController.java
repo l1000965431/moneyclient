@@ -66,12 +66,12 @@ public class AuditActivityController extends ControllerBase implements IControll
     @ResponseBody
     public String getUserActivityList(HttpServletRequest request, HttpServletResponse response) {
 
-//        int pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
-//        int pageNum = Integer.parseInt(request.getParameter("pageNum"));
+        int pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
+        int pageNum = Integer.parseInt(request.getParameter("numPerPage"));
         String userId = request.getParameter("userId");
 
 
-        List<ActivityVerifyModel> list = serviceAuditActivity.getUserActivityList(userId, 0, 1000);
+        List<ActivityVerifyModel> list = serviceAuditActivity.getUserActivityList(userId, pageIndex, pageNum);
 
         String json = GsonUntil.JavaClassListToJsonList(list);
         return json;
