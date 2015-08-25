@@ -25,4 +25,8 @@ public class BaseFragment extends Fragment{
     public void onShow(){
 
     }
+
+    public void onHide(){
+
+    }
 }

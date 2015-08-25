@@ -79,6 +79,8 @@ public class OrderModel {
 
     private Date orderDate;
 
+    private String id;
+
 
     public int getOrderState() {
         return orderState;
@@ -231,5 +233,13 @@ public class OrderModel {
 
     public void setOrderStartAdvance(int orderStartAdvance) {
         this.orderStartAdvance = orderStartAdvance;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

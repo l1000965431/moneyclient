@@ -2,7 +2,6 @@ package com.dragoneye.wjjt.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -131,12 +130,13 @@ public class ChargeActivity extends BaseActivity implements View.OnClickListener
     public void onClick(View v){
         switch (v.getId()){
             case R.id.invest_project_tv_confirm:
-                onTest();
+                onCharge();
+                finish();
                 break;
         }
     }
 
-    private void onTest(){
+    private void onCharge(){
         PayActivity.SHOW_CHANNEL_WECHAT = true;
         //打开支付宝按钮
         PayActivity.SHOW_CHANNEL_ALIPAY = true;

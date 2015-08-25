@@ -54,7 +54,7 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
             }else {
                 imageView.setColorFilter(getResources().getColor(R.color.home_bottom_button_unselected));
                 textView.setTextColor(getResources().getColor(R.color.home_bottom_button_unselected));
-                background.setBackgroundColor(0xffda2d4e);
+                background.setBackgroundColor(getResources().getColor(R.color.home_red));
             }
         }
         public void setShowDot(boolean isShow){

@@ -10,12 +10,7 @@ import android.util.Log;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.config.PreferencesConfig;
-import com.dragoneye.wjjt.config.ProjectStatusConfig;
 import com.dragoneye.wjjt.dao.MyDaoMaster;
-import com.dragoneye.wjjt.dao.Project;
-import com.dragoneye.wjjt.dao.ProjectDao;
-import com.dragoneye.wjjt.dao.ProjectImage;
-import com.dragoneye.wjjt.dao.ProjectImageDao;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.user.UserBase;
