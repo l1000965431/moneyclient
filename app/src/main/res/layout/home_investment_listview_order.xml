@@ -209,9 +209,9 @@
         android:id="@+id/payment_tv_goToPay"
         android:layout_gravity="center"
         android:textSize="15dp"
-        android:background="#ffff4057"
+        android:background="@color/home_red"
         android:gravity="center_vertical|center_horizontal"
-        android:textColor="#ff2a2a2a"
+        android:textColor="#ffffffff"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
