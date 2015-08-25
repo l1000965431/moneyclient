@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,6 +29,8 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
+import com.umeng.message.UmengMessageHandler;
+import com.umeng.message.entity.UMessage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,9 +44,10 @@ import cn.smssdk.SMSSDK;
  */
 public class MyApplication extends Application {
     public ArrayList<Integer> images = new ArrayList<>();
+    private PushAgent mPushAgent;
 
     @Override
-    public void onCreate(){
+    public void onCreate() {
         super.onCreate();
         MyDaoMaster.init(this);
         HttpClient.initHttpClient(this);
@@ -51,13 +55,13 @@ public class MyApplication extends Application {
         initImageLoader();
         AnalyticsConfig.enableEncrypt(true);
         MobclickAgent.updateOnlineConfig(this);
-        PushAgent mPushAgent = PushAgent.getInstance( this );
+        mPushAgent = PushAgent.getInstance(this);
         mPushAgent.enable();
         PushAgent.getInstance(this).onAppStart();
         /*SMSSDK.initSDK(this, PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET);*/
 
-        Log.d("UMENG TEST", getDeviceInfo(this));
-
+        //Log.d("UMENG TEST", getDeviceInfo(this));
+        CreatePushMessageHandle();
 
         images.add(R.mipmap.icon_albums);
     }
@@ -65,11 +69,12 @@ public class MyApplication extends Application {
     /**
      * 友盟测试函数
      * 获取设备信息
+     *
      * @param context
      * @return
      */
     public static String getDeviceInfo(Context context) {
-        try{
+        try {
             org.json.JSONObject json = new org.json.JSONObject();
             android.telephony.TelephonyManager tm = (android.telephony.TelephonyManager) context
                     .getSystemService(Context.TELEPHONY_SERVICE);
@@ -81,18 +86,18 @@ public class MyApplication extends Application {
             String mac = wifi.getConnectionInfo().getMacAddress();
             json.put("mac", mac);
 
-            if( TextUtils.isEmpty(device_id) ){
+            if (TextUtils.isEmpty(device_id)) {
                 device_id = mac;
             }
 
-            if( TextUtils.isEmpty(device_id) ){
-                device_id = android.provider.Settings.Secure.getString(context.getContentResolver(),android.provider.Settings.Secure.ANDROID_ID);
+            if (TextUtils.isEmpty(device_id)) {
+                device_id = android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
             }
 
             json.put("device_id", device_id);
 
             return json.toString();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -140,7 +145,7 @@ public class MyApplication extends Application {
 //
 //    }
 
-    private void initImageLoader(){
+    private void initImageLoader() {
         File cacheDir = StorageUtils.getOwnCacheDirectory(getApplicationContext(), "imageLoader/Cache");
         DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .cacheOnDisk(true)
@@ -178,14 +183,14 @@ public class MyApplication extends Application {
         mList.add(activity);
     }
 
-    public static void removeActivity(Activity a){
+    public static void removeActivity(Activity a) {
         mList.remove(a);
     }
 
     //关闭每一个list内的activity
     public static void exit() {
         try {
-            for (Activity activity:mList) {
+            for (Activity activity : mList) {
                 if (activity != null)
                     activity.finish();
             }
@@ -197,13 +202,13 @@ public class MyApplication extends Application {
         }
     }
 
-    public  UserBase getCurrentUser(Context context) {
-        if( mUser == null ){
+    public UserBase getCurrentUser(Context context) {
+        if (mUser == null) {
             String json = PreferenceManager.getDefaultSharedPreferences(context).getString(
                     PreferencesConfig.LAST_LOGIN_USER_DATA, "");
-            try{
+            try {
                 mUser = ToolMaster.gsonInstance().fromJson(json, UserBase.class);
-            }catch (Exception e){
+            } catch (Exception e) {
                 mUser = null;
             }
         }
@@ -227,24 +232,43 @@ public class MyApplication extends Application {
         mToken = token;
     }
 
-    public void setUserLoginSuccess(Context context){
+    public void setUserLoginSuccess(Context context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(
                 PreferencesConfig.IS_USER_LOGIN_DATA_OUT_OF_DATE, false
         ).apply();
     }
 
-    public boolean isUserOutOfDate(Context context){
-        if( getCurrentUser(context) == null || PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
-                PreferencesConfig.IS_USER_LOGIN_DATA_OUT_OF_DATE, true)){
+    public boolean isUserOutOfDate(Context context) {
+        if (getCurrentUser(context) == null || PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
+                PreferencesConfig.IS_USER_LOGIN_DATA_OUT_OF_DATE, true)) {
             return true;
         }
 
         return false;
     }
 
-    public void setUserOutOfDate(Context context){
+    public void setUserOutOfDate(Context context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(
                 PreferencesConfig.IS_USER_LOGIN_DATA_OUT_OF_DATE, true
         ).apply();
+    }
+
+    private void CreatePushMessageHandle() {
+        UmengMessageHandler messageHandler = new UmengMessageHandler() {
+            @Override
+            public void dealWithCustomMessage(final Context context, final UMessage msg) {
+                new Handler(getMainLooper()).post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        //显示收益的红点
+                        if (msg.custom.equals("redpoint")) {
+
+                        }
+                    }
+                });
+            }
+        };
+        mPushAgent.setMessageHandler(messageHandler);
     }
 }
