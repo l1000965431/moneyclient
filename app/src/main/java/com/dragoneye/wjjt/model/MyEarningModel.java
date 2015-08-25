@@ -15,6 +15,7 @@ public class MyEarningModel {
     private int earningPrice;
     private String activityName;
     private Date earningDate;
+    private int id;
 
     public String getActivityId() {
         return activityId;
@@ -78,5 +79,13 @@ public class MyEarningModel {
 
     public void setActivityTotalStage(int activityTotalStage) {
         this.activityTotalStage = activityTotalStage;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

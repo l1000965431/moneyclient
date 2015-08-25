@@ -17,6 +17,7 @@ import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
+import com.dragoneye.wjjt.view.RoundCornerImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -39,7 +40,7 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
     TextView mTVUserId;
     TextView mTVAddress;
     TextView mTVSexuality;
-    ImageButton mIBPortrait;
+    RoundCornerImageView mIBPortrait;
 
     private String mUploadToken;
     ProgressDialog progressDialog;
@@ -62,7 +63,7 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
         mTVUserId = (TextView)findViewById(R.id.home_self_group_pinfo_linearLayout2_num);
         mTVAddress = (TextView)findViewById(R.id.home_self_group_pinfo_linearLayout3_num);
         mTVSexuality = (TextView)findViewById(R.id.home_self_group_pinfo_linearLayout5_num);
-        mIBPortrait = (ImageButton)findViewById(R.id.home_self_group_pinfo_imageButton1_group);
+        mIBPortrait = (RoundCornerImageView)findViewById(R.id.home_self_group_pinfo_imageButton1_group);
         mIBPortrait.setOnClickListener(this);
         String userPortrait = ((MyApplication)getApplication()).getCurrentUser(this).getUserHeadPortrait();
         if( userPortrait != null && userPortrait.length() > 0 ){

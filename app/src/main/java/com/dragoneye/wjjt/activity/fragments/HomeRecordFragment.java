@@ -52,13 +52,16 @@ public class HomeRecordFragment extends BaseFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
-            if(mViewPager != null){
-                int curPos = mViewPager.getCurrentItem();
-                BaseFragment baseFragment = (BaseFragment)((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(curPos);
+        if(mViewPager != null){
+            int curPos = mViewPager.getCurrentItem();
+            BaseFragment baseFragment = (BaseFragment)((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(curPos);
+            if(isVisibleToUser){
                 baseFragment.onShow();
+            }else {
+                baseFragment.onHide();
             }
         }
+
     }
 
     private void initView(){

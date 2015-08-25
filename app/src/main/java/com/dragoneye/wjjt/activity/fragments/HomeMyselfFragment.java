@@ -25,6 +25,7 @@ import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
+import com.dragoneye.wjjt.view.RoundCornerImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -38,7 +39,7 @@ import org.apache.http.Header;
 public class HomeMyselfFragment extends BaseFragment implements View.OnClickListener{
     private TextView mTVUserName;
     private TextView mTVWalletBalance;
-    private ImageView mIVPortrait;
+    private RoundCornerImageView mIVPortrait;
 
     Handler handler = new Handler();
 
@@ -62,7 +63,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         mTVWalletBalance = (TextView)getActivity().findViewById(R.id.textView17);
         View walletDesc = getActivity().findViewById(R.id.textView16);
 
-        mIVPortrait = (ImageView)getActivity().findViewById(R.id.home_self_group_iv_portrait);
+        mIVPortrait = (RoundCornerImageView)getActivity().findViewById(R.id.home_self_group_iv_portrait);
 
 
         // 充值

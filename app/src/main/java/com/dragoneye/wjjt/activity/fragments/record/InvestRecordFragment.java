@@ -24,6 +24,9 @@ import com.dragoneye.wjjt.activity.ProjectDetailActivity;
 import com.dragoneye.wjjt.activity.fragments.BaseFragment;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.PreferencesConfig;
+import com.dragoneye.wjjt.dao.InvestRecord;
+import com.dragoneye.wjjt.dao.InvestRecordDao;
+import com.dragoneye.wjjt.dao.MyDaoMaster;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.model.EarningModel;
@@ -47,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * Created by happysky on 15-8-17.
@@ -114,16 +119,40 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
-            if( refreshableView != null ){
-                refreshableView.doRefreshImmediately();
-            }
+            doRefresh();
+        }else {
+            setNewRead();
         }
     }
 
     @Override
     public void onShow(){
+        doRefresh();
+    }
+
+    @Override
+    public void onHide(){
+        setNewRead();
+    }
+
+    private void doRefresh(){
         if( refreshableView != null ){
             refreshableView.doRefreshImmediately();
+        }
+    }
+
+    private void setNewRead(){
+        if(refreshableView != null){
+            InvestRecordDao dao = MyDaoMaster.getDaoSession().getInvestRecordDao();
+
+            QueryBuilder queryBuilder = dao.queryBuilder();
+            queryBuilder.where(InvestRecordDao.Properties.IsRead.eq(false));
+
+            List<InvestRecord> unReadList = queryBuilder.list();
+            for(InvestRecord earningRecord : unReadList){
+                earningRecord.setIsRead(true);
+            }
+            dao.updateInTx(unReadList);
         }
     }
 
@@ -246,8 +275,8 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
     }
 
     private String getProportionString(float proportion, int price){
-        if( proportion > 99.0f ){
-            proportion = 99.0f;
+        if( proportion > 99.99f ){
+            proportion = 99.99f;
         }
         if( proportion == 0 ){
             proportion = 0.1f;
@@ -255,9 +284,9 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
 
         if( proportion < 1.0f ){
             int ip = (int)(100 / proportion);
-            return String.format("1/%d几率获得%s", ip, price);
+            return String.format("1/%d几率获得%s元收益", ip, price);
         }else {
-            return String.format("%.2f%%几率获得%s", proportion, price);
+            return String.format("%.2f%%几率获得%s元收益", proportion, price);
         }
     }
 
@@ -298,6 +327,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                     refreshableView.finishRefreshing();
 
                     ArrayList<OrderModel> orderModels = onUpdateOrderSuccess(s);
+                    addToRecord(orderModels);
                     mCurInvestRecordPageIndex += 1;
 
                     if (mLoadingMoreProxy.isLoadingMore()) {
@@ -332,6 +362,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 orderModel.setOrderStartAdvance(object.getInt("OrderStartAndvance"));
                 orderModel.setOrderLines(object.getInt("orderLines"));
                 orderModel.setPurchaseType(object.getInt("purchaseType"));
+                orderModel.setId(object.getString("Id"));
                 String dateString = object.getString("orderDate");
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try{
@@ -359,6 +390,26 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             e.printStackTrace();
         }
         return orderModels;
+    }
+
+    private void addToRecord(List<OrderModel> list){
+        ArrayList<InvestRecord> records = new ArrayList<>();
+        for(OrderModel orderModel : list){
+            InvestRecord earningRecord = new InvestRecord();
+            earningRecord.setId(orderModel.getId());
+            earningRecord.setIsRead(false);
+            records.add(earningRecord);
+        }
+
+        ArrayList<InvestRecord> recordsToInsert = new ArrayList<>();
+        InvestRecordDao dao = MyDaoMaster.getDaoSession().getInvestRecordDao();
+        for(InvestRecord investRecord : records){
+            if(dao.load(investRecord.getId()) == null){
+                recordsToInsert.add(investRecord);
+            }
+        }
+
+        dao.insertInTx(recordsToInsert);
     }
 
     private class InvestmentListViewAdapter extends BaseAdapter {
@@ -422,6 +473,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 viewHolder.tvStatus = (TextView)convertView.findViewById(R.id.home_record_listview_tv_status);
                 viewHolder.llProportion = (LinearLayout)convertView.findViewById(R.id.home_record_invest_listview_ll_proportion);
                 viewHolder.llProportion.setOnClickListener(InvestRecordFragment.this);
+                viewHolder.tvNew = (TextView)convertView.findViewById(R.id.home_record_listview_tv_new);
 
                 convertView.setTag(viewHolder);
             }else{
@@ -435,8 +487,6 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             viewHolder.tvStageInfo.setText(strCurrentStage);
             viewHolder.tvStatus.setText(orderModel.getStatusString());
 
-//            viewHolder.tvInvestAmount.setText(String.format(getString(R.string.invest_project_invested_price),
-//                    ToolMaster.convertToPriceString(orderModel.getOrderLines())));
             if(orderModel.getPurchaseType() == 1){
                 viewHolder.tvInvestAmount.setText(String.format("您已领投：%s", ToolMaster.convertToPriceString(orderModel.getPurchaseNum())));
             }else {
@@ -478,13 +528,14 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 @Override
                 public void onClick(View v) {
                     ArrayList<String> img = new ArrayList<>();
-                    try{
+                    try {
                         img = ToolMaster.gsonInstance().fromJson(orderModel.getImageUrl(),
-                                new TypeToken<ArrayList<String>>(){}.getType());
-                    }catch (Exception e){
+                                new TypeToken<ArrayList<String>>() {
+                                }.getType());
+                    } catch (Exception e) {
 
                     }
-                    ProjectDetailActivity.CallProjectDetailActivity(getActivity(), orderModel.getActivityId(), orderModel.getActivityName(),img,
+                    ProjectDetailActivity.CallProjectDetailActivity(getActivity(), orderModel.getActivityId(), orderModel.getActivityName(), img,
                             orderModel.getTargetFund(), orderModel.getCurrentFund());
                 }
             });
@@ -494,6 +545,12 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             viewHolder.tvProgress.setText(String.format("筹款进度: %d%%", progress));
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             viewHolder.tvOrderDate.setText(sdf.format(orderModel.getOrderDate()));
+
+            InvestRecordDao dao = MyDaoMaster.getDaoSession().getInvestRecordDao();
+            InvestRecord investRecord = dao.load(orderModel.getId());
+            if(investRecord != null){
+                viewHolder.tvNew.setVisibility( investRecord.getIsRead() ? View.INVISIBLE : View.VISIBLE);
+            }
 
             return convertView;
         }
@@ -508,6 +565,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             TextView tvTargetFund;
             TextView tvStageInfo;
             TextView tvStatus;
+            TextView tvNew;
             ProgressBar progressBar;
             TextView tvProgress;
             TextView tvOrderDate;

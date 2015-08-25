@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -94,6 +95,7 @@ public class HomeInvestmentFragment extends BaseFragment implements View.OnClick
         refreshableView.setArrowColor(Color.WHITE);
 
         mGridView = (GridViewWithHeaderAndFooter)getActivity().findViewById(R.id.home_investment_grid_view);
+        mGridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
         mLoadingMoreProxy = new LoadingMoreFooterProxy(getActivity(), mGridView);
         mLoadingMoreProxy.setOnLoadingMoreListener(new LoadingMoreFooterProxy.OnLoadingMoreListener() {
             @Override

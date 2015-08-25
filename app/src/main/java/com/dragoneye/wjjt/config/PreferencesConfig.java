@@ -36,6 +36,13 @@ public interface PreferencesConfig {
      */
     String LAST_LOGIN_USER_DATA = "LAST_LOGIN_USER_DATA";
 
-    final String SHARESDKAPPKEY = "98bbea40c2d7";
-    final String SHARESDKAPPSECRET = "79b44d7eba1b2d29fc660b450a004e12";
+
+    /**
+     *  记录是否有未读的收益消息
+     */
+    String IS_HAVE_NEW_EARNING_MESSAGE = "IS_HAVE_NEW_EARNING_MESSAGE";
+
+
+    String SHARESDKAPPKEY = "98bbea40c2d7";
+    String SHARESDKAPPSECRET = "79b44d7eba1b2d29fc660b450a004e12";
 }

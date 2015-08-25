@@ -40,6 +40,7 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -560,8 +561,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     }
 
     private void setProportion(TextView textView, float proportion, int price, boolean isBr){
-        if( proportion > 99.9f ){
-            proportion = 99.9f;
+        if( proportion > 99.99f ){
+            proportion = 99.99f;
         }
         if( proportion == 0 ){
             proportion = 0.1f;
@@ -569,10 +570,10 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
 
         if( proportion < 1.0f || isBr ){
             int ip = (int)(100 / proportion);
-            String text = String.format("1/%d几率获得%s", ip, price);
+            String text = String.format("1/%d几率获得%s元收益", ip, price);
             textView.setText(text);
         }else {
-            String text = String.format("%.2f%%几率获得%s", proportion, price);
+            String text = String.format("%.2f%%几率获得%s元收益", proportion, price);
             textView.setText(text);
         }
     }
@@ -771,6 +772,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         final TextView stageNum = (TextView)dialog.findViewById(R.id.payment_tv_stageNum);
         final TextView totalPrice = (TextView)dialog.findViewById(R.id.textView24);
         final TextView title = (TextView)dialog.findViewById(R.id.payment_tv_stageInfo);
+        final TextView confirm = (TextView)dialog.findViewById(R.id.payment_tv_goToPay);
 
         String titleString = mProjectDetailModel.getName();
         titleString = String.format("您已入资 %s 项目", titleString);
@@ -780,10 +782,17 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         stageNum.setText(String.valueOf(investStageNum));
         totalPrice.setText(String.valueOf(investStageNum * investPriceNum));
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(dialog);
-        builder.setCancelable(false);
-        builder.show();
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+            .setView(dialog)
+            .create();
+        alertDialog.show();
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
     }
 
 

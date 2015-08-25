@@ -21,6 +21,12 @@ import com.dragoneye.wjjt.activity.fragments.BaseFragment;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.HttpUrlConfig;
 import com.dragoneye.wjjt.config.PreferencesConfig;
+import com.dragoneye.wjjt.dao.DaoMaster;
+import com.dragoneye.wjjt.dao.EarningRecord;
+import com.dragoneye.wjjt.dao.EarningRecordDao;
+import com.dragoneye.wjjt.dao.InvestRecord;
+import com.dragoneye.wjjt.dao.InvestRecordDao;
+import com.dragoneye.wjjt.dao.MyDaoMaster;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.model.MyEarningModel;
@@ -39,6 +45,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * Created by happysky on 15-8-17.
@@ -113,7 +121,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
         }catch (Exception e){
 
         }
-        ProjectDetailActivity.CallProjectDetailActivity(getActivity(), myEarningModel.getActivityId(), myEarningModel.getActivityName(),img,
+        ProjectDetailActivity.CallProjectDetailActivity(getActivity(), myEarningModel.getActivityId(), myEarningModel.getActivityName(), img,
                 1, 1);
     }
 
@@ -121,16 +129,40 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
-            if( refreshableView != null ){
-                refreshableView.doRefreshImmediately();
-            }
+            doRefresh();
+        }else {
+            setNewRead();
         }
     }
 
     @Override
     public void onShow(){
+        doRefresh();
+    }
+
+    @Override
+    public void onHide(){
+        setNewRead();
+    }
+
+    private void doRefresh(){
         if( refreshableView != null ){
             refreshableView.doRefreshImmediately();
+        }
+    }
+
+    private void setNewRead(){
+        if(refreshableView != null){
+            EarningRecordDao dao = MyDaoMaster.getDaoSession().getEarningRecordDao();
+
+            QueryBuilder queryBuilder = dao.queryBuilder();
+            queryBuilder.where(EarningRecordDao.Properties.IsRead.eq(false));
+
+            List<EarningRecord> unReadList = queryBuilder.list();
+            for(EarningRecord earningRecord : unReadList){
+                earningRecord.setIsRead(true);
+            }
+            dao.updateInTx(unReadList);
         }
     }
 
@@ -158,6 +190,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
 
                     mCurEarningRecordPageIndex += 1;
                     ArrayList<MyEarningModel> earningModels = onUpdateEarningListSuccess(s);
+                    addToRecord(earningModels);
                     if (mLoadingMoreProxy.isLoadingMore()) {
                         if (earningModels.isEmpty()) {
                             mLoadingMoreProxy.finishLoadingMore(true);
@@ -176,6 +209,26 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
             });
         }
     };
+
+    private void addToRecord(List<MyEarningModel> list){
+        ArrayList<EarningRecord> records = new ArrayList<>();
+        for(MyEarningModel myEarningModel : list){
+            EarningRecord earningRecord = new EarningRecord();
+            earningRecord.setId((long)myEarningModel.getId());
+            earningRecord.setIsRead(false);
+            records.add(earningRecord);
+        }
+
+        ArrayList<EarningRecord> recordsToInsert = new ArrayList<>();
+        EarningRecordDao dao = MyDaoMaster.getDaoSession().getEarningRecordDao();
+        for(EarningRecord earningRecord : records){
+            if(dao.load(earningRecord.getId()) == null){
+                recordsToInsert.add(earningRecord);
+            }
+        }
+
+        dao.insertInTx(recordsToInsert);
+    }
 
 
 
@@ -199,6 +252,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 }catch (ParseException e){
                     e.printStackTrace();
                 }
+                earningModel.setId(jsonArray1.getInt(8));
                 earningModels.add(earningModel);
             }
 
@@ -259,6 +313,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 viewHolder.tvEarningDate = (TextView)convertView.findViewById(R.id.home_record_earning_tv_date);
                 viewHolder.tvEarningPrice = (TextView)convertView.findViewById(R.id.home_record_earning_tv_earningPrice);
                 viewHolder.tvStageIndex = (TextView)convertView.findViewById(R.id.home_record_earning_tv_stageIndex);
+                viewHolder.tvNew = (TextView)convertView.findViewById(R.id.home_record_earning_tv_new);
 
                 convertView.setTag(viewHolder);
             }else{
@@ -288,6 +343,12 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 e.printStackTrace();
             }
 
+            EarningRecordDao dao = MyDaoMaster.getDaoSession().getEarningRecordDao();
+            EarningRecord earningRecord = dao.load((long)myEarningModel.getId());
+            if(earningRecord != null){
+                viewHolder.tvNew.setVisibility( earningRecord.getIsRead() ? View.INVISIBLE : View.VISIBLE);
+            }
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             viewHolder.tvEarningDate.setText(sdf.format(myEarningModel.getEarningDate()));
 
@@ -300,6 +361,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
             TextView tvStageIndex;
             TextView tvEarningDate;
             TextView tvEarningPrice;
+            TextView tvNew;
         }
     }
 }
