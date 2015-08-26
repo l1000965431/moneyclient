@@ -1,10 +1,14 @@
 package com.dragoneye.wjjt.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -27,8 +31,10 @@ import com.dragoneye.wjjt.activity.fragments.HomeInvestmentFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeMyselfFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeRecordFragment;
 import com.dragoneye.wjjt.application.MyApplication;
+import com.dragoneye.wjjt.config.BroadcastConfig;
 import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.protocol.UserProtocol;
+import com.dragoneye.wjjt.tool.PreferencesHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
 import com.umeng.update.UmengUpdateAgent;
 
@@ -154,9 +160,27 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         super.onStart();
     }
 
+    private IntentFilter intentFilter = new IntentFilter(BroadcastConfig.NEW_EARNING_MESSAGE);
+    private BroadcastReceiver earningMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            recordButton.setShowDot(true);
+        }
+    };
+
     @Override
     public void onResume(){
         super.onResume();
+        registerReceiver(earningMessageReceiver, intentFilter);
+        if( PreferencesHelper.isHaveEarningMessage(this) ){
+            recordButton.setShowDot(true);
+        }
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        unregisterReceiver(earningMessageReceiver);
     }
 
     @Override
@@ -166,6 +190,8 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
                 viewPager.setCurrentItem(TAB_INVESTMENT);
                 break;
             case R.id.function_switch_bottom_button_record:
+                recordButton.setShowDot(false);
+                PreferencesHelper.setIsHaveEarningMessage(this, false);
                 viewPager.setCurrentItem(TAB_RECORD);
                 break;
             case R.id.function_switch_bottom_button_me:

@@ -8,7 +8,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/invest_project_tv_confirm"
-        android:id="@+id/invest_project_scrollView" >
+        android:id="@+id/invest_project_scrollView"
+        android:background="@mipmap/bg">
 
         <LinearLayout
             android:orientation="vertical"
@@ -435,7 +436,7 @@
         android:textSize="15dp"
         android:background="#ffff4057"
         android:gravity="center_vertical|center_horizontal"
-        android:textColor="#ff2a2a2a"
+        android:textColor="#ffffffff"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

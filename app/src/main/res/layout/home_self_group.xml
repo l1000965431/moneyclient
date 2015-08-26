@@ -22,7 +22,7 @@
                 android:background="#fff9c273"
                 android:id="@+id/home_selfui_group">
 
-                <ImageView
+                <com.dragoneye.wjjt.view.RoundCornerImageView
                     android:layout_width="93dp"
                     android:layout_height="93dp"
                     android:id="@+id/home_self_group_iv_portrait"

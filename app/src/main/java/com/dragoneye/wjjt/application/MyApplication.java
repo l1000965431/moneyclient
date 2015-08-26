@@ -3,6 +3,8 @@ package com.dragoneye.wjjt.application;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -10,9 +12,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.dragoneye.wjjt.R;
+import com.dragoneye.wjjt.config.BroadcastConfig;
 import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.dao.MyDaoMaster;
 import com.dragoneye.wjjt.http.HttpClient;
+import com.dragoneye.wjjt.tool.PreferencesHelper;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.user.UserBase;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -263,7 +267,10 @@ public class MyApplication extends Application {
                     public void run() {
                         //显示收益的红点
                         if (msg.custom.equals("redpoint")) {
+                            Intent intent = new Intent(BroadcastConfig.NEW_EARNING_MESSAGE);
+                            sendBroadcast(intent);
 
+                            PreferencesHelper.setIsHaveEarningMessage(MyApplication.this, true);
                         }
                     }
                 });

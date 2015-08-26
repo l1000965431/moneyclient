@@ -196,7 +196,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="您已成功入资，项目收益我会在项目筹款过程中随时发放；请注意查收"
+                android:text="您已成功入资，项目收益我们会在项目筹款过程中随时发放；请注意查收"
                 android:id="@+id/textView25"
                 android:textSize="15dp"
                 android:textColor="#ffe0e0e0"
@@ -218,7 +218,7 @@
             android:textSize="15dp"
             android:background="#ffff4057"
             android:gravity="center_vertical|center_horizontal"
-            android:textColor="#ff2a2a2a"
+            android:textColor="#ffffffff"
             android:layout_below="@+id/linearLayout23"
             android:layout_centerHorizontal="true"/>
 

@@ -11,7 +11,7 @@
         android:layout_height="170dp"
         android:id="@+id/imageView"
         android:src="@mipmap/icon_albums"
-        />
+        android:scaleType="centerCrop"/>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -37,7 +37,7 @@
             android:layout_height="20dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="NEW"
-            android:id="@+id/textView27"
+            android:id="@+id/home_record_listview_tv_new"
             android:background="#82000000"
             android:textColor="#ff79ff19"
             android:textSize="13dp"
