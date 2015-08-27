@@ -48,6 +48,9 @@ public class UserModel extends BaseModel {
     //用户头像
     private String userHeadPortrait = "";
 
+    //微信公众号关注Id 用于微信提现
+    private String wxOpenId = "0";
+
     public String getUserId() {
         return userId;
     }
@@ -214,5 +217,11 @@ public class UserModel extends BaseModel {
         }
     }
 
+    public String getWxOpenId() {
+        return wxOpenId;
+    }
 
+    public void setWxOpenId(String wxOpenId) {
+        this.wxOpenId = wxOpenId;
+    }
 }

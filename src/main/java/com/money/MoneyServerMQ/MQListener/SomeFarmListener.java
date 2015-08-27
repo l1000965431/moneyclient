@@ -71,11 +71,8 @@ public class SomeFarmListener extends MoneyServerListener {
      */
     void SomeFarmByPrizeList(List<ActivityDetailModel> list) throws Exception {
         for (ActivityDetailModel it : list) {
-
             String ActivityStageId = it.getActivityStageId();
-
             PrizeListModel prizeListModel = prizeListDAO.getListPrizeListModel(ActivityStageId);
-
             if (prizeListModel == null) {
                 continue;
             }

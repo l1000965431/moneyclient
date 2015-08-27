@@ -145,18 +145,24 @@ public class AuditActivityController extends ControllerBase implements IControll
         String ActivityID = request.getParameter("ActivityID");
         int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
         int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
+        int Lines = Integer.valueOf(request.getParameter("Lines"));
+        int LinePeoples = Integer.valueOf(request.getParameter("LinePeoples"));
 
-        //Test
-        List<SREarningModel> LinesSREarningList = new ArrayList<SREarningModel>();
-        List<SREarningModel> LinePeoplesSREarningList = new ArrayList<SREarningModel>();
-
-
-        String LinesEarnings = GsonUntil.JavaClassToJson(LinesSREarningList); //request.getParameter("LinesEarnings");
-        String LinePeoplesEarnings = GsonUntil.JavaClassToJson(LinePeoplesSREarningList);//request.getParameter("LinePeoplesEarnings");
-        serviceGroupActivity.SetActivityInformationEarnings(ActivityID, AdvanceNum, PurchaseNum, LinesEarnings, LinePeoplesEarnings);
+        String LinesEarnings = request.getParameter("LinesEarnings");
+        String LinePeoplesEarnings = request.getParameter("LinePeoplesEarnings");
+        serviceGroupActivity.SetActivityInformationEarnings(Lines,LinePeoples,ActivityID,
+                AdvanceNum, PurchaseNum, LinesEarnings, LinePeoplesEarnings);
         return 1;
     }
 
+    @RequestMapping("/GetAuditorPassActivity")
+    @ResponseBody
+    public String GetAuditorPassActivity(HttpServletRequest request, HttpServletResponse response) {
+        int page = Integer.valueOf(request.getParameter("page"));
+        int findNum = Integer.valueOf(request.getParameter("findNum"));
+        int status = Integer.valueOf(request.getParameter("status"));
+        return serviceAuditActivity.getAuditorPassActivity( page,findNum,status );
+    }
 
     @RequestMapping("/Test")
     @ResponseBody

@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.money.model.*;
 import org.springframework.stereotype.Component;
 import until.Adapter.InvestInfoAdapter;
+import until.Adapter.LotteryPeopleAdpter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -22,11 +23,11 @@ public class GsonUntil {
 
     private static Gson gson = null;
 
-    GsonUntil(){
+    GsonUntil() {
         gson = new GsonBuilder().registerTypeAdapter(ActivityDetailModel.class, new JsonSerializer<ActivityDetailModel>() {
             public JsonElement serialize(ActivityDetailModel src, Type typeOfSrc,
                                          JsonSerializationContext context) {
-                JsonObject o=new JsonObject();
+                JsonObject o = new JsonObject();
                 o.addProperty("activityStageId", src.getActivityStageId());
                 o.addProperty("activityId", src.getActivityVerifyCompleteModel().getActivityId());
                 o.addProperty("activityName", src.getActivityVerifyCompleteModel().getName());
@@ -34,7 +35,7 @@ public class GsonUntil {
                 o.addProperty("targetFund", src.getTargetFund());
                 o.addProperty("status", src.getStatus());
                 o.addProperty("imageUrl", src.getActivityVerifyCompleteModel().getImageUrl());
-                o.addProperty("currentFund", src.getDynamicModel().getActivityCurLines()+src.getDynamicModel().getActivityCurLinesPeoples());
+                o.addProperty("currentFund", src.getDynamicModel().getActivityCurLines() + src.getDynamicModel().getActivityCurLinesPeoples());
                 o.addProperty("currentStage", src.getStageIndex());
                 o.addProperty("totalStage", src.getActivityVerifyCompleteModel().getTotalInstallmentNum());
                 return o;
@@ -42,7 +43,7 @@ public class GsonUntil {
         }).registerTypeAdapter(ActivityVerifyCompleteModel.class, new JsonSerializer<ActivityVerifyCompleteModel>() {
             public JsonElement serialize(ActivityVerifyCompleteModel src, Type typeOfSrc,
                                          JsonSerializationContext context) {
-                JsonObject o=new JsonObject();
+                JsonObject o = new JsonObject();
                 o.addProperty("marketAnalysis", src.getMarketAnalysis());
                 o.addProperty("profitMode", src.getProfitMode());
                 o.addProperty("teamIntroduction", src.getTeamIntroduce());
@@ -56,12 +57,14 @@ public class GsonUntil {
         }).registerTypeAdapter(OrderModel.class, new JsonSerializer<OrderModel>() {
             public JsonElement serialize(OrderModel src, Type typeOfSrc,
                                          JsonSerializationContext context) {
-                JsonObject o=new JsonObject();
+                JsonObject o = new JsonObject();
                 o.addProperty("orderDate", src.getOrderDate().toString());
                 o.addProperty("PurchaseNum", src.getPurchaseNum());
                 o.addProperty("AdvanceNum", src.getAdvanceNum());
                 o.addProperty("orderLines", src.getOrderLines());
                 o.addProperty("purchaseType", src.getPurchaseType());
+                o.addProperty("OrderStartAndvance", src.getOrderStartAdvance());
+                o.addProperty("Id", src.getOrderId());
                 JsonObject object = new JsonObject();
                 object.addProperty("activityName", src.getActivityDetailModel().getActivityVerifyCompleteModel().getName());
                 object.addProperty("activityStageId", src.getActivityDetailModel().getActivityStageId());
@@ -71,7 +74,7 @@ public class GsonUntil {
                 object.addProperty("targetFund", src.getActivityDetailModel().getTargetFund());
                 object.addProperty("status", src.getActivityDetailModel().getStatus());
                 object.addProperty("imageUrl", src.getActivityDetailModel().getActivityVerifyCompleteModel().getImageUrl());
-                object.addProperty("currentFund", src.getActivityDetailModel().getDynamicModel().getActivityCurLinesPeoples()+
+                object.addProperty("currentFund", src.getActivityDetailModel().getDynamicModel().getActivityCurLinesPeoples() +
                         src.getActivityDetailModel().getDynamicModel().getActivityCurLines());
                 object.addProperty("totalStage", src.getActivityDetailModel().getActivityVerifyCompleteModel().getTotalInstallmentNum());
                 o.add("activityDetailModel", object);
@@ -79,18 +82,17 @@ public class GsonUntil {
 
                 return o;
             }
-        }).registerTypeAdapter(SREarningModel.class,new InvestInfoAdapter()).create();
+        })
+                .registerTypeAdapter(SREarningModel.class, new InvestInfoAdapter())
+                .create();
     }
 
     /**
      * 将json转成成javaBean对象
      *
-     * @param <T>
-     * 返回类型
-     * @param json
-     * 字符串
-     * @param clazz
-     * 需要转换成的类
+     * @param <T>   返回类型
+     * @param json  字符串
+     * @param clazz 需要转换成的类
      * @return
      */
     public static <T> List<T> jsonListToJavaClass(String json, Type type) {
@@ -108,12 +110,9 @@ public class GsonUntil {
     /**
      * 将json转成成javaBean对象
      *
-     * @param <T>
-     * 返回类型
-     * @param json
-     * 字符串
-     * @param clazz
-     * 需要转换成的类
+     * @param <T>   返回类型
+     * @param json  字符串
+     * @param clazz 需要转换成的类
      * @return
      */
     public static <T> T jsonToJavaClass(String json, Type type) {
@@ -128,20 +127,20 @@ public class GsonUntil {
     }
 
 
-    public static <T> String JavaClassToJson( T c ){
-        String json = gson.toJson( c );
+    public static <T> String JavaClassToJson(T c) {
+        String json = gson.toJson(c);
         return json;
     }
 
 
-    public static <T> String JavaClassListToJsonList( List<T> list ){
-        String json = gson.toJson( list );
+    public static <T> String JavaClassListToJsonList(List<T> list) {
+        String json = gson.toJson(list);
         return json;
     }
 
-    public static Gson getNewGsonByAdapter(Type type, Object typeAdapter){
+    public static Gson getNewGsonByAdapter(Type type, Object typeAdapter) {
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(type,typeAdapter ).create();
+                .registerTypeAdapter(type, typeAdapter).create();
 
         return gson;
     }

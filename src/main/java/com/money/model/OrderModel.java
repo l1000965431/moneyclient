@@ -57,6 +57,11 @@ public class OrderModel extends BaseModel {
     private int orderLines;
 
     /**
+     * 购买订单开始的期数
+     */
+    private int orderStartAdvance;
+
+    /**
      * 项目信息
      */
     @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.EAGER)
@@ -125,5 +130,13 @@ public class OrderModel extends BaseModel {
 
     public void setPurchaseType(int purchaseType) {
         this.purchaseType = purchaseType;
+    }
+
+    public int getOrderStartAdvance() {
+        return orderStartAdvance;
+    }
+
+    public void setOrderStartAdvance(int orderStartAdvance) {
+        this.orderStartAdvance = orderStartAdvance;
     }
 }

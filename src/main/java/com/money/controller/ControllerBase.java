@@ -1,6 +1,10 @@
 package com.money.controller;
 
+import com.aliyun.openservices.ons.api.Action;
+
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 /**
  * Created by liumin on 15/7/6.
@@ -47,4 +51,23 @@ public class ControllerBase implements IController {
             return Long.valueOf(-1);
         }
     }
+
+    public String getrequestReader( HttpServletRequest request ){
+        BufferedReader reader;
+        StringBuffer buffer = new StringBuffer();
+        try {
+            reader = request.getReader();
+            String string;
+            while ((string = reader.readLine()) != null) {
+                buffer.append(string);
+            }
+            reader.close();
+
+            return buffer.toString();
+
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
 }

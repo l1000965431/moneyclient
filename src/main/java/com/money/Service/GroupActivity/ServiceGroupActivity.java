@@ -208,63 +208,29 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
      * @param LinePeoplesEarnings 大R的收益金额
      * @return
      */
-    public int SetActivityInformationEarnings(final String ActivityID, final int AdvanceNum, final int PurchaseNum, final String LinesEarnings, final String LinePeoplesEarnings) {
+    public int SetActivityInformationEarnings(final int Lines,final int LinePeoples, final String ActivityID, final int AdvanceNum,
+                                              final int PurchaseNum, final String LinesEarnings, final String LinePeoplesEarnings) {
         generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
-
                 ActivityVerifyCompleteModel activityVerifyCompleteModel = generaDAO.getActivityVerifyCompleteModelNoTransaction(ActivityID);
-
                 if ( activityVerifyCompleteModel == null) {
                     return false;
                 }
 
-/*                List<SREarningModel> LinesSREarningList = GsonUntil.jsonToJavaClass( LinesEarnings,new TypeToken<List<SREarningModel>>(){}.getType());
-                List<SREarningModel> LinePeoplesSREarningList = GsonUntil.jsonToJavaClass( LinePeoplesEarnings,new TypeToken<List<SREarningModel>>(){}.getType());*/
+                activityVerifyCompleteModel.setTotalLinePeoples( LinePeoples );
+                activityVerifyCompleteModel.setTotalLines( Lines );
 
-                //Test
-                List<SREarningModel> LinesSREarningList = new ArrayList<SREarningModel>();
-                List<SREarningModel> LinePeoplesSREarningList = new ArrayList<SREarningModel>();
-                SREarningModel srEarningModel = new SREarningModel();
-                srEarningModel.setEarningPrice(10);
-                srEarningModel.setEarningType(2);
-                srEarningModel.setNum(1);
-                LinesSREarningList.add(srEarningModel);
-
-                srEarningModel = new SREarningModel();
-                srEarningModel.setEarningPrice(2);
-                srEarningModel.setEarningType(2);
-                srEarningModel.setNum(7);
-                LinesSREarningList.add(srEarningModel);
-
-
-                SREarningModel srEarningModel1 = new SREarningModel();
-                srEarningModel1.setEarningType(1);
-                srEarningModel1.setEarningPrice(0);
-                srEarningModel1.setNum(1);
-                LinePeoplesSREarningList.add(srEarningModel1);
-
-                srEarningModel1 = new SREarningModel();
-                srEarningModel1.setEarningType(1);
-                srEarningModel1.setEarningPrice(60);
-                srEarningModel1.setNum(1);
-                LinePeoplesSREarningList.add(srEarningModel1);
-
-
-                String json = GsonUntil.JavaClassToJson( LinePeoplesSREarningList );
-
-                activityVerifyCompleteModel.setEarningPeoples( json );
+                List<SREarningModel> LinesSREarningList = GsonUntil.jsonToJavaClass( LinesEarnings,new TypeToken<List<SREarningModel>>(){}.getType());
+                List<SREarningModel> LinePeoplesSREarningList = GsonUntil.jsonToJavaClass( LinePeoplesEarnings,new TypeToken<List<SREarningModel>>(){}.getType());
+                activityVerifyCompleteModel.setEarningPeoples( LinePeoplesEarnings );
                 generaDAO.saveNoTransaction( activityVerifyCompleteModel );
 
-
                 //小R发奖
-                String tempInstallmentActivityID = ActivityID + "_" + Integer.toString(1);
-                ActivityDetailModel tempactivityDetailModel = generaDAO.getActivityDetaillNoTransaction(tempInstallmentActivityID);
                 for (SREarningModel LinesSREarning : LinesSREarningList) {
                     SREarningModel newSREarningModel = new SREarningModel(LinesSREarning);
                     newSREarningModel.setActivityVerifyCompleteModel(activityVerifyCompleteModel);
                     generaDAO.saveNoTransaction(newSREarningModel);
                 }
-
 
                 int PurchaseNumIndex = 0;
                 for (int i = 0; i < AdvanceNum * PurchaseNum; i++) {
@@ -289,8 +255,6 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
                 return true;
             }
         });
-
         return 0;
     }
-
 }

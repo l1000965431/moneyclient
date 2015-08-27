@@ -108,17 +108,17 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
                                 break;
                             }
                         case Config.PURCHASELOCALTYRANTS:
-                            int Lines = activityDynamicModel.getActivityTotalLinesPeoples() * AdvanceNum;
+                            costLines = activityDynamicModel.getActivityTotalLinesPeoples() * AdvanceNum;
                             if (!purchaseInAdvance.IsEnoughLocalTyrantsTickets(InstallmentActivityID) && MessageType == 1) {
                                 state[0] = 3;
                                 if (!activityVerifyCompleteModel.IsEnoughAdvance(AdvanceNum) ||
-                                        activityVerifyCompleteModel.IsEnoughLinePoples(Lines + activityDynamicModel.getActivityTotalLinesPeoples())) {
+                                        activityVerifyCompleteModel.IsEnoughLinePoples(costLines + activityDynamicModel.getActivityTotalLinesPeoples())) {
                                     state[0] = 1;
                                 }
                                 return false;
                             } else {
                                 if (!activityVerifyCompleteModel.IsEnoughAdvance(AdvanceNum) ||
-                                        activityVerifyCompleteModel.IsEnoughLinePoples(Lines)) {
+                                        activityVerifyCompleteModel.IsEnoughLinePoples(costLines)) {
                                     state[0] = 1;
                                     return false;
                                 }

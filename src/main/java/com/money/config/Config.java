@@ -141,4 +141,9 @@ public class Config {
      * 友盟推送的参数
      */
     public static final String UMENGAPPKEY = "jsyt1miaqkdj1upwujmbbixz1r5uejnj";
+
+    //微信参数
+    public static final String WXAPPID = "wx287d8a1f932dc864";
+
+    public static final String WXAPPSECRET = "5e39c31e9e69105b90184db19c05b6e4";
 }

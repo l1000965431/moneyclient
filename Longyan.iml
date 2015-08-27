@@ -115,5 +115,7 @@
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-ehcache:4.3.10.Final" level="project" />
     <orderEntry type="library" name="Maven: net.sf.ehcache:ehcache-core:2.4.3" level="project" />
     <orderEntry type="library" name="Maven: Pingplusplus:pingpp-java:2.0.7" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.1" level="project" />
   </component>
 </module>

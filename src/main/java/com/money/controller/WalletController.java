@@ -7,6 +7,10 @@ import com.money.Service.user.UserService;
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import com.money.model.UserModel;
+import com.pingplusplus.exception.APIConnectionException;
+import com.pingplusplus.exception.APIException;
+import com.pingplusplus.exception.AuthenticationException;
+import com.pingplusplus.exception.InvalidRequestException;
 import com.pingplusplus.model.Event;
 import com.pingplusplus.model.Webhooks;
 import com.sun.corba.se.spi.activation.Server;
@@ -29,7 +33,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/Wallet")
-public class WalletController {
+public class WalletController extends ControllerBase{
     @Autowired
     WalletService walletService;
 
@@ -62,19 +66,11 @@ public class WalletController {
     @ResponseBody
     public String RechargeWallet(HttpServletRequest request, HttpServletResponse response) {
 
-        BufferedReader reader = null;
-        StringBuffer buffer = new StringBuffer();
-        try {
-            reader = request.getReader();
-            String string;
-            while ((string = reader.readLine()) != null) {
-                buffer.append(string);
-            }
-            reader.close();
-        } catch (IOException e) {
-           return null;
+        String json = this.getrequestReader( request );
+
+        if( json == null ){
+            return null;
         }
-        String json = buffer.toString();
 
         Map<String,Object> mapJson = GsonUntil.jsonToJavaClass( json,new TypeToken<Map<String,Object>>(){}.getType());
 
@@ -95,6 +91,70 @@ public class WalletController {
         return PingPlus.CreateChargeParams(UserID,(int)Lines,ChannelID, "", "充值", "null",order_no);
     }
 
+
+    /**
+     * 是否已经绑定微信帐号
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/IsBinding")
+    @ResponseBody
+    public boolean IsBinding( HttpServletRequest request, HttpServletResponse response ){
+        String userId = request.getParameter( "userId" );
+        if( userId == null ){
+            return false;
+        }
+        String openId = userService.IsBinding( userId );
+        if( openId == null ||  openId.equals( "0" ) ){
+            return false;
+        }
+
+        return true;
+    }
+
+
+
+
+    /**
+     * 1:提现成功 0:提现错误 2:提现现金不足 3:没有绑定微信帐号
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/TransferWallet")
+    @ResponseBody
+    public int TransferWallet( HttpServletRequest request, HttpServletResponse response ){
+        String userId = request.getParameter( "userId" );
+        String orderId = request.getParameter( "orderId" );
+        int Lines = Integer.valueOf(request.getParameter("lines"));
+        String openId = userService.IsBinding( userId );
+        if( userId == null || orderId == null || openId == null ){
+            return 0;
+        }
+
+        if( openId.equals( "0" ) ){
+            return 3;
+        }
+        if( !walletService.IsWalletEnough( userId,Lines ) ){
+            return 2;
+        }
+
+
+        try {
+            PingPlus.CreateTransferMap( Lines,openId,orderId );
+            return 1;
+        } catch (APIException e) {
+            return 0;
+        } catch (AuthenticationException e) {
+            return 0;
+        } catch (InvalidRequestException e) {
+            return 0;
+        } catch (APIConnectionException e) {
+            return 0;
+        }
+    }
+
     /**
      * ping++ 充值的回掉函数
      *
@@ -112,4 +172,8 @@ public class WalletController {
         }
         return Config.SERVICE_SUCCESS;
     }
+
+
+
+
 }

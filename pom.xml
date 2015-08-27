@@ -194,6 +194,11 @@
             <version>2.0.7</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.4.1</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>Longyan</finalName>

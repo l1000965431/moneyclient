@@ -1,5 +1,6 @@
 package com.money.Service.AuditActivity;
 
+import com.google.gson.Gson;
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
 import com.money.dao.BaseDao;
@@ -10,6 +11,7 @@ import com.money.model.ActivityVerifyCompleteModel;
 import com.money.model.ActivityVerifyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import until.GsonUntil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +124,12 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
         ActivityVerifyCompleteModel completeModel = verifyComplete(activityVerifyModel);
         return auditActivityDao.setActivityPass(activityVerifyModel, completeModel);
     }
+
+    public String getAuditorPassActivity( int page,int findNum,int status ){
+        List list = auditActivityDao.getUsersActivityList(page, findNum,status);
+        return GsonUntil.JavaClassToJson( list );
+    }
+
 
     public boolean setActivityToGroup(){
         ActivityDetailModel activityDetailModel = (ActivityDetailModel) auditActivityDao.load(ActivityDetailModel.class, 1l);

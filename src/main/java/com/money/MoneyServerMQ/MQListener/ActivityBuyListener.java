@@ -13,6 +13,7 @@ import com.money.config.Config;
 import com.money.config.MoneyServerMQ_Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.GsonUntil;
+import until.UmengPush.UmengSendParameter;
 
 import java.util.Map;
 
@@ -68,19 +69,40 @@ public class ActivityBuyListener extends MoneyServerListener {
      */
     public void ActivityBuy( String InstallmentActivityID,String UserID,int PurchaseNum ,int AdvanceNum,int PurchaseType,String OrderID ) throws Exception {
 
+        StringBuffer ActivityName = new StringBuffer();
         int Result = 0;
         switch( PurchaseType ){
             case Config.PURCHASEPRICKSILK:
-                Result = purchaseInAdvance.PurchaseInAdvance( InstallmentActivityID, UserID,PurchaseNum,AdvanceNum,OrderID );
+                Result = purchaseInAdvance.PurchaseInAdvance( InstallmentActivityID, UserID,PurchaseNum,AdvanceNum,OrderID,ActivityName );
                 break;
             case Config.PURCHASELOCALTYRANTS:
-                Result = purchaseInAdvance.LocalTyrantsPurchaseActivity( InstallmentActivityID,UserID,AdvanceNum,OrderID );
+                Result = purchaseInAdvance.LocalTyrantsPurchaseActivity( InstallmentActivityID,UserID,AdvanceNum,OrderID,ActivityName );
                 break;
         }
 
         if( Result == 1){
             //项目购买完成 开始计算开奖
             activityService.SetInstallmentActivityEnd( InstallmentActivityID );
+            //发送成功入资的消息
+            UmengSendParameter umengSendParameter = new UmengSendParameter( UserID,"微距竞投","购买成功","您已成功入资"+ActivityName.toString()+"项目","购买成功" );
+            String Json = GsonUntil.JavaClassToJson( umengSendParameter );
+            MoneyServerMQManager.SendMessage( new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TOPIC,
+                    MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG,Json,"购买成功"));
+        }else{
+            //发送失败的消息
+            if( ActivityName == null || ActivityName.length() == 0 ){
+                UmengSendParameter umengSendParameter = new UmengSendParameter( UserID,"微距竞投","购买错误","购买失败,请重新操作","购买错误" );
+                String Json = GsonUntil.JavaClassToJson( umengSendParameter );
+                MoneyServerMQManager.SendMessage( new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TOPIC,
+                        MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG,Json,"购买错误"));
+            }else{
+                UmengSendParameter umengSendParameter = new UmengSendParameter( UserID,"微距竞投","购买失败","您入资的"+ActivityName.toString()+"项目款项已满。资金已退回。您可继续需关注该项目的其他动态或查看。","购买失败" );
+                String Json = GsonUntil.JavaClassToJson( umengSendParameter );
+                MoneyServerMQManager.SendMessage( new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TOPIC,
+                        MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG,Json,"购买失败"));
+            }
+
+
         }
 
     }

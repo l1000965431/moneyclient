@@ -3,11 +3,16 @@ package com.money.Service.Wallet;
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
 import com.money.dao.GeneraDAO;
+import com.money.dao.userDAO.UserDAO;
+import com.money.model.TransferModel;
+import com.money.model.UserModel;
 import com.money.model.WalletModel;
 import com.money.model.WalletOrderModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.MoneyServerDate;
+
+import java.text.ParseException;
 
 /**
  * 钱包服务
@@ -20,7 +25,7 @@ import until.MoneyServerDate;
 public class WalletService extends ServiceBase implements ServiceInterface {
 
     @Autowired
-    GeneraDAO generaDAO;
+    UserDAO generaDAO;
 
 
     /**
@@ -74,13 +79,36 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         }
 
         int CurLinse = walletModel.getWalletLines();
-
-        walletModel.setWalletLines( CurLinse-CostLines );
-
+        walletModel.setWalletLines(CurLinse-CostLines);
         generaDAO.updateNoTransaction( walletModel );
+        return true;
+    }
+
+    public boolean TransferLines( String OrderId, String OpenId,int Lines,String status ) throws ParseException {
+        UserModel userModel = generaDAO.getUSerModelByOpenId(OpenId);
+        if( userModel == null ){
+            return false;
+        }
+
+        InsertTransferOrder( userModel,OrderId,OpenId,Lines,status );
+
+        WalletModel walletModel = (WalletModel)generaDAO.load(WalletModel.class, userModel.getUserId());
+
+        if( walletModel == null ){
+            return false;
+        }
+
+        if( !walletModel.IsLinesEnough( Lines ) ){
+            return false;
+        }
+
+        int CurLines = walletModel.getWalletLines();
+        walletModel.setWalletLines(CurLines-Lines);
+        generaDAO.update( walletModel);
 
         return true;
     }
+
 
     /**
      * 插入充值订单
@@ -91,13 +119,23 @@ public class WalletService extends ServiceBase implements ServiceInterface {
     public void InsertWalletOrder( String OrderID,int Lines,String ChannelID )throws Exception{
 
         WalletOrderModel walletOrderModel = new WalletOrderModel();
-
         walletOrderModel.setOrderID( OrderID );
         walletOrderModel.setWalletLines( Lines );
         walletOrderModel.setWalletChannel( ChannelID );
         walletOrderModel.setOrderDate(MoneyServerDate.getDateCurDate());
         generaDAO.saveNoTransaction( walletOrderModel );
 
+    }
+
+    public void InsertTransferOrder( UserModel userModel,String OrderId, String OpenId,int Lines,String status ) throws ParseException {
+        TransferModel transferModel = new TransferModel();
+        transferModel.setOrderId( OrderId );
+        transferModel.setOpenId( OpenId );
+        transferModel.setTransferLines( Lines );
+        transferModel.setTransferDate( MoneyServerDate.getDateCurDate() );
+        transferModel.setUserId( userModel.getUserId() );
+        transferModel.setStatus( status );
+        generaDAO.save( transferModel );
     }
 
 

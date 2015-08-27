@@ -105,4 +105,18 @@ public class AuditActivityDao extends BaseDao {
         t.commit();
         return activityVerifyModels;
     }
+
+    public List<ActivityVerifyModel> getUsersActivityList( int page,int findNum,int status ){
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
+        List<ActivityVerifyModel> activityVerifyModels = session.createCriteria(ActivityVerifyModel.class)
+                .addOrder(Order.asc("id"))
+                .add(Restrictions.eq("auditorStatus", status ))
+                .setFirstResult(page * findNum)
+                .setMaxResults(findNum)
+                .list();
+
+        t.commit();
+        return activityVerifyModels;
+    }
 }
