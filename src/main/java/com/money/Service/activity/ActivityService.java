@@ -223,7 +223,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
                 //创建预购项目表
                 activityDao.CreatePurchaseInAdvanceDB(ActivityID);
                 //设置项目开始
-                SetActivityStatus(ActivityID, ActivityDetailModel.ONLINE_ACTIVITY_START);
+                SetActivityStatus(ActivityID, ActivityVerifyModel.STATUS_START_RAISE);
                 //设置第一期开始
                 InstallmentActivityIDStart(ActivityID, 1);
                 return;
@@ -263,7 +263,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     public void SetActivityEnd(String ActivityID) {
         ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDao.getActivityVerifyCompleteModelNoTransaction(ActivityID);
         if (activityVerifyCompleteModel.IsEnoughInstallmentNum()) {
-            SetActivityStatus(ActivityID, ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE);
+            SetActivityStatus(ActivityID, ActivityVerifyModel.STATUS_RAISE_FINISH);
         }
     }
 

@@ -9,10 +9,7 @@ import com.pingplusplus.exception.APIConnectionException;
 import com.pingplusplus.exception.APIException;
 import com.pingplusplus.exception.AuthenticationException;
 import com.pingplusplus.exception.InvalidRequestException;
-import com.pingplusplus.model.Charge;
-import com.pingplusplus.model.ChargeCollection;
-import com.pingplusplus.model.Event;
-import com.pingplusplus.model.Webhooks;
+import com.pingplusplus.model.*;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,8 +49,6 @@ public class PingPlus {
 
         try {
             charge = Charge.create(chargeParams);
-
-            String a = charge.toString();
         } catch (AuthenticationException e) {
             e.printStackTrace();
             return null;
@@ -69,6 +64,24 @@ public class PingPlus {
         }
         return charge.toString();
     }
+
+    public static String CreateTransferMap( int amount,String opneId,String Orderno ) throws APIException, AuthenticationException, InvalidRequestException, APIConnectionException {
+        Pingpp.apiKey = Config.PINGPLUSTESTID;
+        Map<String, Object> transferMap = new HashMap<String, Object>();
+        transferMap.put("amount", amount*100);
+        transferMap.put("currency", "cny");
+        transferMap.put("type",  "b2c");
+        transferMap.put("order_no",  Orderno);
+        transferMap.put("channel",  "wx_pub");
+        transferMap.put("recipient", opneId);
+        transferMap.put("description", "提款");
+        Map<String, String> app = new HashMap<String, String>();
+        app.put("id", Config.PINGPLUSLAPPID);
+        transferMap.put("app", app);
+        Transfer transfer = Transfer.create(transferMap);
+        return transfer.toString();
+    }
+
 
 
     public static void Webhooks(HttpServletRequest request,
@@ -90,13 +103,20 @@ public class PingPlus {
                     MoneyServerMQ_Topic.MONEYSERVERMQ_RECHARGEWALLET_TAG,body,"1" ));
 
             response.setStatus(200);
-        } else if ("refund.succeeded".equals(event.getType())) {
+        } else if ("transfer.succeeded".equals(event.getType())) {
+            String body = event.toString();
+
+            MoneyServerMQManager.SendMessage( new MoneyServerMessage( MoneyServerMQ_Topic.MONEYSERVERMQ_RECHARGEWALLET_TOPIC,
+                    MoneyServerMQ_Topic.MONEYSERVERMQ_RECHARGEWALLET_TAG,body,"1" ));
+
             response.setStatus(200);
         } else {
             response.setStatus(500);
         }
 
     }
+
+
 
 
     public static void Test() {

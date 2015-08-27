@@ -8,9 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import until.GsonUntil;
+import until.WxBinding;
+import until.WxOauth2Token;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +29,9 @@ public class UserController extends ControllerBase implements IController
     @Autowired
     UserService userService;
 
+    @Autowired
+    WxBinding wxBinding;
+
     @RequestMapping("/passWordLogin")
     @ResponseBody
     public String Login( HttpServletRequest request,
@@ -37,11 +44,13 @@ public class UserController extends ControllerBase implements IController
 
         Map<String,Object> map = new HashMap<String, Object>();
         map.put( "token",LoginResult );
-        map.put( "UserResponse",userService.getUserInfo(UserName) );
+
         if( LoginResult.length() >= 8 ) {
             map.put( "LoginResult",ServerReturnValue.LANDSUCCESS );
+            map.put( "UserResponse",userService.getUserInfo(UserName) );
         }else{
-            map.put( "LoginResult",ServerReturnValue.LANDFAILED );
+            map.put( "LoginResult",LoginResult );
+            map.put( "UserResponse","");
         }
 
         return GsonUntil.JavaClassToJson( map );
@@ -131,6 +140,17 @@ public class UserController extends ControllerBase implements IController
         return  userService.changPassword(userName,"",newPassword,oldPassword);
     }
 
+    @RequestMapping("/RetrievePassword")
+    @ResponseBody
+    public  int RetrievePassword(HttpServletRequest request,
+                                 HttpServletResponse response ){
+
+        String userName = request.getParameter( "userId" );
+        //String code = request.getParameter( "code" );
+        String newPassword = request.getParameter( "newPassword" );
+        return  userService.RetrievePassword(userName, newPassword);
+    }
+
     @RequestMapping("/SendUserCode")
     @ResponseBody
     public int SendUserCode( HttpServletRequest request,
@@ -156,4 +176,55 @@ public class UserController extends ControllerBase implements IController
 
         return userService.ChangeUserHeadPortrait( userID,Url );
     }
+
+    /**
+     * 获得微信openId
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/getWxOpenId")
+    @ResponseBody
+    public void getWxOpenId( HttpServletRequest request,
+                           HttpServletResponse response ) throws ServletException, IOException {
+/*        String code = request.getParameter("code");
+        if( code == null ){
+            return;
+        }
+
+        WxOauth2Token wxOauth2Token;
+        try {
+            wxOauth2Token = wxBinding.getOauth2AccessToken( "wx287d8a1f932dc864","5e39c31e9e69105b90184db19c05b6e4",code );
+        } catch (IOException e) {
+            return;
+        }
+
+        if( wxOauth2Token == null ){
+            return;
+        }*/
+
+        /*request.setAttribute("openId", wxOauth2Token.getOpenId());*/
+        request.setAttribute("openId", "hhyuise-7768");
+        request.getRequestDispatcher("../project/WxBinding.jsp").forward(request, response);
+        return;
+    }
+
+    @RequestMapping("/BindingWxOpenId")
+    @ResponseBody
+    public void BindingWxOpenId( HttpServletRequest request,
+                             HttpServletResponse response ) throws ServletException, IOException {
+
+        String userId = request.getParameter("userId");
+        String password = request.getParameter( "password" );
+        String openId = request.getParameter( "openId" );
+
+        if( userId == null || password == null || openId == null ){
+           if( userService.BinddingUserId( openId,userId,password )){
+               request.getRequestDispatcher("index.jsp");
+           }else{
+               request.getRequestDispatcher("index.jsp");
+           }
+        }
+
+    }
+
 }

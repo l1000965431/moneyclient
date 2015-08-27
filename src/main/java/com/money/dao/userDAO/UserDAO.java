@@ -108,6 +108,30 @@ public class UserDAO extends BaseDao {
         return true;
     }
 
+    /**
+     * 密码找回
+     * @param userID
+     * @param newPassWord
+     * @return
+     */
+    public boolean RetrievePassword( String userID, String newPassWord ){
+        UserModel userModel = this.getUSerModel(userID);
+
+        if (userModel == null) {
+            return false;
+        }
+
+        if( !passwordIsRight( newPassWord ) ){
+            return false;
+        }
+
+        userModel.setPassword(newPassWord);
+        this.update(userModel);
+        return true;
+    }
+
+
+
     //注册
     public int registered(final String userID, final String passWord, final int userType) {
         if (this.excuteTransactionByCallback(new TransactionCallback() {
@@ -348,5 +372,43 @@ public class UserDAO extends BaseDao {
                 .uniqueResult();
 
         return userModel;
+    }
+
+    public UserModel getUSerModelByOpenId(final String openId) {
+        final UserModel[] userModel = {null};
+
+        this.excuteTransactionByCallback(new TransactionCallback() {
+            public void callback(BaseDao basedao) throws Exception {
+                userModel[0] = (UserModel) basedao.getNewSession().createCriteria(UserModel.class)
+                        .setMaxResults(1)
+                        .add(Restrictions.eq("wxOpenId", openId))
+                        .uniqueResult();
+            }
+        });
+
+        return userModel[0];
+    }
+
+    public UserModel getUSerModelByOpenIdNoTransaction(final String openId) {
+        final UserModel userModel;
+
+        userModel = (UserModel) getNewSession().createCriteria(UserModel.class)
+                .setMaxResults(1)
+                .add(Restrictions.eq("wxOpenId", openId))
+                .uniqueResult();
+
+        return userModel;
+    }
+
+    public boolean BindingOpenId( String openId,String UserId ){
+        UserModel userModel = getUSerModel( UserId );
+        if( userModel == null ){
+            return false;
+        }
+
+        userModel.setWxOpenId( openId );
+        this.update( userModel );
+
+        return true;
     }
 }

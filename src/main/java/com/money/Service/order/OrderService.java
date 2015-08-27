@@ -50,7 +50,7 @@ public class OrderService extends ServiceBase implements ServiceInterface {
      *
      * @return
      */
-    public String createOrder( String userID,String activityID,int lines,int PurchaseNum,int AdvanceNum,int purchasType,String OrderID ){
+    public String createOrder( String userID,String activityID,int lines,int PurchaseNum,int AdvanceNum,int purchasType,String OrderID,int StartOrderAndvance ){
         OrderModel orderModel = new OrderModel();
         ActivityDetailModel activityDetailModel =  activityDAO.getActivityDetaillNoTransaction(activityID);
         orderModel.setActivityDetailModel(activityDetailModel);
@@ -60,6 +60,7 @@ public class OrderService extends ServiceBase implements ServiceInterface {
         orderModel.setPurchaseNum( PurchaseNum );
         orderModel.setAdvanceNum( AdvanceNum );
         orderModel.setPurchaseType( purchasType );
+        orderModel.setOrderStartAdvance( StartOrderAndvance );
         try {
             orderModel.setOrderDate(MoneyServerDate.getDateCurDate());
         } catch (ParseException e) {

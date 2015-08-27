@@ -45,8 +45,6 @@ public class WalletListener extends MoneyServerListener {
 
             Map<String,Object> mapdata = (Map)map.get( "data" );
             Map<String,Object> mapobject = (Map)mapdata.get( "object" );
-
-            String metadataJson = mapobject.get( "metadata" ).toString();
             Map<String,Object> mapMetadata = (Map)mapobject.get( "metadata" );
 
             if( mapMetadata == null ){
@@ -72,19 +70,18 @@ public class WalletListener extends MoneyServerListener {
                 return Action.CommitMessage;
             }
 
-
-            UmengSendParameter umengSendParameter = new UmengSendParameter( UserID,"微距竞投","微距竞投","充值成功,成功充入"+Integer.toString(Lines)+"元","充值成功" );
+            UmengSendParameter umengSendParameter = new UmengSendParameter( UserID,"微距竞投","充值成功","充值成功,成功充入"+Integer.toString(Lines)+"元","充值成功" );
             String Json = GsonUntil.JavaClassToJson( umengSendParameter );
             MoneyServerMQManager.SendMessage( new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TOPIC,
-                    MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG,Json,"1"));
+                    MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG,Json,"充值成功"));
 
             return Action.CommitMessage;
         } catch (Exception e) {
             if( UserID != null ){
-                UmengSendParameter umengSendParameter = new UmengSendParameter( UserID,"微距竞投","微距竞投","亲,服务器热爆了,请稍后再重试一下。","充值失败" );
+                UmengSendParameter umengSendParameter = new UmengSendParameter( UserID,"微距竞投","充值失败","你的充值遇到了问题请重新操作","充值失败" );
                 String Json = GsonUntil.JavaClassToJson( umengSendParameter );
                 MoneyServerMQManager.SendMessage( new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TOPIC,
-                        MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG,Json,"1"));
+                        MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG,Json,"充值失败"));
             }
 
             return Action.CommitMessage;

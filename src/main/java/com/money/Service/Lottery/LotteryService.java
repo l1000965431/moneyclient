@@ -1,5 +1,6 @@
 package com.money.Service.Lottery;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
@@ -12,12 +13,17 @@ import com.money.dao.TicketDAO.TicketDAO;
 import com.money.dao.TransactionSessionCallback;
 import com.money.dao.activityDAO.activityDAO;
 import com.money.dao.userDAO.UserDAO;
+import com.money.job.LotteryPushJob;
 import com.money.model.*;
 import org.hibernate.Session;
+import org.quartz.DateBuilder;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
 import until.MoneyServerDate;
+import until.QuartzUntil;
+import until.ScheduleJob;
 
 import java.text.ParseException;
 import java.util.*;
@@ -60,7 +66,9 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
      * @return
      */
     public String StartLottery(final String InstallmentActivityID) throws Exception {
-        lotteryDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+        final List<LotteryPeoples>[] listPeoples = new List[1];
+        final String[] ActivityName = new String[1];
+        if (lotteryDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
                 ActivityDetailModel activityDetailModel = activityService.getActivityDetailsNoTran(InstallmentActivityID);
                 if (activityDetailModel == null) {
@@ -68,7 +76,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
                 }
 
                 ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
-
+                ActivityName[0] = activityVerifyCompleteModel.getName();
                 if (activityVerifyCompleteModel == null) {
                     return false;
                 }
@@ -77,7 +85,8 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
                 Set<SREarningModel> srEarningModelSet1 = activityDetailModel.getActivityVerifyCompleteModel().getSrEarningModels();
                 srEarningModelSet.addAll(srEarningModelSet1);
 
-                if (StartLottery(InstallmentActivityID, srEarningModelSet) == null) {
+                listPeoples[0] = StartLottery(InstallmentActivityID, srEarningModelSet);
+                if (listPeoples[0] == null) {
                     return false;
                 }
 
@@ -87,7 +96,10 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
                 }
                 return true;
             }
-        });
+        }) == Config.SERVICE_SUCCESS) {
+            //发送消息
+            SendLotteryMessage(listPeoples[0], ActivityName[0]);
+        }
 
         return Config.SERVICE_SUCCESS;
     }
@@ -99,7 +111,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
      * @param srEarningModelSet     得奖的层次和每个层次的人数
      * @return
      */
-    public String StartLottery(String InstallmentActivityID, Set<SREarningModel> srEarningModelSet) {
+    public List<LotteryPeoples> StartLottery(String InstallmentActivityID, Set<SREarningModel> srEarningModelSet) {
         List<LotteryPeoples> listPeoples = lotteryDAO.GetRandNotLottery(InstallmentActivityID, srEarningModelSet);
 
         if (listPeoples == null) {
@@ -113,7 +125,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
             SREarningModel str = it.next();
             int LotteryLines = str.getEarningPrice();
             int PeoplesLines = str.getNum();
-            EarningNum += LotteryLines*PeoplesLines;
+            EarningNum += LotteryLines * PeoplesLines;
 
             if (str.getEarningType() == Config.PURCHASELOCALTYRANTS) {
                 for (LotteryPeoples TempListPeople : listPeoples) {
@@ -158,24 +170,24 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
 
         //刷新领奖的记录
         EarningsRecordModel earningsRecordModel = new EarningsRecordModel();
-        earningsRecordModel.setActivityStageId( InstallmentActivityID );
+        earningsRecordModel.setActivityStageId(InstallmentActivityID);
         try {
-            earningsRecordModel.setEndDate( MoneyServerDate.getDateCurDate() );
+            earningsRecordModel.setEndDate(MoneyServerDate.getDateCurDate());
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         ActivityDetailModel activityDetailModel = activityDAO.getActivityDetaillNoTransaction(InstallmentActivityID);
 
-        if( activityDetailModel == null ){
+        if (activityDetailModel == null) {
             return null;
         }
 
-        earningsRecordModel.setTotalPrize( EarningNum );
-        earningsRecordModel.setTotalFund( activityDetailModel.getTargetFund() );
-        earningsRecordModel.setActivityID( activityDetailModel.getActivityVerifyCompleteModel().getActivityId() );
-        lotteryDAO.saveNoTransaction( earningsRecordModel );
-        return json;
+        earningsRecordModel.setTotalPrize(EarningNum);
+        earningsRecordModel.setTotalFund(activityDetailModel.getTargetFund());
+        earningsRecordModel.setActivityID(activityDetailModel.getActivityVerifyCompleteModel().getActivityId());
+        lotteryDAO.saveNoTransaction(earningsRecordModel);
+        return listPeoples;
     }
 
     /**
@@ -214,13 +226,13 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
         for (ActivityDetailModel it : list) {
             String ActivityStageId = it.getActivityStageId();
 
-            PrizeListModel prizeListModel = (PrizeListModel)prizeListDAO.loadNoTransaction(PrizeListModel.class, ActivityStageId);
+            PrizeListModel prizeListModel = (PrizeListModel) prizeListDAO.loadNoTransaction(PrizeListModel.class, ActivityStageId);
 
-            if( prizeListModel == null ){
+            if (prizeListModel == null) {
                 continue;
             }
 
-            if( prizeListModel.isPrize() ){
+            if (prizeListModel.isPrize()) {
                 continue;
             }
 
@@ -235,8 +247,8 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
             for (LotteryPeoples Peoples : LotteryPeoplesList) {
                 walletService.RechargeWallet(Peoples.getUserId(), Peoples.getLotteryLines());
             }
-            prizeListModel.setIsPrize( true );
-            prizeListDAO.updateNoTransaction( prizeListModel );
+            prizeListModel.setIsPrize(true);
+            prizeListDAO.updateNoTransaction(prizeListModel);
         }
     }
 
@@ -249,22 +261,78 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
         for (LotteryPeoples itLotteryPeoples : listPeoples) {
             String UserID = itLotteryPeoples.getUserId();
 
-            if( userDAO.getUSerModelNoTransaction( UserID ) == null ){
+            if (userDAO.getUSerModelNoTransaction(UserID) == null) {
                 return false;
             }
 
             UserEarningsModel userEarningsModel = new UserEarningsModel();
-            userEarningsModel.setUserID( UserID );
-            userEarningsModel.setUserEarningLines( itLotteryPeoples.getLotteryLines() );
+            userEarningsModel.setUserID(UserID);
+            userEarningsModel.setUserEarningLines(itLotteryPeoples.getLotteryLines());
             try {
-                userEarningsModel.setUserEarningsDate( MoneyServerDate.getDateCurDate() );
+                userEarningsModel.setUserEarningsDate(MoneyServerDate.getDateCurDate());
             } catch (ParseException e) {
             }
-            userEarningsModel.setActivityStageId( itLotteryPeoples.getActivityID() );
+            userEarningsModel.setActivityStageId(itLotteryPeoples.getActivityID());
 
-            userDAO.saveNoTransaction( userEarningsModel );
+            userDAO.saveNoTransaction(userEarningsModel);
         }
 
         return true;
+    }
+
+    private void SendLotteryMessage(List<LotteryPeoples> lotteryPeoples, String ActivityName) {
+        List<LotteryPeoples> Temp = new ArrayList<LotteryPeoples>();
+        Map<String, Object> maptemp = new HashMap<String, Object>();
+        int TempIndex = 0;
+        int GroupNum = 0;
+        for (LotteryPeoples it : lotteryPeoples) {
+            if (GroupNum >= 20) {
+                TempIndex++;
+
+                maptemp.put(ActivityName, Temp);
+                String json = GsonUntil.JavaClassToJson(maptemp);
+
+                ScheduleJob job = new ScheduleJob();
+                job.setJobGroup( " SendLotteryMessage" );
+                int time = (TempIndex+1)*10;
+                job.setCronExpression( time+" * * * * ?" );
+                job.setJobId( it.getActivityID()+TempIndex );
+                job.setJobName( it.getActivityID()+TempIndex );
+                job.setJobStatus( "1" );
+                job.setDesc( json );
+                try {
+                    QuartzUntil.getQuartzUntil().AddTick( job,LotteryPushJob.class, DateBuilder.nextGivenSecondDate(null,time));
+                } catch (SchedulerException e) {
+                    return;
+                }
+
+                Temp.clear();
+                maptemp.clear();
+                GroupNum = 0;
+            }
+            Temp.add(it);
+            GroupNum++;
+        }
+
+        maptemp.put(ActivityName, Temp);
+        String json = GsonUntil.JavaClassToJson(maptemp);
+        maptemp.put(ActivityName, json);
+
+        if( Temp.size() != 0 ){
+            ScheduleJob job = new ScheduleJob();
+            job.setJobGroup( " SendLotteryMessage" );
+            int time = (TempIndex+1)*10;
+            job.setCronExpression( time+" * * * * ?" );
+            job.setJobId( Temp.get(0).getActivityID()+Integer.toString(TempIndex+1) );
+            job.setJobName( Temp.get( 0 ).getActivityID()+Integer.toString(TempIndex+1) );
+            job.setJobStatus( "1" );
+            job.setDesc( json );
+            try {
+                QuartzUntil.getQuartzUntil().AddTick( job,LotteryPushJob.class, DateBuilder.nextGivenSecondDate(null,time));
+            } catch (SchedulerException e) {
+                return;
+            }
+        }
+
     }
 }

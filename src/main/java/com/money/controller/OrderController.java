@@ -22,7 +22,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/ActivityOrder")
-public class OrderController {
+public class OrderController extends ControllerBase {
 
     @Autowired
     OrderService orderService;

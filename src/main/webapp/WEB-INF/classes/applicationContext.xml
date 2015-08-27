@@ -7,64 +7,80 @@
        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-       <!--打开注解映射 -->
-       <mvc:annotation-driven>
-              <mvc:message-converters register-defaults="true">
-                     <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-                            <property name="supportedMediaTypes">
-                                   <list>
-                                          <value>text/html;charset=UTF-8</value>
-                                   </list>
-                            </property>
-                     </bean>
-              </mvc:message-converters>
-       </mvc:annotation-driven>
+    <!--打开注解映射 -->
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
 
-       <context:annotation-config/>
+    <context:annotation-config/>
 
-       <!--声明controller-->
-       <context:component-scan base-package = "com.money.controller" >
-              <context:include-filter type = "annotation"
-                                       expression = "org.springframework.stereotype.Controller" />
-       </context:component-scan >
+    <!--声明controller-->
+    <context:component-scan base-package="com.money.controller">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
-       <context:component-scan base-package = "until" >
-              <context:include-filter type = "annotation"
-                                      expression = "org.springframework.stereotype.Component" />
-       </context:component-scan >
+    <context:component-scan base-package="until">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Component"/>
+    </context:component-scan>
 
-       <context:component-scan base-package = "com.money.dao" >
-              <context:include-filter type = "annotation"
-                                      expression = "org.springframework.stereotype.Repository" />
-       </context:component-scan >
+    <context:component-scan base-package="com.money.dao">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Repository"/>
+    </context:component-scan>
 
-       <context:component-scan base-package = "com.money.Service" >
-              <context:include-filter type = "annotation"
-                                      expression = "org.springframework.stereotype.Service" />
-       </context:component-scan >
+    <context:component-scan base-package="com.money.Service">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
 
-       <!-- 配置RestTemplate -->
-       <bean id="httpClient" class="ytx.org.apache.http.impl.client.DefaultHttpClient">
-              <constructor-arg>
-                     <bean class="ytx.org.apache.http.impl.conn.PoolingClientConnectionManager"/>
-              </constructor-arg>
-       </bean>
+    <!-- 配置RestTemplate -->
+    <bean id="pollingConnectionManager"
+          class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager">
+        <property name="maxTotal" value="30"/>
+        <property name="defaultMaxPerRoute" value="10"/>
+    </bean>
 
-       <!-- 读取配置文件-->
-       <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-              <property name="locations">
-                     <list>
-                            <value>WEB-INF/classes/conf/redis.properties</value>
-                            <value>WEB-INF/classes/conf/dataSource.properties</value>
-                     </list>
-              </property>
-       </bean>
+    <bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder"
+          factory-method="create">
+        <property name="connectionManager" ref="pollingConnectionManager"/>
+    </bean>
 
-       <!--<import resource="xml/Spring-*.xml"/>-->
-       <import resource="xml/Spring-db-config.xml"/>
-       <import resource="xml/Spring-MQ-Config.xml"/>
-       <import resource="xml/Spring-Redis-Config.xml"/>
-       <import resource="xml/Spring-Service-Config.xml"/>
-       <import resource="xml/Spring-Quartz-Config.xml"/>
+    <bean id="httpClient" factory-bean="httpClientBuilder"
+          factory-method="build"/>
+
+    <!-- -->
+    <bean id="clientHttpRequestFactory"
+          class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+        <constructor-arg ref="httpClient"/>
+        <property name="connectTimeout" value="30000"/>
+        <property name="readTimeout" value="30000"/>
+    </bean>
+
+    <!-- 读取配置文件-->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>WEB-INF/classes/conf/redis.properties</value>
+                <value>WEB-INF/classes/conf/dataSource.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--<import resource="xml/Spring-*.xml"/>-->
+    <import resource="xml/Spring-db-config.xml"/>
+    <import resource="xml/Spring-MQ-Config.xml"/>
+    <import resource="xml/Spring-Redis-Config.xml"/>
+    <import resource="xml/Spring-Service-Config.xml"/>
+    <import resource="xml/Spring-Quartz-Config.xml"/>
 
 </beans>

@@ -240,6 +240,7 @@ public class ActivityController extends ControllerBase implements IController {
                     ActivityChildInfo.add(activityVerifyCompleteModel.getImageUrl());
                     ActivityChildInfo.add(Integer.toString(userEarningsModel.getUserEarningLines()));
                     ActivityChildInfo.add( userEarningsModel.getUserEarningsDate().toString() );
+                    ActivityChildInfo.add( Integer.toString(userEarningsModel.getId()) );
                     ListJson.add( ActivityChildInfo );
                 }
                 return true;

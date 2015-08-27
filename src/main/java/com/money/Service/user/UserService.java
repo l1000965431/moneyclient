@@ -111,8 +111,8 @@ public class UserService extends ServiceBase implements ServiceInterface {
             Long timeLong = Long.parseLong(time);
             boolean landFlag = userDAO.tokenTime(username, timeLong);
             if (landFlag) {*/
-                //根据username,查找用户类型
-                return userDAO.modifyInvestorInfo(username, info);
+            //根据username,查找用户类型
+            return userDAO.modifyInvestorInfo(username, info);
             /*} else
                 return 0;*/
         } else
@@ -170,6 +170,21 @@ public class UserService extends ServiceBase implements ServiceInterface {
             return 3;
     }
 
+    /**
+     * 密码找回
+     *
+     * @param userID
+     * @param newPassWord
+     * @return
+     */
+    public int RetrievePassword(String userID, String newPassWord) {
+        if (userDAO.RetrievePassword(userID, newPassWord)) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
 
     /**
      * 用户是否完善过信息
@@ -179,7 +194,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
      */
 
     public boolean IsPerfectInfo(String userID) {
-        UserModel userModel = userDAO.getUSerModel( userID );
+        UserModel userModel = userDAO.getUSerModel(userID);
         return userModel.isPerfect();
     }
 
@@ -205,20 +220,61 @@ public class UserService extends ServiceBase implements ServiceInterface {
 
     /**
      * 更改用户头像
+     *
      * @param UserID
      * @param Url
      * @return
      */
-    public int ChangeUserHeadPortrait( String UserID,String Url ){
+    public int ChangeUserHeadPortrait(String UserID, String Url) {
         UserModel userModel = userDAO.getUSerModel(UserID);
 
-        if( userModel == null ){
+        if (userModel == null) {
             return ServerReturnValue.SERVERRETURNERROR;
         }
 
-        userModel.setUserHeadPortrait( Url );
-        userDAO.update( userModel );
+        userModel.setUserHeadPortrait(Url);
+        userDAO.update(userModel);
         return ServerReturnValue.SERVERRETURNCOMPELETE;
+    }
+
+    public boolean BinddingUserId(String OpenId, String UserId, String passWord) {
+        boolean userIsExist = userDAO.checkPassWord(UserId, passWord);
+
+        if (userIsExist == false) {
+            return false;
+        }
+
+        return userDAO.BindingOpenId(OpenId, UserId);
+
+    }
+
+    /**
+     * 是否绑定
+     *
+     * @param UserId
+     */
+    public String IsBinding(String UserId) {
+        UserModel userModel = getUserInfo(UserId);
+
+        if (userModel == null) {
+            return null;
+        }
+
+        return userModel.getWxOpenId();
+    }
+
+    /**
+     * 微信关注取消
+     * @param openId
+     */
+    public void ClearBinding( String openId ){
+        UserModel userModel = userDAO.getUSerModelByOpenId(openId);
+
+        if (userModel == null) {
+            return;
+        }
+        userModel.setWxOpenId( "0" );
+        userDAO.update( userModel );
     }
 
 }

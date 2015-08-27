@@ -18,6 +18,10 @@ public class UmengSendParameter {
 
     String appkey;
 
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
     String timestamp;
 
     String type;
@@ -51,6 +55,22 @@ public class UmengSendParameter {
         this.production_mode = true;
     }
 
+    public UmengSendParameter( String Alias,String bodymessage,String description  ){
+        this.appkey = "55c5affbe0f55a4474006226";
+        this.timestamp = Integer.toString((int)(System.currentTimeMillis() / 1000));
+        this.type = "customizedcast";
+        this.alias_type = "SINA_WEIBO";
+        this.alias = Alias;
+        this.payload = new HashMap<String, Object>();
+        this.payload.put( "display_type","message" );
+        Map<String,Object> body = new HashMap<String, Object>();
+        body.put( "custom",bodymessage );
+        this.payload.put( "body",body );
+        this.description = description;
+        this.production_mode = true;
+    }
+
+
     public String getAppkey() {
         return appkey;
     }
@@ -82,4 +102,6 @@ public class UmengSendParameter {
     public String getDescription() {
         return description;
     }
+
+
 }
