@@ -216,7 +216,7 @@
             android:id="@+id/payment_tv_goToPay"
             android:layout_gravity="center"
             android:textSize="15dp"
-            android:background="#ffff4057"
+            android:background="@color/home_red"
             android:gravity="center_vertical|center_horizontal"
             android:textColor="#ffffffff"
             android:layout_below="@+id/linearLayout23"
