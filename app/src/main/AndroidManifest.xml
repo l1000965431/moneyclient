@@ -416,6 +416,10 @@
             android:name=".activity.RetrievePasswordActivity"
             android:label="@string/title_activity_retrieve_password" >
         </activity>
+        <activity
+            android:name=".activity.WithdrawActivity"
+            android:label="@string/title_activity_withdraw" >
+        </activity>
     </application>
 
 </manifest>

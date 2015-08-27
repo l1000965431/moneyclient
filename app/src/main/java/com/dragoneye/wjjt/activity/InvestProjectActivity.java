@@ -357,6 +357,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mSelectedLeadStageNum = 0;
         mLLLeadPanel.setVisibility(View.GONE);
         mIVLeadArrow.setRotation(-90.0f);
+        updateBrEarningProportion(0);
     }
 
     private void resetFallow(){

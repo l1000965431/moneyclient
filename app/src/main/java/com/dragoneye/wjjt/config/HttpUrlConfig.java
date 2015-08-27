@@ -5,7 +5,7 @@ package com.dragoneye.wjjt.config;
  * Created by Guohong on 15-7-11.
  */
 public interface HttpUrlConfig {
-    String URL_ROOT = "http://115.29.111.0/Longyan/";
+    String URL_ROOT = "http://weijujingtou.com/Longyan/";
 
 //    String URL_ROOT = "http://192.168.1.105:8080/";
 

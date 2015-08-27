@@ -18,6 +18,7 @@ import com.dragoneye.wjjt.activity.ImproveUserInfoActivity;
 import com.dragoneye.wjjt.activity.ProjectEditActivity;
 import com.dragoneye.wjjt.activity.SettingsActivity;
 import com.dragoneye.wjjt.activity.UserInfoActivity;
+import com.dragoneye.wjjt.activity.WithdrawActivity;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
@@ -186,10 +187,8 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                 onCharge();
                 break;
             case R.id.linearLayout4:    // 提现
+                WithdrawActivity.CallActivity(getActivity());
                 break;
-//            case R.id.linearLayout21:   // 创建项目
-//                EntrepreneurActivity.startSubmitProjectActivity(getActivity(), ((MyApplication)getApplication()).getCurrentUser.getCurrentUser(getActivity()));
-//                break;
             case R.id.home_self_group_iv_portrait:
                 onChangePortrait();
                 break;
