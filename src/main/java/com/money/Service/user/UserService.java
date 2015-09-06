@@ -6,6 +6,8 @@ import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import com.money.dao.userDAO.UserDAO;
 import com.money.model.UserModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
@@ -16,6 +18,8 @@ import until.GsonUntil;
 
 @Service("UserService")
 public class UserService extends ServiceBase implements ServiceInterface {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     UserDAO userDAO;
@@ -238,9 +242,14 @@ public class UserService extends ServiceBase implements ServiceInterface {
     }
 
     public boolean BinddingUserId(String OpenId, String UserId, String passWord) {
+        if( OpenId == null || UserId == null || passWord == null ){
+            return false;
+        }
+
         boolean userIsExist = userDAO.checkPassWord(UserId, passWord);
 
         if (userIsExist == false) {
+            LOGGER.debug( "userIsExist == false" );
             return false;
         }
 
@@ -275,6 +284,16 @@ public class UserService extends ServiceBase implements ServiceInterface {
         }
         userModel.setWxOpenId( "0" );
         userDAO.update( userModel );
+    }
+
+
+    /**
+     * 获得用户token
+     * @param userId
+     * @return
+     */
+    public String getUserToken( String userId ){
+       return userDAO.getUserToken( userId );
     }
 
 }

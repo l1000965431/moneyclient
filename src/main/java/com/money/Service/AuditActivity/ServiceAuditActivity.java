@@ -126,7 +126,7 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
     }
 
     public String getAuditorPassActivity( int page,int findNum,int status ){
-        List list = auditActivityDao.getUsersActivityList(page, findNum,status);
+        List list = auditActivityDao.getAuditActivityList(page, findNum,status);
         return GsonUntil.JavaClassToJson( list );
     }
 

@@ -1,8 +1,7 @@
 package until;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
+import org.apache.commons.codec.binary.Base64;
 import java.security.MessageDigest;
 
 /**
@@ -23,11 +22,11 @@ public abstract class Coder {
      * @throws Exception
      */
     public static String decryptBASE64ToStr(String key) throws Exception {
-        return new String((new BASE64Decoder()).decodeBuffer(key), "UTF-8");
+        return new String((new Base64()).decodeBase64(key), "UTF-8");
     }
 
     public static byte[] decryptBASE64(String key) throws Exception {
-        return (new BASE64Decoder()).decodeBuffer(key);
+        return (new Base64()).decodeBase64(key);
     }
 
     /**
@@ -38,11 +37,11 @@ public abstract class Coder {
      * @throws Exception
      */
     public static String encryptBASE64(byte[] bytes) throws Exception {
-        return (new BASE64Encoder()).encode(bytes);
+        return (new Base64()).encodeBase64String(bytes);
     }
 
     public static String encryptStrToBASE64(String str) throws Exception {
-        return (new BASE64Encoder()).encode(str.getBytes("UTF-8"));
+        return (new Base64()).encodeBase64String(str.getBytes("UTF-8"));
     }
 
     public static String encryptMD5(String str) {

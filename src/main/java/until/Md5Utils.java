@@ -11,7 +11,7 @@ public class Md5Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Md5Utils.class);
 
 
-    private static byte[] md5(String s) {
+    public static byte[] md5(String s) {
         MessageDigest algorithm;
         try {
             algorithm = MessageDigest.getInstance("MD5");
@@ -39,14 +39,6 @@ public class Md5Utils {
             buf.append(Long.toString(hash[i] & 0xff, 16));
         }
         return buf.toString();
-    }
-
-    public static final String MD5( String s ){
-        try {
-            return new String( md5( s ),"UTF-8" );
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
     }
 
     public static String hash(String s) {

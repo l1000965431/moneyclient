@@ -27,9 +27,6 @@ public class OrderController extends ControllerBase {
     @Autowired
     OrderService orderService;
 
-    @Autowired
-    UserService userService;
-
     @RequestMapping("/getOrderByUserID")
     @ResponseBody
     public String getOrderByUserID( HttpServletRequest request, HttpServletResponse response ){

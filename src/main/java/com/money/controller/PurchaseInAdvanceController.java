@@ -37,9 +37,6 @@ import java.util.UUID;
 public class PurchaseInAdvanceController extends ControllerBase implements IController {
 
     @Autowired
-    UserService userService;
-
-    @Autowired
     PurchaseInAdvance purchaseInAdvance;
 
     @Autowired
@@ -60,15 +57,21 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
 
     @RequestMapping("/PurchaseActivity")
     @ResponseBody
-    //1:期或票不够 2:钱不够 3:本期不够 预购后边的期 100:支付成功 103:支付成功客户端需要刷新 MessageType:1:判断本期 2:不判断本期
+    //-1:重新登录 1:期或票不够 2:钱不够 3:本期不够 预购后边的期 100:支付成功 103:支付成功客户端需要刷新 MessageType:1:判断本期 2:不判断本期
     public int PurchaseActivity(HttpServletRequest request, HttpServletResponse response) {
         final String UserID = request.getParameter("UserID");
+        final String token = request.getParameter("token");
         final String InstallmentActivityID = request.getParameter("InstallmentActivityID");
         final int PurchaseType = Integer.valueOf(request.getParameter("PurchaseType"));
         final int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
         final int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
         final int MessageType = Integer.valueOf(request.getParameter("MessageType"));
         final int[] Refresh = {0};
+
+        if( !this.UserIsLand( UserID,token ) ){
+            return Config.LANDFAILED;
+        }
+
 
         if (!userService.IsPerfectInfo(UserID)) {
             return ServerReturnValue.PERFECTINFO;
