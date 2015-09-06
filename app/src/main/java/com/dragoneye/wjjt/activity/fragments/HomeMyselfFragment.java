@@ -157,6 +157,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
             HttpParams params = new HttpParams();
 
             params.put("userId", ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserId());
+            params.put("token", ((MyApplication)getActivity().getApplication()).getToken(getActivity()));
 
             HttpClient.atomicPost(getActivity(), UserProtocol.URL_GET_WALLET_BALANCE, params, new HttpClient.MyHttpHandler() {
                 @Override
@@ -166,6 +167,10 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                         return;
                     }
                     int balance = Integer.parseInt(s);
+                    if (balance == -1) {
+                        ((MyApplication) getActivity().getApplication()).reLogin(getActivity());
+                        return;
+                    }
                     mTVWalletBalance.setText(ToolMaster.convertToPriceString(balance));
                 }
             });

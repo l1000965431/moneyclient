@@ -307,6 +307,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_PAGE_INDEX, mCurInvestRecordPageIndex + 1);
             httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_TOKEN, ((MyApplication)getActivity().getApplication()).getToken(getActivity()));
             httpParams.put(GetProjectListProtocol.GET_ORDER_PARAM_NUM_PER_PAGE, 10);
+            httpParams.put("token", ((MyApplication)getActivity().getApplication()).getToken(getActivity()));
 
             HttpClient.atomicPost(getActivity(), GetProjectListProtocol.URL_GET_ORDER_LIST, httpParams, new HttpClient.MyHttpHandler() {
                 @Override
@@ -325,6 +326,10 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
                     refreshableView.finishRefreshing();
+                    if(s.compareTo("LANDFAILED") == 0){
+                        ((MyApplication) getActivity().getApplication()).reLogin(getActivity());
+                        return;
+                    }
 
                     ArrayList<OrderModel> orderModels = onUpdateOrderSuccess(s);
                     addToRecord(orderModels);

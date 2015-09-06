@@ -1,5 +1,6 @@
 package com.dragoneye.wjjt.activity;
 
+import android.app.ProgressDialog;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
@@ -18,13 +19,16 @@ import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
+import com.dragoneye.wjjt.tool.DESCoder;
 import com.dragoneye.wjjt.tool.InputChecker;
+import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 
 import org.apache.http.Header;
 import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
@@ -39,6 +43,7 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
     private TextView mTVConfirm;
 
     private String mPhoneNumber;
+    ProgressDialog progressDialog;
 
     private static final int MESSAGE_TICK = 1;
     private static final int SEND_CODE_INTERVAL = 60;
@@ -85,6 +90,8 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
         mTVConfirm = (TextView)findViewById(R.id.retrieve_password_tv_confirm);
         mTVConfirm.setOnClickListener(this);
 
+        progressDialog = new ProgressDialog(this);
+
         initSMS();
     }
 
@@ -122,6 +129,7 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
         }
 
         SMSSDK.submitVerificationCode("86", mETUserId.getText().toString(), mETCode.getText().toString());
+//        handler.post(confirmChange_r);
     }
 
     Runnable confirmChange_r = new Runnable() {
@@ -129,12 +137,33 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
         public void run() {
             HttpParams params = new HttpParams();
 
-            params.put("userId", mETUserId.getText().toString());
-            params.put("newPassword", mETNewPassword.getText());
+            HashMap<String, String> dataMap = new HashMap<>();
+            String userId = mETUserId.getText().toString();
 
+            dataMap.put("userId", userId);
+            dataMap.put("newPassword", mETNewPassword.getText().toString());
+
+            String ObjectJson = ToolMaster.gsonInstance().toJson(dataMap);
+            try{
+                byte[] data = DESCoder.encrypt(ObjectJson.getBytes(), ToolMaster.getCodeKey(userId));
+                params.put("data", DESCoder.encryptBASE64(data));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            progressDialog.show();
+            HttpClient.getClient().addHeader("userId", userId);
             HttpClient.atomicPost(RetrievePasswordActivity.this, HttpUrlConfig.URL_ROOT + "User/RetrievePassword", params, new HttpClient.MyHttpHandler() {
                 @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    progressDialog.dismiss();
+                    HttpClient.getClient().removeHeader("userId");
+                }
+
+                @Override
                 public void onSuccess(int i, Header[] headers, String s) {
+                    progressDialog.dismiss();
+                    HttpClient.getClient().removeHeader("userId");
                     if (s == null) {
                         UIHelper.toast(RetrievePasswordActivity.this, "服务器繁忙，请稍后再试");
                         return;

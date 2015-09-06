@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
+import com.dragoneye.wjjt.application.MyApplication;
 import com.google.gson.Gson;
 
 import java.io.BufferedOutputStream;
@@ -243,5 +244,16 @@ public class ToolMaster {
         }
         return file;
 
+    }
+
+    public static String getCodeKey(String userId){
+        String key = userId;
+        while(key.length() < 24){
+            key = key + key;
+            if(key.length() >= 24){
+                key = key.substring(0, 24);
+            }
+        }
+        return key;
     }
 }

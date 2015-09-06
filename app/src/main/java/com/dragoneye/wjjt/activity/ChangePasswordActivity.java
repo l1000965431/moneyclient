@@ -1,5 +1,6 @@
 package com.dragoneye.wjjt.activity;
 
+import android.app.ProgressDialog;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
@@ -14,12 +15,15 @@ import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
+import com.dragoneye.wjjt.tool.DESCoder;
+import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
 
 import org.apache.http.Header;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
@@ -33,6 +37,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
     private TextView mTVSendCode;
     private TextView mTVConfirmChange;
     private ChangePasswordActivity changePasswordActivity;
+    ProgressDialog progressDialog;
 
     private static final int MESSAGE_TICK = 1;
     private static final int SEND_CODE_INTERVAL = 60;
@@ -86,6 +91,8 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
 
         mTVConfirmChange = (TextView)findViewById(R.id.change_password_tv_confirmChange);
         mTVConfirmChange.setOnClickListener(this);
+
+        progressDialog = new ProgressDialog(this);
     }
 
     private void initData(){
@@ -122,6 +129,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
         }
 
         SMSSDK.submitVerificationCode("86", ((MyApplication) getApplication()).getCurrentUser(this).getUserId(), mETCode.getText().toString());
+//        handler.post(confirmChange_r);
     }
 
     Runnable confirmChange_r = new Runnable() {
@@ -129,14 +137,34 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
         public void run() {
             HttpParams params = new HttpParams();
 
-            params.put(UserProtocol.CHANGE_PASSWORD_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser(ChangePasswordActivity.this).getUserId());
-            params.put(UserProtocol.CHANGE_PASSWORD_PARAM_OLD_PASSWORD, mETOldPassword.getText());
-            params.put(UserProtocol.CHANGE_PASSWORD_PARAM_NEW_PASSWORD, mETNewPassword.getText());
-            params.put(UserProtocol.CHANGE_PASSWORD_PARAM_CODE, mETCode.getText());
+            HashMap<String, String> dataMap = new HashMap<>();
+            String userId = ((MyApplication)getApplication()).getCurrentUser(ChangePasswordActivity.this).getUserId();
 
+            dataMap.put(UserProtocol.CHANGE_PASSWORD_PARAM_USER_ID, userId);
+            dataMap.put(UserProtocol.CHANGE_PASSWORD_PARAM_OLD_PASSWORD, mETOldPassword.getText().toString());
+            dataMap.put(UserProtocol.CHANGE_PASSWORD_PARAM_NEW_PASSWORD, mETNewPassword.getText().toString());
+            dataMap.put(UserProtocol.CHANGE_PASSWORD_PARAM_CODE, mETCode.getText().toString());
+
+            String ObjectJson = ToolMaster.gsonInstance().toJson(dataMap);
+            try{
+                byte[] data = DESCoder.encrypt(ObjectJson.getBytes(), ToolMaster.getCodeKey(userId));
+                params.put("data", DESCoder.encryptBASE64(data));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            progressDialog.show();
+            HttpClient.getClient().addHeader("userId", userId);
             HttpClient.atomicPost(ChangePasswordActivity.this, UserProtocol.URL_CHANGE_PASSWORD, params, new HttpClient.MyHttpHandler() {
                 @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    progressDialog.dismiss();
+                    HttpClient.getClient().removeHeader("userId");
+                }
+                @Override
                 public void onSuccess(int i, Header[] headers, String s) {
+                    progressDialog.dismiss();
+                    HttpClient.getClient().removeHeader("userId");
                     if (s == null) {
                         UIHelper.toast(ChangePasswordActivity.this, "服务器繁忙，请稍后再试");
                         return;

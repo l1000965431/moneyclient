@@ -79,9 +79,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ((MyApplication)getApplication()).setUserOutOfDate(SettingsActivity.this);
-                        LoginActivity.CallLoginActivity(SettingsActivity.this);
-                        MyApplication.exit();
+                        ((MyApplication) getApplication()).reLogin(SettingsActivity.this);
                     }
                 }).setNegativeButton("取消", null).create();
         alertDialog.setMessage("确定要切换账号？");

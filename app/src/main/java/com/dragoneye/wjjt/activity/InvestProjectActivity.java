@@ -673,6 +673,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_STAGE_NUM, investStageNum);
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_PRICE_NUM, investPriceNum);
         params.put("MessageType", messageType);
+        params.put("token", ((MyApplication)getApplication()).getToken(InvestProjectActivity.this));
 
         HttpClient.atomicPost(this, InvestProjectProtocol.URL_INVEST_PROJECT, params, new HttpClient.MyHttpHandler() {
             @Override
@@ -758,6 +759,9 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                         .setNegativeButton("否", null)
                         .create();
                 alertDialog.show();
+                break;
+            case -1:
+                ((MyApplication)getApplication()).reLogin(this);
                 break;
             default:
                 UIHelper.toast(this, "服务器异常");

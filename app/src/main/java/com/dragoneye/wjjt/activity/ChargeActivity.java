@@ -104,6 +104,7 @@ public class ChargeActivity extends BaseActivity implements View.OnClickListener
             HttpParams params = new HttpParams();
 
             params.put("userId", ((MyApplication) getApplication()).getCurrentUser(ChargeActivity.this).getUserId());
+            params.put("token", ((MyApplication) getApplication()).getToken(ChargeActivity.this));
 
             HttpClient.atomicPost(ChargeActivity.this, UserProtocol.URL_GET_WALLET_BALANCE, params, new HttpClient.MyHttpHandler() {
                 @Override
@@ -120,6 +121,10 @@ public class ChargeActivity extends BaseActivity implements View.OnClickListener
 
                     finishLoading(true);
                     int balance = Integer.parseInt(s);
+                    if(balance == -1){
+                        ((MyApplication) getApplication()).reLogin(ChargeActivity.this);
+                        return;
+                    }
                     mTVWalletBalance.setText(String.format("钱包余额：%s", ToolMaster.convertToPriceString(balance)));
                 }
             });
@@ -170,6 +175,7 @@ public class ChargeActivity extends BaseActivity implements View.OnClickListener
         JSONObject extras = new JSONObject();
         try {
             extras.put("UserId", userId);
+            extras.put("token", ((MyApplication) getApplication()).getToken(this));
         } catch (JSONException e) {
             e.printStackTrace();
         }

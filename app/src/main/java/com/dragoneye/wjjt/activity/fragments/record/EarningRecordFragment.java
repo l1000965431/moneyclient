@@ -175,6 +175,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
             params.put(GetProjectListProtocol.GET_ORDER_PARAM_PAGE_INDEX, mCurEarningRecordPageIndex + 1);
             params.put(GetProjectListProtocol.GET_ORDER_PARAM_TOKEN, ((MyApplication)getActivity().getApplication()).getToken(getActivity()));
             params.put(GetProjectListProtocol.GET_ORDER_PARAM_NUM_PER_PAGE, 10);
+            params.put("token", ((MyApplication)getActivity().getApplication()).getToken(getActivity()));
 
             HttpClient.atomicPost(getActivity(), HttpUrlConfig.URL_ROOT + "ActivityController/getActivityEarnings", params, new HttpClient.MyHttpHandler() {
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
@@ -187,6 +188,10 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
                     refreshableView.finishRefreshing();
+                    if(s.compareTo("LANDFAILED") == 0){
+                        ((MyApplication) getActivity().getApplication()).reLogin(getActivity());
+                        return;
+                    }
 
                     mCurEarningRecordPageIndex += 1;
                     ArrayList<MyEarningModel> earningModels = onUpdateEarningListSuccess(s);

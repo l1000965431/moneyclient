@@ -19,6 +19,10 @@ import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
+import com.dragoneye.wjjt.tool.Base32;
+import com.dragoneye.wjjt.tool.Coder;
+import com.dragoneye.wjjt.tool.DESCoder;
+import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
 import com.dragoneye.wjjt.user.UserBase;
@@ -30,6 +34,8 @@ import com.umeng.message.UmengRegistrar;
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
@@ -134,13 +140,31 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         mProgressDialog.setMessage("登陆中");
         mProgressDialog.show();
         HttpParams params = new HttpParams();
-        params.put(UserProtocol.PASSWORD_LOGIN_PARAM_USER_ID, mLoginUserId);
-        params.put(UserProtocol.PASSWORD_LOGIN_PARAM_USER_PASSWORD, mLoginUserPassword);
+
+        HashMap<String, String> dataMap = new HashMap<>();
+
+        dataMap.put(UserProtocol.PASSWORD_LOGIN_PARAM_USER_ID, mLoginUserId);
+        dataMap.put(UserProtocol.PASSWORD_LOGIN_PARAM_USER_PASSWORD, mLoginUserPassword);
+
+
+        String ObjectJson = ToolMaster.gsonInstance().toJson(dataMap);
+        try{
+            byte[] data = DESCoder.encrypt(ObjectJson.getBytes(), ToolMaster.getCodeKey(mLoginUserId));
+            params.put("data", DESCoder.encryptBASE64(data));
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        HttpClient.getClient().addHeader("userId", (mLoginUserId));
 
         HttpClient.atomicPost(this, UserProtocol.URL_LOGIN, params, new HttpClient.MyHttpHandler() {
             @Override
-            public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                 mProgressDialog.dismiss();
+                HttpClient.getClient().removeHeader("userId");
             }
 
             @Override
@@ -149,17 +173,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 //                String result = HttpClient.getValueFromHeader(headers, UserProtocol.PASSWORD_LOGIN_RESULT_KEY);
 //                String response = HttpClient.getValueFromHeader(headers, UserProtocol.PASSWORD_LOGIN_RESULT_INFO_KEY);
 //                String token = s;
+                HttpClient.getClient().removeHeader("userId");
                 if (s == null || s.isEmpty()) {
                     UIHelper.toast(LoginActivity.this, "服务器繁忙，请稍后再试");
                     return;
                 }
-                try{
+                try {
                     JSONObject object = new JSONObject(s);
                     String result = object.getString("LoginResult");
                     String token = object.getString("token");
                     String response = object.getString("UserResponse");
                     onLoginResult(result, response, token);
-                }catch (JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                     UIHelper.toast(LoginActivity.this, "登录失败");
                     return;
@@ -167,6 +192,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
             }
         });
+//        HttpClient.getClient().removeHeader("userId");
     }
 
     private void onLoginResult(String result, String response, String token){

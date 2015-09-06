@@ -76,6 +76,7 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
             HttpParams params = new HttpParams();
 
             params.put("userId", ((MyApplication) getApplication()).getCurrentUser(WithdrawActivity.this).getUserId());
+            params.put("token", ((MyApplication) getApplication()).getToken(WithdrawActivity.this));
 
             HttpClient.atomicPost(WithdrawActivity.this, UserProtocol.URL_GET_WALLET_BALANCE, params, new HttpClient.MyHttpHandler() {
                 @Override
@@ -92,6 +93,11 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
 
 
                     int balance = Integer.parseInt(s);
+                    if(balance == -1){
+                        ((MyApplication) getApplication()).reLogin(WithdrawActivity.this);
+                        return;
+                    }
+
                     mTVWalletBalance.setText(String.format("钱包余额：%s", ToolMaster.convertToPriceString(balance)));
 
                     handler.post(checkIsBindWeChat_r);
@@ -107,7 +113,7 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
 
             params.put("userId", ((MyApplication)getApplication()).getCurrentUser(WithdrawActivity.this).getUserId());
 
-            HttpClient.atomicPost(WithdrawActivity.this, HttpUrlConfig.URL_ROOT + "wallet/IsBinding", params, new HttpClient.MyHttpHandler() {
+            HttpClient.atomicPost(WithdrawActivity.this, HttpUrlConfig.URL_ROOT + "Wallet/IsBinding", params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     finishLoading(false);

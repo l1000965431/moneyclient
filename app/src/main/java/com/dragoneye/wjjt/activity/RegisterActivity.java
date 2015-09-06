@@ -1,5 +1,6 @@
 package com.dragoneye.wjjt.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
@@ -20,7 +21,9 @@ import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
+import com.dragoneye.wjjt.tool.DESCoder;
 import com.dragoneye.wjjt.tool.InputChecker;
+import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.umeng.message.ALIAS_TYPE;
 import com.umeng.message.PushAgent;
@@ -28,6 +31,7 @@ import com.umeng.message.PushAgent;
 import org.apache.http.Header;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +61,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     String UserID;
 
     RegisterActivity registerActivity;
+
+    ProgressDialog progressDialog;
 
     private static class MyHandler extends Handler{
         private final WeakReference<RegisterActivity> mRef;
@@ -128,6 +134,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
         mTVAgreement = (TextView)findViewById(R.id.fragment_register_Agreement_text);
         mTVAgreement.setOnClickListener(this);
+
+        progressDialog = new ProgressDialog(this);
     }
 
     private void initData(){
@@ -183,17 +191,37 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         @Override
         public void run() {
             HttpParams params = new HttpParams();
-            params.put(UserProtocol.REGISTER_PARAM_USER_ID, mUserIdTextField.getText().toString());
-            params.put(UserProtocol.REGISTER_PARAM_USER_PASSWORD, mUserPasswordTextField.getText().toString());
-            params.put(UserProtocol.REGISTER_PARAM_USER_TYPE, getUserType());
+
             UserID = mUserIdTextField.getText().toString();
+
+            HashMap<String, String> dataMap = new HashMap<>();
+
+            dataMap.put(UserProtocol.REGISTER_PARAM_USER_ID, mUserIdTextField.getText().toString());
+            dataMap.put(UserProtocol.REGISTER_PARAM_USER_PASSWORD, mUserPasswordTextField.getText().toString());
+            dataMap.put(UserProtocol.REGISTER_PARAM_USER_TYPE, String.valueOf(getUserType()));
+
+            String ObjectJson = ToolMaster.gsonInstance().toJson(dataMap);
+            try{
+                byte[] data = DESCoder.encrypt(ObjectJson.getBytes(), ToolMaster.getCodeKey(UserID));
+                params.put("data", DESCoder.encryptBASE64(data));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            progressDialog.show();
+
+            HttpClient.getClient().addHeader("userId", UserID);
             HttpClient.atomicPost(RegisterActivity.this, UserProtocol.URL_REGISTER, params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    progressDialog.dismiss();
+                    HttpClient.getClient().removeHeader("userId");
                 }
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
+                    progressDialog.dismiss();
+                    HttpClient.getClient().removeHeader("userId");
                     if (s == null) {
                         UIHelper.toast(RegisterActivity.this, "服务器异常，请稍后再试");
                         return;
