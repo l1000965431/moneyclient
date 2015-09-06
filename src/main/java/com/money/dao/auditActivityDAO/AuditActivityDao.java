@@ -102,6 +102,27 @@ public class AuditActivityDao extends BaseDao {
                 .setMaxResults(pageNum)
                 .list();
 
+        ArrayList<String> ids = new ArrayList<String>();
+        for(ActivityVerifyModel model : activityVerifyModels){
+            if(model.getAuditorStatus() == ActivityVerifyModel.STATUS_AUDITOR_PASS_AND_KEEP){
+                ids.add(String.valueOf(model.getId()));
+            }
+        }
+
+        List<ActivityVerifyCompleteModel> activityVerifyCompleteModels = session.createCriteria(ActivityVerifyCompleteModel.class)
+                .add(Restrictions.in("activityId", ids))
+                .list();
+
+        for(ActivityVerifyCompleteModel model : activityVerifyCompleteModels){
+            for(ActivityVerifyModel verifyModel : activityVerifyModels){
+                if(model.getActivityId().compareTo(String.valueOf(verifyModel.getId())) == 0){
+                    verifyModel.setAuditorStatus(model.getStatus());
+                    break;
+                }
+            }
+        }
+
+
         t.commit();
         return activityVerifyModels;
     }
