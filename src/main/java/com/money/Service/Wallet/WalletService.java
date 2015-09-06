@@ -2,12 +2,15 @@ package com.money.Service.Wallet;
 
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
+import com.money.config.Config;
 import com.money.dao.GeneraDAO;
+import com.money.dao.TransactionSessionCallback;
 import com.money.dao.userDAO.UserDAO;
 import com.money.model.TransferModel;
 import com.money.model.UserModel;
 import com.money.model.WalletModel;
 import com.money.model.WalletOrderModel;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.MoneyServerDate;
@@ -84,29 +87,36 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         return true;
     }
 
-    public boolean TransferLines( String OrderId, String OpenId,int Lines,String status ) throws ParseException {
-        UserModel userModel = generaDAO.getUSerModelByOpenId(OpenId);
-        if( userModel == null ){
-            return false;
-        }
+    public boolean TransferLines( final String OrderId, final String OpenId, final int Lines, final String status ) throws ParseException {
 
-        InsertTransferOrder( userModel,OrderId,OpenId,Lines,status );
+        if(generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                UserModel userModel = generaDAO.getUSerModelByOpenIdNoTransaction(OpenId);
+                if( userModel == null ){
+                    return false;
+                }
 
-        WalletModel walletModel = (WalletModel)generaDAO.load(WalletModel.class, userModel.getUserId());
+                InsertTransferOrder( userModel,OrderId,OpenId,Lines,status );
 
-        if( walletModel == null ){
-            return false;
-        }
+                WalletModel walletModel = (WalletModel)generaDAO.loadNoTransaction(WalletModel.class, userModel.getUserId());
 
-        if( !walletModel.IsLinesEnough( Lines ) ){
-            return false;
-        }
+                if( walletModel == null ){
+                    return false;
+                }
 
-        int CurLines = walletModel.getWalletLines();
-        walletModel.setWalletLines(CurLines-Lines);
-        generaDAO.update( walletModel);
+                if( !walletModel.IsLinesEnough( Lines ) ){
+                    return false;
+                }
 
-        return true;
+                int CurLines = walletModel.getWalletLines();
+                walletModel.setWalletLines(CurLines-Lines);
+                generaDAO.updateNoTransaction( walletModel);
+
+                return true;
+            }
+        }) == Config.SERVICE_SUCCESS );
+
+       return false;
     }
 
 
@@ -135,12 +145,27 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         transferModel.setTransferDate( MoneyServerDate.getDateCurDate() );
         transferModel.setUserId( userModel.getUserId() );
         transferModel.setStatus( status );
-        generaDAO.save( transferModel );
+        generaDAO.saveNoTransaction(transferModel);
     }
 
 
     public boolean IsWalletEnough( String UserID,int Lines ){
         WalletModel walletModel = (WalletModel)generaDAO.loadNoTransaction(WalletModel.class, UserID);
+
+        if( walletModel == null ){
+            return false;
+        }
+
+        if( !walletModel.IsLinesEnough( Lines ) ){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+
+    public boolean IsWalletEnoughTransaction( String UserID,int Lines ){
+        WalletModel walletModel = (WalletModel)generaDAO.load(WalletModel.class, UserID);
 
         if( walletModel == null ){
             return false;

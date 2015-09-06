@@ -13,40 +13,41 @@
     String userId;
     String userPassword;
 %>
-<%
-    openId = request.getParameter("openId");
 
+<%
+    String TempOpenId = request.getParameter("openId");
+    if (openId == null || (TempOpenId != null && !TempOpenId.equals( openId )) ) {
+        openId = request.getParameter("openId");
+    }
 %>
+
 <script language="javascript">
     function on_binding() {
-        if (from1.username.value == "") {
+        if (document.form1.username.value == "") {
             alert("用户名不能为空，请输入用户名！");
-            from1.username.focus();
-            return false;
+            document.form1.username.focus();
+            return "";
         }
 
-        if (from1.userpassword.value == "") {
+        if (document.form1.userpassword.value == "") {
             alert("密码不能为空！请输入密码！");
-            from1.userpassword.focus();
-            return false;
+            document.form1.userpassword.focus();
+            return "";
         }
 
-        usernamejava = from1.username.value;
-        userpasswordjava = from1.userpassword.value;
-        var result = false;
         <%
-          userId = request.getParameter("usernamejava");
-          userPassword = request.getParameter("userpasswordjava");
+          userId = request.getParameter("username");
+          userPassword = request.getParameter("userpassword");
+
         UserService userService = ServiceFactory.getService("UserService");
         if( userService != null ){
-        %>
-        result = "<%=userService.BinddingUserId( openId,userId,userPassword )%>";
+        if(userService.BinddingUserId( openId,userId,userPassword )){
+        openId = null;
+        }
 
-        <%
         }
         %>
-
-        return result;
+        return "绑定成功";
     }
 </script>
 
@@ -55,11 +56,10 @@
     <title>绑定帐号</title>
 </head>
 <body>
-<form name="form1" action="WxBinding.jsp" method="post" usernamejava=""
-      userpasswordjava="">
+<form name="form1"  action=""  method="post">
     用户名: <input type=text name=username id=username/><br>
     密码: <input type=password name=userpassword id=userpassword/><br>
-    <input type="submit" name="submit" value="绑定" onclick="on_binding();" >
+    <input type="submit" name="submit" value="绑定" onclick="on_binding();">
 
 </form>
 </body>

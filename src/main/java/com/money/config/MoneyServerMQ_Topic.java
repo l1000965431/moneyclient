@@ -28,4 +28,7 @@ public class MoneyServerMQ_Topic {
 
     public static final String MONEYSERVERMQ_LOTTERYPUSHLIST_TOPIC="MoneyServer_LotteryPushLis_Listener";
     public static final String MONEYSERVERMQ_LOTTERYPUSHLIST_TAG="MoneyServer_LotteryPushLis_Listener";
+
+    public static final String MONEYSERVERMQ_TRANSFER_TOPIC="MoneyServer_Transfer_Listener";
+    public static final String MONEYSERVERMQ_TRANSFER_TAG="MoneyServer_Transfer_Listener";
 }

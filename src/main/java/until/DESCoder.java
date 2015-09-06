@@ -2,6 +2,9 @@ package until;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 
@@ -23,6 +26,7 @@ import java.security.Key;
  * @version 1.0
  * @since 1.0
  */
+
 public abstract class DESCoder extends Coder {
     /**
      * ALGORITHM 算法 <br>
@@ -55,14 +59,13 @@ public abstract class DESCoder extends Coder {
      * @throws Exception
      */
     private static Key toKey(byte[] key) throws Exception {
-//        DESKeySpec dks = new DESKeySpec(key);
-//        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ALGORITHM);
-//        SecretKey secretKey = keyFactory.generateSecret(dks);
+        DESedeKeySpec dks = new DESedeKeySpec(key);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ALGORITHM);
+        SecretKey secretKey = keyFactory.generateSecret(dks);
 
 
         // 当使用其他对称加密算法时，如AES、Blowfish等算法时，用下述代码替换上述三行代码
-        SecretKey secretKey = new SecretKeySpec(key, ALGORITHM);
-
+        //SecretKey secretKey = new SecretKeySpec(key, ALGORITHM);
         return secretKey;
     }
 
@@ -75,7 +78,7 @@ public abstract class DESCoder extends Coder {
      * @throws Exception
      */
     public static byte[] decrypt(byte[] data, String key) throws Exception {
-        Key k = toKey(decryptBASE64(key));
+        Key k = toKey(key.getBytes());
 
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, k);
@@ -92,7 +95,7 @@ public abstract class DESCoder extends Coder {
      * @throws Exception
      */
     public static byte[] encrypt(byte[] data, String key) throws Exception {
-        Key k = toKey(decryptBASE64(key));
+        Key k = toKey(key.getBytes());
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, k);
 

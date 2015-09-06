@@ -39,8 +39,10 @@ public class TransListener extends MoneyServerListener {
             double ammont = Double.valueOf(mapobject.get( "amount" ).toString())/100.0;
             String openId = mapobject.get( "recipient" ).toString();
             String orderId = mapobject.get( "transaction_no" ).toString();
+            if( status.equals( "paid" ) ){
+                walletService.TransferLines( orderId,openId,(int)ammont,status );
+            }
 
-            walletService.TransferLines( orderId,openId,(int)ammont,status );
             return Action.CommitMessage;
         } catch (Exception e) {
             return Action.CommitMessage;

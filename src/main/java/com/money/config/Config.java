@@ -21,37 +21,38 @@ public class Config {
 
     public static final String MESSAFE_SECRETKEY = "2f3BFhlGVSh6I3LJDIIL1D1t5YVDlW";
     //缓存失效时间，单位为秒
-    public static final int FAILUER_TIME=1800;
+    public static final int FAILUER_TIME = 1800;
 
-    public static final int MODIFYINFO_SUCCESS =1;
+    public static final int MODIFYINFO_SUCCESS = 1;
 
-    public static final int MODIFYINFO_FAILED=2;
+    public static final int MODIFYINFO_FAILED = 2;
 
-    public static final int SENDCODE_SUCESS=1;
+    public static final int SENDCODE_SUCESS = 1;
 
-    public static final int SENDCODE_FAILED=0;
+    public static final int SENDCODE_FAILED = 0;
 
-    public static final int TOKENLAND_SUCESS=2;
+    public static final int TOKENLAND_SUCESS = 2;
 
-    public static final int TOKENLAND_FAILED=0;
+    public static final int TOKENLAND_FAILED = 0;
 
-    public static final int USER_IS_REGISTER=2;
+    public static final int USER_IS_REGISTER = 2;
 
-    public static final int PASSWORD_ILLEGAL=3;
+    public static final int PASSWORD_ILLEGAL = 3;
 
-    public static final int ALREADLAND=1;
+    public static final int ALREADLAND = 1;
 
-    public static final int USEPASSWORD=0;
+    public static final int USEPASSWORD = 0;
 
-    public static final int NOT_LAND=0;
+    public static final int NOT_LAND = 0;
 
-    public static final int TOKEN_FAILED=3;
+    public static final int TOKEN_FAILED = 3;
 
-    public static final int USERTYPE_FAILED=4;
+    public static final int USERTYPE_FAILED = 4;
+
     //修改密码发送验证码 3,密码不正确;2,新密码不合法；2短信未发送成功；3成功
-    public static final int PASSWORD_NOTRIGHT=3;
+    public static final int PASSWORD_NOTRIGHT = 3;
 
-    public static final int NEWPASSWORD_FAILED=2;
+    public static final int NEWPASSWORD_FAILED = 2;
 
     //单表最大行数
     public static final int MAXDBROWNUM = 800000;
@@ -69,6 +70,10 @@ public class Config {
 
     //项目预售的辅助表名称前缀
     public static final String CODE = "Code";
+
+    //url超时时间
+    public static final int URLTIMEOUT = 3000;
+
     /**
      * 项目状态
      */
@@ -94,7 +99,7 @@ public class Config {
      * 分期项目池状态
      */
     //分期项目尚未开始
-     public static final int NOINSTALLMENTACTIVITYSTART = 1;
+    public static final int NOINSTALLMENTACTIVITYSTART = 1;
 
     //分期项目进行中
     public static final int INSTALLMENTACTIVITYDOING = 2;
@@ -146,4 +151,11 @@ public class Config {
     public static final String WXAPPID = "wx287d8a1f932dc864";
 
     public static final String WXAPPSECRET = "5e39c31e9e69105b90184db19c05b6e4";
+
+    /**
+     * 验证登录失败
+     */
+    public static final int LANDFAILED = -1;
+
+    public static final String STRLANDFAILED = "LANDFAILED";
 }

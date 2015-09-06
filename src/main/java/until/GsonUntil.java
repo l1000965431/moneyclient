@@ -44,6 +44,12 @@ public class GsonUntil {
             public JsonElement serialize(ActivityVerifyCompleteModel src, Type typeOfSrc,
                                          JsonSerializationContext context) {
                 JsonObject o = new JsonObject();
+                o.addProperty( "Id",src.getActivityId());
+                o.addProperty("activityName", src.getName());
+                o.addProperty("totalInstallmentNum", src.getTotalInstallmentNum());
+                o.addProperty("originalFund", src.getOriginalFund());
+                o.addProperty("totalFund", src.getTotalLines()+src.getTotalLinePeoples());
+                o.addProperty("status", src.getStatus());
                 o.addProperty("marketAnalysis", src.getMarketAnalysis());
                 o.addProperty("profitMode", src.getProfitMode());
                 o.addProperty("teamIntroduction", src.getTeamIntroduce());

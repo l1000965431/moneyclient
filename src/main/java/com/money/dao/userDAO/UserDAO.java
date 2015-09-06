@@ -411,4 +411,13 @@ public class UserDAO extends BaseDao {
 
         return true;
     }
+
+    /**
+     * 获得用户token
+     * @param UserId
+     * @return
+     */
+    public String getUserToken( String UserId ){
+        return MemCachService.GetMemCachMapByMapKey(UserId,"token");
+    }
 }

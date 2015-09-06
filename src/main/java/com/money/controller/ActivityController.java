@@ -108,9 +108,12 @@ public class ActivityController extends ControllerBase implements IController {
         //获取UserID;
         UserService userService = ServiceFactory.getService("userService");
         ActivityService activityService = ServiceFactory.getService("ActivityService");
-        if (userService.tokenLand("", "") == 0) {
+
+/*
+        if( !this.UserIsLand( UserID,token ) ){
             return Integer.toString(ServerReturnValue.USERNOTLAND);
         }
+*/
 
         List ActivityHasEarnings = activityService.GetActivityHasEarnings("");
         String Json = GsonUntil.JavaClassToJson(ActivityHasEarnings);
@@ -133,7 +136,10 @@ public class ActivityController extends ControllerBase implements IController {
         int page = Integer.valueOf(request.getParameter("page"));
         int findNum = Integer.valueOf(request.getParameter("findNum"));
 
-        UserService userService = ServiceFactory.getService("UserService");
+        if( !this.UserIsLand( UserID,Token ) ){
+            return Config.STRLANDFAILED;
+        }
+
         OrderService orderService = ServiceFactory.getService("OrderService");
 
         List ActivityHasEarnings = orderService.getOrderByUserID(UserID, page, findNum);
@@ -210,9 +216,14 @@ public class ActivityController extends ControllerBase implements IController {
     @ResponseBody
     public String getActivityEarnings(HttpServletRequest request, final HttpServletResponse response) {
         final String UserID = request.getParameter("userID");
+        final String token = request.getParameter("token");
         final int Page = Integer.valueOf(request.getParameter("page"));
         final int FindNum = Integer.valueOf(request.getParameter("findNum"));
         final List<Object> ListJson = new ArrayList<Object>();
+
+        if( !this.UserIsLand( UserID,token ) ){
+            return Config.STRLANDFAILED;
+        }
 
         generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
