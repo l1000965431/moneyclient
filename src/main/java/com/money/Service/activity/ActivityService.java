@@ -424,6 +424,10 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
         return GsonUntil.JavaClassToJson( list );
     }
 
+    public void changeActivityStatus(String activityId, int status){
+        activityDao.changeActivityStatus(activityId, status);
+    }
+
     public void Test( String ActivityID,String josn ){
 
         ActivityVerifyCompleteModel activityVerifyCompleteModel = (ActivityVerifyCompleteModel)activityDao.load( ActivityVerifyCompleteModel.class,ActivityID );

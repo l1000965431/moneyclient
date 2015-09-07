@@ -54,7 +54,7 @@ public class AuditActivityDao extends BaseDao {
             public boolean callback(Session session) throws Exception {
                 //session.delete(verifyModel);
                 session.update(verifyModel);
-                session.save(completeModel);
+                session.saveOrUpdate(completeModel);
                 return true;
             }
         });
@@ -109,21 +109,22 @@ public class AuditActivityDao extends BaseDao {
             }
         }
 
-        List<ActivityVerifyCompleteModel> activityVerifyCompleteModels = session.createCriteria(ActivityVerifyCompleteModel.class)
-                .add(Restrictions.in("activityId", ids))
-                .list();
+        if( !ids.isEmpty() ){
+            List<ActivityVerifyCompleteModel> activityVerifyCompleteModels = session.createCriteria(ActivityVerifyCompleteModel.class)
+                    .add(Restrictions.in("activityId", ids))
+                    .list();
 
-        for(ActivityVerifyCompleteModel model : activityVerifyCompleteModels){
-            for(ActivityVerifyModel verifyModel : activityVerifyModels){
-                if(model.getActivityId().compareTo(String.valueOf(verifyModel.getId())) == 0){
-                    verifyModel.setAuditorStatus(model.getStatus());
-                    break;
+            for(ActivityVerifyCompleteModel model : activityVerifyCompleteModels){
+                for(ActivityVerifyModel verifyModel : activityVerifyModels){
+                    if(model.getActivityId().compareTo(String.valueOf(verifyModel.getId())) == 0){
+                        verifyModel.setAuditorStatus(model.getStatus());
+                        break;
+                    }
                 }
             }
+            t.commit();
         }
 
-
-        t.commit();
         return activityVerifyModels;
     }
 

@@ -122,11 +122,12 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
     public boolean setActivityPass(ActivityVerifyModel activityVerifyModel){
         activityVerifyModel.setAuditorStatus(ActivityVerifyModel.STATUS_AUDITOR_PASS_AND_KEEP);
         ActivityVerifyCompleteModel completeModel = verifyComplete(activityVerifyModel);
+        completeModel.setStatus(ActivityVerifyModel.STATUS_AUDITOR_PASS_AND_KEEP);
         return auditActivityDao.setActivityPass(activityVerifyModel, completeModel);
     }
 
     public String getAuditorPassActivity( int page,int findNum,int status ){
-        List list = auditActivityDao.getAuditActivityList(page, findNum,status);
+        List list = auditActivityDao.getAuditActivityList(page, findNum, status);
         return GsonUntil.JavaClassToJson( list );
     }
 

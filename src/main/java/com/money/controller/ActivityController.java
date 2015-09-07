@@ -262,6 +262,36 @@ public class ActivityController extends ControllerBase implements IController {
         return Json;
     }
 
+    /**
+     * 更改项目状态
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/changeActivityStatus")
+    @ResponseBody
+    public String changeActivityStatus(HttpServletRequest request, HttpServletResponse response){
+        String activityId;
+        int result;
+        try{
+            activityId = request.getParameter("activityId");
+            result = Integer.parseInt(request.getParameter("status"));
+        }catch (Exception e){
+            return "paramIncorrect";
+        }
+
+        ActivityService activityService = ServiceFactory.getService("ActivityService");
+        if(activityService == null){
+            return Config.SERVICE_FAILED;
+        }
+        try{
+            activityService.changeActivityStatus(activityId, result);
+        }catch (Exception e){
+            return Config.SERVICE_FAILED;
+        }
+        return Config.SERVICE_SUCCESS;
+    }
+
 
     @RequestMapping("/Test")
     @ResponseBody

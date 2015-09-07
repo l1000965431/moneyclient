@@ -321,5 +321,10 @@ public class activityDAO extends BaseDao {
         return detailModel;
     }
 
+    public void changeActivityStatus(String activityId, int status){
+        ActivityVerifyCompleteModel completeModel = (ActivityVerifyCompleteModel)load(ActivityVerifyCompleteModel.class, activityId);
+        completeModel.setStatus(status);
+        update(completeModel);
+    }
 
 }
