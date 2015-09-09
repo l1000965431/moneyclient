@@ -126,7 +126,8 @@ public class AuditActivityController extends ControllerBase implements IControll
         String ActivityID = request.getParameter("ActivityID");
         int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
         int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
-        serviceGroupActivity.splitActivityByStage(ActivityID, AdvanceNum, PurchaseNum);
+        int trageFund = Integer.valueOf(request.getParameter("trageFund"));
+        serviceGroupActivity.splitActivityByStage(trageFund,ActivityID, AdvanceNum, PurchaseNum);
         return "1";
     }
 
@@ -150,9 +151,17 @@ public class AuditActivityController extends ControllerBase implements IControll
 
         String LinesEarnings = request.getParameter("LinesEarnings");
         String LinePeoplesEarnings = request.getParameter("LinePeoplesEarnings");
+
+        serviceGroupActivity.splitActivityByStage( Lines+LinePeoples,ActivityID,AdvanceNum,PurchaseNum );
+
         serviceGroupActivity.SetActivityInformationEarnings(Lines,LinePeoples,ActivityID,
                 AdvanceNum, PurchaseNum, LinesEarnings, LinePeoplesEarnings);
-        return 1;
+
+        if( activityService.ActivityCompleteStart(ActivityID) ){
+            return 1;
+        }else{
+            return 0;
+        }
     }
 
     @RequestMapping("/GetAuditorPassActivity")

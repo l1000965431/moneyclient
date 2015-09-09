@@ -214,6 +214,8 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
             purchaseInAdvanceDAO.UpdatePurchaseActivityNum(it.getId(), it.getUserID(), ActivityID, CurPurchaseActivityNum);
         }
 
+
+
         return ServerReturnValue.SERVERRETURNCOMPELETE;
     }
 
@@ -234,7 +236,6 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
             }
 
             BatchPurchaseActivity(list, InstallmentActivityID, ActivityID);
-
             page += Config.FINDPAGENUM;
         }
     }

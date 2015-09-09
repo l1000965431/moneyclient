@@ -119,6 +119,7 @@ public class ControllerBase implements IController {
         }
 
         try {
+            data = data.replaceAll("\\s*", "");
             byte[] byteData = DESCoder.decryptBASE64( data );
             String DESCoderStr = new String(DESCoder.decrypt(byteData, userId), "UTF-8");
             return DESCoderStr;

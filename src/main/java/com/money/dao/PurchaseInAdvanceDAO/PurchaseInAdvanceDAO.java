@@ -91,7 +91,7 @@ public class PurchaseInAdvanceDAO extends BaseDao {
      */
     public int UpdatePurchaseActivityNum(int Id, String UserID, String ActivityID, int curPurchaseActivityNum) throws Exception {
         String DBNmae = Config.ACTIVITYPURCHASE + ActivityID;
-        String sql = "update " + DBNmae + " set CurPurchaseInAdvanceNum=? where UserID=? and Id=?";
+        String sql = "update " + DBNmae + " set CurPurchaseInAdvanceNum=? where UserID=? and PurchaseInAdvanceNumID=?";
         Session session = this.getNewSession();
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, curPurchaseActivityNum);

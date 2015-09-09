@@ -19,7 +19,7 @@ public class LotteryListener extends MoneyServerListener {
     @Override
     public Action consume(Message message, ConsumeContext consumeContext) {
         try {
-            String InstallmentActivityID =  BodyToString( message.getBody() );
+            String InstallmentActivityID = BodyToString( message.getBody() );
             lotteryService.StartLottery( InstallmentActivityID );
             return Action.CommitMessage;
         } catch (Exception e) {

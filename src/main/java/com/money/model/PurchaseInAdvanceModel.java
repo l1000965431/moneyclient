@@ -12,6 +12,8 @@ public class PurchaseInAdvanceModel extends BaseModel {
 
     String UserID;
 
+    String PurchaseInAdvanceNumID;
+
     /**
      * 预购次数
      */
@@ -75,5 +77,13 @@ public class PurchaseInAdvanceModel extends BaseModel {
 
     public void setPurchaseType(int purchaseType) {
         PurchaseType = purchaseType;
+    }
+
+    public String getPurchaseInAdvanceNumID() {
+        return PurchaseInAdvanceNumID;
+    }
+
+    public void setPurchaseInAdvanceNumID(String purchaseInAdvanceNumID) {
+        PurchaseInAdvanceNumID = purchaseInAdvanceNumID;
     }
 }

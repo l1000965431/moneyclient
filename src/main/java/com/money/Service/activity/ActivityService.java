@@ -197,6 +197,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
         purchaseInAdvance.PurchaseActivityFromPurchaseInAdvance(ActivityID, InstallmentActivityID);
         //设置项目开始
         SetInstallmentActivityStatus(InstallmentActivityID, ActivityDetailModel.ONLINE_ACTIVITY_START);
+
         return true;
     }
 
@@ -208,6 +209,9 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
             }
         });
 
+        //预购项目已经完成  开始下一期
+        String InstallmentActivityID = ActivityID + "_" + Integer.toString(Installment);
+        SetInstallmentActivityEnd(InstallmentActivityID);
     }
 
 

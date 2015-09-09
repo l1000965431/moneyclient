@@ -53,7 +53,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
      * @return
      */
     public int RechargeWallet(String UserID, int Lines) throws Exception{
-        WalletModel walletModel = (WalletModel)generaDAO.loadNoTransaction( WalletModel.class,UserID );
+        WalletModel walletModel = (WalletModel)generaDAO.loadNoTransaction(WalletModel.class, UserID);
 
         if( walletModel == null ){
             return 0;
@@ -62,6 +62,26 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         WalletLines+=Lines;
         walletModel.setWalletLines( WalletLines );
         generaDAO.updateNoTransaction( walletModel );
+        return 1;
+    }
+
+    public int TestRechargeWallet(final String UserID, final int Lines) throws Exception{
+
+        generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                WalletModel walletModel = (WalletModel) generaDAO.loadNoTransaction(WalletModel.class, UserID);
+
+                if (walletModel == null) {
+                    return false;
+                }
+                int WalletLines = walletModel.getWalletLines();
+                WalletLines += Lines;
+                walletModel.setWalletLines(WalletLines);
+                generaDAO.updateNoTransaction(walletModel);
+                return true;
+            }
+        });
+
         return 1;
     }
 

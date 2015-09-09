@@ -5,6 +5,9 @@ package com.money.config;
  */
 public class MoneyServerMQ_Topic {
 
+    /**
+     * 测试参数
+     */
     public static final String MONEYSERVERMQ_ORDERINSERT_TOPIC="MoneyServer_Order_Insert";
     public static final String MONEYSERVERMQ_ORDERINSERT_TAG="MoneyServer_Order_Insert";
 
@@ -31,4 +34,36 @@ public class MoneyServerMQ_Topic {
 
     public static final String MONEYSERVERMQ_TRANSFER_TOPIC="MoneyServer_Transfer_Listener";
     public static final String MONEYSERVERMQ_TRANSFER_TAG="MoneyServer_Transfer_Listener";
+
+
+    /**
+     * 生产参数
+     */
+
+/*    public static final String MONEYSERVERMQ_ORDERINSERT_TOPIC="MoneyServer_Order_Insert_liveQ";
+    public static final String MONEYSERVERMQ_ORDERINSERT_TAG="MoneyServer_Order_Insert_liveQ";
+
+    public static final String MONEYSERVERMQ_ACTIVITYBUY_TOPIC="MoneyServer_Buy_Listener_liveQ";
+    public static final String MONEYSERVERMQ_ACTIVITYBUY_TAG="MoneyServer_Buy_Listener_liveQ";
+
+    public static final String MONEYSERVERMQ_LOTTERY_TOPIC="MoneyServer_Lottery_Listener_liveQ";
+    public static final String MONEYSERVERMQ_LOTTERY_TAG="MoneyServer_Lottery_Listener_liveQ";
+
+    public static final String MONEYSERVERMQ_SOMEFRAM_TOPIC="MoneyServer_SomeFarm_Listener_liveQ";
+    public static final String MONEYSERVERMQ_SOMEFRAM_TAG="MoneyServer_SomeFarm_Listener_liveQ";
+
+    public static final String MONEYSERVERMQ_RECHARGEWALLET_TOPIC="MoneyServer_RechargeWallet_Listener_liveQ";
+    public static final String MONEYSERVERMQ_RECHARGEWALLET_TAG="MoneyServer_RechargeWallet_Listener_liveQ";
+
+    public static final String MONEYSERVERMQ_PUSH_TOPIC="MoneyServer_PushListener_Listener_liveQ";
+    public static final String MONEYSERVERMQ_PUSH_TAG="MoneyServer_PushListener_Listener_liveQ";
+
+    public static final String MONEYSERVERMQ_INSTALLMENT_TOPIC="MoneyServer_Installment_Listener_liveQ";
+    public static final String MONEYSERVERMQ_INSTALLMENT_TAG="MoneyServer_Installment_Listener_liveQ";
+
+    public static final String MONEYSERVERMQ_LOTTERYPUSHLIST_TOPIC="MoneyServer_LotteryPushLis_Listener_liveQ";
+    public static final String MONEYSERVERMQ_LOTTERYPUSHLIST_TAG="MoneyServer_LotteryPushLis_Listener_liveQ";
+
+    public static final String MONEYSERVERMQ_TRANSFER_TOPIC="MoneyServer_Transfer_Listener_liveQ";
+    public static final String MONEYSERVERMQ_TRANSFER_TAG="MoneyServer_Transfer_Listener_liveQ";*/
 }

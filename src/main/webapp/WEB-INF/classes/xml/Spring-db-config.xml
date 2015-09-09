@@ -13,7 +13,7 @@
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property value= "com.mysql.jdbc.Driver" name="driverClassName"/>
         <!--driverClassName指定了JDBC驱动类的全限定类名 -->
-        <property value="jdbc:mysql://rdsam4y7614j11jki04bpublic.mysql.rds.aliyuncs.com:3306/moneyserver" name="url"/>
+        <property value="jdbc:mysql://rdsam4y7614j11jki04bprivate.mysql.rds.aliyuncs.com:3306/moneyserver" name="url"/>
         <!-- 数据库所在IP地址和数据库名-->
         <property value="money" name="username"/>
         <property value="123456" name="password"/>
@@ -37,13 +37,14 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <tx:advice id="txAdvice" transaction-manager="txManager">
+<!--    <tx:advice id="txAdvice" transaction-manager="txManager">
         <tx:attributes>
             <tx:method name="get*" read-only="false" propagation="NOT_SUPPORTED"/>
             <tx:method name="find*" read-only="false" propagation="NOT_SUPPORTED"/>
             <tx:method name="save*" propagation="REQUIRED"/>
             <tx:method name="update*" propagation="REQUIRED"/>
             <tx:method name="delete*" propagation="REQUIRED"/>
+            &lt;!&ndash;<tx:method name="*" propagation="REQUIRED"/>&ndash;&gt;
         </tx:attributes>
     </tx:advice>
 
@@ -52,7 +53,7 @@
                       expression="execution(* com.money.dao.*.*(..))"/>
         <aop:advisor pointcut-ref="bussinessService"
                      advice-ref="txAdvice"/>
-    </aop:config>
+    </aop:config>-->
 
     <bean id="DaoFactory" class="com.money.dao.DaoFactory"></bean>
 

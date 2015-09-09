@@ -117,7 +117,6 @@ public class BaseDao {
         Transaction t = session.beginTransaction();
         List list = session.createQuery(hql).list();
         t.commit();
-
         return list;
     }
 
