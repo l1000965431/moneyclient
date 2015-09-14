@@ -194,7 +194,11 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
         //创建分期项目票ID
         ActivityCreateTicketID(InstallmentActivityID);
         //预购项目
-        purchaseInAdvance.PurchaseActivityFromPurchaseInAdvance(ActivityID, InstallmentActivityID);
+        if( purchaseInAdvance.PurchaseActivityFromPurchaseInAdvance(ActivityID, InstallmentActivityID) == -1 ){
+            //购买错误
+            return false;
+        }
+
         //设置项目开始
         SetInstallmentActivityStatus(InstallmentActivityID, ActivityDetailModel.ONLINE_ACTIVITY_START);
 

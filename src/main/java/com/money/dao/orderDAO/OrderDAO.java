@@ -48,4 +48,22 @@ public class OrderDAO extends BaseDao {
         });
         return list[0];
     }
+
+
+    public int TestGenTou(){
+        String sql = "SELECT sum(orderLines) FROM moneyserver.activityorder where PurchaseType = 2;";
+        Session session = getNewSession();
+
+        Integer result = Integer.valueOf( session.createSQLQuery(sql).uniqueResult().toString());
+        return result;
+    }
+
+    public int TestLingTou(){
+        String sql = "SELECT sum(orderLines) FROM moneyserver.activityorder where PurchaseType = 1;";
+        Session session = getNewSession();
+
+        Integer result = Integer.valueOf( session.createSQLQuery(sql).uniqueResult().toString());
+        return result;
+    }
+
 }

@@ -16,6 +16,7 @@ import org.hibernate.Transaction;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import until.MoneyServerDate;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class PurchaseInAdvanceDAO extends BaseDao {
         String DBName = Config.ACTIVITYPURCHASE + ActivityID;
 
         String sql = "insert into " + DBName +
-                " ( UserID,PurchaseInAdvanceNum,CurPurchaseInAdvanceNum,PurchaseNum,PurchaseType,PurchaseInAdvanceNumID ) values ( ?,?,?,?,?,? )";
+                " ( UserID,PurchaseInAdvanceNum,CurPurchaseInAdvanceNum,PurchaseNum,PurchaseType,PurchaseInAdvanceNumID,PurchaseTime ) values ( ?,?,?,?,?,?,? )";
         Session session = this.getNewSession();
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, UserID);
@@ -50,6 +51,7 @@ public class PurchaseInAdvanceDAO extends BaseDao {
         query.setParameter(3, PurchaseNum);
         query.setParameter(4, PurchaseType);
         query.setParameter(5, OrderID);
+        query.setParameter(6, MoneyServerDate.getStringCurDate());
         query.executeUpdate();
     }
 
@@ -62,11 +64,10 @@ public class PurchaseInAdvanceDAO extends BaseDao {
      */
     public List<PurchaseInAdvanceModel> PurchaseInAdvanceCompelete(String ActivityID, int findnum, int page) {
         String DBNmae = Config.ACTIVITYPURCHASE + ActivityID;
-        String sql = "select * from " + DBNmae + " where PurchaseInAdvanceNum>CurPurchaseInAdvanceNum limit ?,?";
-
+        String sql = "select UserID,PurchaseInAdvanceNumID," +
+                "PurchaseInAdvanceNum,CurPurchaseInAdvanceNum,PurchaseNum,PurchaseType from " +
+                DBNmae + " where PurchaseInAdvanceNum>CurPurchaseInAdvanceNum order by PurchaseTime ASC limit ?,?";
         Session session = this.getNewSession();
-
-
         try {
             Query query = session.createSQLQuery(sql).
                     setResultTransformer(Transformers.aliasToBean(PurchaseInAdvanceModel.class));
@@ -86,33 +87,30 @@ public class PurchaseInAdvanceDAO extends BaseDao {
      *
      * @param UserID
      * @param ActivityID             父项目ID
-     * @param curPurchaseActivityNum 当前的次数
      * @return
      */
-    public int UpdatePurchaseActivityNum(int Id, String UserID, String ActivityID, int curPurchaseActivityNum) throws Exception {
+    public int UpdatePurchaseActivityNum(String Id, String UserID, String ActivityID) throws Exception {
         String DBNmae = Config.ACTIVITYPURCHASE + ActivityID;
-        String sql = "update " + DBNmae + " set CurPurchaseInAdvanceNum=? where UserID=? and PurchaseInAdvanceNumID=?";
+        String sql = "update " + DBNmae + " set CurPurchaseInAdvanceNum=CurPurchaseInAdvanceNum+1" +
+                " where UserID=? and PurchaseInAdvanceNumID=? and CurPurchaseInAdvanceNum+1 <= PurchaseInAdvanceNum ";
         Session session = this.getNewSession();
         SQLQuery query = session.createSQLQuery(sql);
-        query.setParameter(0, curPurchaseActivityNum);
-        query.setParameter(1, UserID);
-        query.setParameter(2, Id);
-        query.executeUpdate();
-
-        return 0;
+        query.setParameter(0, UserID);
+        query.setParameter(1, Id);
+        return query.executeUpdate();
     }
 
     /**
      * 单词购买项目
      *
      * @param UserID
-     * @param ActivityID  父项目ID
+     * @param InstallmentActivityID  父项目ID
      * @param PurchaseNum 当前的次数
      * @return
      */
-    public int PurchaseActivity(String ActivityID, String UserID, int PurchaseNum, int PurchaseType) throws Exception {
+    public int PurchaseActivity(String InstallmentActivityID, String UserID, int PurchaseNum, int PurchaseType,int Lines ) throws Exception {
         //刷新项目票的表 票的所有者
-        String DBNmae = Config.ACTIVITYGROUPTICKETNAME + ActivityID;
+        String DBNmae = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
 
 /*        String sqlCount = "select count(TickID) from " + DBNmae + " where UserId='0' and PurchaseType=?;";
 
@@ -130,32 +128,71 @@ public class PurchaseInAdvanceDAO extends BaseDao {
         query.setParameter(0, UserID);
         query.setParameter(1, PurchaseType);
         query.setParameter(2, PurchaseNum);
+        if( query.executeUpdate() == 0 ){
+            return ServerReturnValue.SERVERRETURNCOMPELETE;
+        }
+
 
         //刷新资金信息
-        ActivityDynamicModel activityDynamicModel = activityDAO.getActivityDynamicModelNoTransaction(ActivityID);
-        ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDynamicModel.getActivityVerifyCompleteModel();
 
-        if (activityDynamicModel == null || activityVerifyCompleteModel == null) {
-            return ServerReturnValue.SERVERRETURNERROR;
-        }
 
         switch (PurchaseType) {
             case Config.PURCHASELOCALTYRANTS:
-                int totalPeoples = activityDynamicModel.getActivityTotalLinesPeoples();
-                activityDynamicModel.setActivityCurLinesPeoples(totalPeoples);
-                break;
+                if( updateActivityLinesPeoples( InstallmentActivityID,Lines ) == 0 ){
+                    return ServerReturnValue.SERVERRETURNERROR;
+                }
             case Config.PURCHASEPRICKSILK:
-                int curLines = activityDynamicModel.getActivityCurLines();
-                curLines+=PurchaseNum;
-                activityDynamicModel.setActivityCurLines(curLines);
+                if( updateDynamicActivityLines( InstallmentActivityID,Lines ) == 0 ){
+                    return ServerReturnValue.SERVERRETURNERROR;
+                }
                 break;
             default:
                 return ServerReturnValue.SERVERRETURNERROR;
         }
 
-        query.executeUpdate();
-        session.update(activityDynamicModel);
-        session.update(activityVerifyCompleteModel);
         return ServerReturnValue.SERVERRETURNCOMPELETE;
     }
+
+    public int updateActivityLinesPeoples( String ActivityId, int Lines ){
+        String sql = "update activityverifycomplete set CurLinePeoples = CurLinePeoples+?,curFund = curFund+? where activityId = ? and CurLinePeoples+? <= TotalLinePeoples ";
+        Session session = this.getNewSession();
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setParameter(0, Lines);
+        query.setParameter(1, Lines);
+        query.setParameter(2, ActivityId);
+        query.setParameter(3, Lines);
+        return query.executeUpdate();
+    }
+
+    public int updateActivityLines( String ActivityId,int Lines ){
+        String sql = "update activityverifycomplete set CurLines = CurLines+?,curFund = curFund+? where activityId = ? and CurLines+? <= TotalLines ";
+        Session session = this.getNewSession();
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setParameter(0, Lines);
+        query.setParameter(1, Lines);
+        query.setParameter(2, ActivityId);
+        query.setParameter(3, Lines);
+        return query.executeUpdate();
+    }
+
+    private int updateDynamicActivityLinesPeoples( String InstallmentActivityID, int Lines ){
+        String sql = "update activitydynamic set activityCurLinesPeoples = activityCurLinesPeoples+? where activityStageId = ? and activityCurLinesPeoples+? <= activityTotalLinesPeoples ";
+        Session session = this.getNewSession();
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setParameter(0, Lines);
+        query.setParameter(1, InstallmentActivityID);
+        query.setParameter(2, Lines);
+        return query.executeUpdate();
+    }
+
+    private int updateDynamicActivityLines( String InstallmentActivityID, int Lines ){
+        String sql = "update activitydynamic set activityCurLinesPeoples = activityCurLines+? where activityStageId = ? and activityCurLines+? <= activityTotalLines ";
+        Session session = this.getNewSession();
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setParameter(0, Lines);
+        query.setParameter(1, InstallmentActivityID);
+        query.setParameter(2, Lines);
+        return query.executeUpdate();
+    }
+
 }

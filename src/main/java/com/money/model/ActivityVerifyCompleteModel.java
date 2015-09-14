@@ -18,6 +18,7 @@ import java.util.Set;
 @Entity
 @Table(name = "activityVerifyComplete")
 @org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@DynamicUpdate(true)
 public class ActivityVerifyCompleteModel extends BaseModel {
 
     /**
@@ -29,19 +30,19 @@ public class ActivityVerifyCompleteModel extends BaseModel {
     /**
      *  项目分期静态列表
      */
-    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     Set<ActivityDetailModel> activityDetailModels = new HashSet<ActivityDetailModel>();
 
     /**
      *  项目分期动态列表
      */
-    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     Set<ActivityDynamicModel> activityDynamicModels = new HashSet<ActivityDynamicModel>();
 
     /**
      *  项目分期动态列表
      */
-    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     Set<SREarningModel> srEarningModels = new HashSet<SREarningModel>();
 
 
@@ -73,6 +74,7 @@ public class ActivityVerifyCompleteModel extends BaseModel {
     /**
      * 项目状态
      */
+    //@Version
     int status;
 
     /**

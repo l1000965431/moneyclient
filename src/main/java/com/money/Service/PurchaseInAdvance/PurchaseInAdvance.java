@@ -61,13 +61,22 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
             public boolean callback(Session session) throws Exception {
                 ActivityDetailModel activityDetailModel = activityInfoDAO.getActivityDetaillNoTransaction(InstallmentActivityID);
                 ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
-                String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
+                String ActivityID = activityVerifyCompleteModel.getActivityId();
                 int OrderStartAndvance = 0;
                 int remainingNum = getInstallmentActivityRemainingTicket(InstallmentActivityID);
                 ActivityName[0] = activityVerifyCompleteModel.getName();
                 if (remainingNum == 0) {
                     return false;
                 }
+
+
+/*                int a1 = activityVerifyCompleteModel.getCurLines();
+
+                int b1 = orderService.TestGentou();
+
+                if( a1 != b1 ){
+                    return false;
+                }*/
 
                 int costLines = PurchaseNum * AdvanceNum;
                 int PurchaseInAdvanceNum = 0;
@@ -90,8 +99,14 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                             activityVerifyCompleteModel.IsEnoughLines(costLines)) {
                         return false;
                     }
+
+                    if (!walletService.CostLines(UserID, costLines)) {
+                        return false;
+                    }
+
+
                     //购买当前期
-                    int PurchaseResult = PurchaseActivity(InstallmentActivityID, UserID, PurchaseNum, OrderID);
+                    int PurchaseResult = PurchaseActivity(InstallmentActivityID, UserID, PurchaseNum, PurchaseNum);
 
                     switch (PurchaseResult) {
                         case ServerReturnValue.SERVERRETURNERROR:
@@ -112,7 +127,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 }
 
                 //刷新总购买额度
-                int curLines = activityVerifyCompleteModel.getCurFund();
+/*                int curLines = activityVerifyCompleteModel.getCurFund();
                 curLines += costLines;
                 activityVerifyCompleteModel.setCurFund(curLines);
 
@@ -120,13 +135,25 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 int curLines1 = activityVerifyCompleteModel.getCurLines();
                 curLines1 += costLines;
                 activityVerifyCompleteModel.setCurLines(curLines1);
+                purchaseInAdvanceDAO.merageNoTransaction(activityVerifyCompleteModel);*/
 
-                if (!walletService.CostLines(UserID, costLines)) {
+
+
+                if(purchaseInAdvanceDAO.updateActivityLines( ActivityID,costLines ) == 0){
                     return false;
                 }
 
                 orderService.createOrder(UserID, InstallmentActivityID, PurchaseNum * AdvanceNum, PurchaseNum,
                         AdvanceNum, Config.PURCHASEPRICKSILK, OrderID, OrderStartAndvance);
+
+/*                int a = activityVerifyCompleteModel.getCurLines();
+
+                int b = orderService.TestGentou();
+
+                if (a != b) {
+                    return false;
+                }*/
+
 
                 return true;
             }
@@ -149,12 +176,12 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
      * @return
      */
 
-    public int PurchaseActivity(String InstallmentActivityID, String UserID, int PurchaseNum, String OrderID) throws Exception {
+    public int PurchaseActivity(String InstallmentActivityID, String UserID, int PurchaseNum, int Lines) throws Exception {
         if (PurchaseNum > getInstallmentActivityRemainingTicket(InstallmentActivityID)) {
             return ServerReturnValue.SERVERRETURNERROR;
         }
 
-        return purchaseInAdvanceDAO.PurchaseActivity(InstallmentActivityID, UserID, PurchaseNum, Config.PURCHASEPRICKSILK);
+        return purchaseInAdvanceDAO.PurchaseActivity(InstallmentActivityID, UserID, PurchaseNum, Config.PURCHASEPRICKSILK,Lines);
 
     }
 
@@ -165,11 +192,11 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
      * @param UserID
      * @return
      */
-    public int LocalTyrantsPurchase(String InstallmentActivityID, String UserID, int TotalLinePeoples, String OrderID) throws Exception {
+    public int LocalTyrantsPurchase(String InstallmentActivityID, String UserID, int Lines) throws Exception {
         if (!IsEnoughLocalTyrantsTickets(InstallmentActivityID)) {
             return ServerReturnValue.SERVERRETURNCONDITIONS;
         }
-        purchaseInAdvanceDAO.PurchaseActivity(InstallmentActivityID, UserID, 1, Config.PURCHASELOCALTYRANTS);
+        purchaseInAdvanceDAO.PurchaseActivity(InstallmentActivityID, UserID, 1, Config.PURCHASELOCALTYRANTS,Lines);
         //orderService.createOrder(UserID, InstallmentActivityID, TotalLinePeoples, 0, 0, Config.PURCHASELOCALTYRANTS, OrderID);
         return ServerReturnValue.SERVERRETURNCOMPELETE;
     }
@@ -185,9 +212,9 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
             return ServerReturnValue.SERVERRETURNERROR;
         }
 
-        ActivityDynamicModel activityDynamicModel = activityInfoDAO.getActivityDynamicModelNoTransaction(InstallmentActivityID);
-
         for (PurchaseInAdvanceModel it : list) {
+            ActivityDynamicModel activityDynamicModel = activityInfoDAO.getActivityDynamicModelNoTransaction(InstallmentActivityID);
+
             if (activityDynamicModel.IsEnough()) {
                 return ServerReturnValue.SERVERRETURNCOMPELETE;
             }
@@ -197,23 +224,22 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
             int Result = 0;
             switch (it.getPurchaseType()) {
                 case Config.PURCHASEPRICKSILK:
-                    Result = this.PurchaseActivity(InstallmentActivityID, it.getUserID(), PurchaseNum, UUID.randomUUID().toString());
+                    Result = this.PurchaseActivity(InstallmentActivityID, it.getUserID(), PurchaseNum, PurchaseNum);
                     break;
                 case Config.PURCHASELOCALTYRANTS:
-                    Result = this.LocalTyrantsPurchase(InstallmentActivityID, it.getUserID(), PurchaseNum, UUID.randomUUID().toString());
+                    Result = this.LocalTyrantsPurchase(InstallmentActivityID, it.getUserID(),activityDynamicModel.getActivityTotalLinesPeoples() );
                     break;
             }
 
-            if (Result == ServerReturnValue.SERVERRETURNERROR) {
+            if (Result != ServerReturnValue.SERVERRETURNCOMPELETE) {
                 continue;
             }
 
             //刷新预购次数
-            int CurPurchaseActivityNum = it.getCurPurchaseInAdvanceNum();
-            CurPurchaseActivityNum++;
-            purchaseInAdvanceDAO.UpdatePurchaseActivityNum(it.getId(), it.getUserID(), ActivityID, CurPurchaseActivityNum);
+            if( purchaseInAdvanceDAO.UpdatePurchaseActivityNum(it.getPurchaseInAdvanceNumID(), it.getUserID(), ActivityID ) == 0 ){
+                return ServerReturnValue.SERVERRETURNERROR;
+            }
         }
-
 
 
         return ServerReturnValue.SERVERRETURNCOMPELETE;
@@ -231,9 +257,15 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
         int page = 0;
         while (true) {
             List<PurchaseInAdvanceModel> list = purchaseInAdvanceDAO.PurchaseInAdvanceCompelete(ActivityID, Config.FINDPAGENUM, page);
-            if (list == null || list.size() == 0) {
+
+            if (list == null) {
+                return -1;
+            }
+
+            if (list.size() == 0) {
                 return 0;
             }
+
 
             BatchPurchaseActivity(list, InstallmentActivityID, ActivityID);
             page += Config.FINDPAGENUM;
@@ -320,6 +352,16 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 ActivityDetailModel activityDetailModel = activityDynamicModel.getActivityDetailModel();
                 ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDynamicModel.getActivityVerifyCompleteModel();
                 String ActivityID = activityDynamicModel.getActivityVerifyCompleteModel().getActivityId();
+
+/*                int a1 = activityVerifyCompleteModel.getCurLinePeoples();
+
+                int b1 = orderService.TestLingTou();
+
+                if( a1 != b1 ){
+                    return false;
+                }*/
+
+
                 ActivityName[0] = activityVerifyCompleteModel.getName();
                 int OrderStartAndvance = 0;
                 int Lines = activityDynamicModel.getActivityTotalLinesPeoples() * AdvanceNum;
@@ -344,7 +386,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                         return false;
                     }
 
-                    int PurchaseResult = LocalTyrantsPurchase(InstallmentActivityID, UserID, activityDynamicModel.getActivityTotalLinesPeoples(), OrderID);
+                    int PurchaseResult = LocalTyrantsPurchase(InstallmentActivityID, UserID, activityDynamicModel.getActivityTotalLinesPeoples() );
                     if (PurchaseResult == ServerReturnValue.SERVERRETURNERROR) {
                         return false;
                     }
@@ -357,31 +399,51 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 }
 
                 //刷新总购买额度
-                int curLines = activityVerifyCompleteModel.getCurFund();
+/*                ActivityVerifyCompleteModel activityVerifyCompleteModel1 = activityDynamicModel.getActivityVerifyCompleteModel();
+                int curLines = activityVerifyCompleteModel1.getCurFund();
                 curLines += Lines;
-                activityVerifyCompleteModel.setCurFund(curLines);
+                activityVerifyCompleteModel1.setCurFund(curLines);
                 //刷新大R
-                int curLinePeoples = activityVerifyCompleteModel.getCurLinePeoples();
+                int curLinePeoples = activityVerifyCompleteModel1.getCurLinePeoples();
                 curLinePeoples += Lines;
-                activityVerifyCompleteModel.setCurLinePeoples(curLinePeoples);
+                activityVerifyCompleteModel1.setCurLinePeoples(curLinePeoples);
+                purchaseInAdvanceDAO.updateNoTransaction(activityVerifyCompleteModel1);*/
 
                 //钱包花费
                 if (!walletService.CostLines(UserID, Lines)) {
                     return false;
                 }
 
+                if( purchaseInAdvanceDAO.updateActivityLinesPeoples( ActivityID,Lines ) == 0 ){
+                    return false;
+                }
+
                 orderService.createOrder(UserID, InstallmentActivityID, Lines, activityDynamicModel.getActivityTotalLinesPeoples(),
                         AdvanceNum, Config.PURCHASELOCALTYRANTS, OrderID, OrderStartAndvance);
+
+/*                int a = activityVerifyCompleteModel1.getCurLinePeoples();
+
+                int b = orderService.TestLingTou();
+
+                if (a != b) {
+                    return false;
+                }*/
+
+
                 return true;
             }
         }) == Config.SERVICE_SUCCESS) {
-            out_ActivityName.append( ActivityName[0] );
+            out_ActivityName.append(ActivityName[0]);
             return 1;
         }
 
-        out_ActivityName.append( ActivityName[0] );
+        out_ActivityName.append(ActivityName[0]);
         return 0;
     }
+
+
+
+
 
 
 }

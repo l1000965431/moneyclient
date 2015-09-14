@@ -1,5 +1,7 @@
 package com.money.model;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 
 /**
@@ -11,6 +13,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "activitydynamic")
+@DynamicUpdate(true)
 public class ActivityDynamicModel extends BaseModel {
 
     //上线项目开始
@@ -28,13 +31,13 @@ public class ActivityDynamicModel extends BaseModel {
     @Id
     String activityStageId;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = ActivityDetailModel.class)
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, targetEntity = ActivityDetailModel.class)
     ActivityDetailModel activityDetailModel;
 
     /**
      * 父项目
      */
-    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "parentActivityId", referencedColumnName = "activityId")
     ActivityVerifyCompleteModel activityVerifyCompleteModel;
 

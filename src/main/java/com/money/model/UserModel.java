@@ -1,5 +1,6 @@
 package com.money.model;
 
+import org.hibernate.annotations.DynamicUpdate;
 import until.Base32;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "User")
+@DynamicUpdate(true)
 public class UserModel extends BaseModel {
 
     @Id

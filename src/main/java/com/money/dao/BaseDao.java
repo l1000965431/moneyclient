@@ -1,10 +1,7 @@
 package com.money.dao;
 
 import com.money.config.Config;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.transform.Transformers;
@@ -193,12 +190,21 @@ public class BaseDao {
     }
 
     public Serializable saveNoTransaction(Object bean) {
-        Serializable result = null;
+        Serializable result;
         Session session = getNewSession();
         result = session.save(bean);
         //session.flush();
         return result;
     }
+
+    public Serializable saveNoTransactionTest(Object bean) {
+        Serializable result;
+        Session session = getNewSession();
+        result = session.save(bean);
+        session.flush();
+        return result;
+    }
+
 
     /**
      * 更新
@@ -230,8 +236,20 @@ public class BaseDao {
     public void updateNoTransaction(Object bean) {
         Session session = getNewSession();
         session.update(bean);
-        //session.flush();
+        session.flush();
     }
+
+    /**
+     * 更新
+     *
+     * @param bean
+     */
+    public void merageNoTransaction(Object bean) {
+        Session session = getNewSession();
+        session.merge(bean);
+        session.flush();
+    }
+
 
     /**
      * 更新或插入
@@ -255,7 +273,7 @@ public class BaseDao {
     public void saveOrupdateNoTransaction(Object bean) {
         Session session = getNewSession();
         session.saveOrUpdate(bean);
-        //session.flush();
+        session.flush();
         //session.clear();
     }
 
@@ -533,6 +551,9 @@ public class BaseDao {
                 t.rollback();
                 return Config.SERVICE_FAILED;
             }
+        }catch( StaleObjectStateException e ){
+            t.rollback();
+            return Config.SERVICE_FAILED;
         } catch (Exception e) {
             t.rollback();
             return Config.SERVICE_FAILED;

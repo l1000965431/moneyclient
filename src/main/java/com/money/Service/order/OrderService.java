@@ -10,6 +10,7 @@ import com.money.dao.activityDAO.activityDAO;
 import com.money.dao.orderDAO.OrderDAO;
 import com.money.model.ActivityDetailModel;
 import com.money.model.OrderModel;
+import org.hibernate.StaleObjectStateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
@@ -63,11 +64,16 @@ public class OrderService extends ServiceBase implements ServiceInterface {
         orderModel.setOrderStartAdvance( StartOrderAndvance );
         try {
             orderModel.setOrderDate(MoneyServerDate.getDateCurDate());
+            orderDAO.saveNoTransactionTest(orderModel);
         } catch (ParseException e) {
+            return Config.SERVICE_FAILED;
+        }catch( StaleObjectStateException e ){
             return Config.SERVICE_FAILED;
         }
 
-        orderDAO.saveNoTransaction( orderModel );
+        //orderDAO.saveNoTransaction( orderModel );
+
+
         return Config.SERVICE_SUCCESS;
     }
 
@@ -188,4 +194,14 @@ public class OrderService extends ServiceBase implements ServiceInterface {
     public List getOrderByUserID( String UserID,int page,int findNum ){
           return orderDAO.getOrderByUserID( UserID,page,findNum );
     }
+
+    public int TestGentou(){
+        return orderDAO.TestGenTou();
+    }
+
+    public int TestLingTou(){
+         return orderDAO.TestLingTou();
+    }
+
+
 }

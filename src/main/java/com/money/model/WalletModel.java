@@ -1,5 +1,7 @@
 package com.money.model;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,6 +16,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "wallet")
+@DynamicUpdate(true)
 public class WalletModel extends BaseModel{
 
     @Id

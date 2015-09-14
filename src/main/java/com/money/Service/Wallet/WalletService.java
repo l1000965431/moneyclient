@@ -3,13 +3,13 @@ package com.money.Service.Wallet;
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
 import com.money.config.Config;
-import com.money.dao.GeneraDAO;
 import com.money.dao.TransactionSessionCallback;
 import com.money.dao.userDAO.UserDAO;
 import com.money.model.TransferModel;
 import com.money.model.UserModel;
 import com.money.model.WalletModel;
 import com.money.model.WalletOrderModel;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import java.text.ParseException;
  * <p>Version: 1.0
  */
 
-@Service( "WalletService" )
+@Service("WalletService")
 public class WalletService extends ServiceBase implements ServiceInterface {
 
     @Autowired
@@ -33,39 +33,41 @@ public class WalletService extends ServiceBase implements ServiceInterface {
 
     /**
      * 获取用户钱包剩余金额
+     *
      * @param UserID
      * @return
      */
-    public int getWalletLines( String UserID ){
-        WalletModel walletModel = (WalletModel)generaDAO.load( WalletModel.class,UserID );
+    public int getWalletLines(String UserID) {
+        WalletModel walletModel = (WalletModel) generaDAO.load(WalletModel.class, UserID);
 
-        if( walletModel == null ){
+        if (walletModel == null) {
             return 0;
         }
 
-       return walletModel.getWalletLines();
+        return walletModel.getWalletLines();
     }
 
     /**
      * 充值钱包
+     *
      * @param UserID 用户ID
      * @param Lines  充值金额
      * @return
      */
-    public int RechargeWallet(String UserID, int Lines) throws Exception{
-        WalletModel walletModel = (WalletModel)generaDAO.loadNoTransaction(WalletModel.class, UserID);
+    public int RechargeWallet(String UserID, int Lines) throws Exception {
+        WalletModel walletModel = (WalletModel) generaDAO.loadNoTransaction(WalletModel.class, UserID);
 
-        if( walletModel == null ){
+        if (walletModel == null) {
             return 0;
         }
-        int WalletLines = walletModel.getWalletLines();
-        WalletLines+=Lines;
-        walletModel.setWalletLines( WalletLines );
-        generaDAO.updateNoTransaction( walletModel );
+        if (WalletAdd(UserID, Lines) == 0) {
+            return 0;
+        }
+
         return 1;
     }
 
-    public int TestRechargeWallet(final String UserID, final int Lines) throws Exception{
+    public int TestRechargeWallet(final String UserID, final int Lines) throws Exception {
 
         generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
@@ -74,10 +76,11 @@ public class WalletService extends ServiceBase implements ServiceInterface {
                 if (walletModel == null) {
                     return false;
                 }
-                int WalletLines = walletModel.getWalletLines();
-                WalletLines += Lines;
-                walletModel.setWalletLines(WalletLines);
-                generaDAO.updateNoTransaction(walletModel);
+
+                if (WalletAdd(UserID, Lines) == 0) {
+                    return true;
+                }
+
                 return true;
             }
         });
@@ -87,115 +90,151 @@ public class WalletService extends ServiceBase implements ServiceInterface {
 
     /**
      * 花费
+     *
      * @param CostLines
      * @return
      */
-    public boolean CostLines( String UserID,int CostLines ){
-        WalletModel walletModel = (WalletModel)generaDAO.loadNoTransaction(WalletModel.class, UserID);
+    public boolean CostLines(String UserID, int CostLines) {
+        WalletModel walletModel = (WalletModel) generaDAO.loadNoTransaction(WalletModel.class, UserID);
 
-        if( walletModel == null ){
+        if (walletModel == null) {
             return false;
         }
 
-        if( !walletModel.IsLinesEnough( CostLines ) ){
+        if (!walletModel.IsLinesEnough(CostLines)) {
             return false;
         }
 
-        int CurLinse = walletModel.getWalletLines();
-        walletModel.setWalletLines(CurLinse-CostLines);
-        generaDAO.updateNoTransaction( walletModel );
+        if (WalletCost(UserID, CostLines) == 0) {
+            return false;
+        }
+
         return true;
     }
 
-    public boolean TransferLines( final String OrderId, final String OpenId, final int Lines, final String status ) throws ParseException {
+    public boolean TransferLines(final String OrderId, final String OpenId, final int Lines, final String status) throws ParseException {
 
-        if(generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+        if (generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
                 UserModel userModel = generaDAO.getUSerModelByOpenIdNoTransaction(OpenId);
-                if( userModel == null ){
+                if (userModel == null) {
                     return false;
                 }
 
-                InsertTransferOrder( userModel,OrderId,OpenId,Lines,status );
+                InsertTransferOrder(userModel, OrderId, OpenId, Lines, status);
 
-                WalletModel walletModel = (WalletModel)generaDAO.loadNoTransaction(WalletModel.class, userModel.getUserId());
+                WalletModel walletModel = (WalletModel) generaDAO.loadNoTransaction(WalletModel.class, userModel.getUserId());
 
-                if( walletModel == null ){
+                if (walletModel == null) {
                     return false;
                 }
 
-                if( !walletModel.IsLinesEnough( Lines ) ){
+                if (!walletModel.IsLinesEnough(Lines)) {
                     return false;
                 }
 
-                int CurLines = walletModel.getWalletLines();
-                walletModel.setWalletLines(CurLines-Lines);
-                generaDAO.updateNoTransaction( walletModel);
+                if (WalletCost(userModel.getUserId(), Lines) == 0) {
+                    return false;
+                }
 
                 return true;
             }
-        }) == Config.SERVICE_SUCCESS );
+        }) == Config.SERVICE_SUCCESS) ;
 
-       return false;
+        return false;
     }
 
 
     /**
      * 插入充值订单
+     *
      * @param OrderID
      * @param Lines
      * @param ChannelID
      */
-    public void InsertWalletOrder( String OrderID,int Lines,String ChannelID )throws Exception{
+    public void InsertWalletOrder(String OrderID, int Lines, String ChannelID) throws Exception {
 
         WalletOrderModel walletOrderModel = new WalletOrderModel();
-        walletOrderModel.setOrderID( OrderID );
-        walletOrderModel.setWalletLines( Lines );
-        walletOrderModel.setWalletChannel( ChannelID );
+        walletOrderModel.setOrderID(OrderID);
+        walletOrderModel.setWalletLines(Lines);
+        walletOrderModel.setWalletChannel(ChannelID);
         walletOrderModel.setOrderDate(MoneyServerDate.getDateCurDate());
-        generaDAO.saveNoTransaction( walletOrderModel );
+        generaDAO.saveNoTransaction(walletOrderModel);
 
     }
 
-    public void InsertTransferOrder( UserModel userModel,String OrderId, String OpenId,int Lines,String status ) throws ParseException {
+    public void InsertTransferOrder(UserModel userModel, String OrderId, String OpenId, int Lines, String status) throws ParseException {
         TransferModel transferModel = new TransferModel();
-        transferModel.setOrderId( OrderId );
-        transferModel.setOpenId( OpenId );
-        transferModel.setTransferLines( Lines );
-        transferModel.setTransferDate( MoneyServerDate.getDateCurDate() );
-        transferModel.setUserId( userModel.getUserId() );
-        transferModel.setStatus( status );
+        transferModel.setOrderId(OrderId);
+        transferModel.setOpenId(OpenId);
+        transferModel.setTransferLines(Lines);
+        transferModel.setTransferDate(MoneyServerDate.getDateCurDate());
+        transferModel.setUserId(userModel.getUserId());
+        transferModel.setStatus(status);
         generaDAO.saveNoTransaction(transferModel);
     }
 
 
-    public boolean IsWalletEnough( String UserID,int Lines ){
-        WalletModel walletModel = (WalletModel)generaDAO.loadNoTransaction(WalletModel.class, UserID);
+    public boolean IsWalletEnough(String UserID, int Lines) {
+        WalletModel walletModel = (WalletModel) generaDAO.loadNoTransaction(WalletModel.class, UserID);
 
-        if( walletModel == null ){
+        if (walletModel == null) {
             return false;
         }
 
-        if( !walletModel.IsLinesEnough( Lines ) ){
+        if (!walletModel.IsLinesEnough(Lines)) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
 
-    public boolean IsWalletEnoughTransaction( String UserID,int Lines ){
-        WalletModel walletModel = (WalletModel)generaDAO.load(WalletModel.class, UserID);
+    public boolean IsWalletEnoughTransaction(String UserID, int Lines) {
+        WalletModel walletModel = (WalletModel) generaDAO.load(WalletModel.class, UserID);
 
-        if( walletModel == null ){
+        if (walletModel == null) {
             return false;
         }
 
-        if( !walletModel.IsLinesEnough( Lines ) ){
+        if (!walletModel.IsLinesEnough(Lines)) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
+
+    /**
+     * 金额增加
+     *
+     * @param UserId
+     * @param Lines
+     * @return
+     */
+    private int WalletAdd(String UserId, int Lines) {
+        String sql = "update wallet set WalletLines = WalletLines+? where UserID = ?";
+        Session session = generaDAO.getNewSession();
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setParameter(0, Lines);
+        query.setParameter(1, UserId);
+        return query.executeUpdate();
+    }
+
+    /**
+     * 金额花费
+     *
+     * @param UserId
+     * @param Lines
+     * @return
+     */
+    private int WalletCost(String UserId, int Lines) {
+        String sql = "update wallet set WalletLines = WalletLines-? where UserID = ? and WalletLines-? >= 0";
+        Session session = generaDAO.getNewSession();
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setParameter(0, Lines);
+        query.setParameter(1, UserId);
+        return query.executeUpdate();
+    }
+
 
 }

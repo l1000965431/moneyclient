@@ -1,5 +1,7 @@
 package com.money.model;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -9,6 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "Transfer")
+@DynamicUpdate(true)
 public class TransferModel extends BaseModel {
 
     @Id

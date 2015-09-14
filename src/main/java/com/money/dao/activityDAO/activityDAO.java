@@ -186,12 +186,12 @@ public class activityDAO extends BaseDao {
      * @return
      */
     public ActivityDetailModel getActivityDetaillNoTransaction(String InstallmentActivityID) {
-        final ActivityDetailModel[] activityDetailModels = {null};
-        activityDetailModels[0] = (ActivityDetailModel) this.getNewSession().createCriteria(ActivityDetailModel.class)
+        final ActivityDetailModel activityDetailModels;
+        activityDetailModels = (ActivityDetailModel) this.getNewSession().createCriteria(ActivityDetailModel.class)
                 .setMaxResults(1)
                 .add(Restrictions.eq("activityStageId", InstallmentActivityID))
                 .uniqueResult();
-        return activityDetailModels[0];
+        return activityDetailModels;
     }
 
     /**
@@ -224,12 +224,12 @@ public class activityDAO extends BaseDao {
      */
     public ActivityDynamicModel getActivityDynamicModelNoTransaction(final String InstallmentActivityID) {
 
-        final ActivityDynamicModel[] activityDynamicModels = {null};
-        activityDynamicModels[0] = (ActivityDynamicModel) this.getNewSession().createCriteria(ActivityDynamicModel.class)
+        final ActivityDynamicModel activityDynamicModels;
+        activityDynamicModels = (ActivityDynamicModel) this.getNewSession().createCriteria(ActivityDynamicModel.class)
                 .setMaxResults(1)
                 .add(Restrictions.eq("activityStageId", InstallmentActivityID))
                 .uniqueResult();
-        return activityDynamicModels[0];
+        return activityDynamicModels;
     }
 
 
@@ -288,7 +288,7 @@ public class activityDAO extends BaseDao {
         String DBName = Config.ACTIVITYPURCHASE + ActivityID;
         String Sql = "CREATE TABLE " + DBName + " ( UserID VARCHAR(45) NOT NULL,PurchaseInAdvanceNum INT(5) NOT NULL, " +
                 "CurPurchaseInAdvanceNum INT(5) NOT NULL,PurchaseNum INT(5) NOT NULL," +
-                "PurchaseType INT(5) NOT NULL, PurchaseInAdvanceNumID VARCHAR(255) NOT NULL, PRIMARY KEY (PurchaseInAdvanceNumID));";
+                "PurchaseType INT(5) NOT NULL, PurchaseInAdvanceNumID VARCHAR(255) NOT NULL,PurchaseTime DATETIME NOT NULL, PRIMARY KEY (PurchaseInAdvanceNumID));";
         SQLQuery sqlQuery = session.createSQLQuery(Sql);
 
         sqlQuery.executeUpdate();

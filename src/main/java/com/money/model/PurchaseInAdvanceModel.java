@@ -1,5 +1,7 @@
 package com.money.model;
 
+import java.util.Date;
+
 /**
  *
  */
@@ -8,8 +10,6 @@ public class PurchaseInAdvanceModel extends BaseModel {
     /**
      *
      */
-    int Id;
-
     String UserID;
 
     String PurchaseInAdvanceNumID;
@@ -30,14 +30,6 @@ public class PurchaseInAdvanceModel extends BaseModel {
     int PurchaseNum;
 
     int PurchaseType;
-
-    public int getId() {
-        return Id;
-    }
-
-    public void setId(int id) {
-        Id = id;
-    }
 
     public String getUserID() {
         return UserID;

@@ -83,7 +83,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
                     ActivityDetailModel activityDetailModel = activityInfoDAO.getActivityDetaillNoTransaction(InstallmentActivityID);
                     ActivityDynamicModel activityDynamicModel = activityDetailModel.getDynamicModel();
                     ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
-                    String ActivityID = activityDetailModel.getActivityVerifyCompleteModel().getActivityId();
+                    String ActivityID = activityVerifyCompleteModel.getActivityId();
 
                     int costLines = 0;
 
