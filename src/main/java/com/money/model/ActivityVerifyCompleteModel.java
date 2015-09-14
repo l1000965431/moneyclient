@@ -30,19 +30,19 @@ public class ActivityVerifyCompleteModel extends BaseModel {
     /**
      *  项目分期静态列表
      */
-    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<ActivityDetailModel> activityDetailModels = new HashSet<ActivityDetailModel>();
 
     /**
      *  项目分期动态列表
      */
-    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<ActivityDynamicModel> activityDynamicModels = new HashSet<ActivityDynamicModel>();
 
     /**
      *  项目分期动态列表
      */
-    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<SREarningModel> srEarningModels = new HashSet<SREarningModel>();
 
 

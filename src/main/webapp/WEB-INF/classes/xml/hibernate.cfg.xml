@@ -7,8 +7,8 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-       <!-- <property name="hibernate.hbm2ddl.auto">update</property>-->
-        <property name="hibernate.show_sql">true</property>
+        <!--<property name="hibernate.hbm2ddl.auto">update</property>-->
+        <property name="hibernate.show_sql">false</property>
         <property name="hibernate.format_sql">true</property>
         <property name="hibernate.current_session_context_class">thread</property>
         <property name="hibernate.connection.isolation">4</property>
@@ -34,7 +34,7 @@
         <!--每60秒检查所有连接池中的空闲连接。Default: 0 -->
         <property name="idleConnectionTestPeriod">30</property>
         <!--初始化时获取三个连接，取值应在minPoolSize与maxPoolSize之间。Default: 3 -->
-        <property name="initialPoolSize">3</property>
+        <property name="initialPoolSize">20</property>
         <!--最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
         <property name="maxIdleTime">60</property>
         <!--JDBC的标准参数，用以控制数据源内加载的PreparedStatements数量。但由于预缓存的statements
@@ -47,9 +47,9 @@
             通过多线程实现多个操作同时被执行。Default: 3-->
         <property name="numHelperThreads">3</property>
         <!-- 最大连接数 -->
-        <property name="hibernate.c3p0.max_size">40</property>
+        <property name="hibernate.c3p0.max_size">30</property>
         <!-- 最小连接数 -->
-        <property name="hibernate.c3p0.min_size">20</property>
+        <property name="hibernate.c3p0.min_size">10</property>
         <!-- 获得连接的超时时间,如果超过这个时间,会抛出异常，单位毫秒 -->
         <property name="hibernate.c3p0.timeout">3000</property>
         <!-- 开启二级缓存 -->

@@ -273,7 +273,7 @@ public class BaseDao {
     public void saveOrupdateNoTransaction(Object bean) {
         Session session = getNewSession();
         session.saveOrUpdate(bean);
-        session.flush();
+        //session.flush();
         //session.clear();
     }
 

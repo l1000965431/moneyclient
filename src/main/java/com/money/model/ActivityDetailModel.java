@@ -44,20 +44,20 @@ public class ActivityDetailModel extends BaseModel {
     @Id
     String activityStageId;
 
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, targetEntity = ActivityDynamicModel.class)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = ActivityDynamicModel.class)
     private ActivityDynamicModel dynamicModel;
 
     /**
      * 父项目
      */
-    @ManyToOne(cascade = {CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "parentActivityId", referencedColumnName = "activityId")
     ActivityVerifyCompleteModel activityVerifyCompleteModel;
 
     /**
      * 项目组中大R收益层次
      */
-    @OneToMany(mappedBy = "activityDetailModel", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "activityDetailModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<SREarningModel> srEarningModels = new HashSet<SREarningModel>();
 
 

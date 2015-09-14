@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="InsertOrderListener" class="com.money.MoneyServerMQ.MQListener.InsertOrderListener">
+   <bean id="InsertOrderListener" class="com.money.MoneyServerMQ.MQListener.InsertOrderListener">
         <property name="messageTopic" value="MoneyServer_Order_Insert"/>
     </bean>
 
@@ -33,6 +33,38 @@
     <bean id="TransListener" class="com.money.MoneyServerMQ.MQListener.TransListener">
         <property name="messageTopic" value="MoneyServer_Transfer_Listener"/>
     </bean>
+
+
+    <!--<bean id="InsertOrderListener" class="com.money.MoneyServerMQ.MQListener.InsertOrderListener">
+        <property name="messageTopic" value="MoneyServer_Order_Insert_liveQ"/>
+    </bean>
+
+    <bean id="ActivityBuyListener" class="com.money.MoneyServerMQ.MQListener.ActivityBuyListener">
+        <property name="messageTopic" value="MoneyServer_Buy_Listener_liveQ"/>
+    </bean>
+
+    <bean id="LotteryListener" class="com.money.MoneyServerMQ.MQListener.LotteryListener">
+        <property name="messageTopic" value="MoneyServer_Lottery_Listener_liveQ"/>
+    </bean>
+
+    <bean id="SomeFarmListener" class="com.money.MoneyServerMQ.MQListener.SomeFarmListener">
+        <property name="messageTopic" value="MoneyServer_SomeFarm_Listener_liveQ"/>
+    </bean>
+    <bean id="WalletListener" class="com.money.MoneyServerMQ.MQListener.WalletListener">
+        <property name="messageTopic" value="MoneyServer_RechargeWallet_Listener_liveQ"/>
+    </bean>
+    <bean id="PushListener" class="com.money.MoneyServerMQ.MQListener.PushListener">
+        <property name="messageTopic" value="MoneyServer_PushListener_Listener_liveQ"/>
+    </bean>
+    <bean id="StartInstallmentActivityListener" class="com.money.MoneyServerMQ.MQListener.StartInstallmentActivityListener">
+        <property name="messageTopic" value="MoneyServer_Installment_Listener_liveQ"/>
+    </bean>
+    <bean id="LotteryPushList" class="com.money.MoneyServerMQ.MQListener.LotteryListPushListener">
+        <property name="messageTopic" value="MoneyServer_LotteryPushLis_Listener_liveQ"/>
+    </bean>
+    <bean id="TransListener" class="com.money.MoneyServerMQ.MQListener.TransListener">
+        <property name="messageTopic" value="MoneyServer_Transfer_Listener_liveQ"/>
+    </bean>-->
 
     <bean id="MoneySeverMQManager" class="com.money.MoneyServerMQ.MoneyServerMQManager">
         <constructor-arg>

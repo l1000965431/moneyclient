@@ -233,6 +233,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, Lines);
         query.setParameter(1, UserId);
+        query.setParameter(2, Lines);
         return query.executeUpdate();
     }
 

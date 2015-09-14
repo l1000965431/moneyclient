@@ -196,9 +196,8 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
         if (!IsEnoughLocalTyrantsTickets(InstallmentActivityID)) {
             return ServerReturnValue.SERVERRETURNCONDITIONS;
         }
-        purchaseInAdvanceDAO.PurchaseActivity(InstallmentActivityID, UserID, 1, Config.PURCHASELOCALTYRANTS,Lines);
+        return purchaseInAdvanceDAO.PurchaseActivity(InstallmentActivityID, UserID, 1, Config.PURCHASELOCALTYRANTS,Lines);
         //orderService.createOrder(UserID, InstallmentActivityID, TotalLinePeoples, 0, 0, Config.PURCHASELOCALTYRANTS, OrderID);
-        return ServerReturnValue.SERVERRETURNCOMPELETE;
     }
 
     /**

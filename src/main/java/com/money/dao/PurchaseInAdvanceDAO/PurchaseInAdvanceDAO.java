@@ -5,6 +5,7 @@ import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import com.money.dao.BaseDao;
 import com.money.dao.activityDAO.activityDAO;
+import com.money.dao.userDAO.UserDAO;
 import com.money.model.ActivityDynamicModel;
 import com.money.model.ActivityVerifyCompleteModel;
 import com.money.model.PurchaseInAdvanceModel;
@@ -28,7 +29,7 @@ import java.util.List;
 public class PurchaseInAdvanceDAO extends BaseDao {
 
     @Autowired
-    private activityDAO activityDAO;
+    private UserDAO userDAO;
 
     /**
      * 插入预购买表
@@ -112,6 +113,11 @@ public class PurchaseInAdvanceDAO extends BaseDao {
         //刷新项目票的表 票的所有者
         String DBNmae = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
 
+        if( userDAO.getUSerModelNoTransaction( UserID ) == null ){
+            return ServerReturnValue.SERVERRETURNERROR;
+        }
+
+
 /*        String sqlCount = "select count(TickID) from " + DBNmae + " where UserId='0' and PurchaseType=?;";
 
         SQLQuery queryCount = session.createSQLQuery(sqlCount);
@@ -129,7 +135,7 @@ public class PurchaseInAdvanceDAO extends BaseDao {
         query.setParameter(1, PurchaseType);
         query.setParameter(2, PurchaseNum);
         if( query.executeUpdate() == 0 ){
-            return ServerReturnValue.SERVERRETURNCOMPELETE;
+            return ServerReturnValue.SERVERRETURNERROR;
         }
 
 
@@ -138,9 +144,10 @@ public class PurchaseInAdvanceDAO extends BaseDao {
 
         switch (PurchaseType) {
             case Config.PURCHASELOCALTYRANTS:
-                if( updateActivityLinesPeoples( InstallmentActivityID,Lines ) == 0 ){
+                if( updateDynamicActivityLinesPeoples(InstallmentActivityID, Lines) == 0 ){
                     return ServerReturnValue.SERVERRETURNERROR;
                 }
+                break;
             case Config.PURCHASEPRICKSILK:
                 if( updateDynamicActivityLines( InstallmentActivityID,Lines ) == 0 ){
                     return ServerReturnValue.SERVERRETURNERROR;
@@ -186,7 +193,7 @@ public class PurchaseInAdvanceDAO extends BaseDao {
     }
 
     private int updateDynamicActivityLines( String InstallmentActivityID, int Lines ){
-        String sql = "update activitydynamic set activityCurLinesPeoples = activityCurLines+? where activityStageId = ? and activityCurLines+? <= activityTotalLines ";
+        String sql = "update activitydynamic set activityCurLines = activityCurLines+? where activityStageId = ? and activityCurLines+? <= activityTotalLines ";
         Session session = this.getNewSession();
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, Lines);
