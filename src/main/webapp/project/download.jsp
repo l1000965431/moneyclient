@@ -4,11 +4,13 @@ Author URL: http://w3layouts.com
 License: Creative Commons Attribution 3.0 Unported
 License URL: http://creativecommons.org/licenses/by/3.0/
 -->
+<%@page language="java" contentType="text/html; charset=utf-8"
+		pageEncoding="utf-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <title>Timer Sign In Form Responsive Widget Template  :: w3layouts</title>
-<link href="resources/download.css" rel='stylesheet' type='text/css' />
+<link href="res/download.css" rel='stylesheet' type='text/css' />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="timer Sign In Form,Login Forms,Sign up Forms,Registration Forms,News latter Forms,Elements"./>
@@ -21,7 +23,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <body>
 <h1>微聚竞投1.0官方下载</h1>
 	<div class="app-timer">
-		<div class="timer"><img src="images/timer.png" alt="" width="118" height="114" class="img-responsive" /></div>
+		<div class="timer"><img src="./res/timer.png" alt="" width="118" height="114" class="img-responsive" /></div>
 			<form>
 				<ul>
 					</li>
