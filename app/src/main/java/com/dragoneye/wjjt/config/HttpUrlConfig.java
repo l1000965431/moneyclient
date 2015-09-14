@@ -7,7 +7,7 @@ package com.dragoneye.wjjt.config;
 public interface HttpUrlConfig {
 //    String URL_ROOT = "http://weijujingtou.com/Longyan/";
 
-    String URL_ROOT = "http://192.168.0.103:8080/";
+    String URL_ROOT = "http://192.168.1.100:8080/";
 
     String URL_AGREEMENT = URL_ROOT + "project/protocol.jsp";
     String URL_DEV_STUFF = URL_ROOT + "project/protocol.jsp";

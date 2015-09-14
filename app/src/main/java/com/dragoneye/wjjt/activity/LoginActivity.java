@@ -30,6 +30,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.message.ALIAS_TYPE;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UmengRegistrar;
+import com.umeng.update.UmengUpdateAgent;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -65,6 +66,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         initView();
         initData();
         InitPush();
+        UmengUpdateAgent.update(this);
     }
 
     private void initView(){

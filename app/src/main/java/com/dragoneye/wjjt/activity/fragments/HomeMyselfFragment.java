@@ -116,7 +116,9 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onResume(){
         super.onResume();
-        updateUI();
+        if(getUserVisibleHint()){
+            updateUI();
+        }
     }
 
     @Override

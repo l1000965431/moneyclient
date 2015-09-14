@@ -25,6 +25,9 @@ import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXTextObject;
 
 import org.apache.http.Header;
 
@@ -131,6 +134,18 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
                                 .setPositiveButton("前往关注", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+//                                        WXTextObject textObject = new WXTextObject();
+//                                        textObject.text = "一条测试";
+//
+//                                        WXMediaMessage mediaMessage = new WXMediaMessage();
+//                                        mediaMessage.mediaObject = textObject;
+//                                        mediaMessage.description = "一条测试";
+//
+//                                        SendMessageToWX.Req req = new SendMessageToWX.Req();
+//                                        req.transaction = String.valueOf(System.currentTimeMillis());
+//                                        req.message = mediaMessage;
+//
+//                                        ((MyApplication) getApplication()).getWXAPI().sendReq(req);
                                         finish();
                                     }
                                 })

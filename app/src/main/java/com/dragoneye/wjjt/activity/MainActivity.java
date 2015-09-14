@@ -84,7 +84,6 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.function_switch_bottom);
         initView();
-        UmengUpdateAgent.update(this);
     }
 
     private void initView(){

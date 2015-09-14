@@ -439,11 +439,11 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                     mBrEarningModels.clear();
                     for( int i = 0; i < brEarnings.length(); i++ ){
                         JSONObject object1 = brEarnings.getJSONObject(i);
-                        int earningType = object1.getInt("srEarningType");
+                        int earningType = object1.getInt("earningType");
                         if( earningType == 1 ){
                             EarningModel earningModel = new EarningModel();
-                            earningModel.setNum( brEarnings.getJSONObject(i).getInt("srEarningNum"));
-                            earningModel.setPrice(brEarnings.getJSONObject(i).getInt("srEarningPrice"));
+                            earningModel.setNum( brEarnings.getJSONObject(i).getInt("num"));
+                            earningModel.setPrice(brEarnings.getJSONObject(i).getInt("earningPrice"));
                             mBrEarningModels.add(earningModel);
                         }
                     }

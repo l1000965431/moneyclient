@@ -52,6 +52,7 @@ import cn.smssdk.SMSSDK;
 public class MyApplication extends Application {
     public ArrayList<Integer> images = new ArrayList<>();
     private PushAgent mPushAgent;
+    private IWXAPI iwxapi;
 
     @Override
     public void onCreate() {
@@ -248,7 +249,11 @@ public class MyApplication extends Application {
 
     private void initWxSDK(){
         final String appId = "wx73481970b3d04fcf";
-        IWXAPI iwxapi = WXAPIFactory.createWXAPI(this, appId, true);
+        iwxapi = WXAPIFactory.createWXAPI(this, appId, true);
         iwxapi.registerApp(appId);
+    }
+
+    public IWXAPI getWXAPI(){
+        return iwxapi;
     }
 }

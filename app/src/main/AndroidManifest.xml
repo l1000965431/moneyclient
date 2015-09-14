@@ -124,6 +124,7 @@
         <activity
             android:name="com.pingplusplus.android.PaymentActivity"
             android:launchMode="singleTop"
+            android:configChanges="orientation|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <!-- 微信支付注册 -->
         <activity-alias
@@ -149,13 +150,14 @@
             android:exported="false"
             android:theme="@style/EbpayThemeActivityWelcome"
             android:windowSoftInputMode="stateHidden" />
+
         <activity
             android:name="com.baidu.paysdk.ui.WelcomeActivity"
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:screenOrientation="portrait"
             android:theme="@style/EbpayThemeActivityWelcome"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.baidu.paysdk.ui.OrderHomeActivity"
@@ -179,16 +181,16 @@
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:screenOrientation="portrait"
             android:theme="@style/EbpayThemeActivit"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible" />
         <activity
             android:name="com.baidu.paysdk.ui.PwdCheckActivity"
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:screenOrientation="portrait"
             android:theme="@style/EbpayThemeActivit"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible" />
         <activity
             android:name="com.baidu.paysdk.ui.PwdSetAndConfirmActivity"
@@ -202,16 +204,16 @@
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:screenOrientation="portrait"
             android:theme="@style/EbpayThemeActivitTranslucent"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name="com.baidu.paysdk.ui.PwdPaySmsActivity"
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:screenOrientation="portrait"
             android:theme="@style/EbpayThemeActivitTranslucent"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.baidu.paysdk.ui.WebViewActivity"
@@ -226,16 +228,16 @@
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:screenOrientation="portrait"
             android:theme="@style/EbpayThemeActivit"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.baidu.paysdk.ui.BindCardDetailActivity"
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:screenOrientation="portrait"
             android:theme="@style/EbpayThemeActivit"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name="com.baidu.paysdk.ui.BindCardDetailCredit2Activity"
@@ -251,14 +253,14 @@
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
             android:screenOrientation="portrait"
-            android:theme="@style/EbpayThemeActivit"
-            android:windowSoftInputMode="stateVisible|adjustPan" />
+            android:windowSoftInputMode="stateVisible|adjustPan"
+            android:theme="@style/EbpayThemeActivit"/>
         <activity
             android:name="com.baidu.paysdk.ui.BindSmsActivity"
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
-            android:exported="@bool/bd_wallet_switch_global_debug"
             android:screenOrientation="portrait"
+            android:exported="@bool/bd_wallet_switch_global_debug"
             android:theme="@style/EbpayThemeActivit"
             android:windowSoftInputMode="adjustResize" />
         <activity
@@ -290,9 +292,20 @@
             android:configChanges="keyboardHidden|navigation|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="@bool/bd_wallet_switch_global_debug"
-            android:screenOrientation="portrait"
             android:theme="@style/EbpayThemeActivit"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+        <!-- 壹收款注册 -->
+        <activity
+            android:name="com.pingplusplus.libone.PayActivity"
+            android:label="@string/pingpp_title_activity_pay" />
+        <activity
+            android:name="com.pingplusplus.libone.PaySucessedActivity"
+            android:label="@string/pingpp_title_activity_pay_sucessed" />
+        <activity
+            android:name="com.pingplusplus.libone.PayFiledActivity"
+            android:label="@string/pingpp_title_activity_pay_filed" />
         <!-- ********************************** End Ping++ SDK ******************************** -->
         <!-- 推送配置开始 -->
         <receiver

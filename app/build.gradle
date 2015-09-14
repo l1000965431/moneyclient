@@ -8,8 +8,8 @@ android {
         applicationId "com.dragoneye.wjjt"
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
     }
     buildTypes {
         release {
@@ -38,14 +38,16 @@ dependencies {
     compile files('libs/happy-dns-0.2.3.1.jar')
     compile files('libs/umeng-analytics-v5.5.3.jar')
     compile files('libs/umeng-update-v2.6.0.1.jar')
-    compile(name: 'libone', ext: 'aar')
-    compile(name: 'libpingpp', ext: 'aar')
-    compile(name: 'bdwallet_pay_sdk', ext: 'aar')
     compile files('libs/com.umeng.message.lib_v2.4.1.jar')
     compile files('libs/MobTools.jar')
     compile files('libs/SMSSDK-1.2.2.jar')
     compile files('libs/AnalysisSDK_0.0.3.jar')
     compile files('libs/mframework.jar')
+    compile files('libs/libammsdk.jar')
+    compile files('libs/libone.jar')
+    compile files('libs/paySDk3.4.1.jar')
+    compile project(':bdwallet_pay_sdk')
+    compile files('/Users/happysky/AndroidStudioProjects/money/bdwallet_pay_sdk/libs/paySDk3.4.1.jar')
 }
 
 repositories {
