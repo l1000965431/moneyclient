@@ -174,6 +174,10 @@ public class UserService extends ServiceBase implements ServiceInterface {
             return 3;
     }
 
+    public boolean checkPassWord( String userId, String passWord ){
+       return userDAO.checkPassWord(userId, passWord);
+    }
+
     /**
      * 密码找回
      *
@@ -249,7 +253,6 @@ public class UserService extends ServiceBase implements ServiceInterface {
         boolean userIsExist = userDAO.checkPassWord(UserId, passWord);
 
         if (userIsExist == false) {
-            LOGGER.debug( "userIsExist == false" );
             return false;
         }
 

@@ -29,7 +29,7 @@ public class PushListener extends MoneyServerListener {
             }
             return Action.CommitMessage;
         } catch (Exception e) {
-             return Action.CommitMessage;
+            return Action.ReconsumeLater;
         }
     }
 }

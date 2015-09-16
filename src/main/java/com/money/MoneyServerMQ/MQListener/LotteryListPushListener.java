@@ -52,7 +52,7 @@ public class LotteryListPushListener extends MoneyServerListener {
             }
             return Action.CommitMessage;
         } catch (Exception e) {
-            return Action.CommitMessage;
+            return Action.ReconsumeLater;
         }
     }
 

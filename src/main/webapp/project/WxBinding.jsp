@@ -4,13 +4,11 @@ Author URL: http://w3layouts.com
 License: Creative Commons Attribution 3.0 Unported
 License URL: http://creativecommons.org/licenses/by/3.0/
 -->
-<%@page language="java" contentType="text/html; charset=utf-8"
-		pageEncoding="utf-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Timer Sign In Form Responsive Widget Template  :: w3layouts</title>
-<link href="./res/WxBinding.css" rel='stylesheet' type='text/css' />
+<title>下载微距竞投</title>
+<link href="res/Wxbinding.css" rel='stylesheet' type='text/css' />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="timer Sign In Form,Login Forms,Sign up Forms,Registration Forms,News latter Forms,Elements"./>
@@ -23,7 +21,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <body>
 <h1>与微信绑定</h1>
 	<div class="app-timer">
-		<div class="timer"><img src="./res/timer.png" alt="" width="118" height="113" class="img-responsive" /></div>
+		<div class="timer"><img src="res/timer.png" alt="" width="118" height="113" class="img-responsive" /></div>
 			<form>
 				<ul>
 					<li>
@@ -43,7 +41,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<!--start-copyright-->
    		<div class="copy-right">
-				<p>Copyright &copy; 2015  All rights  Reserved | Template by &nbsp;<a href="http://w3layouts.com">W3layouts</a></p>
+				<p>Copyright &copy; 2015  All rights  Reserved |  &nbsp;<a href="http://www.longan.com">Longan</a></p>
 		</div>
 	<!--//end-copyright-->
 </body>

@@ -71,6 +71,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
 
         generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
+
                 WalletModel walletModel = (WalletModel) generaDAO.loadNoTransaction(WalletModel.class, UserID);
 
                 if (walletModel == null) {
@@ -78,7 +79,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
                 }
 
                 if (WalletAdd(UserID, Lines) == 0) {
-                    return true;
+                    return false;
                 }
 
                 return true;

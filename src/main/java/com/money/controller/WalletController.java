@@ -32,6 +32,8 @@ public class WalletController extends ControllerBase {
     @Autowired
     WalletService walletService;
 
+    @Autowired
+    UserService userService;
     /**
      * 获取钱包余额
      *
@@ -115,7 +117,7 @@ public class WalletController extends ControllerBase {
 
 
     /**
-     * 1:提现成功 0:提现错误 2:提现现金不足 3:没有绑定微信帐号
+     * 1:提现成功 0:提现错误 2:提现现金不足 3:没有绑定微信帐号 4:密码不正确
      *
      * @param request
      * @param response
@@ -124,9 +126,19 @@ public class WalletController extends ControllerBase {
     @RequestMapping("/TransferWallet")
     @ResponseBody
     public int TransferWallet(HttpServletRequest request, HttpServletResponse response) {
-        String userId = request.getParameter("userId");
-        String orderId = request.getParameter("orderId");
-        int Lines = Integer.valueOf(request.getParameter("lines"));
+        Map<String, String> mapData = DecryptionDataToMapByUserId(request.getParameter("data"),
+                this.initDesKey(request.getHeader("userId")));
+
+        if (mapData == null) {
+            return 0;
+        }
+
+
+        String userId = mapData.get("userId");
+        String orderId = mapData.get("orderId");
+        String passWord = mapData.get("passWord");
+        int Lines = Integer.valueOf(mapData.get("lines"));
+
         String openId = userService.IsBinding(userId);
         if (userId == null || orderId == null || openId == null) {
             return 0;
@@ -139,6 +151,9 @@ public class WalletController extends ControllerBase {
             return 2;
         }
 
+        if( userService.checkPassWord( userId,passWord ) == false ){
+            return 4;
+        }
 
         try {
             PingPlus.CreateTransferMap(Lines, openId, userId, orderId);
@@ -197,9 +212,10 @@ public class WalletController extends ControllerBase {
     @RequestMapping("/TestRechargeWallet")
     @ResponseBody
     public void TestRechargeWallet( HttpServletRequest request, HttpServletResponse response ) throws Exception {
-        String userId = request.getParameter( "userId" );
-        int lines = Integer.valueOf(request.getParameter( "lines" ));
 
+
+        String userId = request.getParameter("userId");
+        int lines = Integer.valueOf(request.getParameter("lines"));
 
         walletService.TestRechargeWallet( userId,lines );
     }

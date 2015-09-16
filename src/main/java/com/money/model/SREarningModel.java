@@ -22,7 +22,7 @@ public class SREarningModel extends BaseModel {
     /**
      *  大R项目组ID
      */
-    @ManyToOne(cascade = {CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn( name = "activityStageId",referencedColumnName = "activityStageId")
     ActivityDetailModel activityDetailModel=null;
 
@@ -30,7 +30,7 @@ public class SREarningModel extends BaseModel {
     /**
      * 小R的项目组数据
      */
-    @ManyToOne(cascade = {CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn( name = "activityId",referencedColumnName = "activityId")
     ActivityVerifyCompleteModel activityVerifyCompleteModel=null;
 

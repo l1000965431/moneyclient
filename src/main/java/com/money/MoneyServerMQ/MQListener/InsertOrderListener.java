@@ -26,7 +26,7 @@ public class InsertOrderListener extends MoneyServerListener {
             baseDao.save( orderModel );
             return Action.CommitMessage;
         } catch (Exception e) {
-            return Action.CommitMessage;
+            return Action.ReconsumeLater;
         }
     }
 }

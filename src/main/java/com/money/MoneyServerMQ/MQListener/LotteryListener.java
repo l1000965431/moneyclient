@@ -23,7 +23,7 @@ public class LotteryListener extends MoneyServerListener {
             lotteryService.StartLottery( InstallmentActivityID );
             return Action.CommitMessage;
         } catch (Exception e) {
-            return Action.CommitMessage;
+            return Action.ReconsumeLater;
         }
     }
 }

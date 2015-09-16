@@ -64,7 +64,7 @@ public class OrderModel extends BaseModel {
     /**
      * 项目信息
      */
-    @ManyToOne(cascade = {CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn( name = "orderactivityId", referencedColumnName = "activityStageId")
     private ActivityDetailModel activityDetailModel;
 

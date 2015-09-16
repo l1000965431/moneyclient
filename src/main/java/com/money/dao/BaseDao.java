@@ -64,9 +64,13 @@ public class BaseDao {
     public Object load(Class c, Serializable id) {
         Session session = getNewSession();
         Transaction t = session.beginTransaction();
-        Object o = session.get(c, id);
-        t.commit();
-        return o;
+        try {
+            Object o = session.get(c, id);
+            t.commit();
+            return o;
+        }catch ( Exception e ){
+            return null;
+        }
     }
 
     @SuppressWarnings("rawtypes")
@@ -80,10 +84,15 @@ public class BaseDao {
     public Object load(Class c, String id) {
         Session session = getNewSession();
         Transaction t = session.beginTransaction();
-        Object o = session.get(c, id);
-        t.commit();
+        try{
+            Object o = session.get(c, id);
+            t.commit();
+            return o;
+        }catch ( Exception e ){
+            t.rollback();
+            return null;
+        }
 
-        return o;
     }
 
     @SuppressWarnings("rawtypes")
@@ -96,9 +105,14 @@ public class BaseDao {
     public <T> T load(T c, String id) {
         Session session = getNewSession();
         Transaction t = session.beginTransaction();
-        T Value = (T) session.get(c.getClass(), id);
-        t.commit();
-        return Value;
+        try{
+            T Value = (T) session.get(c.getClass(), id);
+            t.commit();
+            return Value;
+        }catch ( Exception e ){
+            t.rollback();
+            return null;
+        }
     }
 
     /**

@@ -46,10 +46,10 @@ body h1 {
   font-size:3em;
 }
 .app-timer{
-  width:28%;
+  width:18%;
   margin:0 auto;
   text-align: center;
-  background:url("/project/res/bg.jpgt/res/bg.jpg")0px 0px no-repeat;
+  background:url("../images/bg.jpg")0px 0px no-repeat;
   padding: 3em 5em;
   background-size: 100% 100%;
   position: relative;
@@ -73,10 +73,10 @@ form li{
   margin: 33px 37px 0px -5px;
 }
 .email {
-  background: url(/project/res/icons.png) no-repeat 0px 0px;
+  background: url(icons.png) no-repeat 0px 0px;
 }
 .lock {
-  background: url(/project/res/icons.png) no-repeat 0px -58px;
+  background: url(icons.png) no-repeat 0px -58px;
 }
 /*-----*/
 .timer img {
@@ -341,11 +341,11 @@ form {
     width: 37%;
   }
   .email {
-  background: url(/project/res/icons.png) no-repeat 0px 4px;
+  background: url(icons.png) no-repeat 0px 4px;
   background-size:67%;
 }
 .lock {
-  background: url(/project/res/icons.png) no-repeat 0px -50px;
+  background: url(icons.png) no-repeat 0px -50px;
   background-size:67%;
 }
 form li {

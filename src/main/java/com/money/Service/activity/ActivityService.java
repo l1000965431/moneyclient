@@ -188,6 +188,22 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      */
 
     private boolean InstallmentActivityIDStart(String ActivityID, int Installment) throws Exception {
+
+        if( Installment-1 > 0 ){
+            String preInstallmentActivityID = ActivityID + "_" + Integer.toString(Installment-1);
+
+            ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamicModelNoTransaction(preInstallmentActivityID);
+
+            if( activityDynamicModel == null ){
+                return false;
+            }
+
+            if( activityDynamicModel.getActivityState() != ActivityDetailModel.ONLINE_ACTIVITY_COMPLETE ){
+                return false;
+            }
+        }
+
+
         String InstallmentActivityID = ActivityID + "_" + Integer.toString(Installment);
         //创建分期项目票表
         activityDao.CreateTicketDB(InstallmentActivityID);
@@ -207,15 +223,15 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
 
     public void InstallmentActivityStart(final String ActivityID, final int Installment) throws Exception {
-        activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
+        if(activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
                 return InstallmentActivityIDStart(ActivityID, Installment);
             }
-        });
-
-        //预购项目已经完成  开始下一期
-        String InstallmentActivityID = ActivityID + "_" + Integer.toString(Installment);
-        SetInstallmentActivityEnd(InstallmentActivityID);
+        }) == Config.SERVICE_SUCCESS){
+            //预购项目已经完成  开始下一期
+            String InstallmentActivityID = ActivityID + "_" + Integer.toString(Installment);
+            SetInstallmentActivityEnd(InstallmentActivityID);
+        }
     }
 
 
@@ -291,7 +307,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
        if( activityDao.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
                 ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamicModelNoTransaction(InstallmentActivityID);
-                if (activityDynamicModel.IsEnough()) {
+                if (activityDynamicModel.IsEnough() && activityDynamicModel.getActivityState() == ActivityDetailModel.ONLINE_ACTIVITY_START) {
 
                     activityDynamicModelIsEnough[0] = true;
 
@@ -301,16 +317,24 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
                     int CurInstallmentNum = activityVerifyCompleteModel.getCurInstallmentNum();
                     CurInstallmentNum++;
+
+
+                    //完成的期和项目ID 对不上
+                    String temp = activityVerifyCompleteModel.getActivityId() + "_" + Integer.toString(CurInstallmentNum);
+                    if( !InstallmentActivityID.equals( temp ) ){
+                        return false;
+                    }
+
                     activityVerifyCompleteModel.setCurInstallmentNum(CurInstallmentNum);
                     activityDao.updateNoTransaction(activityVerifyCompleteModel);
-
                     //发奖
 /*                    if(lotteryService.StartLottery( InstallmentActivityID ) == null){
                         return false;
                     }*/
 
 
-                    if (!activityVerifyCompleteModel.IsEnoughInstallmentNum()) {
+                    if (!activityVerifyCompleteModel.IsEnoughInstallmentNum() &&
+                            activityVerifyCompleteModel.getStatus() == ActivityVerifyModel.STATUS_START_RAISE) {
                         //开启下一期
                         activityVerifyCompleteModelIsEnoughInstallmentNum[0] = true;
                         ActivityID[0] = activityVerifyCompleteModel.getActivityId();
@@ -319,8 +343,10 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
 
                     //如果所有分期项目完成  设置父项目完成
                     SetActivityEnd(activityDynamicModel.getActivityVerifyCompleteModel().getActivityId());
+                    return true;
+                }else{
+                    return false;
                 }
-                return true;
             }
         })== Config.SERVICE_SUCCESS){
 

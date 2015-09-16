@@ -5,6 +5,7 @@ import com.aliyun.openservices.ons.api.ONSFactory;
 import com.aliyun.openservices.ons.api.Producer;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.money.config.Config;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.Properties;
@@ -24,9 +25,13 @@ public class MoneyServerMQManager {
     static Producer producer;
     static Consumer consumer;
 
+    static Logger logger = Logger.getLogger(MoneyServerMQManager.class);
+
     public MoneyServerMQManager( List<MoneyServerListener> ListMoneyServerListener ){
         InitMoneyServerMQManager();
-        RegisteredListener( ListMoneyServerListener );
+        RegisteredListener(ListMoneyServerListener);
+
+        //logger.error( "阿里云消息队列初始化" );
     }
 
 

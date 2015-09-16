@@ -28,9 +28,6 @@ import java.util.List;
 @Repository
 public class PurchaseInAdvanceDAO extends BaseDao {
 
-    @Autowired
-    private UserDAO userDAO;
-
     /**
      * 插入预购买表
      *
@@ -112,11 +109,6 @@ public class PurchaseInAdvanceDAO extends BaseDao {
     public int PurchaseActivity(String InstallmentActivityID, String UserID, int PurchaseNum, int PurchaseType,int Lines ) throws Exception {
         //刷新项目票的表 票的所有者
         String DBNmae = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
-
-        if( userDAO.getUSerModelNoTransaction( UserID ) == null ){
-            return ServerReturnValue.SERVERRETURNERROR;
-        }
-
 
 /*        String sqlCount = "select count(TickID) from " + DBNmae + " where UserId='0' and PurchaseType=?;";
 
