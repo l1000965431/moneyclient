@@ -96,6 +96,54 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:paddingLeft="30dp"
+                        android:visibility="gone"
+                        android:layout_marginTop="20dp"
+                        android:id="@+id/charge_activity_password_layout">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:id="@+id/imageView17"
+                            android:src="@mipmap/icon_editor"
+                            android:tint="#ff35240f"
+                            android:layout_gravity="center"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="输入您的登录密码："
+                            android:id="@+id/textView27"
+                            android:textSize="15dp"
+                            android:textColor="#ff7c7c7c"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="10dp"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/charge_et_login_password"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:inputType="textPassword"
+                            android:textColor="#ff7c7c7c"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal">
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>

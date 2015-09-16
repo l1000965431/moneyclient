@@ -23,6 +23,7 @@ import com.dragoneye.wjjt.config.HttpUrlConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
+import com.dragoneye.wjjt.tool.DESCoder;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
@@ -33,11 +34,13 @@ import org.apache.http.Header;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 public class WithdrawActivity extends BaseActivity implements View.OnClickListener{
 
     EditText mETChargeNum;
     TextView mTVWalletBalance;
+    EditText mETLoginPassword;
 
     Handler handler = new Handler();
 
@@ -55,12 +58,16 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
         TextView tv = (TextView)findViewById(R.id.textView13);
         tv.setText("请输入您要提现的金额：");
 
+        View passwordLayout = findViewById(R.id.charge_activity_password_layout);
+        passwordLayout.setVisibility(View.VISIBLE);
+
 
         TextView textView = (TextView)findViewById(R.id.invest_project_tv_confirm);
         textView.setOnClickListener(this);
 
         mETChargeNum = (EditText)findViewById(R.id.charge_activity_et_chargeNum);
         mTVWalletBalance = (TextView)findViewById(R.id.charge_tv_wallet_balance);
+        mETLoginPassword = (EditText)findViewById(R.id.charge_et_login_password);
 
         setStartLoading();
         handler.post(getWalletBalance_r);
@@ -80,6 +87,7 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
 
             params.put("userId", ((MyApplication) getApplication()).getCurrentUser(WithdrawActivity.this).getUserId());
             params.put("token", ((MyApplication) getApplication()).getToken(WithdrawActivity.this));
+
 
             HttpClient.atomicPost(WithdrawActivity.this, UserProtocol.URL_GET_WALLET_BALANCE, params, new HttpClient.MyHttpHandler() {
                 @Override
@@ -146,7 +154,8 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
 //                                        req.message = mediaMessage;
 //
 //                                        ((MyApplication) getApplication()).getWXAPI().sendReq(req);
-                                        finish();
+//                                        finish();
+                                        finishLoading(true);
                                     }
                                 })
                                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -170,6 +179,10 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View v){
         switch (v.getId()){
             case R.id.invest_project_tv_confirm:
+                if(mETLoginPassword.getText().length() == 0){
+                    UIHelper.toast(this, "请输入登录密码");
+                    break;
+                }
                 handler.post(transferWallet_r);
                 break;
         }
@@ -185,10 +198,26 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
             // 产生个订单号
             String orderNo = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + userId;
 
-            params.put("userId", userId);
-            params.put("orderId", orderNo);
+            HashMap<String, String> mapData = new HashMap<>();
 
-            HttpClient.atomicPost(WithdrawActivity.this, HttpUrlConfig.URL_ROOT + "wallet/TransferWallet", params, new HttpClient.MyHttpHandler() {
+            mapData.put("userId", userId);
+            mapData.put("orderId", orderNo);
+            mapData.put("passWord", mETLoginPassword.getText().toString());
+            mapData.put("lines", mETChargeNum.getText().toString());
+
+            String ObjectJson = ToolMaster.gsonInstance().toJson(mapData);
+            try{
+                byte[] data = DESCoder.encrypt(ObjectJson.getBytes(), ToolMaster.getCodeKey(userId));
+                params.put("data", DESCoder.encryptBASE64(data));
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            HttpClient.getClient().addHeader("userId", (userId));
+
+            HttpClient.atomicPost(WithdrawActivity.this, HttpUrlConfig.URL_ROOT + "Wallet/TransferWallet", params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
                     onTransferWalletResult(s);
@@ -212,6 +241,9 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
                     break;
                 case 3:     // 没有绑定微信账号
                     UIHelper.toast(this, "没有绑定微信账号");
+                    break;
+                case 4:
+                    UIHelper.toast(this, "密码不正确");
                     break;
             }
         }catch (Exception e){
