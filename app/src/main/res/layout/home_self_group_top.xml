@@ -101,9 +101,9 @@
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:paddingLeft="30dp"
-                        android:visibility="gone"
                         android:layout_marginTop="20dp"
-                        android:id="@+id/charge_activity_password_layout">
+                        android:id="@+id/charge_activity_password_layout"
+                        android:visibility="gone">
 
                         <ImageView
                             android:layout_width="30dp"
