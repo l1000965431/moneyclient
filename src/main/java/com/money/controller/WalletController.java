@@ -107,12 +107,8 @@ public class WalletController extends ControllerBase {
         if (userId == null) {
             return false;
         }
-        String openId = userService.IsBinding(userId);
-        if (openId == null || openId.equals("0")) {
-            return false;
-        }
 
-        return true;
+        return userService.IsBinding(userId);
     }
 
 
@@ -139,12 +135,12 @@ public class WalletController extends ControllerBase {
         String passWord = mapData.get("passWord");
         int Lines = Integer.valueOf(mapData.get("lines"));
 
-        String openId = userService.IsBinding(userId);
+        String openId = userService.getBindingOpenId(userId);
         if (userId == null || orderId == null || openId == null) {
             return 0;
         }
 
-        if (openId.equals("0")) {
+        if (userService.IsBinding(userId)) {
             return 3;
         }
         if (!walletService.IsWalletEnoughTransaction(userId, Lines)) {

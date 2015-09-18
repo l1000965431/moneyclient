@@ -65,6 +65,22 @@ public abstract class Coder {
     }
 
     /**
+     * SHA加密
+     *
+     * @param data
+     * @return
+     * @throws Exception
+     */
+    public static byte[] encryptSHA1(byte[] data) throws Exception {
+
+        MessageDigest sha = MessageDigest.getInstance("SHA1");
+        sha.update(data);
+
+        return sha.digest();
+
+    }
+
+    /**
      * Turns array of bytes into string
      *
      * @param buf Array of bytes to convert to hex string

@@ -1,7 +1,5 @@
 package com.money.controller;
 
-import com.google.gson.reflect.TypeToken;
-import com.money.Service.user.UserService;
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import org.slf4j.Logger;
@@ -10,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import until.Base32;
 import until.GsonUntil;
 import until.WxBinding;
 import until.WxOauth2Token;
@@ -19,7 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -205,6 +201,20 @@ public class UserController extends ControllerBase implements IController {
         return userService.ChangeUserHeadPortrait(userID, Url);
     }
 
+    @RequestMapping("/ClearOpenId")
+    @ResponseBody
+    public int ClearOpenId(HttpServletRequest request,
+                                      HttpServletResponse response) {
+        String userID = request.getParameter("userId");
+        if (userID == null || userID.length() == 0) {
+            return ServerReturnValue.SERVERRETURNERROR;
+        }
+
+        userService.ClearBinding(userID);
+        return ServerReturnValue.SERVERRETURNCOMPELETE;
+    }
+
+
     /**
      * 获得微信openId
      *
@@ -217,6 +227,7 @@ public class UserController extends ControllerBase implements IController {
                             HttpServletResponse response) throws ServletException, IOException {
         String code = request.getParameter("code");
         if (code == null) {
+            response.sendRedirect("../project/BindingResult.jsp?result=2");
             return;
         }
 
@@ -224,15 +235,18 @@ public class UserController extends ControllerBase implements IController {
         try {
             wxOauth2Token = wxBinding.getOauth2AccessToken(Config.WXAPPID, Config.WXAPPSECRET, code);
         } catch (IOException e) {
+            response.sendRedirect("../project/BindingResult.jsp?result=2");
             return;
         }
 
         if (wxOauth2Token == null) {
+            response.sendRedirect("../project/BindingResult.jsp?result=2");
             return;
         }
 
         //request.setAttribute("openId", wxOauth2Token.getOpenId());
         response.sendRedirect("../project/WxBinding.jsp?openId=" + wxOauth2Token.getOpenId());
+        //response.sendRedirect("../project/WxBinding.jsp?openId=" + "asdjkaznxcjkakls9840234");
         return;
     }
 
@@ -249,9 +263,15 @@ public class UserController extends ControllerBase implements IController {
             return 0;
         }
 
-        if (userService.BinddingUserId(openId, userId, password)) {
+        int result = userService.BindingUserId(openId, userId, password);
+        if (result == 1) {
+            response.sendRedirect("../project/BindingResult.jsp?result=1");
             return 1;
-        } else {
+        } else if( result == 3 ) {
+            response.sendRedirect("../project/BindingResult.jsp?result=3");
+            return 3;
+        }else{
+            response.sendRedirect("../project/BindingResult.jsp?result=2");
             return 2;
         }
     }

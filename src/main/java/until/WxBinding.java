@@ -62,7 +62,7 @@ public class WxBinding {
 
         WxOauth2Token wxOauth2Token = new WxOauth2Token();
         wxOauth2Token.setOpenId( map.get( "openid" ).toString() );
-        wxOauth2Token.setOpenId( map.get( "access_token" ).toString() );
+        wxOauth2Token.setToken( map.get( "access_token" ).toString() );
         return wxOauth2Token;
     }
 }

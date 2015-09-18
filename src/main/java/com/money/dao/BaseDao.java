@@ -225,7 +225,7 @@ public class BaseDao {
      *
      * @param bean
      */
-    public void update(Object bean) {
+    public boolean update(Object bean) {
         Session session = getNewSession();
         Transaction t = session.beginTransaction();
         try {
@@ -233,9 +233,11 @@ public class BaseDao {
             //session.flush();
             //session.clear();
             t.commit();
+            return true;
         } catch (Exception e) {
             //session.clear();
             t.rollback();
+            return false;
         }
 
         //session.close();

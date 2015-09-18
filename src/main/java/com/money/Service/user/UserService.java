@@ -245,15 +245,21 @@ public class UserService extends ServiceBase implements ServiceInterface {
         return ServerReturnValue.SERVERRETURNCOMPELETE;
     }
 
-    public boolean BinddingUserId(String OpenId, String UserId, String passWord) {
+
+    //-1:参数错误 1:绑定成功 2:绑定失败 3:已经绑定
+    public int BindingUserId(String OpenId, String UserId, String passWord) {
         if( OpenId == null || UserId == null || passWord == null ){
-            return false;
+            return -1;
         }
 
         boolean userIsExist = userDAO.checkPassWord(UserId, passWord);
 
         if (userIsExist == false) {
-            return false;
+            return 2;
+        }
+
+        if( userDAO.getUSerModelByOpenId( OpenId ) != null ){
+            return 2;
         }
 
         return userDAO.BindingOpenId(OpenId, UserId);
@@ -265,7 +271,17 @@ public class UserService extends ServiceBase implements ServiceInterface {
      *
      * @param UserId
      */
-    public String IsBinding(String UserId) {
+    public boolean IsBinding(String UserId) {
+        UserModel userModel = getUserInfo(UserId);
+
+        if (userModel == null) {
+            return false;
+        }
+
+        return !userModel.getWxOpenId().equals(UserId);
+    }
+
+    public String getBindingOpenId(String UserId) {
         UserModel userModel = getUserInfo(UserId);
 
         if (userModel == null) {
@@ -280,13 +296,14 @@ public class UserService extends ServiceBase implements ServiceInterface {
      * @param openId
      */
     public void ClearBinding( String openId ){
-        UserModel userModel = userDAO.getUSerModelByOpenId(openId);
+        UserModel userModel = userDAO.getUSerModel(openId);
 
         if (userModel == null) {
             return;
         }
-        userModel.setWxOpenId( "0" );
-        userDAO.update( userModel );
+
+        userModel.setWxOpenId( userModel.getUserId() );
+        userDAO.update(userModel );
     }
 
 

@@ -141,6 +141,7 @@ public class UserDAO extends BaseDao {
                 userModel.setUserId(userID);
                 userModel.setPassword(passWord);
                 userModel.setUserType(userType);
+                userModel.setWxOpenId(userID);
                 basedao.getNewSession().save(userModel);
 
                 if (userType == Config.INVESTOR) {
@@ -400,16 +401,23 @@ public class UserDAO extends BaseDao {
         return userModel;
     }
 
-    public boolean BindingOpenId( String openId,String UserId ){
+    //1:绑定成功 2:绑定失败 3:已经绑定
+    public int BindingOpenId( String openId,String UserId ){
         UserModel userModel = getUSerModel( UserId );
         if( userModel == null ){
-            return false;
+            return 2;
+        }
+
+        if( !userModel.getWxOpenId().equals( userModel.getUserId() ) ){
+            return 3;
         }
 
         userModel.setWxOpenId( openId );
-        this.update( userModel );
-
-        return true;
+        if( this.update( userModel )){
+            return 1;
+        }else{
+            return 2;
+        }
     }
 
     /**

@@ -126,7 +126,8 @@ public class PurchaseInAdvanceDAO extends BaseDao {
         query.setParameter(0, UserID);
         query.setParameter(1, PurchaseType);
         query.setParameter(2, PurchaseNum);
-        if( query.executeUpdate() == 0 ){
+        int result = query.executeUpdate();
+        if( result == 0 || PurchaseNum != result ){
             return ServerReturnValue.SERVERRETURNERROR;
         }
 
