@@ -448,7 +448,7 @@ public class ActivityVerifyCompleteModel extends BaseModel {
      * @return
      */
     public boolean IsEnoughLines( int Lines ){
-        return (CurLines+Lines)>=TotalLines;
+        return (CurLines+Lines)>TotalLines;
     }
 
     /**

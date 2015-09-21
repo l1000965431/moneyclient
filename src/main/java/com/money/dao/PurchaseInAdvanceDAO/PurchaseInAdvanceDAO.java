@@ -110,16 +110,17 @@ public class PurchaseInAdvanceDAO extends BaseDao {
         //刷新项目票的表 票的所有者
         String DBNmae = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
 
-/*        String sqlCount = "select count(TickID) from " + DBNmae + " where UserId='0' and PurchaseType=?;";
+        Session session = this.getNewSession();
+        String sqlCount = "select count(PurchaseType) from " + DBNmae + " where UserId='0' and PurchaseType=?;";
 
         SQLQuery queryCount = session.createSQLQuery(sqlCount);
-        queryCount.setParameter( 0,PurchaseType );
-        int count = queryCount.executeUpdate();
+        queryCount.setParameter(0, PurchaseType);
+        int count = Integer.parseInt(queryCount.uniqueResult().toString());
 
         if( count < PurchaseNum ){
             return ServerReturnValue.SERVERRETURNERROR;
-        }*/
-        Session session = this.getNewSession();
+        }
+
         String sql = "update " + DBNmae + " set userId=? where userId='0' and PurchaseType=? limit ?";
 
         SQLQuery query = session.createSQLQuery(sql);
@@ -133,8 +134,6 @@ public class PurchaseInAdvanceDAO extends BaseDao {
 
 
         //刷新资金信息
-
-
         switch (PurchaseType) {
             case Config.PURCHASELOCALTYRANTS:
                 if( updateDynamicActivityLinesPeoples(InstallmentActivityID, Lines) == 0 ){

@@ -62,24 +62,15 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 ActivityDetailModel activityDetailModel = activityInfoDAO.getActivityDetaillNoTransaction(InstallmentActivityID);
                 ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
                 String ActivityID = activityVerifyCompleteModel.getActivityId();
-                int OrderStartAndvance = 0;
+                int OrderStartAndvance;
                 int remainingNum = getInstallmentActivityRemainingTicket(InstallmentActivityID);
                 ActivityName[0] = activityVerifyCompleteModel.getName();
                 if (remainingNum == 0) {
                     return false;
                 }
 
-
-/*                int a1 = activityVerifyCompleteModel.getCurLines();
-
-                int b1 = orderService.TestGentou();
-
-                if( a1 != b1 ){
-                    return false;
-                }*/
-
                 int costLines = PurchaseNum * AdvanceNum;
-                int PurchaseInAdvanceNum = 0;
+                int PurchaseInAdvanceNum;
                 if (remainingNum < PurchaseNum) {
                     if (!IsRemainingInstallment(ActivityID, AdvanceNum) ||
                             activityVerifyCompleteModel.IsEnoughLines(costLines + remainingNum)) {
@@ -88,8 +79,18 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                     PurchaseInAdvanceNum = AdvanceNum;
 
                     if (activityDetailModel.getStageIndex() != activityVerifyCompleteModel.getTotalInstallmentNum()) {
-                        int temp = activityVerifyCompleteModel.getTotalLines() / activityVerifyCompleteModel.getTotalInstallmentNum();
-                        OrderStartAndvance = activityVerifyCompleteModel.getCurLines() / temp;
+                        int activityTotalLines = activityVerifyCompleteModel.getTotalLines();
+                        int activityInstallmentNum = activityVerifyCompleteModel.getTotalInstallmentNum();
+                        int activityCurLines = activityVerifyCompleteModel.getCurLines();
+
+                        int temp = activityTotalLines/activityInstallmentNum;
+                        //+2因为要计算从哪一期开始的预购  activityCurLines/temp+1代表进行到了哪期 从下一期开始 (activityCurLines/temp + 1）+ 1
+                        if( activityCurLines/temp < activityInstallmentNum-1 ){
+                            OrderStartAndvance = activityCurLines/temp + 2;
+                        }else{
+                            OrderStartAndvance = activityCurLines/temp+1;
+                        }
+
                     } else {
                         OrderStartAndvance = 1;
                     }
@@ -123,20 +124,8 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
 
                 if (PurchaseInAdvanceNum > 0) {
                     purchaseInAdvanceDAO.InsertPurchaseInAdvance(ActivityID, UserID,
-                            PurchaseInAdvanceNum, PurchaseInAdvanceNum, Config.PURCHASEPRICKSILK, OrderID);
+                            PurchaseNum, PurchaseInAdvanceNum, Config.PURCHASEPRICKSILK, OrderID);
                 }
-
-                //刷新总购买额度
-/*                int curLines = activityVerifyCompleteModel.getCurFund();
-                curLines += costLines;
-                activityVerifyCompleteModel.setCurFund(curLines);
-
-                //刷新小R
-                int curLines1 = activityVerifyCompleteModel.getCurLines();
-                curLines1 += costLines;
-                activityVerifyCompleteModel.setCurLines(curLines1);
-                purchaseInAdvanceDAO.merageNoTransaction(activityVerifyCompleteModel);*/
-
 
 
                 if(purchaseInAdvanceDAO.updateActivityLines( ActivityID,costLines ) == 0){
@@ -146,13 +135,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 orderService.createOrder(UserID, InstallmentActivityID, PurchaseNum * AdvanceNum, PurchaseNum,
                         AdvanceNum, Config.PURCHASEPRICKSILK, OrderID, OrderStartAndvance);
 
-/*                int a = activityVerifyCompleteModel.getCurLines();
 
-                int b = orderService.TestGentou();
-
-                if (a != b) {
-                    return false;
-                }*/
 
 
                 return true;
@@ -211,9 +194,8 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
             return ServerReturnValue.SERVERRETURNERROR;
         }
 
+        ActivityDynamicModel activityDynamicModel = activityInfoDAO.getActivityDynamicModelNoTransaction(InstallmentActivityID);
         for (PurchaseInAdvanceModel it : list) {
-            ActivityDynamicModel activityDynamicModel = activityInfoDAO.getActivityDynamicModelNoTransaction(InstallmentActivityID);
-
             if (activityDynamicModel.IsEnough()) {
                 return ServerReturnValue.SERVERRETURNCOMPELETE;
             }
