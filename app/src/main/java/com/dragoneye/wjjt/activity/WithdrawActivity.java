@@ -138,35 +138,37 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
                     }
 
                     if(s.compareTo("true") != 0){
-                        AlertDialog dialog = new AlertDialog.Builder(WithdrawActivity.this)
-                                .setPositiveButton("前往关注", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-//                                        WXTextObject textObject = new WXTextObject();
-//                                        textObject.text = "一条测试";
-//
-//                                        WXMediaMessage mediaMessage = new WXMediaMessage();
-//                                        mediaMessage.mediaObject = textObject;
-//                                        mediaMessage.description = "一条测试";
-//
-//                                        SendMessageToWX.Req req = new SendMessageToWX.Req();
-//                                        req.transaction = String.valueOf(System.currentTimeMillis());
-//                                        req.message = mediaMessage;
-//
-//                                        ((MyApplication) getApplication()).getWXAPI().sendReq(req);
+//                        AlertDialog dialog = new AlertDialog.Builder(WithdrawActivity.this)
+//                                .setPositiveButton("前往关注", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+////                                        WXTextObject textObject = new WXTextObject();
+////                                        textObject.text = "一条测试";
+////
+////                                        WXMediaMessage mediaMessage = new WXMediaMessage();
+////                                        mediaMessage.mediaObject = textObject;
+////                                        mediaMessage.description = "一条测试";
+////
+////                                        SendMessageToWX.Req req = new SendMessageToWX.Req();
+////                                        req.transaction = String.valueOf(System.currentTimeMillis());
+////                                        req.message = mediaMessage;
+////
+////                                        ((MyApplication) getApplication()).getWXAPI().sendReq(req);
+////                                        finish();
+//                                        finishLoading(true);
+//                                    }
+//                                })
+//                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
 //                                        finish();
-                                        finishLoading(true);
-                                    }
-                                })
-                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                    }
-                                })
-                                .setMessage("目前只支持微信钱包提现；完成该服务需要您先关注微聚竞投的微信公众账号！")
-                                .create();
-                        dialog.show();
+//                                    }
+//                                })
+//                                .setMessage("目前只支持微信钱包提现；完成该服务需要您先关注微聚竞投的微信公众账号！")
+//                                .create();
+//                        dialog.show();
+                        WxBindActivity.CallActivity(WithdrawActivity.this);
+                        finish();
                     }else {
                         finishLoading(true);
                     }

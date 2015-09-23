@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.AgreementActivity;
 import com.dragoneye.wjjt.activity.ChargeActivity;
+import com.dragoneye.wjjt.activity.DeveloperAttentionActivity;
 import com.dragoneye.wjjt.activity.EntrepreneurActivity;
 import com.dragoneye.wjjt.activity.ImproveUserInfoActivity;
 import com.dragoneye.wjjt.activity.ProjectEditActivity;
@@ -200,7 +201,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                 onChangePortrait();
                 break;
             case R.id.home_self_group_dev_stuff:    // 开发者注意事项
-                AgreementActivity.OpenDevStuff(getActivity());
+                DeveloperAttentionActivity.CallActivity(getActivity());
                 break;
         }
     }

@@ -79,7 +79,9 @@
     <string name="home_investment_listview_developer_fundraising">已开始上线筹款</string>
     <string name="home_investment_listview_developer_end">筹款结束（募集款已发出）</string>
     <string name="title_activity_retrieve_password">找回密码</string>
-    <string name="title_activity_withdraw">WithdrawActivity</string>
+    <string name="title_activity_withdraw">提现</string>
+    <string name="title_activity_wxBind">关注我们</string>
+    <string name="title_activity_developer_attention">创业者注意事项</string>
 
     <string name="title_test_activity">壹收款</string>
     <string name="good_item_name">橡胶花瓶</string>

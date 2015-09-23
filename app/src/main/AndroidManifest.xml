@@ -433,6 +433,14 @@
             android:name=".activity.WithdrawActivity"
             android:label="@string/title_activity_withdraw" >
         </activity>
+        <activity
+            android:name=".activity.WxBindActivity"
+            android:label="@string/title_activity_wxBind" >
+        </activity>
+        <activity
+            android:name=".activity.DeveloperAttentionActivity"
+            android:label="@string/title_activity_developer_attention" >
+        </activity>
     </application>
 
 </manifest>
