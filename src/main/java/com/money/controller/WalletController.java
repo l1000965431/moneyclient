@@ -2,6 +2,8 @@ package com.money.controller;
 
 import com.google.gson.reflect.TypeToken;
 import com.money.Service.Wallet.WalletService;
+import com.money.Service.alipay.AlipayService;
+import com.money.Service.alipay.TransactionData;
 import com.money.Service.user.UserService;
 import com.money.config.Config;
 import com.money.model.UserModel;
@@ -20,6 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +38,9 @@ public class WalletController extends ControllerBase {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    AlipayService alipayService;
     /**
      * 获取钱包余额
      *
@@ -216,5 +223,31 @@ public class WalletController extends ControllerBase {
         walletService.TestRechargeWallet( userId,lines );
     }
 
+    /**
+     *  测试提款
+     */
+    @RequestMapping("/TestTransaction")
+    @ResponseBody
+    public String TestTransaction( HttpServletRequest request, HttpServletResponse response ){
+        TransactionData transactionData = new TransactionData();
+        List<TransactionData> dataList = new ArrayList<TransactionData>();
+        transactionData.setAccountId("l1000965431@126.com");
+        transactionData.setAccountName("刘旻");
+        transactionData.setComment("测试测试");
+        transactionData.setPrice(0.01f);
+        transactionData.setSerialNumber(String.valueOf(System.currentTimeMillis()));
+        dataList.add(transactionData);
 
+        return alipayService.requestTransaction(dataList);
+    }
+
+    /**
+     *  提款结果
+     */
+    @RequestMapping("/TransactionResult")
+    @ResponseBody
+    public String TransactionResult( HttpServletRequest request, HttpServletResponse response ){
+        int a = 0;
+        return "success";
+    }
 }
