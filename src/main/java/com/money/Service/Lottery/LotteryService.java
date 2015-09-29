@@ -94,6 +94,11 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
                 if (IsGroupCompelete(activityDetailModel)) {
                     SomeFarmByPrizeList(InstallmentActivityID);
                 }
+
+                //删除本期的购买表
+                String DBName = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
+                lotteryDAO.DropList( DBName );
+
                 return true;
             }
         }) == Config.SERVICE_SUCCESS) {
@@ -280,6 +285,11 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
         return true;
     }
 
+    /**
+     * 加入定时器  防止一次过多发送消息
+     * @param lotteryPeoples
+     * @param ActivityName
+     */
     private void SendLotteryMessage(List<LotteryPeoples> lotteryPeoples, String ActivityName) {
         List<LotteryPeoples> Temp = new ArrayList<LotteryPeoples>();
         Map<String, Object> maptemp = new HashMap<String, Object>();

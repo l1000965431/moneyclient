@@ -1,6 +1,8 @@
-package com.money.Service.alipay.util.httpClient;
+package until.httpClient;
 
-import org.apache.commons.httpclient.NameValuePair;
+import org.apache.http.NameValuePair;
+
+import java.util.List;
 
 /* *
  *类名：HttpRequest
@@ -13,7 +15,7 @@ import org.apache.commons.httpclient.NameValuePair;
  *该代码仅供学习和研究支付宝接口使用，只是提供一个参考。
  */
 
-public class HttpRequest {
+public class MoneyHttpRequest {
 
     /** HTTP GET method */
     public static final String METHOD_GET        = "GET";
@@ -38,7 +40,7 @@ public class HttpRequest {
     /**
      * Post方式请求时组装好的参数值对
      */
-    private NameValuePair[]    parameters        = null;
+    private List<NameValuePair>  parameters        = null;
 
     /**
      * Get方式请求时对应的参数
@@ -48,7 +50,7 @@ public class HttpRequest {
     /**
      * 默认的请求编码方式
      */
-    private String             charset           = "GBK";
+    private String             charset           = "UTF-8";
 
     /**
      * 请求发起方的ip地址
@@ -60,7 +62,7 @@ public class HttpRequest {
      */
     private HttpResultType     resultType        = HttpResultType.BYTES;
 
-    public HttpRequest(HttpResultType resultType) {
+    public MoneyHttpRequest(HttpResultType resultType) {
         super();
         this.resultType = resultType;
     }
@@ -79,11 +81,11 @@ public class HttpRequest {
         this.clientIp = clientIp;
     }
 
-    public NameValuePair[] getParameters() {
+    public List<NameValuePair> getParameters() {
         return parameters;
     }
 
-    public void setParameters(NameValuePair[] parameters) {
+    public void setParameters(List<NameValuePair> parameters) {
         this.parameters = parameters;
     }
 

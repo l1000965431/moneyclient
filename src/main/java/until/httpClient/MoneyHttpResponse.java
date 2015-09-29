@@ -1,8 +1,8 @@
-package com.money.Service.alipay.util.httpClient;
+package until.httpClient;
 
 
 import com.money.Service.alipay.config.AlipayConfig;
-import org.apache.commons.httpclient.Header;
+import org.apache.http.Header;
 import java.io.UnsupportedEncodingException;
 
 /* *
@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
  *该代码仅供学习和研究支付宝接口使用，只是提供一个参考。
  */
 
-public class HttpResponse {
+public class MoneyHttpResponse {
 
     /**
      * 返回中的Header信息

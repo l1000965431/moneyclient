@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Longyan:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="Longyan.war">
+      <element id="artifact" artifact-name="Longyan:war exploded" />
+    </root>
+  </artifact>
+</component>

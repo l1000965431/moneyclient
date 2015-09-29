@@ -6,7 +6,6 @@ import com.money.config.ServerReturnValue;
 import com.money.dao.BaseDao;
 import com.money.dao.TransactionCallback;
 import com.money.memcach.MemCachService;
-import com.money.model.UserEarningsModel;
 import com.money.model.UserModel;
 import com.money.model.WalletModel;
 import org.hibernate.criterion.Restrictions;
@@ -18,7 +17,10 @@ import until.GsonUntil;
 import until.MoneySeverRandom;
 import until.PRestSmsSDKUntil;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -110,18 +112,19 @@ public class UserDAO extends BaseDao {
 
     /**
      * 密码找回
+     *
      * @param userID
      * @param newPassWord
      * @return
      */
-    public boolean RetrievePassword( String userID, String newPassWord ){
+    public boolean RetrievePassword(String userID, String newPassWord) {
         UserModel userModel = this.getUSerModel(userID);
 
         if (userModel == null) {
             return false;
         }
 
-        if( !passwordIsRight( newPassWord ) ){
+        if (!passwordIsRight(newPassWord)) {
             return false;
         }
 
@@ -131,30 +134,26 @@ public class UserDAO extends BaseDao {
     }
 
 
-
     //注册
     public int registered(final String userID, final String passWord, final int userType) {
-        if (this.excuteTransactionByCallback(new TransactionCallback() {
-            public void callback(BaseDao basedao) throws Exception {
-                UserModel userModel = new UserModel();
-                //用户注册，存入数据库
-                userModel.setUserId(userID);
-                userModel.setPassword(passWord);
-                userModel.setUserType(userType);
-                userModel.setWxOpenId(userID);
-                basedao.getNewSession().save(userModel);
 
-                if (userType == Config.INVESTOR) {
-                    WalletModel walletModel = new WalletModel();
-                    walletModel.setUserID(userID);
-                    basedao.getNewSession().save(walletModel);
-                }
-            }
-        }).equals(Config.SERVICE_SUCCESS)) {
-            return ServerReturnValue.REQISTEREDSUCCESS;
-        } else {
-            return ServerReturnValue.REQISTEREDFAILED;
+        UserModel userModel = new UserModel();
+        //用户注册，存入数据库
+        userModel.setUserId(userID);
+        userModel.setPassword(passWord);
+        userModel.setUserType(userType);
+        userModel.setWxOpenId(userID);
+        userModel.setAlipayId("0");
+        saveNoTransaction(userModel);
+
+        if (userType == Config.INVESTOR) {
+            WalletModel walletModel = new WalletModel();
+            walletModel.setUserID(userID);
+            saveNoTransaction(walletModel);
         }
+
+        return ServerReturnValue.REQISTEREDSUCCESS;
+
     }
 
     //验证用户名是否已注册
@@ -218,7 +217,7 @@ public class UserDAO extends BaseDao {
 
     //查询用户名是否存在
     public boolean userIsExist(String userID) {
-        UserModel userModel = getUSerModel(userID);
+        UserModel userModel = getUSerModelNoTransaction(userID);
         if (userModel != null)
             return true;
         else
@@ -390,6 +389,21 @@ public class UserDAO extends BaseDao {
         return userModel[0];
     }
 
+    public UserModel getUSerModelByalipayId(final String alipayId) {
+        final UserModel[] userModel = {null};
+
+        this.excuteTransactionByCallback(new TransactionCallback() {
+            public void callback(BaseDao basedao) throws Exception {
+                userModel[0] = (UserModel) basedao.getNewSession().createCriteria(UserModel.class)
+                        .setMaxResults(1)
+                        .add(Restrictions.eq("alipayId", alipayId))
+                        .uniqueResult();
+            }
+        });
+
+        return userModel[0];
+    }
+
     public UserModel getUSerModelByOpenIdNoTransaction(final String openId) {
         final UserModel userModel;
 
@@ -401,31 +415,43 @@ public class UserDAO extends BaseDao {
         return userModel;
     }
 
+    public UserModel getUSerModelByalipayIdNoTransaction(final String alipayId) {
+        final UserModel userModel;
+
+        userModel = (UserModel) getNewSession().createCriteria(UserModel.class)
+                .setMaxResults(1)
+                .add(Restrictions.eq("alipayId", alipayId))
+                .uniqueResult();
+
+        return userModel;
+    }
+
     //1:绑定成功 2:绑定失败 3:已经绑定
-    public int BindingOpenId( String openId,String UserId ){
-        UserModel userModel = getUSerModel( UserId );
-        if( userModel == null ){
+    public int BindingOpenId(String openId, String UserId) {
+        UserModel userModel = getUSerModel(UserId);
+        if (userModel == null) {
             return 2;
         }
 
-        if( !userModel.getWxOpenId().equals( userModel.getUserId() ) ){
+        if (!userModel.getWxOpenId().equals(userModel.getUserId())) {
             return 3;
         }
 
-        userModel.setWxOpenId( openId );
-        if( this.update( userModel )){
+        userModel.setWxOpenId(openId);
+        if (this.update(userModel)) {
             return 1;
-        }else{
+        } else {
             return 2;
         }
     }
 
     /**
      * 获得用户token
+     *
      * @param UserId
      * @return
      */
-    public String getUserToken( String UserId ){
-        return MemCachService.GetMemCachMapByMapKey(UserId,"token");
+    public String getUserToken(String UserId) {
+        return MemCachService.GetMemCachMapByMapKey(UserId, "token");
     }
 }

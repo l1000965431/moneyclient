@@ -6,28 +6,17 @@ import com.money.Service.alipay.config.AlipayConfig;
 import com.money.Service.alipay.util.AlipayCore;
 import com.money.Service.alipay.util.AlipaySubmit;
 import com.money.Service.alipay.util.UtilDate;
-import com.money.Service.alipay.util.httpClient.HttpResponse;
+import com.money.model.AlitransferModel;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by happysky on 15-9-23.
- *
  */
 @Service("AlipayService")
 public class AlipayService extends ServiceBase implements ServiceInterface {
@@ -37,41 +26,44 @@ public class AlipayService extends ServiceBase implements ServiceInterface {
      */
     private static final String ALIPAY_GATEWAY_NEW = "https://mapi.alipay.com/gateway.do";
 
-    @Autowired
-    private HttpClient client;
+/*    @Autowired
+    private HttpProtocolHandler client;*/
 
-    public String requestTransaction(List<TransactionData> dataList){
+    public String requestTransaction(List<AlitransferModel> dataList) {
+        if( dataList == null || dataList.size() == 0 ){
+            return "无支付宝提现记录";
+        }
+
 //        String param = buildParam(dataList);
         Map<String, String> paramsMap = buildParam(dataList);
 
-//        HttpPost post = null;
-//        try {
-//            List<NameValuePair> pairs = generateNameValuePair(paramsMap, "UTF-8");
-//
-//            post = new HttpPost(ALIPAY_GATEWAY_NEW);
-//
-//            post.setEntity(new UrlEncodedFormEntity(pairs));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        org.apache.http.HttpResponse response;
-//        try {
-//            response = client.execute(post);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return "FAILURE";
-//        } finally {
-//            if (post != null) {
-//                post.releaseConnection();
-//            }
-//        }
+/*        MoneyHttpRequest moneyHttpRequest = new MoneyHttpRequest(HttpResultType.STRING);
 
+        try {
+            List<NameValuePair> pairs = generateNameValuePair(paramsMap, "UTF-8");
+
+            moneyHttpRequest.setMethod(MoneyHttpRequest.METHOD_POST);
+            moneyHttpRequest.setUrl(ALIPAY_GATEWAY_NEW);
+            moneyHttpRequest.setParameters(pairs);
+            MoneyHttpResponse moneyHttpResponse = client.execute(moneyHttpRequest, "", "");
+            if( moneyHttpResponse == null ){
+                return "SUCCESS";
+            }else{
+
+            }return "FAILED";
+
+        } catch (HttpException e) {
+            return "FAILED";
+        } catch (IOException e) {
+            return "FAILED";
+        } catch (Exception e) {
+            return "FAILED";
+        }*/
         return buildForm(paramsMap);
     }
 
 
-    public Map<String, String> buildParam(List<TransactionData> dataList){
+    public Map<String, String> buildParam(List<AlitransferModel> dataList) {
         HashMap<String, String> map = new HashMap<String, String>();
 
         // j接口名称
@@ -84,7 +76,7 @@ public class AlipayService extends ServiceBase implements ServiceInterface {
         map.put("_input_charset", AlipayConfig.input_charset);
 
         // 服务器异步通知页面
-        map.put("notify_url", "http://172.31.2.52/Wallet/TransactionResult");
+        map.put("notify_url", "http://115.29.111.0/Longyan/Wallet/TransactionResult");
 
         // 付款账号名
         map.put("account_name", AlipayConfig.account_name);
@@ -99,7 +91,7 @@ public class AlipayService extends ServiceBase implements ServiceInterface {
         map.put("batch_num", String.valueOf(dataList.size()));
 
         // 付款总金额
-        DecimalFormat df   =   new   DecimalFormat("#####0.00");
+        DecimalFormat df = new DecimalFormat("#####0.00");
         String sumPriceString = df.format(calcSumPrice(dataList));
         map.put("batch_fee", sumPriceString);
 
@@ -118,11 +110,11 @@ public class AlipayService extends ServiceBase implements ServiceInterface {
         return map;
     }
 
-    private String buildForm(Map<String, String> map){
+    private String buildForm(Map<String, String> map) {
         return AlipaySubmit.buildRequest(map, "post", "haha");
     }
 
-    private String buildPostString(Map<String, String> map){
+    private String buildPostString(Map<String, String> map) {
         //除去数组中的空值和签名参数
         Map<String, String> sPara = AlipayCore.paraFilter(map);
         //生成签名结果
@@ -135,7 +127,7 @@ public class AlipayService extends ServiceBase implements ServiceInterface {
         return AlipayCore.createLinkString(sPara);
     }
 
-    public void foo2(Map<String, String> map){
+    public void foo2(Map<String, String> map) {
         map.get("");
         map.get("");
         map.get("");
@@ -150,29 +142,30 @@ public class AlipayService extends ServiceBase implements ServiceInterface {
         map.get("");
     }
 
-    public String buildDetailData(List<TransactionData> dataList){
+    public String buildDetailData(List<AlitransferModel> dataList) {
         String dataString = "";
-        for(int i = 0; i < dataList.size() - 1; i++){
+        for (int i = 0; i < dataList.size() - 1; i++) {
             dataString += dataList.get(i).toAlipayTransFormat() + "|";
         }
         dataString += dataList.get(dataList.size() - 1).toAlipayTransFormat();
         return dataString;
     }
 
-    public double calcSumPrice(List<TransactionData> dataList){
+    public double calcSumPrice(List<AlitransferModel> dataList) {
         double value = 0.0f;
-        for(TransactionData data : dataList){
-            value += data.getPrice();
+        for (AlitransferModel data : dataList) {
+            value += data.getLines();
         }
         return value;
     }
 
     /**
      * MAP类型数组转换成NameValuePair类型
+     *
      * @param map MAP类型数组
      * @return NameValuePair类型数组
      */
-    private static List<NameValuePair> generateNameValuePair(Map<String, String> map,String charset) throws Exception {
+    private static List<NameValuePair> generateNameValuePair(Map<String, String> map, String charset) throws Exception {
         List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
         int i = 0;
         for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -180,4 +173,22 @@ public class AlipayService extends ServiceBase implements ServiceInterface {
         }
         return nameValuePair;
     }
+
+    /**
+     * 解析支付宝通知的付款结果信息
+     * @param Param
+     * @return
+     */
+    public static List<List<String>> ParsingNotifyParam( String Param ){
+        List<List<String>> result = new ArrayList<List<String>>();
+        String[] parpaminfo = Param.split( "\\|" );
+        for( int i = 0; i < parpaminfo.length; i++ ){
+            List<String> childParam = Arrays.asList(parpaminfo[i].split("\\^"));
+            result.add(childParam);
+        }
+
+        return result;
+    }
+
+
 }

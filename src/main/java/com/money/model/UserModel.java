@@ -53,6 +53,12 @@ public class UserModel extends BaseModel {
     //微信公众号关注Id 用于微信提现
     private String wxOpenId = "0";
 
+    //支付宝帐号
+    private String alipayId = "0";
+
+    //支付宝帐号真实姓名 用于支付宝提现的验证
+    private String alipayRealName="";
+
     public String getUserId() {
         return userId;
     }
@@ -225,5 +231,21 @@ public class UserModel extends BaseModel {
 
     public void setWxOpenId(String wxOpenId) {
         this.wxOpenId = wxOpenId;
+    }
+
+    public String getAlipayId() {
+        return alipayId;
+    }
+
+    public void setAlipayId(String alipayId) {
+        this.alipayId = alipayId;
+    }
+
+    public String getAlipayRealName() {
+        return alipayRealName;
+    }
+
+    public void setAlipayRealName(String alipayRealName) {
+        this.alipayRealName = alipayRealName;
     }
 }

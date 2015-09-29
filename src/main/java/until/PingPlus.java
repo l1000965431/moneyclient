@@ -38,9 +38,6 @@ import java.util.Map.Entry;
 @Component
 public class PingPlus {
 
-    @Autowired
-    private HttpClient client;
-
     static PingPlus pingPlus;
 
 
@@ -65,10 +62,8 @@ public class PingPlus {
         initialMetadata.put("UserID", UserID);
         chargeParams.put("metadata", initialMetadata);
         Charge charge;
-        String a;
         try {
             charge = Charge.create(chargeParams);
-            a = charge.toString();
         } catch (AuthenticationException e) {
             e.printStackTrace();
             return null;
@@ -106,30 +101,6 @@ public class PingPlus {
             return null;
         }
 
-    }
-
-
-    private static String signTransfer(Map transferMap) throws UnsupportedEncodingException, InvalidRequestException {
-
-        //签名
-        String StringTemp = "amount=100&check_name=NO_CHECK&desc=Tranfer&mch_appid=wx287d8a1f932dc864&mchid=1263586601&nonce_str=1747&openid=o8MCixINK4FceDDPrGplvkNRuZ20&partner_trade_no=98761432&spbill_create_ip=115.29.111.0&key=longyan6688longyan6688longyan668"; //createQuery( transferMap )+"&key=longyan6688longyan6688longyan668";
-        return Md5Utils.hash(StringTemp).toUpperCase();
-    }
-
-
-    private static String createQuery(Map<String, Object> params) throws UnsupportedEncodingException, InvalidRequestException {
-        Map flatParams = flattenParams(params);
-        StringBuilder queryStringBuffer = new StringBuilder();
-
-        Map.Entry entry;
-        for (Iterator var3 = flatParams.entrySet().iterator(); var3.hasNext(); queryStringBuffer.append(urlEncodePair((String) entry.getKey(), (String) entry.getValue()))) {
-            entry = (Map.Entry) var3.next();
-            if (queryStringBuffer.length() > 0) {
-                queryStringBuffer.append("&");
-            }
-        }
-
-        return queryStringBuffer.toString();
     }
 
 
@@ -193,82 +164,6 @@ public class PingPlus {
             e.printStackTrace();
         }
     }
-
-    public static void Test1() {
-        Pingpp.apiKey = "sk_test_aD4qnHSWTCmPvX1un5rXfjPK";
-
-        Map chargeParams = new HashMap<String, Object>();
-        chargeParams.put("limit", 3);
-        ChargeCollection chargeCollection = null;
-        try {
-            chargeCollection = Charge.all(chargeParams);
-        } catch (AuthenticationException e) {
-            e.printStackTrace();
-        } catch (InvalidRequestException e) {
-            e.printStackTrace();
-        } catch (APIConnectionException e) {
-            e.printStackTrace();
-        } catch (APIException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private static Map<String, String> flattenParams(Map<String, Object> params) throws InvalidRequestException {
-        if (params == null) {
-            return new HashMap();
-        } else {
-            HashMap flatParams = new HashMap();
-            Iterator var2 = params.entrySet().iterator();
-
-            while (true) {
-                while (var2.hasNext()) {
-                    Entry entry = (Entry) var2.next();
-                    String key = (String) entry.getKey();
-                    Object value = entry.getValue();
-                    if (value instanceof Map) {
-                        HashMap var10 = new HashMap();
-                        Map var11 = (Map) value;
-                        Iterator var12 = var11.entrySet().iterator();
-
-                        while (var12.hasNext()) {
-                            Entry var13 = (Entry) var12.next();
-                            var10.put(String.format("%s[%s]", new Object[]{key, var13.getKey()}), var13.getValue());
-                        }
-
-                        flatParams.putAll(flattenParams(var10));
-                    } else if (!(value instanceof ArrayList)) {
-                        if ("".equals(value)) {
-                            throw new InvalidRequestException("You cannot set \'" + key + "\' to an empty string. " + "We interpret empty strings as null in requests. " + "You may set \'" + key + "\' to null to delete the property.", key, (Throwable) null);
-                        }
-
-                        if (value == null) {
-                            flatParams.put(key, "");
-                        } else {
-                            flatParams.put(key, value.toString());
-                        }
-                    } else {
-                        ArrayList ar = (ArrayList) value;
-                        HashMap flatNestedMap = new HashMap();
-                        int size = ar.size();
-
-                        for (int i = 0; i < size; ++i) {
-                            flatNestedMap.put(String.format("%s[%d]", new Object[]{key, Integer.valueOf(i)}), ar.get(i));
-                        }
-
-                        flatParams.putAll(flattenParams(flatNestedMap));
-                    }
-                }
-
-                return flatParams;
-            }
-        }
-    }
-
-    private static String urlEncodePair(String k, String v) throws UnsupportedEncodingException {
-        return String.format("%s=%s", new Object[]{urlEncode(k), urlEncode(v)});
-    }
-
     private static String urlEncode(String str) throws UnsupportedEncodingException {
         return str == null ? null : URLEncoder.encode(str, "UTF-8");
     }

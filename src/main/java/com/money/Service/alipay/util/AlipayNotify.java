@@ -4,10 +4,15 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.money.Service.alipay.config.AlipayConfig;
 import com.money.Service.alipay.sign.MD5;
+import org.apache.log4j.Logger;
+
+import javax.servlet.http.HttpServletRequest;
 
 /* *
  *类名：AlipayNotify
@@ -28,6 +33,8 @@ public class AlipayNotify {
      * 支付宝消息验证地址
      */
     private static final String HTTPS_VERIFY_URL = "https://mapi.alipay.com/gateway.do?service=notify_verify&";
+
+    static Logger logger = Logger.getLogger(AlipayNotify.class);
 
     /**
      * 验证消息是否是支付宝发出的合法消息
@@ -106,7 +113,7 @@ public class AlipayNotify {
     * false 请检查防火墙或者是服务器阻止端口问题以及验证时间是否超过一分钟
     */
     private static String checkUrl(String urlvalue) {
-        String inputLine = "";
+        String inputLine;
 
         try {
             URL url = new URL(urlvalue);
@@ -121,4 +128,26 @@ public class AlipayNotify {
 
         return inputLine;
     }
+
+    public static Map<String,String> getalipayInfo( HttpServletRequest request ){
+        //获取支付宝POST过来反馈信息
+
+        Map<String,String> params = new HashMap<String,String>();
+        Map requestParams = request.getParameterMap();
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+            String name = (String) iter.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i]
+                        : valueStr + values[i] + ",";
+            }
+            //乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
+            //valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
+            params.put(name, valueStr);
+        }
+
+        return params;
+    }
+
 }

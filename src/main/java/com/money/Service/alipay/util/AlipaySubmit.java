@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.httpclient.NameValuePair;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Node;
@@ -15,10 +16,10 @@ import org.dom4j.io.SAXReader;
 
 import com.money.Service.alipay.config.AlipayConfig;
 import com.money.Service.alipay.sign.MD5;
-import com.money.Service.alipay.util.httpClient.HttpProtocolHandler;
-import com.money.Service.alipay.util.httpClient.HttpRequest;
-import com.money.Service.alipay.util.httpClient.HttpResponse;
-import com.money.Service.alipay.util.httpClient.HttpResultType;
+import until.httpClient.MoneyHttpProtocolHandler;
+import until.httpClient.MoneyHttpRequest;
+import until.httpClient.MoneyHttpResponse;
+import until.httpClient.HttpResultType;
 
 /* *
  *类名：AlipaySubmit
@@ -89,8 +90,8 @@ public class AlipaySubmit {
                       + "\">");
 
         for (int i = 0; i < keys.size(); i++) {
-            String name = (String) keys.get(i);
-            String value = (String) sPara.get(name);
+            String name = keys.get(i);
+            String value = sPara.get(name);
 
             sbHtml.append("<input type=\"hidden\" name=\"" + name + "\" value=\"" + value + "\"/>");
         }
@@ -150,16 +151,16 @@ public class AlipaySubmit {
         //待请求参数数组
         Map<String, String> sPara = buildRequestPara(sParaTemp);
 
-        HttpProtocolHandler httpProtocolHandler = HttpProtocolHandler.getInstance();
+        MoneyHttpProtocolHandler moneyHttpProtocolHandler = MoneyHttpProtocolHandler.getInstance();
 
-        HttpRequest request = new HttpRequest(HttpResultType.BYTES);
+        MoneyHttpRequest request = new MoneyHttpRequest(HttpResultType.BYTES);
         //设置编码集
         request.setCharset(AlipayConfig.input_charset);
 
         request.setParameters(generatNameValuePair(sPara));
         request.setUrl(ALIPAY_GATEWAY_NEW+"_input_charset="+AlipayConfig.input_charset);
 
-        HttpResponse response = httpProtocolHandler.execute(request,strParaFileName,strFilePath);
+        MoneyHttpResponse response = moneyHttpProtocolHandler.execute(request,strParaFileName,strFilePath);
         if (response == null) {
             return null;
         }
@@ -174,11 +175,10 @@ public class AlipaySubmit {
      * @param properties  MAP类型数组
      * @return NameValuePair类型数组
      */
-    private static NameValuePair[] generatNameValuePair(Map<String, String> properties) {
-        NameValuePair[] nameValuePair = new NameValuePair[properties.size()];
-        int i = 0;
+    private static List<NameValuePair> generatNameValuePair(Map<String, String> properties) {
+        List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
         for (Map.Entry<String, String> entry : properties.entrySet()) {
-            nameValuePair[i++] = new NameValuePair(entry.getKey(), entry.getValue());
+            nameValuePair.add( new BasicNameValuePair(entry.getKey(), entry.getValue()));
         }
 
         return nameValuePair;

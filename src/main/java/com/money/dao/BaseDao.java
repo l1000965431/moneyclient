@@ -606,6 +606,17 @@ public class BaseDao {
 
     }
 
+    /**
+     * 删除表
+     * @param ListName
+     * @return
+     */
+    public int DropList( String ListName ){
+        Session session = getNewSession();
+        String Sql = "DROP TABLE  tbl_name;";
+        Sql.replace( "tbl_name",ListName );
+        return session.createSQLQuery(Sql).executeUpdate();
+    }
 
 }
 

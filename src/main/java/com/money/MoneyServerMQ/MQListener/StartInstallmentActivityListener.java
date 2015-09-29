@@ -4,6 +4,7 @@ import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import com.google.gson.reflect.TypeToken;
+import com.mchange.v2.resourcepool.TimeoutException;
 import com.money.MoneyServerMQ.MoneyServerListener;
 import com.money.Service.activity.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,10 @@ public class StartInstallmentActivityListener extends MoneyServerListener {
             Double Installment = (Double)map.get( "Installment" );
             activityService.InstallmentActivityStart( ActivityID,Installment.intValue() );
             return Action.CommitMessage;
-        } catch (Exception e) {
+        }catch ( TimeoutException e ){
+            return Action.ReconsumeLater;
+        }
+        catch (Exception e) {
             return Action.CommitMessage;
         }
     }

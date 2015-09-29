@@ -203,12 +203,15 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
             }
         }
 
-
         String InstallmentActivityID = ActivityID + "_" + Integer.toString(Installment);
+        ActivityDynamicModel activityDynamicModel = activityDao.getActivityDynamicModelNoTransaction(InstallmentActivityID);
+
         //创建分期项目票表
-        activityDao.CreateTicketDB(InstallmentActivityID);
-        //创建分期项目票ID
-        ActivityCreateTicketID(InstallmentActivityID);
+        activityDao.CreateTicketDB(InstallmentActivityID,
+                activityDynamicModel.getActivityTotalLinesPeoples(),
+                activityDynamicModel.getActivityTotalLines());
+        //创建分期项目票ID 改为调用存储过程 与创建票表函数合并
+        //ActivityCreateTicketID(InstallmentActivityID);
         //预购项目
         if( purchaseInAdvance.PurchaseActivityFromPurchaseInAdvance(ActivityID, InstallmentActivityID) == -1 ){
             //购买错误
@@ -325,8 +328,6 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
                         return false;
                     }
 
-                    activityVerifyCompleteModel.setCurInstallmentNum(CurInstallmentNum);
-                    activityDao.updateNoTransaction(activityVerifyCompleteModel);
                     //发奖
 /*                    if(lotteryService.StartLottery( InstallmentActivityID ) == null){
                         return false;
@@ -340,6 +341,9 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
                         ActivityID[0] = activityVerifyCompleteModel.getActivityId();
                         Installment[0] = CurInstallmentNum+1;
                     }
+
+                    activityVerifyCompleteModel.setCurInstallmentNum(CurInstallmentNum);
+                    activityDao.updateNoTransaction(activityVerifyCompleteModel);
 
                     //如果所有分期项目完成  设置父项目完成
                     SetActivityEnd(activityDynamicModel.getActivityVerifyCompleteModel().getActivityId());

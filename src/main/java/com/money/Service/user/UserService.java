@@ -4,13 +4,14 @@ import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
+import com.money.dao.TransactionSessionCallback;
 import com.money.dao.userDAO.UserDAO;
 import com.money.model.UserModel;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import until.GsonUntil;
 
 /**
  * Created by fisher on 2015/7/6.
@@ -25,22 +26,40 @@ public class UserService extends ServiceBase implements ServiceInterface {
     UserDAO userDAO;
 
     //用户注册，判断验证码是否正确，正确则完成用户注册
-    public int userRegister(String username, String code, String password, int userType) {
+    public int userRegister(final String username, final String code, final String password, final int userType) {
         //用户名 密码合法性
+
         if (!userDAO.userIsRight(username) || !userDAO.passwordIsRight(password)) {
             return ServerReturnValue.REQISTEREDUSERNAMEERROR;
         }
 
-        if (userDAO.checkUserName(username)) {
-            return ServerReturnValue.REQISTEREDUSERNAMEREPEAT;
+        if (!userDAO.userIsRight(username) || !userDAO.passwordIsRight(password)) {
+            return ServerReturnValue.REQISTEREDUSERNAMEERROR;
         }
 
-        //判断手机验证码是否输入正确
-        if (userDAO.checkTeleCode(username, code)) {
-            return userDAO.registered(username, password, userType);
-        } else {
+        final int[] state = new int[1];
+        if( userDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                if (userDAO.checkUserName(username)) {
+                    state[0] = ServerReturnValue.REQISTEREDUSERNAMEREPEAT;
+
+                    return false;
+                }
+                //判断手机验证码是否输入正确
+                if (userDAO.checkTeleCode(username, code)) {
+                    state[0] = userDAO.registered(username, password, userType);
+                    return true;
+                } else {
+                    state[0] = ServerReturnValue.REQISTEREDCODEERROR;
+                    return false;
+                }
+
+            }
+        }) != Config.SERVICE_SUCCESS ){
             return ServerReturnValue.REQISTEREDCODEERROR;
         }
+
+        return state[0];
     }
 
     //用户注册-提交手机号，验证是否已注册，发送短信验证码
@@ -174,8 +193,8 @@ public class UserService extends ServiceBase implements ServiceInterface {
             return 3;
     }
 
-    public boolean checkPassWord( String userId, String passWord ){
-       return userDAO.checkPassWord(userId, passWord);
+    public boolean checkPassWord(String userId, String passWord) {
+        return userDAO.checkPassWord(userId, passWord);
     }
 
     /**
@@ -248,7 +267,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
 
     //-1:参数错误 1:绑定成功 2:绑定失败 3:已经绑定
     public int BindingUserId(String OpenId, String UserId, String passWord) {
-        if( OpenId == null || UserId == null || passWord == null ){
+        if (OpenId == null || UserId == null || passWord == null) {
             return -1;
         }
 
@@ -258,7 +277,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
             return 2;
         }
 
-        if( userDAO.getUSerModelByOpenId( OpenId ) != null ){
+        if (userDAO.getUSerModelByOpenId(OpenId) != null) {
             return 2;
         }
 
@@ -281,6 +300,22 @@ public class UserService extends ServiceBase implements ServiceInterface {
         return !userModel.getWxOpenId().equals(UserId);
     }
 
+
+    /**
+     * 是否绑定支付宝帐号
+     *
+     * @param UserId
+     */
+    public boolean IsBindingalipayID(String UserId) {
+        UserModel userModel = getUserInfo(UserId);
+
+        if (userModel == null) {
+            return false;
+        }
+
+        return !userModel.getAlipayId().equals("0");
+    }
+
     public String getBindingOpenId(String UserId) {
         UserModel userModel = getUserInfo(UserId);
 
@@ -293,27 +328,29 @@ public class UserService extends ServiceBase implements ServiceInterface {
 
     /**
      * 微信关注取消
+     *
      * @param openId
      */
-    public void ClearBinding( String openId ){
+    public void ClearBinding(String openId) {
         UserModel userModel = userDAO.getUSerModel(openId);
 
         if (userModel == null) {
             return;
         }
 
-        userModel.setWxOpenId( userModel.getUserId() );
-        userDAO.update(userModel );
+        userModel.setWxOpenId(userModel.getUserId());
+        userDAO.update(userModel);
     }
 
 
     /**
      * 获得用户token
+     *
      * @param userId
      * @return
      */
-    public String getUserToken( String userId ){
-       return userDAO.getUserToken( userId );
+    public String getUserToken(String userId) {
+        return userDAO.getUserToken(userId);
     }
 
 }

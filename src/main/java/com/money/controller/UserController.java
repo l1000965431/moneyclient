@@ -2,6 +2,7 @@ package com.money.controller;
 
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
+import org.apache.http.HttpException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -235,6 +236,9 @@ public class UserController extends ControllerBase implements IController {
         try {
             wxOauth2Token = wxBinding.getOauth2AccessToken(Config.WXAPPID, Config.WXAPPSECRET, code);
         } catch (IOException e) {
+            response.sendRedirect("../project/BindingResult.jsp?result=2");
+            return;
+        } catch (HttpException e) {
             response.sendRedirect("../project/BindingResult.jsp?result=2");
             return;
         }

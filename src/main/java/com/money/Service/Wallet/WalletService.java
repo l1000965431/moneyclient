@@ -2,20 +2,22 @@ package com.money.Service.Wallet;
 
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
+import com.money.Service.alipay.AlipayService;
 import com.money.config.Config;
 import com.money.dao.TransactionSessionCallback;
+import com.money.dao.alitarnsferDAO.AlitransferDAO;
 import com.money.dao.userDAO.UserDAO;
-import com.money.model.TransferModel;
-import com.money.model.UserModel;
-import com.money.model.WalletModel;
-import com.money.model.WalletOrderModel;
+import com.money.model.*;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.MoneyServerDate;
+import until.MoneyServerOrderID;
 
 import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 钱包服务
@@ -29,6 +31,9 @@ public class WalletService extends ServiceBase implements ServiceInterface {
 
     @Autowired
     UserDAO generaDAO;
+
+    @Autowired
+    AlitransferDAO alitransferDAO;
 
 
     /**
@@ -236,6 +241,200 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         query.setParameter(1, UserId);
         query.setParameter(2, Lines);
         return query.executeUpdate();
+    }
+
+
+    /**
+     * 获得支付宝提现申请清单
+     *
+     * @return
+     */
+    public List GetAliTranserOrder() {
+
+        final List[] list = new List[1];
+        alitransferDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                list[0] = alitransferDAO.GetAliTransferOdrer();
+                return true;
+            }
+        });
+
+
+        return list[0];
+    }
+
+    /**
+     * 获得支付宝提现申请详情信息
+     *
+     * @return
+     */
+    public List<AlitransferDAO> GetAliTranserInfo(final int page) {
+        final List[] list = new List[1];
+        alitransferDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                list[0] = alitransferDAO.GetAliTransferInfo(page);
+                return true;
+            }
+        });
+
+
+        return list[0];
+    }
+
+    public String BindingalipayId(final String UserId, final String AlipayId, final String RealName) {
+        return alitransferDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                UserModel userModel = generaDAO.getUSerModelNoTransaction(UserId);
+                if (userModel == null) {
+                    return false;
+                }
+
+                if (!userModel.getAlipayId().equals("0")) {
+                    return false;
+                }
+
+                userModel.setAlipayRealName(RealName);
+                userModel.setAlipayId(AlipayId);
+                generaDAO.updateNoTransaction(userModel);
+                return true;
+            }
+        });
+    }
+
+    /**
+     * 支付宝提现
+     *
+     * @param UserId
+     * @param Lines
+     * @return
+     */
+    //-1:失败 0:余额不足 1:提交成功
+    public int alipayTransfer(final String UserId, final int Lines) {
+
+        //计算支付宝的手续费
+        double poundage = Lines * 0.005;
+        double poundageResult = Math.ceil(poundage);
+
+        if (poundageResult < 1.0) {
+            poundageResult = 1.0;
+        } else if (poundageResult > 25.0) {
+            poundageResult = 25.0;
+        }
+
+        final int costLines = Lines + (int) poundageResult;
+
+        final int[] state = {1};
+        alitransferDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+
+                UserModel userModel = generaDAO.getUSerModelNoTransaction(UserId);
+
+                if (userModel == null) {
+                    state[0] = -1;
+                    return false;
+                }
+
+                if (!CostLines(UserId, costLines)) {
+                    state[0] = 0;
+                    return false;
+                }
+
+                if (alitransferDAO.Submitalitansfer(userModel.getUserId(), Lines, userModel.getAlipayRealName(), userModel.getAlipayId()) == 0) {
+                    state[0] = -1;
+                    return false;
+                }
+
+
+                InsertTransferOrder(userModel, MoneyServerOrderID.GetOrderID(UserId), userModel.getAlipayId(), costLines, "alipay");
+
+
+                return true;
+            }
+        });
+
+
+        return state[0];
+    }
+
+
+    /**
+     * 支付宝批量付款通知
+     */
+    public String alipayTransferNotify(Map<String, String> NotifyInfo) {
+
+        final String Batchno = NotifyInfo.get("batch_no");
+        final String Payuserid = NotifyInfo.get("pay_user_id");
+        final String Payusername = NotifyInfo.get("pay_user_name");
+        final String Notifytime = NotifyInfo.get("notify_time");
+        final String Faildetails = NotifyInfo.get("fail_details");
+        final String Successdetails = NotifyInfo.get("success_details");
+
+        return alitransferDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                AliTransferNotifyModel aliTransferNotifyModel = new AliTransferNotifyModel();
+                aliTransferNotifyModel.setBatchno(Batchno);
+                aliTransferNotifyModel.setPayuserid(Payuserid);
+                aliTransferNotifyModel.setPayusername(Payusername);
+                aliTransferNotifyModel.setPayStates(1);
+                aliTransferNotifyModel.setPayDate(MoneyServerDate.StrToDate(Notifytime));
+                session.save(aliTransferNotifyModel);
+
+                List<List<String>> FaildetailsList;
+                List<List<String>> SuccessdetailsList;
+                if (Faildetails != null) {
+                    FaildetailsList = AlipayService.ParsingNotifyParam(Faildetails);
+
+                    if( FaildetailsList == null ){
+                        return false;
+                    }
+
+                    for (int i = 0; i < FaildetailsList.size(); i++) {
+                        AlitransferModel alitransferModel = (AlitransferModel) alitransferDAO.loadNoTransaction(AlitransferModel.class, Integer.valueOf(FaildetailsList.get(i).get(0)));
+                        if (alitransferModel == null) {
+                            continue;
+                        }
+                        double linestemp = Double.valueOf(FaildetailsList.get(i).get(3));
+                        if (alitransferModel.getAliEmail().equals(FaildetailsList.get(i).get(1)) &&
+                                alitransferModel.getRealName().equals(FaildetailsList.get(i).get(2)) &&
+                                alitransferModel.getLines() == (int)linestemp ) {
+                            alitransferModel.setIsFaliled( true );
+                            session.update( alitransferModel );
+                        }
+
+                    }
+                }
+
+                if (Successdetails != null) {
+                    SuccessdetailsList = AlipayService.ParsingNotifyParam(Successdetails);
+
+                    if( SuccessdetailsList == null ){
+                        return false;
+                    }
+
+                    for (int j = 0; j < SuccessdetailsList.size(); j++) {
+                        AlitransferModel alitransferModel = (AlitransferModel) alitransferDAO.loadNoTransaction(AlitransferModel.class, Integer.valueOf(SuccessdetailsList.get(j).get(0)));
+                        if (alitransferModel == null) {
+                            continue;
+                        }
+
+                        double linestemp = Double.valueOf(SuccessdetailsList.get(j).get(3));
+                        if (alitransferModel.getAliEmail().equals(SuccessdetailsList.get(j).get(1)) &&
+                                alitransferModel.getRealName().equals(SuccessdetailsList.get(j).get(2)) &&
+                                alitransferModel.getLines() == (int)linestemp ) {
+                            session.delete( alitransferModel );
+                        }
+
+                    }
+                }
+
+
+
+
+
+
+                return true;
+            }
+        });
     }
 
 

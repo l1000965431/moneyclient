@@ -1,7 +1,5 @@
 package com.money.model;
 
-import java.util.Date;
-
 /**
  *
  */

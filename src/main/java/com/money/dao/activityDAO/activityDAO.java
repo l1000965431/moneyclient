@@ -265,16 +265,20 @@ public class activityDAO extends BaseDao {
     }
 
     /**
-     * 创建票表
+     * 创建票表 (修改为存储过程创建)
      *
      * @param InstallmentActivityID
      */
-    public void CreateTicketDB(final String InstallmentActivityID) {
+    public void CreateTicketDB(final String InstallmentActivityID,int TotalLinePeoples, int TotalLines) {
         Session session = this.getNewSession();
         String DBName = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
-        String Sql = "CREATE TABLE " + DBName + " ( TickID VARCHAR(45) NOT NULL,UserId VARCHAR(45) NULL DEFAULT 0,PurchaseType INT(2) NOT NULL,PRIMARY KEY (TickID));";
+        //String Sql = "CREATE TABLE " + DBName + " ( TickID VARCHAR(45) NOT NULL,UserId VARCHAR(45) NULL DEFAULT 0,PurchaseType INT(2) NOT NULL,PRIMARY KEY (TickID));";
+        String Sql = "{call CreateTicketDB(?,?,?)}";
         SQLQuery sqlQuery = session.createSQLQuery(Sql);
-        sqlQuery.executeUpdate();
+        sqlQuery.setParameter( 0,TotalLinePeoples );
+        sqlQuery.setParameter( 1,TotalLines );
+        sqlQuery.setParameter( 2,DBName );
+        sqlQuery.uniqueResult();
     }
 
     /**

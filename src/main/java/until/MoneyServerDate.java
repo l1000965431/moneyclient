@@ -23,4 +23,17 @@ public class MoneyServerDate {
         return sdf.parse( timeStr );
     }
 
+    public static Date StrToDate(String str) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = format.parse(str);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+
+
 }
