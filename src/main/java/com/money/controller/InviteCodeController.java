@@ -23,7 +23,7 @@ public class InviteCodeController {
 
     @RequestMapping("/useInviteCode")
     @ResponseBody
-    public int useInviteCode(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+    public int useInviteCode(HttpServletRequest request) throws ParseException {
         String userId = request.getParameter( "userId" );
         String inviteCode = request.getParameter( "inviteCode" );
 
@@ -36,14 +36,14 @@ public class InviteCodeController {
 
     @RequestMapping("/InsertInviteCode")
     @ResponseBody
-    public int InsertInviteCode(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+    public int InsertInviteCode(HttpServletRequest request) throws ParseException {
         int inviteCode = Integer.valueOf(request.getParameter("num"));
         return inviteCodeService.AddInviteCode(inviteCode);
     }
 
     @RequestMapping("/TestInviteCode")
     @ResponseBody
-    public int TestInviteCode(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+    public int TestInviteCode(HttpServletRequest request) throws ParseException {
         return inviteCodeService.CountInviteCode();
     }
 

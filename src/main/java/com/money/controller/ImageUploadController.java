@@ -21,13 +21,13 @@ public class ImageUploadController extends ControllerBase implements IController
 
     @RequestMapping("/getUploadToken")
     @ResponseBody
-    public String getUploadToken(HttpServletRequest request, HttpServletResponse response) {
+    public String getUploadToken(HttpServletRequest request) {
         return getUpToken0();
     }
 
     @RequestMapping("/getUploadTokenUserHead")
     @ResponseBody
-    public String getUploadTokenUserHead(HttpServletRequest request, HttpServletResponse response) {
+    public String getUploadTokenUserHead(HttpServletRequest request) {
         String userId = request.getParameter("userId");
         return getUpTokenUserPortrait(userId);
     }

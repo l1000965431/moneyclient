@@ -25,7 +25,7 @@ public class SubmitActivityController extends ControllerBase implements IControl
 
     @RequestMapping("submitActivity")
     @ResponseBody
-    public String commitProject( HttpServletRequest request, HttpServletResponse response){
+    public String commitProject( HttpServletRequest request){
         String param = request.getParameter("data");
         ActivityVerifyModel activityModel = GsonUntil.jsonToJavaClass(param, ActivityVerifyModel.class);
         return serviceSubmitActivity.submitActivity(activityModel);
@@ -33,7 +33,7 @@ public class SubmitActivityController extends ControllerBase implements IControl
 
     @RequestMapping("reeditActivity")
     @ResponseBody
-    public String reeditProject(HttpServletRequest request, HttpServletResponse response){
+    public String reeditProject(HttpServletRequest request){
         String param = request.getParameter("data");
         ActivityVerifyModel activityModel = GsonUntil.jsonToJavaClass(param, ActivityVerifyModel.class);
         return serviceSubmitActivity.reeditActivity(activityModel);

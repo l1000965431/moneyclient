@@ -28,7 +28,7 @@ public class AdministrateController extends ControllerBase implements IControlle
 
     @RequestMapping("login")
     @ResponseBody
-    public String login(HttpServletRequest request, HttpServletResponse response){
+    public String login(HttpServletRequest request){
         String userId = request.getParameter("userId");
         String userPassword = request.getParameter("userPassword");
 

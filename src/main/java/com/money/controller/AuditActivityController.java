@@ -42,12 +42,11 @@ public class AuditActivityController extends ControllerBase implements IControll
      * 获取未审批的项目列表
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/getNoAudiActivity")
     @ResponseBody
-    public String getNoAudiActivity(HttpServletRequest request, HttpServletResponse response) {
+    public String getNoAudiActivity(HttpServletRequest request) {
 
         int pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
         int pageNum = Integer.parseInt(request.getParameter("pageNum"));
@@ -63,7 +62,7 @@ public class AuditActivityController extends ControllerBase implements IControll
      */
     @RequestMapping("/getUserActivityList")
     @ResponseBody
-    public String getUserActivityList(HttpServletRequest request, HttpServletResponse response) {
+    public String getUserActivityList(HttpServletRequest request) {
 
         int pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
         int pageNum = Integer.parseInt(request.getParameter("numPerPage"));
@@ -82,12 +81,11 @@ public class AuditActivityController extends ControllerBase implements IControll
      * 获取已审批的项目列表
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/getHasAudiActivity")
     @ResponseBody
-    public String getHasAudiActivity(HttpServletRequest request, HttpServletResponse response) {
+    public String getHasAudiActivity(HttpServletRequest request) {
 
 
         return "";
@@ -95,7 +93,7 @@ public class AuditActivityController extends ControllerBase implements IControll
 
     @RequestMapping("/setActivityAuditResult")
     @ResponseBody
-    public String setActivityAuditResult(HttpServletRequest request, HttpServletResponse response) {
+    public String setActivityAuditResult(HttpServletRequest request) {
         ServiceAuditActivity serviceAuditActivity = ServiceFactory.getService("ServiceAuditActivity");
         if (serviceAuditActivity == null) {
             return Config.SERVICE_FAILED;
@@ -121,7 +119,7 @@ public class AuditActivityController extends ControllerBase implements IControll
 
     @RequestMapping("/splitActivity")
     @ResponseBody
-    public String splitActivity(HttpServletRequest request, HttpServletResponse response) {
+    public String splitActivity(HttpServletRequest request) {
         String ActivityID = request.getParameter("ActivityID");
         int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
         int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
@@ -132,7 +130,7 @@ public class AuditActivityController extends ControllerBase implements IControll
 
     @RequestMapping("/ActivityStart")
     @ResponseBody
-    public String ActivityStart(HttpServletRequest request, HttpServletResponse response) {
+    public String ActivityStart(HttpServletRequest request) {
         String ActivityID = request.getParameter("ActivityID");
         activityService.ActivityCompleteStart(ActivityID);
         return "1";
@@ -141,7 +139,7 @@ public class AuditActivityController extends ControllerBase implements IControll
 
     @RequestMapping("/SetActivityInformationEarnings")
     @ResponseBody
-    public int SetActivityInformationEarnings(HttpServletRequest request, HttpServletResponse response) {
+    public int SetActivityInformationEarnings(HttpServletRequest request) {
         String ActivityID = request.getParameter("ActivityID");
         int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
         int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
@@ -165,7 +163,7 @@ public class AuditActivityController extends ControllerBase implements IControll
 
     @RequestMapping("/SetActivityInformationEarningsTest")
     @ResponseBody
-    public int SetActivityInformationEarningsTest(HttpServletRequest request, HttpServletResponse response) {
+    public int SetActivityInformationEarningsTest(HttpServletRequest request) {
         String ActivityID = request.getParameter("ActivityID");
         int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
         int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
@@ -198,11 +196,11 @@ public class AuditActivityController extends ControllerBase implements IControll
 
     @RequestMapping("/Test")
     @ResponseBody
-    public void Test(HttpServletRequest request, HttpServletResponse response) {
+    public void Test(HttpServletRequest request) {
 
         String id = request.getParameter("ID");
 
-        List<SREarningModel> LinePeoplesSREarningList = new ArrayList<SREarningModel>();
+        List<SREarningModel> LinePeoplesSREarningList = new ArrayList();
         for (int i = 0; i < 3; ++i) {
             SREarningModel srEarningModel = new SREarningModel();
             srEarningModel.setEarningType(1);

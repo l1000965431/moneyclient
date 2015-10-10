@@ -47,12 +47,11 @@ public class WalletController extends ControllerBase {
      * 获取钱包余额
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/getWalletBalance")
     @ResponseBody
-    public int getWalletBalance(HttpServletRequest request, HttpServletResponse response) {
+    public int getWalletBalance(HttpServletRequest request) {
         String userId = request.getParameter("userId");
         String token = request.getParameter("token");
 
@@ -67,12 +66,11 @@ public class WalletController extends ControllerBase {
      * 钱包充值
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/RechargeWallet")
     @ResponseBody
-    public String RechargeWallet(HttpServletRequest request, HttpServletResponse response) {
+    public String RechargeWallet(HttpServletRequest request) {
 
         String json = this.getrequestReader(request);
 
@@ -106,12 +104,11 @@ public class WalletController extends ControllerBase {
      * 是否已经绑定微信帐号
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/IsBinding")
     @ResponseBody
-    public boolean IsBinding(HttpServletRequest request, HttpServletResponse response) {
+    public boolean IsBinding(HttpServletRequest request) {
         String userId = request.getParameter("userId");
         if (null == userId) {
             return false;
@@ -123,7 +120,7 @@ public class WalletController extends ControllerBase {
 
     @RequestMapping("/IsalipayBinding")
     @ResponseBody
-    public boolean IsalipayBinding(HttpServletRequest request, HttpServletResponse response) {
+    public boolean IsalipayBinding(HttpServletRequest request) {
         String userId = request.getParameter("userId");
         if (userId == null) {
             return false;
@@ -136,12 +133,11 @@ public class WalletController extends ControllerBase {
      * 1:提现成功 0:提现错误 2:提现现金不足 3:没有绑定微信帐号 4:密码不正确
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/TransferWallet")
     @ResponseBody
-    public int TransferWallet(HttpServletRequest request, HttpServletResponse response) {
+    public int TransferWallet(HttpServletRequest request) {
         Map<String, String> mapData = DecryptionDataToMapByUserId(request.getParameter("data"),
                 this.initDesKey(request.getHeader("userId")));
 
@@ -265,7 +261,7 @@ public class WalletController extends ControllerBase {
      */
     @RequestMapping("/TestTransaction")
     @ResponseBody
-    public String TestTransaction(HttpServletRequest request, HttpServletResponse response) {
+    public String TestTransaction(HttpServletRequest request) {
 /*        TransactionData transactionData = new TransactionData();
         List<TransactionData> dataList = new ArrayList<TransactionData>();
         transactionData.setAccountId("l1000965431@126.com");
@@ -286,7 +282,7 @@ public class WalletController extends ControllerBase {
      */
     @RequestMapping("/TransactionResult")
     @ResponseBody
-    public String TransactionResult(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+    public String TransactionResult(HttpServletRequest request) throws UnsupportedEncodingException {
         Map<String,String> map = AlipayNotify.getalipayInfo(request);
         if( !AlipayNotify.verify( map )){
             return "fail";
@@ -309,12 +305,11 @@ public class WalletController extends ControllerBase {
      * 绑定支付宝帐号
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/BindingalipayId")
     @ResponseBody
-    public String BindingalipayId(HttpServletRequest request, HttpServletResponse response) {
+    public String BindingalipayId(HttpServletRequest request) {
         String userId = request.getParameter("userId");
         String alipayId = request.getParameter("alipayId");
         String realName = request.getParameter( "realName" );
@@ -328,12 +323,11 @@ public class WalletController extends ControllerBase {
      * 解除支付宝帐号绑定
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/ClearalipayId")
     @ResponseBody
-    public String ClearalipayId(HttpServletRequest request, HttpServletResponse response) {
+    public String ClearalipayId(HttpServletRequest request) {
         String userId = request.getParameter("userId");
 
         if( userId == null ){

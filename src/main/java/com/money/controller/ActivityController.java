@@ -1,7 +1,5 @@
 package com.money.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.money.Service.ServiceFactory;
 import com.money.Service.activity.ActivityService;
@@ -19,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import until.Adapter.InvestInfoAdapter;
 import until.GsonUntil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,12 +41,11 @@ public class ActivityController extends ControllerBase implements IController {
      * 获得项目列表
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/getActivityDetails")
     @ResponseBody
-    public String getActivityDetails(HttpServletRequest request, HttpServletResponse response) {
+    public String getActivityDetails(HttpServletRequest request) {
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
@@ -70,7 +66,7 @@ public class ActivityController extends ControllerBase implements IController {
 
     @RequestMapping("/getActivityDetailsTest")
     @ResponseBody
-    public String getActivityDetailsTest(HttpServletRequest request, HttpServletResponse response) {
+    public String getActivityDetailsTest(HttpServletRequest request) {
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
@@ -93,12 +89,11 @@ public class ActivityController extends ControllerBase implements IController {
      * 获得项目动态信息
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/getActivityDynamic")
     @ResponseBody
-    public String getActivityDynamic(HttpServletRequest request, HttpServletResponse response) {
+    public String getActivityDynamic(HttpServletRequest request) {
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
@@ -118,12 +113,11 @@ public class ActivityController extends ControllerBase implements IController {
      * 获得已经收益的项目
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/GetActivityHasEarnings")
     @ResponseBody
-    public String GetActivityHasEarnings(HttpServletRequest request, HttpServletResponse response) {
+    public String GetActivityHasEarnings(HttpServletRequest request) {
         //获取UserID;
         UserService userService = ServiceFactory.getService("userService");
         ActivityService activityService = ServiceFactory.getService("ActivityService");
@@ -147,12 +141,11 @@ public class ActivityController extends ControllerBase implements IController {
      * 获得已经投资的项目
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/GetActivityHasInvestment")
     @ResponseBody
-    public String GetActivityHasInvestment(HttpServletRequest request, HttpServletResponse response) {
+    public String GetActivityHasInvestment(HttpServletRequest request) {
         //获取UserID;
         String UserID = request.getParameter("userID");
         String Token = request.getParameter("token");
@@ -233,17 +226,16 @@ public class ActivityController extends ControllerBase implements IController {
      * 获得收益项目
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/getActivityEarnings")
     @ResponseBody
-    public String getActivityEarnings(HttpServletRequest request, final HttpServletResponse response) {
+    public String getActivityEarnings(HttpServletRequest request) {
         final String UserID = request.getParameter("userID");
         final String token = request.getParameter("token");
         final int Page = Integer.valueOf(request.getParameter("page"));
         final int FindNum = Integer.valueOf(request.getParameter("findNum"));
-        final List<Object> ListJson = new ArrayList<Object>();
+        final List<Object> ListJson = new ArrayList();
 
         if( !this.UserIsLand( UserID,token ) ){
             return Config.STRLANDFAILED;
@@ -288,12 +280,11 @@ public class ActivityController extends ControllerBase implements IController {
     /**
      * 更改项目状态
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping("/changeActivityStatus")
     @ResponseBody
-    public String changeActivityStatus(HttpServletRequest request, HttpServletResponse response){
+    public String changeActivityStatus(HttpServletRequest request){
         String activityId;
         int result;
         try{
@@ -318,7 +309,7 @@ public class ActivityController extends ControllerBase implements IController {
 
     @RequestMapping("/Test")
     @ResponseBody
-    public String Test(HttpServletRequest request, HttpServletResponse response) {
+    public String Test(HttpServletRequest request) {
         ActivityService activityService = ServiceFactory.getService("ActivityService");
         int a = Integer.valueOf(request.getParameter("a"));
         try {

@@ -37,8 +37,7 @@ public class UserController extends ControllerBase implements IController {
 
     @RequestMapping("/passWordLogin")
     @ResponseBody
-    public String Login(HttpServletRequest request,
-                        HttpServletResponse response) {
+    public String Login(HttpServletRequest request) {
 
         Map<String, String> mapData = DecryptionDataToMapByUserId(request.getParameter("data"),
                 this.initDesKey(request.getHeader("userId")));
@@ -69,8 +68,7 @@ public class UserController extends ControllerBase implements IController {
 
     @RequestMapping("/tokenLogin")
     @ResponseBody
-    public int tokenLogin(HttpServletRequest request,
-                          HttpServletResponse response) {
+    public int tokenLogin(HttpServletRequest request) {
         String token = request.getParameter("token");
         String userId = request.getParameter("userId");
         return userService.tokenLand(userId, token);
@@ -78,8 +76,7 @@ public class UserController extends ControllerBase implements IController {
 
     @RequestMapping("/perfectInfo")
     @ResponseBody
-    public int perfectInfo(HttpServletRequest request,
-                           HttpServletResponse response) {
+    public int perfectInfo(HttpServletRequest request) {
         String userID = request.getParameter("userID");
         String token = request.getParameter("token");
         String info = request.getParameter("info");
@@ -88,8 +85,7 @@ public class UserController extends ControllerBase implements IController {
 
     @RequestMapping("/changeInfo")
     @ResponseBody
-    public int changeInfo(HttpServletRequest request,
-                          HttpServletResponse response) {
+    public int changeInfo(HttpServletRequest request) {
         String token = request.getParameter("token");
         String info = request.getParameter("info");
         String userType = request.getParameter("userType");
@@ -106,8 +102,7 @@ public class UserController extends ControllerBase implements IController {
 
     @RequestMapping("/register")
     @ResponseBody
-    public int register(HttpServletRequest request,
-                        HttpServletResponse response) {
+    public int register(HttpServletRequest request) {
 
         Map<String, String> mapData = DecryptionDataToMapByUserId(request.getParameter("data"),
                 this.initDesKey(request.getHeader("userId")));
@@ -128,16 +123,14 @@ public class UserController extends ControllerBase implements IController {
 
     @RequestMapping("/submitTeleNum")
     @ResponseBody
-    public int submitTeleNum(HttpServletRequest request,
-                             HttpServletResponse response) {
+    public int submitTeleNum(HttpServletRequest request) {
         String userName = request.getParameter("userId");
         return userService.submitTeleNum(userName, "");
     }
 
     @RequestMapping("/sendPasswordCode")
     @ResponseBody
-    public int sendPasswordCode(HttpServletRequest request,
-                                HttpServletResponse response) {
+    public int sendPasswordCode(HttpServletRequest request) {
         String userName = request.getParameter("userId");
         String password = request.getParameter("password");
         return userService.sendPasswordCode(userName, password, "");
@@ -145,8 +138,7 @@ public class UserController extends ControllerBase implements IController {
 
     @RequestMapping("/changPassword")
     @ResponseBody
-    public int sendPasswochangPasswordrdCode(HttpServletRequest request,
-                                             HttpServletResponse response) {
+    public int sendPasswochangPasswordrdCode(HttpServletRequest request) {
 
         Map<String, String> mapData = DecryptionDataToMapByUserId(request.getParameter("data"),
                 this.initDesKey(request.getHeader("userId")));
@@ -164,8 +156,7 @@ public class UserController extends ControllerBase implements IController {
 
     @RequestMapping("/RetrievePassword")
     @ResponseBody
-    public int RetrievePassword(HttpServletRequest request,
-                                HttpServletResponse response) {
+    public int RetrievePassword(HttpServletRequest request) {
 
         Map<String, String> mapData = DecryptionDataToMapByUserId(request.getParameter("data"),
                 this.initDesKey(request.getHeader("userId")));
@@ -182,16 +173,14 @@ public class UserController extends ControllerBase implements IController {
 
     @RequestMapping("/SendUserCode")
     @ResponseBody
-    public int SendUserCode(HttpServletRequest request,
-                            HttpServletResponse response) {
+    public int SendUserCode(HttpServletRequest request) {
         String userID = request.getParameter("userId");
         return userService.SendCode(userID);
     }
 
     @RequestMapping("/ChangeUserHeadPortrait")
     @ResponseBody
-    public int ChangeUserHeadPortrait(HttpServletRequest request,
-                                      HttpServletResponse response) {
+    public int ChangeUserHeadPortrait(HttpServletRequest request) {
         String userID = request.getParameter("userId");
         String Url = request.getParameter("Url");
 

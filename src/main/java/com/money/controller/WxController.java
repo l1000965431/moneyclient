@@ -22,7 +22,7 @@ public class WxController {
 
     @RequestMapping("/FocusonWx")
     @ResponseBody
-    String TestFocusonWx( HttpServletRequest request, HttpServletResponse response ) throws Exception {
+    String TestFocusonWx( HttpServletRequest request ) throws Exception {
         String signature = request.getParameter( "signature" );
         String echostr = request.getParameter( "echostr" );
         String timestamp = request.getParameter( "timestamp" );

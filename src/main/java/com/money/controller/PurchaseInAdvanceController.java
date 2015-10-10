@@ -59,7 +59,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
     @RequestMapping("/PurchaseActivity")
     @ResponseBody
     //-1:重新登录 1:期或票不够 2:钱不够 3:本期不够 预购后边的期 100:支付成功 103:支付成功客户端需要刷新 MessageType:1:判断本期 2:不判断本期
-    public int PurchaseActivity(HttpServletRequest request, HttpServletResponse response) {
+    public int PurchaseActivity(HttpServletRequest request) {
         final String UserID = request.getParameter("UserID");
         final String token = request.getParameter("token");
         final String InstallmentActivityID = request.getParameter("InstallmentActivityID");
@@ -166,7 +166,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
 
     @RequestMapping("/PurchaseActivityNum")
     @ResponseBody
-    public String PurchaseActivityNum(HttpServletRequest request, HttpServletResponse response) {
+    public String PurchaseActivityNum(HttpServletRequest request) {
         final String InstallmentActivityID = request.getParameter("installmentActivityID");
         return activityService.GetInstaInstallmentActivityInfo(InstallmentActivityID);
     }
