@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -78,7 +79,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
         } else {
             //项目检查
             final int[] state = {0};
-            if (activityInfoDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            if (!Objects.equals(activityInfoDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
                 public boolean callback(Session session) throws Exception {
                     ActivityDetailModel activityDetailModel = activityInfoDAO.getActivityDetaillNoTransaction(InstallmentActivityID);
                     ActivityDynamicModel activityDynamicModel = activityDetailModel.getDynamicModel();
@@ -112,7 +113,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
                             }
                         case Config.PURCHASELOCALTYRANTS:
                             costLines = activityDynamicModel.getActivityTotalLinesPeoples() * AdvanceNum;
-                            if (!purchaseInAdvance.IsEnoughLocalTyrantsTickets(InstallmentActivityID) && MessageType == 1) {
+                            if (MessageType == 1 && !purchaseInAdvance.IsEnoughLocalTyrantsTickets(InstallmentActivityID)) {
                                 state[0] = 3;
                                 if (!activityVerifyCompleteModel.IsEnoughAdvance(AdvanceNum) ||
                                         activityVerifyCompleteModel.IsEnoughLinePoples(costLines + activityDynamicModel.getActivityTotalLinesPeoples())) {
@@ -139,11 +140,11 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
 
                     return true;
                 }
-            }) != Config.SERVICE_SUCCESS) {
+            }), Config.SERVICE_SUCCESS)) {
                 return state[0];
             }
 
-            Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> map = new HashMap();
             map.put("InstallmentActivityID", InstallmentActivityID);
             map.put("PurchaseNum", PurchaseNum);
             map.put("AdvanceNum", AdvanceNum);

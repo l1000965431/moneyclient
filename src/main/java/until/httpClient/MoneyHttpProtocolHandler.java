@@ -183,6 +183,39 @@ public class MoneyHttpProtocolHandler {
         return moneyHttpResponse;
     }
 
+
+    public MoneyHttpResponse execute(HttpPost request) throws IOException {
+        HttpClient httpclient = HttpClients.custom().setConnectionManager( connectionManager ).setDefaultRequestConfig(requestConfig).build();
+        request.setHeader("Content-Type", "application/x-www-form-urlencoded; text/html; charset=UTF-8");
+        // 设置Http Header中的User-Agent属性
+        request.setHeader("User-Agent", "Mozilla/4.0");
+        MoneyHttpResponse moneyHttpResponse = new MoneyHttpResponse();
+        HttpEntity entity = null;
+        try {
+            HttpResponse response = httpclient.execute(request);
+            entity = response.getEntity();
+            moneyHttpResponse.setStringResult( EntityUtils.toString(entity, Consts.UTF_8));
+        } catch (UnknownHostException ex) {
+
+            return null;
+        } catch (IOException ex) {
+
+            return null;
+        } catch (Exception ex) {
+
+            return null;
+        } finally {
+            if( entity != null ){
+                InputStream instream = entity.getContent();
+                instream.close();
+            }
+
+            request.releaseConnection();
+        }
+        return moneyHttpResponse;
+
+    }
+
     /**
      * 将NameValuePairs数组转变为字符串
      * 

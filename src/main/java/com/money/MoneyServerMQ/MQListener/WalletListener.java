@@ -14,6 +14,7 @@ import com.money.config.MoneyServerMQ_Topic;
 import com.money.dao.GeneraDAO;
 import com.money.dao.TransactionSessionCallback;
 import org.hibernate.Session;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.GsonUntil;
 import until.UmengPush.UmengSendParameter;
@@ -32,18 +33,20 @@ public class WalletListener extends MoneyServerListener {
     @Autowired
     GeneraDAO generaDAO;
 
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(WalletListener.class);
+
     @Override
     public Action consume(Message message, ConsumeContext consumeContext) {
         String UserID = null;
         try {
             String MessageBody =  BodyToString( message.getBody() );
-            Map<String,Object> map = GsonUntil.jsonToJavaClass( MessageBody,new TypeToken<Map<String,Object>>(){}.getType());
+            final Map<String,Object> map = GsonUntil.jsonToJavaClass( MessageBody,new TypeToken<Map<String,Object>>(){}.getType());
 
             if( map == null ){
                 return Action.CommitMessage;
             }
 
-            Map<String,Object> mapdata = (Map)map.get( "data" );
+            final Map<String,Object> mapdata = (Map)map.get( "data" );
             Map<String,Object> mapobject = (Map)mapdata.get( "object" );
             Map<String,Object> mapMetadata = (Map)mapobject.get( "metadata" );
 
@@ -60,7 +63,8 @@ public class WalletListener extends MoneyServerListener {
             final String finalUserID = UserID;
             if(generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
                 public boolean callback(Session session) throws Exception {
-                    if(walletService.RechargeWallet(finalUserID,Lines) == 0){
+                    if(walletService.RechargeWallet(finalUserID, Lines) == 0){
+                        LOGGER.error( "充值失败RechargeWallet",mapdata);
                         return false;
                     }
                     walletService.InsertWalletOrder(OrderID, Lines, ChannelID);

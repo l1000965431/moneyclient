@@ -6,6 +6,7 @@ import com.money.model.LotteryModel;
 import com.money.model.TicketModel;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import until.MoneySeverRandom;
 
@@ -21,6 +22,8 @@ import java.util.UUID;
 
 @Repository
 public class TicketDAO extends BaseDao {
+
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(TicketDAO.class);
 
     /**
      * @param ActivityID 项目ID
@@ -62,8 +65,7 @@ public class TicketDAO extends BaseDao {
         String sql = "SELECT * FROM sqlrandtset where lottery = 0 order by rand() limit 10000";
 
         try {
-            List list = this.getListClassBySQL(sql, LotteryModel.class);
-            return list;
+            return this.getListClassBySQL(sql, LotteryModel.class);
         } catch (Exception e) {
             return null;
         }
@@ -73,7 +75,7 @@ public class TicketDAO extends BaseDao {
 
         String sql = "";
 
-        if (this.excuteintBySQL(sql) == 0) {
+        if (0 == this.excuteintBySQL(sql)) {
             return false;
         } else {
             return true;
@@ -103,12 +105,12 @@ public class TicketDAO extends BaseDao {
                 TicketID[i] = UUID.randomUUID().toString();
                 index++;
 
-                if (index >= TotalNum) {
+                if (index >= TotalNum-CurNum) {
                     break;
                 }
             }
 
-            String ValueSql = new String();
+            String ValueSql = "";
             for (int j = 0; j < index; ++j) {
                 ValueSql += "('" + TicketID[j] + "'," + Integer.toString(TickType) + "),";
             }
@@ -117,7 +119,9 @@ public class TicketDAO extends BaseDao {
             ValueSql += ";";
             insertSql += ValueSql;
             CurNum += index;
-            session.createSQLQuery(insertSql).executeUpdate();
+            if( session.createSQLQuery(insertSql).executeUpdate() == 0 ){
+                LOGGER.error( "创建票表错误",insertSql );
+            }
         }
 
 

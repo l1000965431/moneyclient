@@ -4,15 +4,8 @@ import com.money.Service.PurchaseInAdvance.PurchaseInAdvance;
 import com.money.Service.ServiceFactory;
 import com.money.Service.activity.ActivityService;
 import com.money.Service.user.UserService;
-import com.money.config.Config;
 import com.money.memcach.MemCachService;
 import com.money.model.SREarningModel;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,7 +13,6 @@ import until.GsonUntil;
 import until.PingPlus;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,8 +33,7 @@ public class TestConller extends ControllerBase implements IController {
 
     @RequestMapping("/TestHead")
     @ResponseBody
-    String TestHead(HttpServletRequest request,
-                    HttpServletResponse response) throws Exception {
+    String TestHead(HttpServletRequest request) throws Exception {
 
         PurchaseInAdvance purchaseInAdvance = ServiceFactory.getService("PurchaseInAdvance");
         //activityService.ActivityCompleteStart("4");
@@ -53,8 +44,7 @@ public class TestConller extends ControllerBase implements IController {
 
     @RequestMapping("/TestActivityStart")
     @ResponseBody
-    String TestActivityStart(HttpServletRequest request,
-                             HttpServletResponse response) throws Exception {
+    String TestActivityStart(HttpServletRequest request) throws Exception {
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
         activityService.ActivityCompleteStart("4");
@@ -63,25 +53,23 @@ public class TestConller extends ControllerBase implements IController {
 
     @RequestMapping("/TestDB")
     @ResponseBody
-    String TestDB(HttpServletRequest request,
-                  HttpServletResponse response) throws Exception {
+    String TestDB(HttpServletRequest request) throws Exception {
         UserService userService = ServiceFactory.getService("UserService");
         return userService.getUserInfo("18511583205").toString();
     }
 
     @RequestMapping("/TestRedis")
     @ResponseBody
-    String TestRedis(HttpServletRequest request,
-                     HttpServletResponse response) throws Exception {
+    String TestRedis(HttpServletRequest request) throws Exception {
 
-        //MemCachService.MemCachgGet("foo");
-        return "1";
+        String userId = request.getParameter( "userId" );
+
+        return MemCachService.MemCachgGet(userId);
     }
 
     @RequestMapping("/TestPing")
     @ResponseBody
-    String TestPing(HttpServletRequest request,
-                    HttpServletResponse response) throws Exception {
+    String TestPing(HttpServletRequest request) throws Exception {
 
         PingPlus.Test();
         //MemCachService.MemCachgGet("foo");
@@ -90,8 +78,7 @@ public class TestConller extends ControllerBase implements IController {
 
     @RequestMapping("/Testwebhooks")
     @ResponseBody
-    String Testwebhooks(HttpServletRequest request,
-                        HttpServletResponse response) throws Exception {
+    String Testwebhooks(HttpServletRequest request) throws Exception {
 
         //PingPlus.Test();
         //MemCachService.MemCachgGet("foo");
@@ -100,8 +87,7 @@ public class TestConller extends ControllerBase implements IController {
 
     @RequestMapping("/TestcallCharg")
     @ResponseBody
-    String TestcallCharg(HttpServletRequest request,
-                         HttpServletResponse response) throws Exception {
+    String TestcallCharg(HttpServletRequest request) throws Exception {
         String a = request.getParameter("a");
         Pattern p = Pattern.compile("^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$");
         Matcher m = p.matcher(a);
@@ -110,8 +96,7 @@ public class TestConller extends ControllerBase implements IController {
 
     @RequestMapping("/TestcallDBCach")
     @ResponseBody
-    String TestcallDBCach(HttpServletRequest request,
-                          HttpServletResponse response) throws Exception {
+    String TestcallDBCach(HttpServletRequest request) throws Exception {
         List<SREarningModel> LinePeoplesSREarningList = new ArrayList<SREarningModel>();
         SREarningModel srEarningModel1 = new SREarningModel();
         srEarningModel1.setEarningType(1);
@@ -136,8 +121,7 @@ public class TestConller extends ControllerBase implements IController {
 
     @RequestMapping("/TestWX")
     @ResponseBody
-    String TestWX(HttpServletRequest request,
-                  HttpServletResponse response) throws IOException {
+    String TestWX(HttpServletRequest request) throws IOException {
 
 /*        String result = null;
         String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
@@ -167,8 +151,7 @@ public class TestConller extends ControllerBase implements IController {
 
     @RequestMapping("/Testalipay")
     @ResponseBody
-    String Testalipay(HttpServletRequest request,
-                  HttpServletResponse response) throws IOException {
+    String Testalipay(HttpServletRequest request) throws IOException {
         String a = "0315006^xinjie_xj@163.com^星辰公司^20.00^F^TXN _RESULT_TRANSFER_OUT_CAN_NOT_EQUAL_IN^20081024" +
                 "8427065^20081024143651|" +
                 "0315006^xinjie_xj@163.com^星辰公司^20.00^F^TXN _RESULT_TRANSFER_OUT_CAN_NOT_EQUAL_IN^200810248427065^20081024143651";

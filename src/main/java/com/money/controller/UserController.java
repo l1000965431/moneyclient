@@ -6,6 +6,7 @@ import org.apache.http.HttpException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,6 +31,7 @@ public class UserController extends ControllerBase implements IController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
+    @Qualifier("wxBinding")
     @Autowired
     WxBinding wxBinding;
 
@@ -51,7 +53,7 @@ public class UserController extends ControllerBase implements IController {
 
         String LoginResult = userService.userLand(UserName, PassWord);
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap();
         map.put("token", LoginResult);
 
         if (LoginResult.length() >= 8) {
@@ -119,7 +121,9 @@ public class UserController extends ControllerBase implements IController {
         //String code = request.getParameter( "code" );
         String password = mapData.get("password");
         int userType = Integer.valueOf(mapData.get("userType"));
-        return userService.userRegister(userName, "", password, userType);
+        String inviteCode = mapData.get("inviteCode");
+
+        return userService.userRegister(userName, "", password, userType,inviteCode);
     }
 
     @RequestMapping("/submitTeleNum")

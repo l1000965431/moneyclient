@@ -1,6 +1,7 @@
 package until.httpClient;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.entity.StringEntity;
 
 import java.util.List;
 

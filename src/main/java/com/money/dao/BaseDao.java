@@ -76,8 +76,7 @@ public class BaseDao {
     @SuppressWarnings("rawtypes")
     public Object loadNoTransaction(Class c, Serializable id) {
         Session session = getNewSession();
-        Object o = session.get(c, id);
-        return o;
+        return session.get(c, id);
     }
 
     @SuppressWarnings("rawtypes")
@@ -98,8 +97,7 @@ public class BaseDao {
     @SuppressWarnings("rawtypes")
     public Object loadNoTransaction(Class c, String id) {
         Session session = getNewSession();
-        Object o = session.get(c, id);
-        return o;
+        return session.get(c, id);
     }
 
     public <T> T load(T c, String id) {
@@ -155,7 +153,6 @@ public class BaseDao {
     @SuppressWarnings("rawtypes")
     public Long getTotalCount(Class c) {
         Session session = getNewSession();
-        Transaction t = session.beginTransaction();
         String hql = "select count(*) from " + c.getName();
         Long count = (Long) session.createQuery(hql).uniqueResult();
 
@@ -354,7 +351,7 @@ public class BaseDao {
      * @return
      */
 
-    public List<Object[]> getListBySQL(String sql) {
+    public List getListBySQL(String sql) {
         Session session = getNewSession();
         Transaction t = session.beginTransaction();
         try {
@@ -614,7 +611,7 @@ public class BaseDao {
     public int DropList( String ListName ){
         Session session = getNewSession();
         String Sql = "DROP TABLE  tbl_name;";
-        Sql.replace( "tbl_name",ListName );
+        Sql = Sql.replace("tbl_name", ListName );
         return session.createSQLQuery(Sql).executeUpdate();
     }
 

@@ -15,8 +15,8 @@ import java.util.Set;
  */
 
 
-@Entity
-@Table(name = "activityVerifyComplete")
+@Entity(name = "activityVerifyComplete")
+@Table
 @org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @DynamicUpdate(true)
 public class ActivityVerifyCompleteModel extends BaseModel {
@@ -31,19 +31,19 @@ public class ActivityVerifyCompleteModel extends BaseModel {
      *  项目分期静态列表
      */
     @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    Set<ActivityDetailModel> activityDetailModels = new HashSet<ActivityDetailModel>();
+    Set<ActivityDetailModel> activityDetailModels = new HashSet();
 
     /**
      *  项目分期动态列表
      */
     @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    Set<ActivityDynamicModel> activityDynamicModels = new HashSet<ActivityDynamicModel>();
+    Set<ActivityDynamicModel> activityDynamicModels = new HashSet();
 
     /**
      *  项目分期动态列表
      */
     @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    Set<SREarningModel> srEarningModels = new HashSet<SREarningModel>();
+    Set<SREarningModel> srEarningModels = new HashSet();
 
 
     /**
@@ -457,7 +457,7 @@ public class ActivityVerifyCompleteModel extends BaseModel {
      * @return
      */
     public boolean IsEnoughLinePoples( int LinePeoples ){
-        return (CurLinePeoples+LinePeoples)>=TotalLinePeoples;
+        return (CurLinePeoples+LinePeoples)>TotalLinePeoples;
     }
 
 

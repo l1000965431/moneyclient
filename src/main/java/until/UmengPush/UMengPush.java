@@ -3,8 +3,11 @@ package until.UmengPush;
 import com.money.config.Config;
 import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import until.GsonUntil;
 import until.Md5Utils;
@@ -23,6 +26,7 @@ import java.util.List;
 @Component
 public class UMengPush {
 
+    @Qualifier("moneyHttpProtocolHandler")
     @Autowired
     private MoneyHttpProtocolHandler client;
 
@@ -41,18 +45,18 @@ public class UMengPush {
             return;
         }
 
-/*        urlVariables.put("sign", Sign);
+        //urlVariables.put("sign", Sign);
         HttpPost post = new HttpPost("http://msg.umeng.com/api/send?sign=" + Sign);
         StringEntity se;
         se = new StringEntity(json, "UTF-8");
-        post.setEntity(se);*/
+        post.setEntity(se);
 
-        MoneyHttpRequest moneyHttpRequest = new MoneyHttpRequest(HttpResultType.STRING);
+/*        MoneyHttpRequest moneyHttpRequest = new MoneyHttpRequest(HttpResultType.STRING);
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         pairs.add(new BasicNameValuePair("sign", Sign));
         moneyHttpRequest.setMethod(MoneyHttpRequest.METHOD_POST);
         moneyHttpRequest.setUrl("http://msg.umeng.com/api/send");
-        moneyHttpRequest.setParameters(pairs);
-        uMengPush.client.execute(moneyHttpRequest, "", "");
+        moneyHttpRequest.setParameters(pairs);*/
+        uMengPush.client.execute(post);
     }
 }

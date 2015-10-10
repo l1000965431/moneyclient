@@ -10,6 +10,7 @@ import com.money.dao.userDAO.UserDAO;
 import com.money.model.*;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.MoneyServerDate;
@@ -18,6 +19,7 @@ import until.MoneyServerOrderID;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 钱包服务
@@ -35,6 +37,8 @@ public class WalletService extends ServiceBase implements ServiceInterface {
     @Autowired
     AlitransferDAO alitransferDAO;
 
+
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(WalletService.class);
 
     /**
      * 获取用户钱包剩余金额
@@ -83,11 +87,8 @@ public class WalletService extends ServiceBase implements ServiceInterface {
                     return false;
                 }
 
-                if (WalletAdd(UserID, Lines) == 0) {
-                    return false;
-                }
+                return WalletAdd(UserID, Lines) != 0;
 
-                return true;
             }
         });
 
@@ -111,16 +112,13 @@ public class WalletService extends ServiceBase implements ServiceInterface {
             return false;
         }
 
-        if (WalletCost(UserID, CostLines) == 0) {
-            return false;
-        }
+        return WalletCost(UserID, CostLines) != 0;
 
-        return true;
     }
 
     public boolean TransferLines(final String OrderId, final String OpenId, final int Lines, final String status) throws ParseException {
 
-        if (generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+        if (Objects.equals(generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
                 UserModel userModel = generaDAO.getUSerModelByOpenIdNoTransaction(OpenId);
                 if (userModel == null) {
@@ -145,7 +143,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
 
                 return true;
             }
-        }) == Config.SERVICE_SUCCESS) ;
+        }), Config.SERVICE_SUCCESS)) ;
 
         return false;
     }
@@ -188,11 +186,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
             return false;
         }
 
-        if (!walletModel.IsLinesEnough(Lines)) {
-            return false;
-        } else {
-            return true;
-        }
+        return walletModel.IsLinesEnough(Lines);
     }
 
 
@@ -203,11 +197,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
             return false;
         }
 
-        if (!walletModel.IsLinesEnough(Lines)) {
-            return false;
-        } else {
-            return true;
-        }
+        return walletModel.IsLinesEnough(Lines);
     }
 
     /**
@@ -218,7 +208,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
      * @return
      */
     private int WalletAdd(String UserId, int Lines) {
-        String sql = "update wallet set WalletLines = WalletLines+? where UserID = ?";
+        String sql = "update wallet set WalletLines = WalletLines+?0 where UserID = ?1";
         Session session = generaDAO.getNewSession();
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, Lines);
@@ -234,7 +224,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
      * @return
      */
     private int WalletCost(String UserId, int Lines) {
-        String sql = "update wallet set WalletLines = WalletLines-? where UserID = ? and WalletLines-? >= 0";
+        String sql = "update wallet set WalletLines = WalletLines-?0 where UserID = ?1 and WalletLines-?2 >= 0";
         Session session = generaDAO.getNewSession();
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, Lines);
@@ -302,6 +292,29 @@ public class WalletService extends ServiceBase implements ServiceInterface {
     }
 
     /**
+     * 清空支付宝绑定
+     * @param UserId
+     * @return
+     */
+    public String ClearalipayId( final String UserId ){
+
+        return alitransferDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                UserModel userModel = generaDAO.getUSerModelNoTransaction(UserId);
+
+                if (userModel == null) {
+                    return false;
+                }
+
+                userModel.setAlipayRealName("");
+                userModel.setAlipayId("0");
+                generaDAO.updateNoTransaction(userModel);
+                return true;
+            }
+        });
+    }
+
+    /**
      * 支付宝提现
      *
      * @param UserId
@@ -341,6 +354,11 @@ public class WalletService extends ServiceBase implements ServiceInterface {
 
                 if (alitransferDAO.Submitalitansfer(userModel.getUserId(), Lines, userModel.getAlipayRealName(), userModel.getAlipayId()) == 0) {
                     state[0] = -1;
+                    Object[] objects = new Object[3];
+                    objects[0] = userModel;
+                    objects[1] = Lines;
+                    objects[2] = MoneyServerDate.getDateCurDate();
+                    LOGGER.error( "提交提现申请失败",objects );
                     return false;
                 }
 
@@ -385,20 +403,20 @@ public class WalletService extends ServiceBase implements ServiceInterface {
                     FaildetailsList = AlipayService.ParsingNotifyParam(Faildetails);
 
                     if( FaildetailsList == null ){
+                        LOGGER.error( "FaildetailsList == null" );
                         return false;
                     }
-
-                    for (int i = 0; i < FaildetailsList.size(); i++) {
-                        AlitransferModel alitransferModel = (AlitransferModel) alitransferDAO.loadNoTransaction(AlitransferModel.class, Integer.valueOf(FaildetailsList.get(i).get(0)));
+                    for (List<String> aFaildetailsList : FaildetailsList) {
+                        AlitransferModel alitransferModel = (AlitransferModel) alitransferDAO.loadNoTransaction(AlitransferModel.class, Integer.valueOf(aFaildetailsList.get(0)));
                         if (alitransferModel == null) {
                             continue;
                         }
-                        double linestemp = Double.valueOf(FaildetailsList.get(i).get(3));
-                        if (alitransferModel.getAliEmail().equals(FaildetailsList.get(i).get(1)) &&
-                                alitransferModel.getRealName().equals(FaildetailsList.get(i).get(2)) &&
-                                alitransferModel.getLines() == (int)linestemp ) {
-                            alitransferModel.setIsFaliled( true );
-                            session.update( alitransferModel );
+                        double linestemp = Double.valueOf(aFaildetailsList.get(3));
+                        if (alitransferModel.getAliEmail().equals(aFaildetailsList.get(1)) &&
+                                alitransferModel.getRealName().equals(aFaildetailsList.get(2)) &&
+                                alitransferModel.getLines() == (int) linestemp) {
+                            alitransferModel.setIsFaliled(true);
+                            session.update(alitransferModel);
                         }
 
                     }
@@ -408,20 +426,21 @@ public class WalletService extends ServiceBase implements ServiceInterface {
                     SuccessdetailsList = AlipayService.ParsingNotifyParam(Successdetails);
 
                     if( SuccessdetailsList == null ){
+                        LOGGER.error( "SuccessdetailsList == null" );
                         return false;
                     }
 
-                    for (int j = 0; j < SuccessdetailsList.size(); j++) {
-                        AlitransferModel alitransferModel = (AlitransferModel) alitransferDAO.loadNoTransaction(AlitransferModel.class, Integer.valueOf(SuccessdetailsList.get(j).get(0)));
+                    for (List<String> aSuccessdetailsList : SuccessdetailsList) {
+                        AlitransferModel alitransferModel = (AlitransferModel) alitransferDAO.loadNoTransaction(AlitransferModel.class, Integer.valueOf(aSuccessdetailsList.get(0)));
                         if (alitransferModel == null) {
                             continue;
                         }
 
-                        double linestemp = Double.valueOf(SuccessdetailsList.get(j).get(3));
-                        if (alitransferModel.getAliEmail().equals(SuccessdetailsList.get(j).get(1)) &&
-                                alitransferModel.getRealName().equals(SuccessdetailsList.get(j).get(2)) &&
-                                alitransferModel.getLines() == (int)linestemp ) {
-                            session.delete( alitransferModel );
+                        double linestemp = Double.valueOf(aSuccessdetailsList.get(3));
+                        if (alitransferModel.getAliEmail().equals(aSuccessdetailsList.get(1)) &&
+                                alitransferModel.getRealName().equals(aSuccessdetailsList.get(2)) &&
+                                alitransferModel.getLines() == (int) linestemp) {
+                            session.delete(alitransferModel);
                         }
 
                     }

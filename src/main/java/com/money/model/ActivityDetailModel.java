@@ -14,8 +14,8 @@ import java.util.Set;
  * <p>Date: 15-7-8
  * <p>Version: 1.0
  */
-@Entity
-@Table(name = "activitydetails")
+@Entity(name = "activitydetails")
+@Table
 @org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @DynamicUpdate(true)
 public class ActivityDetailModel extends BaseModel {
@@ -38,6 +38,9 @@ public class ActivityDetailModel extends BaseModel {
     //上线项目错误
     public final static int ONLINE_ACTIVITY_FAILED = 5;
 
+    //测试项目
+    public final static int ONLINE_ACTIVITY_TEST = 6;
+
     /**
      *分期的项目ID
      */
@@ -51,14 +54,14 @@ public class ActivityDetailModel extends BaseModel {
      * 父项目
      */
     @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "parentActivityId", referencedColumnName = "activityId")
+    /*@JoinColumn(name = "parentActivityId", referencedColumnName = "activityId")*/
     ActivityVerifyCompleteModel activityVerifyCompleteModel;
 
     /**
      * 项目组中大R收益层次
      */
     @OneToMany(mappedBy = "activityDetailModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    Set<SREarningModel> srEarningModels = new HashSet<SREarningModel>();
+    Set<SREarningModel> srEarningModels = new HashSet();
 
 
     /**

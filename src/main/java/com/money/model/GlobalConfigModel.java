@@ -3,7 +3,6 @@ package com.money.model;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * 全局键值对表，存储喊卡系数，分成比例等
@@ -11,8 +10,8 @@ import java.io.Serializable;
  * <p>Date: 15-7-8
  * <p>Version: 1.0
  */
-@Entity
-@Table(name = "globalconfig")
+@Entity(name = "globalconfig")
+@Table
 @org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
 public class GlobalConfigModel extends BaseModel{
     /**

@@ -60,8 +60,28 @@ public class ActivityController extends ControllerBase implements IController {
                 int pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
                 int numPerPage = Integer.parseInt(request.getParameter("numPerPage"));
                 List<ActivityDetailModel> activityModels = activityService.getAllActivityDetail(pageIndex, numPerPage);
-                String json = GsonUntil.getGson().toJson(activityModels);
-                return json;
+                return GsonUntil.getGson().toJson(activityModels);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "";
+            }
+        }
+    }
+
+    @RequestMapping("/getActivityDetailsTest")
+    @ResponseBody
+    public String getActivityDetailsTest(HttpServletRequest request, HttpServletResponse response) {
+
+        ActivityService activityService = ServiceFactory.getService("ActivityService");
+
+        if (activityService == null) {
+            return "";
+        } else {
+            try {
+                int pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
+                int numPerPage = Integer.parseInt(request.getParameter("numPerPage"));
+                List<ActivityDetailModel> activityModels = activityService.getAllActivityDetailTest(pageIndex, numPerPage);
+                return GsonUntil.getGson().toJson(activityModels);
             } catch (Exception e) {
                 e.printStackTrace();
                 return "";
@@ -87,8 +107,7 @@ public class ActivityController extends ControllerBase implements IController {
         } else {
             try {
                 ActivityDynamicModel activityModel = activityService.getActivityDynamic("1");
-                String Json = GsonUntil.JavaClassToJson(activityModel);
-                return Json;
+                return GsonUntil.JavaClassToJson(activityModel);
             } catch (Exception e) {
                 return "";
             }
@@ -109,15 +128,19 @@ public class ActivityController extends ControllerBase implements IController {
         UserService userService = ServiceFactory.getService("userService");
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
+        if( activityService == null ){
+            return null;
+        }
+
 /*
         if( !this.UserIsLand( UserID,token ) ){
             return Integer.toString(ServerReturnValue.USERNOTLAND);
         }
 */
 
+
         List ActivityHasEarnings = activityService.GetActivityHasEarnings("");
-        String Json = GsonUntil.JavaClassToJson(ActivityHasEarnings);
-        return Json;
+        return GsonUntil.JavaClassToJson(ActivityHasEarnings);
     }
 
     /**
@@ -143,8 +166,7 @@ public class ActivityController extends ControllerBase implements IController {
         OrderService orderService = ServiceFactory.getService("OrderService");
 
         List ActivityHasEarnings = orderService.getOrderByUserID(UserID, page, findNum);
-        String Json = GsonUntil.JavaClassToJson(ActivityHasEarnings);
-        return Json;
+        return GsonUntil.JavaClassToJson(ActivityHasEarnings);
     }
 
     /**
@@ -160,14 +182,18 @@ public class ActivityController extends ControllerBase implements IController {
         // 项目分期id
         String activityId = request.getParameter("activityId");
         ActivityService activityService = ServiceFactory.getService("ActivityService");
+
+        if( activityService == null ){
+            return null;
+        }
+
         ActivityVerifyCompleteModel completeModel = activityService.getActivityInformation(activityId);
         if (completeModel == null) {
             response.setHeader("response", ServerReturnValue.ACTIVITY_INFO_NO_ACTIVITY);
             return "";
         }
-        String Json = GsonUntil.JavaClassToJson(completeModel);
         response.setHeader("response", ServerReturnValue.ACTIVITY_INFO_SUCCESS);
-        return Json;
+        return GsonUntil.JavaClassToJson(completeModel);
     }
 
     @RequestMapping("/getActivityInvestInfo")
@@ -175,20 +201,18 @@ public class ActivityController extends ControllerBase implements IController {
     public String getActivityInvestInfo(HttpServletRequest request, final HttpServletResponse response) {
         final String activityStageId = request.getParameter("ActivityStageId");
         final String[] Json = new String[1];
+        final ActivityService activityService = ServiceFactory.getService("ActivityService");
+        if( activityService == null ){
+            return null;
+        }
+
         generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
-                ActivityService activityService = ServiceFactory.getService("ActivityService");
-
                 ActivityDetailModel activityDetailModel = activityService.getActivityInvestInfo(activityStageId);
                 ActivityDynamicModel activityDynamicModel = activityDetailModel.getDynamicModel();
                 ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
-                if (activityDetailModel == null) {
-                    response.setHeader("response", ServerReturnValue.ACTIVITY_INVEST_INFO_FAILED);
-                    return false;
-                }
 
-                //String json = GsonUntil.JavaClassToJson( activityDetailModel.getSrEarningModels() );
-                Map<String, Object> map = new HashMap<String, Object>();
+                Map<String, Object> map = new HashMap();
                 map.put("TotalLines", activityDynamicModel.getActivityTotalLines());
                 map.put("TotalLinePeoples", activityDynamicModel.getActivityTotalLinesPeoples());
                 map.put("EarningPeoples", GsonUntil.jsonToJavaClass(activityVerifyCompleteModel.getEarningPeoples(), new TypeToken<List>() {
@@ -241,7 +265,7 @@ public class ActivityController extends ControllerBase implements IController {
                         return false;
                     }
 
-                    List<String> ActivityChildInfo = new ArrayList<String>();
+                    List<String> ActivityChildInfo = new ArrayList();
                     ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
                     ActivityChildInfo.add(activityDetailModel.getActivityStageId());
                     ActivityChildInfo.add(activityVerifyCompleteModel.getName());
@@ -258,8 +282,7 @@ public class ActivityController extends ControllerBase implements IController {
             }
         });
 
-        String Json = GsonUntil.JavaClassToJson(ListJson);
-        return Json;
+        return GsonUntil.JavaClassToJson(ListJson);
     }
 
     /**
@@ -299,6 +322,7 @@ public class ActivityController extends ControllerBase implements IController {
         ActivityService activityService = ServiceFactory.getService("ActivityService");
         int a = Integer.valueOf(request.getParameter("a"));
         try {
+            assert activityService != null;
             activityService.InstallmentActivityStart("5", a);
         } catch (Exception e) {
             e.printStackTrace();

@@ -34,14 +34,14 @@ public class activityDAO extends BaseDao {
      * @return
      */
     public ActivityDetailModel getActivityDetails(String InstallmentActivityID) {
-
+        ActivityDetailModel activityDetailModel;
         if (MemCachService.KeyIsExists(InstallmentActivityID)) {
             String activityJson = MemCachService.MemCachgGet(InstallmentActivityID);
-            ActivityDetailModel activityDetailModel = GsonUntil.jsonToJavaClass(activityJson, ActivityDetailModel.class);
+            activityDetailModel = GsonUntil.jsonToJavaClass(activityJson, ActivityDetailModel.class);
             return activityDetailModel;
         } else {
             try {
-                ActivityDetailModel activityDetailModel = getActivityDetail(InstallmentActivityID);
+                activityDetailModel = getActivityDetail(InstallmentActivityID);
                 return activityDetailModel;
             } catch (Exception e) {
                 return null;
@@ -57,14 +57,14 @@ public class activityDAO extends BaseDao {
      * @return
      */
     public ActivityDynamicModel getActivityDynamic(String InstallmentActivityID) {
-
+        ActivityDynamicModel activitydynamicmodel;
         if (MemCachService.KeyIsExists(InstallmentActivityID)) {
             String activityJson = MemCachService.MemCachgGet(InstallmentActivityID);
-            ActivityDynamicModel activitydynamicmodel = GsonUntil.jsonToJavaClass(activityJson, OrderModel.class);
+            activitydynamicmodel = GsonUntil.jsonToJavaClass(activityJson, OrderModel.class);
             return activitydynamicmodel;
         } else {
             try {
-                ActivityDynamicModel activitydynamicmodel = this.getActivityDynamicModel(InstallmentActivityID);
+                activitydynamicmodel = this.getActivityDynamicModel(InstallmentActivityID);
                 return activitydynamicmodel;
             } catch (Exception e) {
                 return null;
@@ -79,9 +79,9 @@ public class activityDAO extends BaseDao {
      * @return
      */
     public ActivityDynamicModel getActivityCompelete(String ActivityID) {
-
+        ActivityDynamicModel activitydynamicmodel;
         try {
-            ActivityDynamicModel activitydynamicmodel = this.getActivityDynamicModel(ActivityID);
+            activitydynamicmodel = this.getActivityDynamicModel(ActivityID);
             return activitydynamicmodel;
         } catch (Exception e) {
             return null;
@@ -95,19 +95,19 @@ public class activityDAO extends BaseDao {
      *
      * @param activityID
      * @return
-     */
+     *//*
     public String InsertUserToBuyList(int activityID, int userID, int Lines) {
         String DBName = Integer.toString(activityID);
         //如果没有查询表则创建
-/*        if( !this.IsModelExist( DBName ) ) {
+*//*        if( !this.IsModelExist( DBName ) ) {
 
             this.excuteBySQL( " CREATE TABLE `moneyserver`.`1` (" + "`id` INT NOT NULL," + "`tablename` VARCHAR(45) NULL," + "PRIMARY KEY (`id`));" );
-        }*/
+        }*//*
 
         List list = this.getListBySQL("select tablename from activity_1 where id=(select max(id) from activity_1)");
 
 
-/*        //获得当前最新的存储表的名字
+*//*        //获得当前最新的存储表的名字
         String MaxDBName = DBName + "_1";
 
         long count = this.getTotalCount( MaxDBName );
@@ -120,9 +120,9 @@ public class activityDAO extends BaseDao {
             //插入到这张表中
 
             return null;
-        }*/
+        }*//*
         return null;
-    }
+    }*/
 
     /**
      * 得到app需要显示的项目列表
@@ -135,6 +135,32 @@ public class activityDAO extends BaseDao {
         Transaction t = session.beginTransaction();
         List<ActivityDetailModel> list = session.createCriteria(ActivityDetailModel.class)
                 .add(Restrictions.eq("status", 1))
+                .setFirstResult(page * pageNum)
+                .setMaxResults(pageNum)
+                .list();
+
+//        String hql = "from " + ActivityDetailModel.class.getName();
+//        Session session = getNewSession();
+//        List<ActivityDetailModel> list =  session.createQuery(hql)
+//                .setFirstResult(pageNum * page)
+//                .setMaxResults(pageNum)
+//                .list();
+        for (ActivityDetailModel detailModel : list) {
+            detailModel.getActivityVerifyCompleteModel().getActivityId();
+            detailModel.getDynamicModel().getActivityCurLines();
+        }
+//        ActivityDetailModel activityDynamicModel = (ActivityDetailModel)session.get(ActivityDetailModel.class, "4_0");
+//        activityDynamicModel.getDynamicModel().getActivityCurLines();
+        t.commit();
+
+        return list;
+    }
+
+    public List<ActivityDetailModel> getActivityListActivityTest(int page, int pageNum) {
+        Session session = getNewSession();
+        Transaction t = session.beginTransaction();
+        List<ActivityDetailModel> list = session.createCriteria(ActivityDetailModel.class)
+                .add(Restrictions.eq("status", ActivityDetailModel.ONLINE_ACTIVITY_TEST))
                 .setFirstResult(page * pageNum)
                 .setMaxResults(pageNum)
                 .list();
@@ -272,13 +298,13 @@ public class activityDAO extends BaseDao {
     public void CreateTicketDB(final String InstallmentActivityID,int TotalLinePeoples, int TotalLines) {
         Session session = this.getNewSession();
         String DBName = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
-        //String Sql = "CREATE TABLE " + DBName + " ( TickID VARCHAR(45) NOT NULL,UserId VARCHAR(45) NULL DEFAULT 0,PurchaseType INT(2) NOT NULL,PRIMARY KEY (TickID));";
-        String Sql = "{call CreateTicketDB(?,?,?)}";
+        String Sql = "CREATE TABLE " + DBName + " ( TickID VARCHAR(45) NOT NULL,UserId VARCHAR(45) NULL DEFAULT 0,PurchaseType INT(2) NOT NULL,PRIMARY KEY (TickID));";
+        //String Sql = "{call CreateTicketDB(?,?,?)}";
         SQLQuery sqlQuery = session.createSQLQuery(Sql);
-        sqlQuery.setParameter( 0,TotalLinePeoples );
+/*        sqlQuery.setParameter( 0,1 );
         sqlQuery.setParameter( 1,TotalLines );
-        sqlQuery.setParameter( 2,DBName );
-        sqlQuery.uniqueResult();
+        sqlQuery.setParameter( 2,DBName );*/
+        sqlQuery.executeUpdate();
     }
 
     /**
@@ -306,8 +332,8 @@ public class activityDAO extends BaseDao {
      */
     public List<ActivityDetailModel> getActivityDetailByGroupID(String ActivityID, int GroupID) {
         Session session = this.getNewSession();
-        List<ActivityDetailModel> list = null;
-        String sql = "select * from activitydetails where parentActivityId=? and groupId=?;";
+        List<ActivityDetailModel> list;
+        String sql = "select * from activitydetails where activityVerifyCompleteModel_activityId=?0 and groupId=?1;";
 
         SQLQuery sqlQuery = session.createSQLQuery(sql).addEntity(ActivityDetailModel.class);
         sqlQuery.setParameter(0, ActivityID);

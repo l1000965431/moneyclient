@@ -18,6 +18,7 @@ import com.money.model.*;
 import org.hibernate.Session;
 import org.quartz.DateBuilder;
 import org.quartz.SchedulerException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
@@ -59,6 +60,8 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
     @Autowired
     UserDAO userDAO;
 
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LotteryService.class);
+
     /**
      * 根据项目组的中奖列表发奖
      *
@@ -68,7 +71,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
     public String StartLottery(final String InstallmentActivityID) throws Exception {
         final List<LotteryPeoples>[] listPeoples = new List[1];
         final String[] ActivityName = new String[1];
-        if (lotteryDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+        if (Objects.equals(lotteryDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
                 ActivityDetailModel activityDetailModel = activityService.getActivityDetailsNoTran(InstallmentActivityID);
                 if (activityDetailModel == null) {
@@ -76,10 +79,12 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
                 }
 
                 ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
-                ActivityName[0] = activityVerifyCompleteModel.getName();
                 if (activityVerifyCompleteModel == null) {
                     return false;
                 }
+
+                ActivityName[0] = activityVerifyCompleteModel.getName();
+
 
                 Set<SREarningModel> srEarningModelSet = activityDetailModel.getSrEarningModels();
                 Set<SREarningModel> srEarningModelSet1 = activityDetailModel.getActivityVerifyCompleteModel().getSrEarningModels();
@@ -87,6 +92,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
 
                 listPeoples[0] = StartLottery(InstallmentActivityID, srEarningModelSet);
                 if (listPeoples[0] == null) {
+                    LOGGER.error("中奖列表位空", InstallmentActivityID);
                     return false;
                 }
 
@@ -97,11 +103,11 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
 
                 //删除本期的购买表
                 String DBName = Config.ACTIVITYGROUPTICKETNAME + InstallmentActivityID;
-                lotteryDAO.DropList( DBName );
+                lotteryDAO.DropList(DBName);
 
                 return true;
             }
-        }) == Config.SERVICE_SUCCESS) {
+        }), Config.SERVICE_SUCCESS)) {
             //发送消息
             SendLotteryMessage(listPeoples[0], ActivityName[0]);
         }
@@ -120,6 +126,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
         List<LotteryPeoples> listPeoples = lotteryDAO.GetRandNotLottery(InstallmentActivityID, srEarningModelSet);
 
         if (listPeoples == null) {
+            LOGGER.error( "中奖人物列表位空",InstallmentActivityID,srEarningModelSet );
             return null;
         }
 
@@ -142,6 +149,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
             } else {
                 for (int i = 0; i < PeoplesLines; ++i) {
                     if (Index >= listPeoples.size()) {
+                        LOGGER.error( "发奖Index >= listPeoples.size()",Index,listPeoples.size() );
                         return null;
                     }
 
@@ -158,6 +166,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
 
         //刷新个人的收益记录
         if (!updateEarnings(listPeoples)) {
+            LOGGER.error( "刷新个人中奖记录错误",listPeoples );
             return null;
         }
 
@@ -168,7 +177,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
         prizeListModel.setPrizeSituation(json);
         try {
             prizeListModel.setPrizeDate(MoneyServerDate.getDateCurDate());
-        } catch (ParseException e) {
+        } catch (ParseException ignored) {
 
         }
         lotteryDAO.saveOrupdateNoTransaction(prizeListModel);
@@ -275,7 +284,7 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
             userEarningsModel.setUserEarningLines(itLotteryPeoples.getLotteryLines());
             try {
                 userEarningsModel.setUserEarningsDate(MoneyServerDate.getDateCurDate());
-            } catch (ParseException e) {
+            } catch (ParseException ignored) {
             }
             userEarningsModel.setActivityStageId(itLotteryPeoples.getActivityID());
 
@@ -291,8 +300,8 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
      * @param ActivityName
      */
     private void SendLotteryMessage(List<LotteryPeoples> lotteryPeoples, String ActivityName) {
-        List<LotteryPeoples> Temp = new ArrayList<LotteryPeoples>();
-        Map<String, Object> maptemp = new HashMap<String, Object>();
+        List<LotteryPeoples> Temp = new ArrayList();
+        Map<String, Object> maptemp = new HashMap();
         int TempIndex = 0;
         int GroupNum = 0;
         for (LotteryPeoples it : lotteryPeoples) {

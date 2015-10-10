@@ -29,12 +29,17 @@ public class MoneyServerMQ_Topic {
     public static final String MONEYSERVERMQ_INSTALLMENT_TOPIC="MoneyServer_Installment_Listener";
     public static final String MONEYSERVERMQ_INSTALLMENT_TAG="MoneyServer_Installment_Listener";
 
+    public static final String MONEYSERVERMQ_INSTALLMENTTEST_TOPIC="MoneyServer_InstallmentTest_Listener";
+    public static final String MONEYSERVERMQ_INSTALLMENTTEST_TAG="MoneyServer_InstallmentTest_Listener";
+
     public static final String MONEYSERVERMQ_LOTTERYPUSHLIST_TOPIC="MoneyServer_LotteryPushLis_Listener";
     public static final String MONEYSERVERMQ_LOTTERYPUSHLIST_TAG="MoneyServer_LotteryPushLis_Listener";
 
     public static final String MONEYSERVERMQ_TRANSFER_TOPIC="MoneyServer_Transfer_Listener";
     public static final String MONEYSERVERMQ_TRANSFER_TAG="MoneyServer_Transfer_Listener";
 
+    public static final String MONEYSERVERMQ_INSERTINVITECODE_TOPIC="MoneyServer_InsertInviteCode_Listener";
+    public static final String MONEYSERVERMQ_INSERTINVITECODE_TAG="MoneyServer_InsertInviteCode_Listener";
 
     /**
      * 生产参数
@@ -65,5 +70,11 @@ public class MoneyServerMQ_Topic {
     public static final String MONEYSERVERMQ_LOTTERYPUSHLIST_TAG="MoneyServer_LotteryPushLis_Listener_liveQ";
 
     public static final String MONEYSERVERMQ_TRANSFER_TOPIC="MoneyServer_Transfer_Listener_liveQ";
-    public static final String MONEYSERVERMQ_TRANSFER_TAG="MoneyServer_Transfer_Listener_liveQ";*/
+    public static final String MONEYSERVERMQ_TRANSFER_TAG="MoneyServer_Transfer_Listener_liveQ";
+
+
+        public static final String MONEYSERVERMQ_INSERTINVITECODE_TOPIC="MoneyServer_InsertInviteCode_Listener_liveQ";
+    public static final String MONEYSERVERMQ_INSERTINVITECODE_TAG="MoneyServer_InsertInviteCode_Listener_liveQ";*/
+
+
 }

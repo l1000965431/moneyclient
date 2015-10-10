@@ -26,7 +26,8 @@ public class UserService extends ServiceBase implements ServiceInterface {
     UserDAO userDAO;
 
     //用户注册，判断验证码是否正确，正确则完成用户注册
-    public int userRegister(final String username, final String code, final String password, final int userType) {
+    public int userRegister(final String username, final String code,
+                            final String password, final int userType,final String inviteCode) {
         //用户名 密码合法性
 
         if (!userDAO.userIsRight(username) || !userDAO.passwordIsRight(password)) {
@@ -47,7 +48,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
                 }
                 //判断手机验证码是否输入正确
                 if (userDAO.checkTeleCode(username, code)) {
-                    state[0] = userDAO.registered(username, password, userType);
+                    state[0] = userDAO.registered(username, password, userType,inviteCode);
                     return true;
                 } else {
                     state[0] = ServerReturnValue.REQISTEREDCODEERROR;
@@ -183,7 +184,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
 
     //比对验证码，修改密码
     public int changPassword(String userName, String code, String newPassWord, String oldPassWord) {
-        if (userDAO.checkTeleCode(userName, code) == true) {
+        if (userDAO.checkTeleCode(userName, code)) {
             if (userDAO.changePassword(userName, newPassWord, oldPassWord)) {
                 return 1;
             } else {
@@ -273,7 +274,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
 
         boolean userIsExist = userDAO.checkPassWord(UserId, passWord);
 
-        if (userIsExist == false) {
+        if (!userIsExist) {
             return 2;
         }
 
@@ -293,7 +294,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
     public boolean IsBinding(String UserId) {
         UserModel userModel = getUserInfo(UserId);
 
-        if (userModel == null) {
+        if (null == userModel) {
             return false;
         }
 

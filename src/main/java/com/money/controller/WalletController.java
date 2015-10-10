@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by happysky on 15-8-1.
@@ -112,7 +113,7 @@ public class WalletController extends ControllerBase {
     @ResponseBody
     public boolean IsBinding(HttpServletRequest request, HttpServletResponse response) {
         String userId = request.getParameter("userId");
-        if (userId == null) {
+        if (null == userId) {
             return false;
         }
 
@@ -242,8 +243,7 @@ public class WalletController extends ControllerBase {
         if (list == null) {
             return "";
         } else {
-            String Json = GsonUntil.JavaClassToJson(list);
-            return Json;
+            return GsonUntil.JavaClassToJson(list);
         }
     }
 
@@ -256,8 +256,7 @@ public class WalletController extends ControllerBase {
         if (list == null) {
             return "";
         } else {
-            String Json = GsonUntil.JavaClassToJson(list);
-            return Json;
+            return GsonUntil.JavaClassToJson(list);
         }
     }
 
@@ -288,12 +287,12 @@ public class WalletController extends ControllerBase {
     @RequestMapping("/TransactionResult")
     @ResponseBody
     public String TransactionResult(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
-/*        Map<String,String> map = AlipayNotify.getalipayInfo( request );
+        Map<String,String> map = AlipayNotify.getalipayInfo(request);
         if( !AlipayNotify.verify( map )){
             return "fail";
-        }*/
+        }
 
-        if( walletService.alipayTransferNotify( null )==Config.MESSAGE_SEND_SUCCESS){
+        if(Objects.equals(walletService.alipayTransferNotify(map), Config.MESSAGE_SEND_SUCCESS)){
             return "success";
         }else {
             return "fail";
@@ -319,7 +318,29 @@ public class WalletController extends ControllerBase {
         String userId = request.getParameter("userId");
         String alipayId = request.getParameter("alipayId");
         String realName = request.getParameter( "realName" );
+
+        alipayId = alipayId.replace( " ","" );
+        realName = realName.replace( " ","" );
         return walletService.BindingalipayId( userId,alipayId,realName );
+    }
+
+    /**
+     * 解除支付宝帐号绑定
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/ClearalipayId")
+    @ResponseBody
+    public String ClearalipayId(HttpServletRequest request, HttpServletResponse response) {
+        String userId = request.getParameter("userId");
+
+        if( userId == null ){
+            return Config.SERVICE_FAILED;
+        }
+
+        return walletService.ClearalipayId( userId );
     }
 
     /**
@@ -342,7 +363,7 @@ public class WalletController extends ControllerBase {
         int Lines = Integer.valueOf(mapData.get("lines"));
         String passWord = mapData.get("passWord");
 
-        if (userService.checkPassWord(userId, passWord) == false) {
+        if (!userService.checkPassWord(userId, passWord)) {
             return 4;
         }
 

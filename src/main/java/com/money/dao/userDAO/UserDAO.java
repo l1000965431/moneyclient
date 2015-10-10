@@ -6,17 +6,18 @@ import com.money.config.ServerReturnValue;
 import com.money.dao.BaseDao;
 import com.money.dao.TransactionCallback;
 import com.money.memcach.MemCachService;
+import com.money.model.InviteCodeModel;
 import com.money.model.UserModel;
 import com.money.model.WalletModel;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import until.Base32;
-import until.GsonUntil;
-import until.MoneySeverRandom;
-import until.PRestSmsSDKUntil;
+import until.*;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -135,7 +136,7 @@ public class UserDAO extends BaseDao {
 
 
     //注册
-    public int registered(final String userID, final String passWord, final int userType) {
+    public int registered(final String userID, final String passWord, final int userType, final String inviteCode) {
 
         UserModel userModel = new UserModel();
         //用户注册，存入数据库
@@ -150,6 +151,14 @@ public class UserDAO extends BaseDao {
             WalletModel walletModel = new WalletModel();
             walletModel.setUserID(userID);
             saveNoTransaction(walletModel);
+        }else if( userType == Config.BORROWER ){
+            try {
+                if(userInviteCode( userID,inviteCode ) == 0){
+                    return ServerReturnValue.REQISTEREDCODEERROR;
+                }
+            } catch (ParseException e) {
+                return ServerReturnValue.REQISTEREDCODEERROR;
+            }
         }
 
         return ServerReturnValue.REQISTEREDSUCCESS;
@@ -453,5 +462,35 @@ public class UserDAO extends BaseDao {
      */
     public String getUserToken(String UserId) {
         return MemCachService.GetMemCachMapByMapKey(UserId, "token");
+    }
+
+    /**
+     * 使用邀请码
+     *
+     * @param userId
+     * @throws ParseException
+     */
+    public int userInviteCode(String userId,String InviteCode) throws ParseException {
+
+        if( userId == null || InviteCode == null || InviteCode.length() == 0 ){
+            return 0;
+        }
+
+        String Sql = "select * from invitecode where userId='0' and inviteCode=?;";
+        Session session = this.getSession();
+
+        SQLQuery sqlQuery = session.createSQLQuery(Sql).addEntity(InviteCodeModel.class);
+        sqlQuery.setParameter( 0,InviteCode );
+        InviteCodeModel inviteCodeModel = (InviteCodeModel) sqlQuery.uniqueResult();
+
+        if (inviteCodeModel != null) {
+            inviteCodeModel.setUseDate(MoneyServerDate.getDateCurDate());
+            inviteCodeModel.setUserId(userId);
+            this.updateNoTransaction(inviteCodeModel);
+            return 1;
+        }else{
+            return 0;
+        }
+
     }
 }

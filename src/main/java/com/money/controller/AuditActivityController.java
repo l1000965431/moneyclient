@@ -55,8 +55,7 @@ public class AuditActivityController extends ControllerBase implements IControll
 
         List<ActivityVerifyModel> list = serviceAuditActivity.getAuditingActivityList(pageIndex, pageNum);
 
-        String json = GsonUntil.JavaClassListToJsonList(list);
-        return json;
+        return GsonUntil.JavaClassListToJsonList(list);
     }
 
     /**
@@ -154,10 +153,34 @@ public class AuditActivityController extends ControllerBase implements IControll
 
         serviceGroupActivity.splitActivityByStage( Lines+LinePeoples,ActivityID,AdvanceNum,PurchaseNum );
 
-        serviceGroupActivity.SetActivityInformationEarnings(Lines,LinePeoples,ActivityID,
+        serviceGroupActivity.SetActivityInformationEarnings(Lines, LinePeoples, ActivityID,
                 AdvanceNum, PurchaseNum, LinesEarnings, LinePeoplesEarnings);
 
         if( activityService.ActivityCompleteStart(ActivityID) ){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    @RequestMapping("/SetActivityInformationEarningsTest")
+    @ResponseBody
+    public int SetActivityInformationEarningsTest(HttpServletRequest request, HttpServletResponse response) {
+        String ActivityID = request.getParameter("ActivityID");
+        int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
+        int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
+        int Lines = Integer.valueOf(request.getParameter("Lines"));
+        int LinePeoples = Integer.valueOf(request.getParameter("LinePeoples"));
+
+        String LinesEarnings = request.getParameter("LinesEarnings");
+        String LinePeoplesEarnings = request.getParameter("LinePeoplesEarnings");
+
+        serviceGroupActivity.splitActivityByStage( Lines+LinePeoples,ActivityID,AdvanceNum,PurchaseNum );
+
+        serviceGroupActivity.SetActivityInformationEarnings(Lines,LinePeoples,ActivityID,
+                AdvanceNum, PurchaseNum, LinesEarnings, LinePeoplesEarnings);
+
+        if( activityService.ActivityCompleteStartTest(ActivityID) ){
             return 1;
         }else{
             return 0;
