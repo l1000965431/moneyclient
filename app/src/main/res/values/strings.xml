@@ -14,6 +14,8 @@
     <string name="home_invert_top_tab_search">搜索</string>
     <string name="home_invert_top_tab_earnings_record">已投项目</string>
     <string name="home_invert_top_tab_investment_record">收益项目</string>
+    <string name="home_invert_top_tab_investment_normal">常规项目</string>
+    <string name="home_invert_top_tab_investment_preferential">特惠项目</string>
     <string name="home_invert_top_tab_dividendt_record">分红</string>
     <string name="title_activity_project_detail">项目详情</string>
     <string name="title_activity_invest_project">投资项目</string>
@@ -55,7 +57,9 @@
     <!-- 项目列表项 -->
     <string name="project_list_item_stage_info">第%s期 众筹中</string>
     <string name="project_list_item_target_fund">本期筹款目标:</string>
+    <string name="project_list_item_start_date">开抢时间:</string>
     <string name="project_list_item_progress">筹款进度:</string>
+    <string name="project_list_button_shaking">上下摇晃抢钱</string>
     <string name="title_activity_settings">设置</string>
     <string name="title_activity_about">关于</string>
     <string name="title_activity_change_password">修改密码</string>
