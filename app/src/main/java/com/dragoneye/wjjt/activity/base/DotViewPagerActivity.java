@@ -21,8 +21,9 @@ public abstract class DotViewPagerActivity extends BaseActivity {
 
     protected DotViewPager mDotViewPager;
     protected ArrayList<String> mImageUrl;
-    protected ArrayList<View> viewContainer = new ArrayList<>();
+//    protected ArrayList<View> viewContainer = new ArrayList<>();
     private boolean isUseImageLoader = true;
+    private ImageView.ScaleType mScaleType = ImageView.ScaleType.FIT_CENTER;
 
     public boolean isUseImageLoader() {
         return isUseImageLoader;
@@ -36,25 +37,26 @@ public abstract class DotViewPagerActivity extends BaseActivity {
         //viewpager中的组件数量
         @Override
         public int getCount() {
-            return viewContainer.size();
+            return mImageUrl.size();
         }
         //滑动切换的时候销毁当前的组件
         @Override
         public void destroyItem(ViewGroup container, int position,
                                 Object object) {
-            container.removeView(viewContainer.get(position));
+            container.removeView((ImageView)object);
         }
         //每次滑动的时候生成的组件
         @Override
         public Object instantiateItem(ViewGroup container, final int position) {
-            container.addView(viewContainer.get(position));
-            viewContainer.get(position).setOnClickListener(new View.OnClickListener() {
+            ImageView imageView = getImage(position);
+            container.addView(imageView);
+            imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onViewClick(position);
                 }
             });
-            return viewContainer.get(position);
+            return imageView;
         }
 
         @Override
@@ -69,29 +71,30 @@ public abstract class DotViewPagerActivity extends BaseActivity {
     }
 
     private void initViewPagerImages(){
-        for(String url : mImageUrl){
-            ImageView imageView = new ImageView(this);
-            if( isUseImageLoader ){
-                ImageLoader.getInstance().displayImage(url, imageView);
-            }else {
-                try{
-                    imageView.setImageBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(),
-                            Uri.parse(url)));
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
-            }
-            viewContainer.add(imageView);
-        }
+//        for(String url : mImageUrl){
+//            ImageView imageView = new ImageView(this);
+//            if( isUseImageLoader ){
+//                ImageLoader.getInstance().displayImage(url, imageView);
+//            }else {
+//                try{
+//                    imageView.setImageBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(),
+//                            Uri.parse(url)));
+//                }catch (IOException e){
+//                    e.printStackTrace();
+//                }
+//            }
+//            viewContainer.add(imageView);
+//        }
         mDotViewPager.setAdapter(new ImageViewPagerAdapter());
     }
 
     protected void setImageScaleType(ImageView.ScaleType type){
-        for( View view : viewContainer ){
-            if( view instanceof ImageView ){
-                ((ImageView)view).setScaleType(type);
-            }
-        }
+//        for( View view : viewContainer ){
+//            if( view instanceof ImageView ){
+//                ((ImageView)view).setScaleType(type);
+//            }
+//        }
+        mScaleType = type;
     }
 
     protected abstract void initViewPager();
@@ -117,5 +120,25 @@ public abstract class DotViewPagerActivity extends BaseActivity {
         initViewPager();
         initImageUrl();
         initViewPagerImages();
+    }
+
+    private ImageView getImage(int position){
+        ImageView imageView = new ImageView(this);
+        if( position >= mImageUrl.size() ){
+            return imageView;
+        }
+        String url = mImageUrl.get(position);
+        if( isUseImageLoader ){
+            ImageLoader.getInstance().displayImage(url, imageView);
+        }else {
+            try {
+                imageView.setImageBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(),
+                        Uri.parse(url)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        imageView.setScaleType(mScaleType);
+        return imageView;
     }
 }

@@ -24,7 +24,7 @@ public class HttpClient {
 
     static
     {
-        client.setTimeout( 3000 );
+        client.setTimeout( 10000 );
     }
 
 

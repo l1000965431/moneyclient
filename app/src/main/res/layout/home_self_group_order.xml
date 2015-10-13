@@ -27,7 +27,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="#ff49bfff"
-                android:paddingBottom="20dp">
+                android:paddingBottom="20dp"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -106,7 +107,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="充值方式选择："
+            android:text="提现方式选择："
             android:id="@+id/textView15"
             android:textSize="14dp"
             android:textColor="#ff767676"
@@ -137,7 +138,8 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="7dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="100dp"
@@ -150,7 +152,7 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/radioButton5"
+                    android:id="@+id/home_self_group_order_rb_wxpay"
                     android:layout_gravity="center" />
             </LinearLayout>
 
@@ -174,31 +176,7 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/radioButton6"
-                    android:layout_gravity="center" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="7dp"
-                android:layout_weight="1" >
-
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="55dp"
-                    android:id="@+id/imageView11"
-                    android:src="@mipmap/pay_by_yinlian"
-                    android:layout_gravity="center"
-                    android:scaleType="fitCenter" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/radioButton7"
+                    android:id="@+id/home_self_group_order_rb_alipay"
                     android:layout_gravity="center" />
             </LinearLayout>
 
@@ -208,7 +186,7 @@
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="去支付"
+            android:text="确定"
             android:id="@+id/payment_tv_goToPay"
             android:layout_gravity="center"
             android:textSize="15dp"

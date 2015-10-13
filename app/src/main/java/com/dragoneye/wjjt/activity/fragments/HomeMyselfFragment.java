@@ -1,5 +1,7 @@
 package com.dragoneye.wjjt.activity.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +22,7 @@ import com.dragoneye.wjjt.activity.ProjectEditActivity;
 import com.dragoneye.wjjt.activity.SettingsActivity;
 import com.dragoneye.wjjt.activity.UserInfoActivity;
 import com.dragoneye.wjjt.activity.WithdrawActivity;
+import com.dragoneye.wjjt.activity.WithdrawSelectActivity;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
@@ -42,6 +45,14 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
     private TextView mTVUserName;
     private TextView mTVWalletBalance;
     private RoundCornerImageView mIVPortrait;
+
+    private TextView mTVMicroTicket;
+    private TextView mTVLeadTicket;
+    private TextView mTVExp;
+
+    private ImageView mIVMicroTicketNew;
+    private ImageView mIVLeadTicketNew;
+    private ImageView mIVExpNew;
 
     Handler handler = new Handler();
 
@@ -67,7 +78,6 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 
         mIVPortrait = (RoundCornerImageView)getActivity().findViewById(R.id.home_self_group_iv_portrait);
 
-
         // 充值
         View chargeButton = getActivity().findViewById(R.id.home_self_group_linearLayout2);
         chargeButton.setOnClickListener(this);
@@ -88,18 +98,31 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         View devStuff = getActivity().findViewById(R.id.home_self_group_dev_stuff);
         devStuff.setOnClickListener(this);
 
-        // 创建新项目
-//        View submitProjectButton = getActivity().findViewById(R.id.linearLayout21);
-//        submitProjectButton.setOnClickListener(this);
+        // 微券
+        View microTicketButton = getActivity().findViewById(R.id.home_self_group_linearLayout_micro_ticket);
+        microTicketButton.setOnClickListener(this);
+        mIVMicroTicketNew = (ImageView)getActivity().findViewById(R.id.home_self_group_iv_micro_ticket_new);
+        mTVMicroTicket = (TextView)getActivity().findViewById(R.id.home_self_group_tv_micro_ticket);
+
+        // 领投券
+        View leadTicketButton = getActivity().findViewById(R.id.home_self_group_linearLayout_lead_ticket);
+        leadTicketButton.setOnClickListener(this);
+        mIVLeadTicketNew = (ImageView)getActivity().findViewById(R.id.home_self_group_iv_lead_ticket_new);
+        mTVLeadTicket = (TextView)getActivity().findViewById(R.id.home_self_group_tv_lead_ticket);
+
+        // 经验
+        View expButton = getActivity().findViewById(R.id.home_self_group_linearLayout_exp);
+        expButton.setOnClickListener(this);
+        mIVExpNew = (ImageView)getActivity().findViewById(R.id.home_self_group_iv_exp_new);
+        mTVExp = (TextView)getActivity().findViewById(R.id.home_self_group_tv_exp_new);
+
         if(((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
             chargeButton.setVisibility(View.GONE);
             withdrawButton.setVisibility(View.GONE);
             walletDesc.setVisibility(View.GONE);
             mTVWalletBalance.setVisibility(View.GONE);
         }else {
-//            submitProjectButton.setVisibility(View.GONE);
             devStuff.setVisibility(View.GONE);
-            handler.post(getWalletBalance_r);
         }
 
         mTVUserName.setText(((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserName());
@@ -159,8 +182,9 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         public void run() {
             HttpParams params = new HttpParams();
 
-            params.put("userId", ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserId());
-            params.put("token", ((MyApplication)getActivity().getApplication()).getToken(getActivity()));
+            MyApplication application = (MyApplication)getActivity().getApplication();
+            params.put("userId", application.getCurrentUser(getActivity()).getUserId());
+            params.put("token", application.getToken(getActivity()));
 
             HttpClient.atomicPost(getActivity(), UserProtocol.URL_GET_WALLET_BALANCE, params, new HttpClient.MyHttpHandler() {
                 @Override
@@ -195,13 +219,22 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                 onCharge();
                 break;
             case R.id.linearLayout4:    // 提现
-                WithdrawActivity.CallActivity(getActivity());
+                WithdrawSelectActivity.CallActivity(getActivity());
                 break;
             case R.id.home_self_group_iv_portrait:
                 onChangePortrait();
                 break;
             case R.id.home_self_group_dev_stuff:    // 开发者注意事项
                 DeveloperAttentionActivity.CallActivity(getActivity());
+                break;
+            case R.id.home_self_group_linearLayout_micro_ticket:
+                onMicroTicket();
+                break;
+            case R.id.home_self_group_linearLayout_lead_ticket:
+                onLeadTicket();
+                break;
+            case R.id.home_self_group_linearLayout_exp:
+                onExp();
                 break;
         }
     }
@@ -223,5 +256,44 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
     private void onCharge(){
         Intent intent = new Intent(getActivity(), ChargeActivity.class);
         startActivity(intent);
+    }
+
+    private void onMicroTicket(){
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setMessage("微券")
+                .create();
+        alertDialog.show();
+    }
+
+    private void onLeadTicket(){
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setMessage("领投券")
+                .create();
+        alertDialog.show();
+    }
+
+    private void onExp(){
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setMessage("经验")
+                .create();
+        alertDialog.show();
     }
 }

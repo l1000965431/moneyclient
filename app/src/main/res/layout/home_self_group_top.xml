@@ -165,6 +165,17 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="三个工作日内到账。根据提现金额收取0.5%的手续费，最低1元，最高25元。"
+            android:id="@+id/charage_tv_explain"
+            android:layout_marginTop="10dp"
+            android:textSize="18sp"
+            android:textColor="#ff0000"
+            android:gravity="center_horizontal"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
 </RelativeLayout>

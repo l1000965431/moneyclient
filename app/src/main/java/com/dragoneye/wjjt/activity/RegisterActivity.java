@@ -2,7 +2,6 @@ package com.dragoneye.wjjt.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.BaseActivity;
-import com.dragoneye.wjjt.config.HttpUrlConfig;
 import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
@@ -25,15 +23,11 @@ import com.dragoneye.wjjt.tool.DESCoder;
 import com.dragoneye.wjjt.tool.InputChecker;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
-import com.umeng.message.ALIAS_TYPE;
-import com.umeng.message.PushAgent;
 
 import org.apache.http.Header;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
@@ -50,6 +44,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     EditText mUserPasswordTextField;
     EditText mUserPasswordConfirmTextFiled;
     EditText mETCode;
+    EditText mETInvitationCode;
     CheckBox mCKAgreement;
 
     RadioGroup mRBUserType;
@@ -128,12 +123,24 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         mCKAgreement.setChecked(false);
 
         mRBUserType = (RadioGroup)findViewById(R.id.fragment_register_Classification);
+        mRBUserType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId == R.id.fragment_register_Classification_Fundraising){
+                    mETInvitationCode.setVisibility(View.VISIBLE);
+                }else {
+                    mETInvitationCode.setVisibility(View.GONE);
+                }
+            }
+        });
 
         mTVSendSecurityCode = (TextView)findViewById(R.id.fragment_register_Enter_SecurityCode_button);
         mTVSendSecurityCode.setOnClickListener(this);
 
         mTVAgreement = (TextView)findViewById(R.id.fragment_register_Agreement_text);
         mTVAgreement.setOnClickListener(this);
+
+        mETInvitationCode = (EditText)findViewById(R.id.fragment_register_et_invitation_code);
 
         progressDialog = new ProgressDialog(this);
     }
@@ -153,7 +160,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()){
             case R.id.fragment_register_buttonlogin:
                 if( checkUserInput() ){
-                    //onRegister();
+//                    handler.post(onRegisterButton_r);
                     SMSSDK.submitVerificationCode("86",mUserIdTextField.getText().toString(), mETCode.getText().toString());
                 }
                 break;
@@ -199,6 +206,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             dataMap.put(UserProtocol.REGISTER_PARAM_USER_ID, mUserIdTextField.getText().toString());
             dataMap.put(UserProtocol.REGISTER_PARAM_USER_PASSWORD, mUserPasswordTextField.getText().toString());
             dataMap.put(UserProtocol.REGISTER_PARAM_USER_TYPE, String.valueOf(getUserType()));
+            dataMap.put("inviteCode", mETInvitationCode.getText().toString());
 
             String ObjectJson = ToolMaster.gsonInstance().toJson(dataMap);
             try{
@@ -266,8 +274,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             case UserProtocol.REGISTER_RESULT_CLOSED:
                 UIHelper.toast(this, "已关闭注册");
                 break;
-            case UserProtocol.REGISTER_RESULT_SECURITY_CODE_ERROR:
-                UIHelper.toast(this, "验证码错误");
+            case UserProtocol.REGISTER_RESULT_INVITATION_CODE_ERROR:
+                UIHelper.toast(this, "邀请码错误");
                 break;
             case UserProtocol.REGISTER_RESULT_FAILED:
             default:
@@ -298,9 +306,17 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             return false;
         }
 
-        if( getUserType() == -1 ){
+        int userType = getUserType();
+        if (userType == -1 ){
             UIHelper.toast(this, "请选择用户类别!");
             return false;
+        }
+
+        if( userType == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR ){
+            if(mETInvitationCode.getText().length() == 0){
+                UIHelper.toast(this, "请输入邀请码");
+                return false;
+            }
         }
         return true;
     }

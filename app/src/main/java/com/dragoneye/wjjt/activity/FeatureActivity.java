@@ -44,6 +44,7 @@ public class FeatureActivity extends DotViewPagerActivity {
 
         mDotViewPager = (DotViewPager)findViewById(R.id.feature_dot_viewpager);
         mDotViewPager.setAutoScroll(false);
+        mDotViewPager.getViewPager().setOffscreenPageLimit(1);
         mDotViewPager.setPageChangeListener(new DotViewPager.OnViewPageChangeListener() {
             @Override
             public void onPageScrolled(int position) {

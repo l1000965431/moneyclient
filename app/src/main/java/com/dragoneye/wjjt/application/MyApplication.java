@@ -37,6 +37,7 @@ import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UmengMessageHandler;
+import com.umeng.message.UmengRegistrar;
 import com.umeng.message.entity.UMessage;
 
 import java.io.File;
@@ -65,6 +66,10 @@ public class MyApplication extends Application {
         MobclickAgent.updateOnlineConfig(this);
         mPushAgent = PushAgent.getInstance(this);
         mPushAgent.enable();
+
+        String device_token = UmengRegistrar.getRegistrationId(this);
+        Log.d("login", device_token);
+
         PushAgent.getInstance(this).onAppStart();
         /*SMSSDK.initSDK(this, PreferencesConfig.SHARESDKAPPKEY, PreferencesConfig.SHARESDKAPPSECRET);*/
 

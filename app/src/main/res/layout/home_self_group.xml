@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:RoundCornerImageView="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:baselineAligned="false"
               android:id="@+id/home_selfBG_group"
               android:orientation="vertical">
-
-
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -59,7 +56,7 @@
                 <TextView
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:text="99999￥"
+                    android:text="0￥"
                     android:id="@+id/textView17"
                     android:textColor="#fffffafe"
                     android:autoText="false"
@@ -71,14 +68,11 @@
 
             </FrameLayout>
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="57dp"
                 android:orientation="horizontal"
-                android:id="@+id/linearLayout21"
-                android:columnCount="10"
-                android:rowCount="10"
-                android:touchscreenBlocksFocus="false"
+                android:id="@+id/home_self_group_linearLayout_micro_ticket"
                 android:background="#ffff9735"
                 android:paddingRight="10dp"
                 android:paddingLeft="40dp" >
@@ -94,7 +88,7 @@
                 <ImageView
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:id="@+id/imageView21"
+                    android:id="@+id/home_self_group_iv_micro_ticket_new"
                     android:layout_gravity="center"
                     android:src="@mipmap/icon_point"
                     android:tint="#ffff4330"
@@ -105,8 +99,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="微券：999"
-                    android:id="@+id/textView31"
+                    android:text="微券：0"
+                    android:id="@+id/home_self_group_tv_micro_ticket"
                     android:textColor="#ff332b38"
                     android:textSize="17dp"
                     android:paddingRight="3dp"
@@ -128,10 +122,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="57dp"
                 android:orientation="horizontal"
-                android:id="@+id/linearLayout24"
-                android:columnCount="10"
-                android:rowCount="10"
-                android:touchscreenBlocksFocus="false"
+                android:id="@+id/home_self_group_linearLayout_lead_ticket"
                 android:background="#ffffb04c"
                 android:paddingRight="10dp"
                 android:paddingLeft="40dp" >
@@ -147,7 +138,7 @@
                 <ImageView
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:id="@+id/imageView24"
+                    android:id="@+id/home_self_group_iv_lead_ticket_new"
                     android:layout_gravity="center"
                     android:src="@mipmap/icon_point"
                     android:tint="#ffff4330"
@@ -158,8 +149,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="领投券：999"
-                    android:id="@+id/textView33"
+                    android:text="领投券：0"
+                    android:id="@+id/home_self_group_tv_lead_ticket"
                     android:textColor="#ff332b38"
                     android:textSize="17dp"
                     android:paddingRight="3dp"
@@ -181,10 +172,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="57dp"
                 android:orientation="horizontal"
-                android:id="@+id/linearLayout25"
-                android:columnCount="10"
-                android:rowCount="10"
-                android:touchscreenBlocksFocus="false"
+                android:id="@+id/home_self_group_linearLayout_exp"
                 android:background="#ffff9735"
                 android:paddingRight="10dp"
                 android:paddingLeft="40dp" >
@@ -200,7 +188,7 @@
                 <ImageView
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:id="@+id/imageView27"
+                    android:id="@+id/home_self_group_iv_exp_new"
                     android:layout_gravity="center"
                     android:src="@mipmap/icon_point"
                     android:tint="#ffff4330"
@@ -211,8 +199,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="经验：999"
-                    android:id="@+id/textView35"
+                    android:text="经验：0"
+                    android:id="@+id/home_self_group_tv_exp_new"
                     android:textColor="#ff332b38"
                     android:textSize="17dp"
                     android:paddingRight="3dp"
@@ -234,11 +222,7 @@
                           android:layout_width="fill_parent"
                           android:layout_height="20dp"
                           android:orientation="horizontal"
-                          android:measureWithLargestChild="false"
                           android:id="@+id/home_self_group_linearLayout4"
-                          android:columnCount="10"
-                          android:rowCount="10"
-                          android:touchscreenBlocksFocus="false"
                           android:background="#ff281b20"
                           android:paddingRight="10dp"
                           android:paddingLeft="10dp" >
@@ -259,9 +243,6 @@
                           android:layout_height="57dp"
                           android:orientation="horizontal"
                           android:id="@+id/home_self_group_linearLayout2"
-                          android:columnCount="10"
-                          android:rowCount="10"
-                          android:touchscreenBlocksFocus="false"
                           android:background="#18000000"
                           android:paddingRight="10dp"
                           android:paddingLeft="40dp" >
@@ -310,11 +291,7 @@
                           android:layout_width="fill_parent"
                           android:layout_height="57dp"
                           android:orientation="horizontal"
-                          android:measureWithLargestChild="false"
                           android:id="@+id/linearLayout4"
-                          android:columnCount="10"
-                          android:rowCount="10"
-                          android:touchscreenBlocksFocus="false"
                           android:background="#ffffffff"
                           android:paddingRight="10dp"
                           android:paddingLeft="40dp" >
@@ -364,11 +341,7 @@
                           android:layout_width="fill_parent"
                           android:layout_height="57dp"
                           android:orientation="horizontal"
-                          android:measureWithLargestChild="false"
                           android:id="@+id/home_self_group_linearLayout1"
-                          android:columnCount="10"
-                          android:rowCount="10"
-                          android:touchscreenBlocksFocus="false"
                           android:background="#18000000"
                           android:paddingRight="10dp"
                           android:paddingLeft="40dp" >
@@ -419,11 +392,7 @@
                           android:layout_width="fill_parent"
                           android:layout_height="57dp"
                           android:orientation="horizontal"
-                          android:measureWithLargestChild="false"
                           android:id="@+id/home_self_group_linearLayout3"
-                          android:columnCount="10"
-                          android:rowCount="10"
-                          android:touchscreenBlocksFocus="false"
                           android:background="#ffffffff"
                           android:paddingRight="10dp"
                           android:paddingLeft="43dp" >
@@ -474,11 +443,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="57dp"
                 android:orientation="horizontal"
-                android:measureWithLargestChild="false"
                 android:id="@+id/home_self_group_dev_stuff"
-                android:columnCount="10"
-                android:rowCount="10"
-                android:touchscreenBlocksFocus="false"
                 android:background="#18000000"
                 android:paddingRight="10dp"
                 android:paddingLeft="40dp" >
@@ -525,14 +490,5 @@
             </LinearLayout>
 
         </LinearLayout>
-
-
     </ScrollView>
-
-
-
-
-
-
-
 </LinearLayout>
