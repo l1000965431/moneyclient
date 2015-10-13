@@ -132,6 +132,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 //        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //        startActivity(intent);
 //        finish();
+        if(true){
+            UserBase userBase = new UserBase();
+            userBase.setUserId("18511583205");
+            userBase.setUserType(UserProtocol.PROTOCOL_USER_TYPE_INVESTOR);
+            ((MyApplication) getApplication()).setCurrentUser(this, userBase);
+            MainActivity.CallMainActivity(this);
+            return;
+        }
+
+
         if( !checkUserInput() ){
             return;
         }
@@ -255,12 +265,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             public void run() {
                 //注册推送
                 PushAgent mPushAgent = PushAgent.getInstance( LoginActivity.this );
+                String device_token = "";
                 try {
-                    mPushAgent.removeAlias( mLoginUserId, ALIAS_TYPE.SINA_WEIBO );
-                    boolean a = mPushAgent.addAlias(mLoginUserId, ALIAS_TYPE.SINA_WEIBO);
+                    mPushAgent.removeAlias(mLoginUserId, ALIAS_TYPE.SINA_WEIBO);
+                    mPushAgent.addExclusiveAlias(mLoginUserId, ALIAS_TYPE.SINA_WEIBO);
+                    device_token = UmengRegistrar.getRegistrationId(LoginActivity.this);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                Log.d("login", device_token);
             }
         };
         new Thread(runnable).start();

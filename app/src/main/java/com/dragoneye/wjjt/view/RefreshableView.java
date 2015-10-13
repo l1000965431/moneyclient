@@ -345,17 +345,17 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 	private void updateHeaderView() {
 		if (lastStatus != currentStatus) {
 			if (currentStatus == STATUS_PULL_TO_REFRESH) {
-				description.setText(getResources().getString(R.string.pull_to_refresh));
+				description.setText(getResources().getString(R.string.pull_to_refresh_widget_pull_to_refresh));
 				arrow.setVisibility(View.VISIBLE);
 				progressBar.setVisibility(View.GONE);
 				rotateArrow();
 			} else if (currentStatus == STATUS_RELEASE_TO_REFRESH) {
-				description.setText(getResources().getString(R.string.release_to_refresh));
+				description.setText(getResources().getString(R.string.pull_to_refresh_widget_release_to_refresh));
 				arrow.setVisibility(View.VISIBLE);
 				progressBar.setVisibility(View.GONE);
 				rotateArrow();
 			} else if (currentStatus == STATUS_REFRESHING) {
-				description.setText(getResources().getString(R.string.refreshing));
+				description.setText(getResources().getString(R.string.pull_to_refresh_widget_refreshing));
 				progressBar.setVisibility(View.VISIBLE);
 				arrow.clearAnimation();
 				arrow.setVisibility(View.GONE);

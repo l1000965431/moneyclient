@@ -41,7 +41,7 @@ public class BaseActivity extends ActionBarActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         MyApplication.addActivity(this);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         if( savedInstanceState != null ){
             UserBase userBase = (UserBase)savedInstanceState.getSerializable("currentUser");
             ((MyApplication)getApplication()).setCurrentUser(this, userBase);

@@ -2,6 +2,7 @@ package com.dragoneye.wjjt.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -37,6 +38,9 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class WithdrawActivity extends BaseActivity implements View.OnClickListener{
+    public static final int WITHDRAW_TYPE_WX = 1;
+    public static final int WITHDRAW_TYPE_ALIPAY = 2;
+
 
     EditText mETChargeNum;
     TextView mTVWalletBalance;
@@ -44,8 +48,13 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
 
     Handler handler = new Handler();
 
-    public static void CallActivity(Activity activity){
+    ProgressDialog progressDialog;
+
+    private int mWithdrawType;
+
+    public static void CallActivity(Activity activity, int withdrawType){
         Intent intent = new Intent(activity, WithdrawActivity.class);
+        intent.putExtra("withDrawType", withdrawType);
         activity.startActivity(intent);
     }
 
@@ -53,6 +62,9 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setIsNeedLoadingFeature(true);
+        Intent intent = getIntent();
+        mWithdrawType = intent.getIntExtra("withDrawType", WITHDRAW_TYPE_ALIPAY);
+
         setContentView(R.layout.home_self_group_top);
 
         TextView tv = (TextView)findViewById(R.id.textView13);
@@ -60,6 +72,9 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
 
         View passwordLayout = findViewById(R.id.charge_activity_password_layout);
         passwordLayout.setVisibility(View.VISIBLE);
+
+        View explain = findViewById(R.id.charage_tv_explain);
+        explain.setVisibility(View.VISIBLE);
 
 
         TextView textView = (TextView)findViewById(R.id.invest_project_tv_confirm);
@@ -73,6 +88,7 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
         handler.post(getWalletBalance_r);
 
 //        setStatusBarColor(findViewById(R.id.statusBarBackground), Color.GREEN);
+        progressDialog = new ProgressDialog(this);
     }
 
     @Override
@@ -111,7 +127,12 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
 
                     mTVWalletBalance.setText(String.format("钱包余额：%s", ToolMaster.convertToPriceString(balance)));
 
-                    handler.post(checkIsBindWeChat_r);
+                    if( mWithdrawType == WITHDRAW_TYPE_WX ){
+                        handler.post(checkIsBindWeChat_r);
+                    }else if( mWithdrawType == WITHDRAW_TYPE_ALIPAY ){
+                        handler.post(checkIsBindAlipay_r);
+                    }
+
                 }
             });
         }
@@ -138,36 +159,38 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
                     }
 
                     if(s.compareTo("true") != 0){
-//                        AlertDialog dialog = new AlertDialog.Builder(WithdrawActivity.this)
-//                                .setPositiveButton("前往关注", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-////                                        WXTextObject textObject = new WXTextObject();
-////                                        textObject.text = "一条测试";
-////
-////                                        WXMediaMessage mediaMessage = new WXMediaMessage();
-////                                        mediaMessage.mediaObject = textObject;
-////                                        mediaMessage.description = "一条测试";
-////
-////                                        SendMessageToWX.Req req = new SendMessageToWX.Req();
-////                                        req.transaction = String.valueOf(System.currentTimeMillis());
-////                                        req.message = mediaMessage;
-////
-////                                        ((MyApplication) getApplication()).getWXAPI().sendReq(req);
-////                                        finish();
-//                                        finishLoading(true);
-//                                    }
-//                                })
-//                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        finish();
-//                                    }
-//                                })
-//                                .setMessage("目前只支持微信钱包提现；完成该服务需要您先关注微聚竞投的微信公众账号！")
-//                                .create();
-//                        dialog.show();
                         WxBindActivity.CallActivity(WithdrawActivity.this);
+                        finish();
+                    }else {
+                        finishLoading(true);
+                    }
+                }
+            });
+        }
+    };
+
+    Runnable checkIsBindAlipay_r = new Runnable() {
+        @Override
+        public void run() {
+            HttpParams params = new HttpParams();
+
+            params.put("userId", ((MyApplication)getApplication()).getCurrentUser(WithdrawActivity.this).getUserId());
+
+            HttpClient.atomicPost(WithdrawActivity.this, HttpUrlConfig.URL_ROOT + "Wallet/IsalipayBinding", params, new HttpClient.MyHttpHandler() {
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    finishLoading(false);
+                }
+
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    if (s == null) {
+                        finishLoading(false);
+                        return;
+                    }
+
+                    if(s.compareTo("true") != 0){
+                        AlipayBindActivity.CallActivity(WithdrawActivity.this);
                         finish();
                     }else {
                         finishLoading(true);
@@ -185,12 +208,18 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
                     UIHelper.toast(this, "请输入登录密码");
                     break;
                 }
-                handler.post(transferWallet_r);
+                if(mWithdrawType == WITHDRAW_TYPE_WX){
+                    handler.post(transferWalletWX_r);
+                }else {
+                    handler.post(transferWalletALIPAY_r);
+                }
+
+
                 break;
         }
     }
 
-    Runnable transferWallet_r = new Runnable() {
+    Runnable transferWalletWX_r = new Runnable() {
         @Override
         public void run() {
             HttpParams params = new HttpParams();
@@ -228,15 +257,52 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
         }
     };
 
+    Runnable transferWalletALIPAY_r = new Runnable() {
+        @Override
+        public void run() {
+            HttpParams params = new HttpParams();
+
+            String userId = ((MyApplication)getApplication()).getCurrentUser(WithdrawActivity.this).getUserId();
+
+            // 产生个订单号
+            String orderNo = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + userId;
+
+            HashMap<String, String> mapData = new HashMap<>();
+
+            mapData.put("userId", userId);
+            mapData.put("passWord", mETLoginPassword.getText().toString());
+            mapData.put("lines", mETChargeNum.getText().toString());
+
+            String ObjectJson = ToolMaster.gsonInstance().toJson(mapData);
+            try{
+                byte[] data = DESCoder.encrypt(ObjectJson.getBytes(), ToolMaster.getCodeKey(userId));
+                params.put("data", DESCoder.encryptBASE64(data));
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            HttpClient.getClient().addHeader("userId", (userId));
+
+            HttpClient.atomicPost(WithdrawActivity.this, HttpUrlConfig.URL_ROOT + "Wallet/alipayTransfer", params, new HttpClient.MyHttpHandler() {
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    onTransferWalletResult(s);
+                }
+            });
+        }
+    };
+
     private void onTransferWalletResult(String s){
         try{
             int result = Integer.parseInt(s);
             switch (result){
                 case 1:     // 提现成功
-                    UIHelper.toast(this, "提现成功");
+                    UIHelper.toast(this, "提现申请已提交");
                     break;
                 case 0:     // 提现错误
-                    UIHelper.toast(this, "提现错误");
+                    UIHelper.toast(this, "提现申请失败");
                     break;
                 case 2:     // 提现现金不足
                     UIHelper.toast(this, "提现现金不足");
@@ -252,5 +318,66 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
             e.printStackTrace();
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_withdraw, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id){
+            case R.id.menu_withdraw_unbind:
+                onUnbind();
+                break;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void onUnbind(){
+        if(mWithdrawType == WITHDRAW_TYPE_ALIPAY){
+            handler.post(unbindAlipay_r);
+        }
+    }
+
+    Runnable unbindAlipay_r = new Runnable() {
+        @Override
+        public void run() {
+            progressDialog.show();
+
+            HttpParams params = new HttpParams();
+
+            String userId = ((MyApplication)getApplication()).getCurrentUser(WithdrawActivity.this).getUserId();
+
+            params.put("userId", userId);
+
+            HttpClient.atomicPost(WithdrawActivity.this, HttpUrlConfig.URL_ROOT + "Wallet/ClearalipayId", params, new HttpClient.MyHttpHandler() {
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+                    progressDialog.dismiss();
+                    UIHelper.toast(WithdrawActivity.this, "连接服务器失败");
+                }
+
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    progressDialog.dismiss();
+                    if(s != null && s.compareTo("SUCCESS") == 0){
+                        UIHelper.toast(WithdrawActivity.this, "解除支付宝绑定成功");
+                        finish();
+                    }else{
+                        UIHelper.toast(WithdrawActivity.this, "解除支付宝绑定失败");
+                    }
+                }
+            });
+        }
+    };
 
 }

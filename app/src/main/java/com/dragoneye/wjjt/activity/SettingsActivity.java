@@ -68,7 +68,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onResume(){
         super.onResume();
-        handler.post(checkIsBindWeChat_r);
+//        handler.post(checkIsBindWeChat_r);
     }
 
     @Override

@@ -102,6 +102,23 @@
             android:layout_marginTop="5dp"
             android:inputType="textPassword"/>
 
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:id="@+id/fragment_register_et_invitation_code"
+            android:textColor="#ff999999"
+            android:textColorHint="#ff999999"
+            android:hint="邀请码"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_rounded10"
+            android:backgroundTint="#ffffffff"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_above="@+id/fragment_login_buttonlogin"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:maxLength="10"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
     <RadioGroup

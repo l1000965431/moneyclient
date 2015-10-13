@@ -16,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -38,6 +39,8 @@ import com.dragoneye.wjjt.tool.PreferencesHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
 import com.umeng.update.UmengUpdateAgent;
 
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
 import cn.smssdk.SMSSDK;
 
 public class MainActivity extends DoubleClickExitActivity implements View.OnClickListener{
@@ -205,7 +208,21 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        SubMenu subMenu = menu.addSubMenu("消息");
+        final MenuItem noticeItem = subMenu.getItem();
+        noticeItem.setIcon(R.mipmap.icon_message_prompt);
+        noticeItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        noticeItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                noticeItem.setIcon(R.mipmap.icon_message);
+                NoticeActivity.CallActivity(MainActivity.this);
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -214,6 +231,31 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if(id == R.id.main_menu_notice){
+//            NoticeActivity.CallActivity(this);
+            ShareSDK.initSDK(this);
+            OnekeyShare oks = new OnekeyShare();
+
+            oks.disableSSOWhenAuthorize();
+
+            oks.setTitle("测试分享");
+
+            oks.setText("我是分享文本");
+//            // url仅在微信（包括好友和朋友圈）中使用
+//            oks.setUrl("http://sharesdk.cn");
+//            // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+//            oks.setComment("我是测试评论文本");
+//            // site是分享此内容的网站名称，仅在QQ空间使用
+//            oks.setSite(getString(R.string.app_name));
+//            // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+//            oks.setSiteUrl("http://sharesdk.cn");
+//
+//// 启动分享GUI
+            oks.show(this);
+
+            return true;
+        }
 
         //noinspection SimplifiableIfStatement
 //        if (id == R.id.main_menu_submit_project) {

@@ -10,7 +10,7 @@ public interface GetProjectListProtocol {
     /******************************************************************************************
      *  获取项目列表                                                                            *
      ******************************************************************************************/
-    String URL_GET_PROJECT_LIST = HttpUrlConfig.URL_ROOT + "ActivityController/getActivityDetails";
+    String URL_GET_PROJECT_LIST = HttpUrlConfig.URL_ROOT + "ActivityController/getActivityDetailsTest";
 
 
     /*****************************************************************************************/

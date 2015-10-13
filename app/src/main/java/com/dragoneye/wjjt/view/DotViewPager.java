@@ -172,4 +172,8 @@ public class DotViewPager extends LinearLayout {
     public void setAutoScrollInterval(int autoScrollInterval) {
         this.autoScrollInterval = autoScrollInterval;
     }
+
+    public ViewPager getViewPager(){
+        return mViewPager;
+    }
 }

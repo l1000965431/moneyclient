@@ -41,7 +41,7 @@ public interface UserProtocol {
     String REGISTER_RESULT_OCCUPIED = "102";
     String REGISTER_RESULT_FORMAT_INCORRECT = "103";
     String REGISTER_RESULT_CLOSED = "104";
-    String REGISTER_RESULT_SECURITY_CODE_ERROR = "105";
+    String REGISTER_RESULT_INVITATION_CODE_ERROR = "105";
 
     /**
      * 用户类型
