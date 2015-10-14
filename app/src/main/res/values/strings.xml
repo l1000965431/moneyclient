@@ -60,6 +60,7 @@
     <string name="project_list_item_start_date">开抢时间:</string>
     <string name="project_list_item_progress">筹款进度:</string>
     <string name="project_list_button_shaking">上下摇晃抢钱</string>
+    <string name="project_list_end_preferential">特惠发放已结束</string>
     <string name="title_activity_settings">设置</string>
     <string name="title_activity_about">关于</string>
     <string name="title_activity_change_password">修改密码</string>
