@@ -209,5 +209,16 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="35dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="特惠发放结束"
+            android:id="@+id/textView35"
+            android:background="#ffb8b8b8"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ffffffff"
+            android:textSize="15dp" />
+
     </LinearLayout>
 </LinearLayout>
