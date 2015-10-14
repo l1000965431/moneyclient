@@ -66,6 +66,37 @@
                     android:layout_marginLeft="75dp"
                     android:layout_marginTop="22dp" />
 
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_gravity="left|bottom|center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ID:shuo6b6b"
+                        android:id="@+id/textView45"
+                        android:textColor="#ff8f6234"
+                        android:autoText="false"
+                        android:textSize="15dp"
+                        android:gravity="left|center_vertical"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="点击复制"
+                        android:id="@+id/textView53"
+                        android:textColor="#ff8f6234"
+                        android:autoText="false"
+                        android:textSize="12dp"
+                        android:gravity="left|center_vertical"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp" />
+                </LinearLayout>
+
             </FrameLayout>
 
             <LinearLayout
@@ -238,6 +269,36 @@
                     android:layout_weight="0.8" />
 
             </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="57dp"
+                android:orientation="horizontal"
+                android:id="@+id/linearLayout21"
+                android:background="#ffffffff"
+                android:paddingRight="10dp"
+                android:paddingLeft="20dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="推荐人："
+                    android:id="@+id/textView44"
+                    android:textColor="#ff332b38"
+                    android:textSize="17dp"
+                    android:layout_gravity="center" />
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editText"
+                    android:layout_gravity="center"
+                    android:textColor="#ff574e5d"
+                    android:textSize="15dp"
+                    android:hint="填入推荐人ID，领取微券奖励" />
+
+            </LinearLayout>
+
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                           android:layout_width="fill_parent"
                           android:layout_height="57dp"
