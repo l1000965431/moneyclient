@@ -3,12 +3,15 @@ package until;
 /**
  * Created by liumin on 15/7/29.
  */
+
+import java.io.Serializable;
+
 /**
  * 计划任务信息
  * @author unique
  *
  */
-public class ScheduleJob {
+public class ScheduleJob implements Serializable {
 
     /** 任务id */
     private String jobId;

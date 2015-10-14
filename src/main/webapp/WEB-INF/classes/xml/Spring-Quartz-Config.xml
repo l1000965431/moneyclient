@@ -3,7 +3,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-       <bean name="schedulerFactoryBean"
-             class="org.springframework.scheduling.quartz.SchedulerFactoryBean" />
+    <bean name="schedulerFactoryBean"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <property name="applicationContextSchedulerContextKey"
+              value="applicationContextKey"/>
+    <property name="autoStartup" value="true"/>
+    <property name="configLocation" value="WEB-INF/classes/conf/quartz.properties"/>
+    </bean>
 
 </beans>

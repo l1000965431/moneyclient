@@ -5,6 +5,7 @@ import com.aliyun.openservices.ons.api.ONSFactory;
 import com.aliyun.openservices.ons.api.Producer;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.money.config.Config;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Properties;
@@ -23,6 +24,9 @@ public class MoneyServerMQManager {
 
     static Producer producer;
     static Consumer consumer;
+
+
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(MoneyServerMQManager.class);
 
     public MoneyServerMQManager( List<MoneyServerListener> ListMoneyServerListener ){
         InitMoneyServerMQManager();
@@ -44,6 +48,9 @@ public class MoneyServerMQManager {
         propertiesconsumer.put(PropertyKeyConst.SecretKey, Config.MESSAFE_SECRETKEY);
         consumer = ONSFactory.createConsumer(propertiesconsumer);
         consumer.start();
+
+        /*LOGGER.error(consumer.toString());
+        LOGGER.error( propertiesconsumer.toString() );*/
     }
 
     /**

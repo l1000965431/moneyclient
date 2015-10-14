@@ -4,19 +4,25 @@ import com.money.Service.PurchaseInAdvance.PurchaseInAdvance;
 import com.money.Service.ServiceFactory;
 import com.money.Service.activity.ActivityService;
 import com.money.Service.user.UserService;
+import com.money.job.LotteryPushJob;
+import com.money.job.TestJob;
 import com.money.memcach.MemCachService;
 import com.money.model.SREarningModel;
+import com.money.model.UserModel;
+import org.quartz.DateBuilder;
+import org.quartz.SchedulerException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import until.GsonUntil;
-import until.PingPlus;
+import until.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,7 +68,7 @@ public class TestConller extends ControllerBase implements IController {
     @ResponseBody
     String TestRedis(HttpServletRequest request) throws Exception {
 
-        String userId = request.getParameter( "userId" );
+        String userId = request.getParameter("userId");
 
         return MemCachService.MemCachgGet(userId);
     }
@@ -166,6 +172,40 @@ public class TestConller extends ControllerBase implements IController {
         String json = GsonUntil.JavaClassToJson( c );
 
         return json;
+    }
+
+    @RequestMapping("/TestDownLoad")
+    @ResponseBody
+    void TestDownLoad( HttpServletRequest request,HttpServletResponse response ) throws IOException {
+        String a = request.getSession().getId();
+
+         response.sendRedirect("http://p.gdown.baidu.com/58ebaf2831bb441e9ee3605aa1a809f7b36dee8a7618473419a33a0354cafd0a2a10c55cbf934846e0ec064e283e33be852c01ee7d062f92d6ff5aee1e8081b1514725476657f847544a3dcd927f5535141cf0cf4368df612cd2816ac355708eb471ee58b44e3273333aa69a8d7ab90e05df928e9af10fea108c3adda329dc23315a713107726a14561e14ea0fee26c9d5e17eb1cc279a8051e2142f2121b6689303a8383beba488");
+    }
+
+    @RequestMapping("/TestBeanToMap")
+    @ResponseBody
+    String TestBean22Map(){
+        UserService userService = ServiceFactory.getService("UserService");
+        UserModel userModel = userService.getUserInfo("18511583205");
+        Map map = BeanTransfersBetweenMapUntil.TransBean2Map( userModel );
+        return GsonUntil.JavaClassToJson( map );
+    }
+
+    @RequestMapping("/TestQrtzJob")
+    @ResponseBody
+    void TestQrtzJob(){
+        ScheduleJob job = new ScheduleJob();
+        job.setJobGroup("TestQrtzJob");
+        job.setCronExpression("2 * * * * ?");
+        job.setJobId("1");
+        job.setJobName("TestQrtzJob1" );
+        job.setJobStatus( "1" );
+
+        try {
+            QuartzUntil.getQuartzUntil().AddTick(job, TestJob.class, DateBuilder.nextGivenSecondDate(null, 0));
+        } catch (SchedulerException e) {
+            return;
+        }
     }
 
 }

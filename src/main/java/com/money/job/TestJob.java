@@ -5,6 +5,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import until.ScheduleJob;
 
+import java.io.Serializable;
+
 /**
  * Created by liumin on 15/7/29.
  */
