@@ -67,6 +67,46 @@
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="visible" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="奖金池："
+                        android:id="@+id/textView56"
+                        android:textSize="17dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        android:layout_gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="999999"
+                        android:id="@+id/textView57"
+                        android:textSize="17dp"
+                        android:textColor="#ff564d4f"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        android:layout_gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:id="@+id/imageView11"
+                        android:src="@mipmap/icon_money"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:visibility="visible">
 
                     <TextView
@@ -201,7 +241,7 @@
                 android:textColor="#ffffffff"
                 android:textIsSelectable="false"
                 android:textStyle="bold"
-                android:text="@string/project_list_button_shaking"
+                android:text="特惠开始啦！！！"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_gravity="center"
                 android:layout_centerVertical="true"
