@@ -126,7 +126,7 @@
             android:layout_width="fill_parent"
             android:layout_height="100dp"
             android:background="#ffffffff"
-            android:layout_above="@+id/payment_tv_goToPay"
+            android:layout_above="@+id/rush_failure_tv_auto_close"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:id="@+id/linearLayout22">
@@ -187,7 +187,7 @@
             android:layout_height="50dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="确定"
-            android:id="@+id/payment_tv_goToPay"
+            android:id="@+id/rush_failure_tv_auto_close"
             android:layout_gravity="center"
             android:textSize="15dp"
             android:background="@color/home_red"

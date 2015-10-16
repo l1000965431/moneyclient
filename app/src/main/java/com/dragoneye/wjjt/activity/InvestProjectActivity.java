@@ -2,7 +2,6 @@ package com.dragoneye.wjjt.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -40,7 +39,6 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -777,7 +775,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         final TextView stageNum = (TextView)dialog.findViewById(R.id.payment_tv_stageNum);
         final TextView totalPrice = (TextView)dialog.findViewById(R.id.textView24);
         final TextView title = (TextView)dialog.findViewById(R.id.payment_tv_stageInfo);
-        final TextView confirm = (TextView)dialog.findViewById(R.id.payment_tv_goToPay);
+        final TextView confirm = (TextView)dialog.findViewById(R.id.rush_failure_tv_auto_close);
 
         String titleString = mProjectDetailModel.getName();
         titleString = String.format("您已入资 %s 项目", titleString);

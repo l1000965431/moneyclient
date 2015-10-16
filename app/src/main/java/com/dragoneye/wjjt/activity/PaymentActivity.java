@@ -16,7 +16,6 @@ import com.dragoneye.wjjt.protocol.InvestProjectProtocol;
 import com.dragoneye.wjjt.protocol.PaymentProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
-import com.dragoneye.wjjt.user.CurrentUser;
 import com.dragoneye.wjjt.view.DotViewPager;
 import com.google.gson.reflect.TypeToken;
 import com.pingplusplus.libone.PayActivity;
@@ -69,7 +68,7 @@ public class PaymentActivity extends DotViewPagerActivity implements View.OnClic
         mTVStageNum = (TextView)findViewById(R.id.payment_tv_stageNum);
         mTVTotalPriceNum = (TextView)findViewById(R.id.payment_tv_totalPrice);
 
-        View goToPay = findViewById(R.id.payment_tv_goToPay);
+        View goToPay = findViewById(R.id.rush_failure_tv_auto_close);
         goToPay.setOnClickListener(this);
     }
 
@@ -103,7 +102,7 @@ public class PaymentActivity extends DotViewPagerActivity implements View.OnClic
     @Override
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.payment_tv_goToPay:
+            case R.id.rush_failure_tv_auto_close:
                 onPay();
 //                onTest();
                 break;

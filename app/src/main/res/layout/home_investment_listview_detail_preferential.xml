@@ -49,7 +49,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="XXXXXX  特惠项目"
-                        android:id="@+id/payment_tv_stageInfo"
+                        android:id="@+id/home_investment_listview_detail_preferential_tv_name"
                         android:textSize="17dp"
                         android:textColor="#ff767676"
                         android:textIsSelectable="false"
@@ -71,7 +71,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
-                android:id="@+id/imageView21"
+                android:id="@+id/home_investment_listview_detail_preferential_iv_shake"
                 android:src="@mipmap/icon_shaking"
                 android:scaleType="fitEnd"
                 android:layout_centerVertical="true"

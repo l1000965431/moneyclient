@@ -132,7 +132,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 //        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //        startActivity(intent);
 //        finish();
-        if(true){
+        if(false){
             UserBase userBase = new UserBase();
             userBase.setUserId("18511583205");
             userBase.setUserType(UserProtocol.PROTOCOL_USER_TYPE_INVESTOR);
@@ -241,6 +241,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 userBase.setRealName(jsonObject.getString("realName"));
                 userBase.setIdentityId(jsonObject.getString("identityId"));
                 userBase.setUserHeadPortrait(jsonObject.getString("userHeadPortrait"));
+                userBase.setIsInvited(jsonObject.getBoolean("IsInvited"));
+                userBase.setUserInviteCode(jsonObject.getString("userInvitecode"));
                 if(userType == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
                     userBase.setIntroduction(jsonObject.getString("introduction"));
                     userBase.setExpertise(jsonObject.getString("expertise"));

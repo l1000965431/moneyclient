@@ -76,7 +76,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ID:shuo6b6b"
-                        android:id="@+id/textView45"
+                        android:id="@+id/home_self_group_tv_user_invite_code"
                         android:textColor="#ff8f6234"
                         android:autoText="false"
                         android:textSize="15dp"
@@ -88,7 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="点击复制"
-                        android:id="@+id/textView53"
+                        android:id="@+id/home_self_group_tv_click_copy"
                         android:textColor="#ff8f6234"
                         android:autoText="false"
                         android:textSize="12dp"
@@ -274,7 +274,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="57dp"
                 android:orientation="horizontal"
-                android:id="@+id/linearLayout21"
+                android:id="@+id/home_self_group_ll_input_invite_code"
                 android:background="#ffffffff"
                 android:paddingRight="10dp"
                 android:paddingLeft="20dp" >
@@ -291,11 +291,13 @@
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editText"
+                    android:id="@+id/home_self_group_et_invite_code"
                     android:layout_gravity="center"
                     android:textColor="#ff574e5d"
+                    android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                     android:textSize="15dp"
-                    android:hint="填入推荐人ID，领取微券奖励" />
+                    android:hint="填入推荐人ID，领取微券奖励"
+                    />
 
             </LinearLayout>
 

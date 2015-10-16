@@ -90,6 +90,7 @@
     <string name="title_activity_withdraw_selected">选择提现方式</string>
     <string name="title_activity_alipay_bind">绑定支付宝</string>
     <string name="title_activity_notice">通知</string>
+    <string name="title_activity_preferential">特惠项目</string>
 
     <string name="title_test_activity">壹收款</string>
     <string name="good_item_name">橡胶花瓶</string>

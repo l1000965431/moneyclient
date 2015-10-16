@@ -1,14 +1,21 @@
 package com.dragoneye.wjjt.activity.fragments;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,12 +31,14 @@ import com.dragoneye.wjjt.activity.UserInfoActivity;
 import com.dragoneye.wjjt.activity.WithdrawActivity;
 import com.dragoneye.wjjt.activity.WithdrawSelectActivity;
 import com.dragoneye.wjjt.application.MyApplication;
+import com.dragoneye.wjjt.config.HttpUrlConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
+import com.dragoneye.wjjt.user.UserBase;
 import com.dragoneye.wjjt.view.RoundCornerImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -37,6 +46,8 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by happysky on 15-6-19.
@@ -53,6 +64,9 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
     private ImageView mIVMicroTicketNew;
     private ImageView mIVLeadTicketNew;
     private ImageView mIVExpNew;
+
+    private TextView mTVUserInviteCode;
+    private EditText mETInviteCode;
 
     Handler handler = new Handler();
 
@@ -98,6 +112,14 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         View devStuff = getActivity().findViewById(R.id.home_self_group_dev_stuff);
         devStuff.setOnClickListener(this);
 
+        // 用户推荐人id
+        UserBase userBase = ((MyApplication) getActivity().getApplication()).getCurrentUser(getActivity());
+        mTVUserInviteCode = (TextView)getActivity().findViewById(R.id.home_self_group_tv_user_invite_code);
+        mTVUserInviteCode.setText("ID:" + userBase.getUserInviteCode());
+
+        View clickCopy = getActivity().findViewById(R.id.home_self_group_tv_click_copy);
+        clickCopy.setOnClickListener(this);
+
         // 微券
         View microTicketButton = getActivity().findViewById(R.id.home_self_group_linearLayout_micro_ticket);
         microTicketButton.setOnClickListener(this);
@@ -115,6 +137,34 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         expButton.setOnClickListener(this);
         mIVExpNew = (ImageView)getActivity().findViewById(R.id.home_self_group_iv_exp_new);
         mTVExp = (TextView)getActivity().findViewById(R.id.home_self_group_tv_exp_new);
+
+        // 推荐人ID
+        if( userBase.isInvited() ){
+            View inputInviteCodeLayout = getActivity().findViewById(R.id.home_self_group_ll_input_invite_code);
+            inputInviteCodeLayout.setVisibility(View.GONE);
+        }else {
+            mETInviteCode = (EditText)getActivity().findViewById(R.id.home_self_group_et_invite_code);
+            mETInviteCode.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (s.length() >= 6) {
+                        onAddUserExp(s.toString());
+                        mETInviteCode.setText("");
+                    }
+                }
+            });
+        }
+
 
         if(((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
             chargeButton.setVisibility(View.GONE);
@@ -186,23 +236,66 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
             params.put("userId", application.getCurrentUser(getActivity()).getUserId());
             params.put("token", application.getToken(getActivity()));
 
-            HttpClient.atomicPost(getActivity(), UserProtocol.URL_GET_WALLET_BALANCE, params, new HttpClient.MyHttpHandler() {
+            HttpClient.atomicPost(getActivity(), HttpUrlConfig.URL_ROOT + "User/getUserSetInfo", params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
                     if (s == null) {
                         UIHelper.toast(getActivity(), "服务器繁忙，稍后再试");
                         return;
                     }
-                    int balance = Integer.parseInt(s);
-                    if (balance == -1) {
-                        ((MyApplication) getActivity().getApplication()).reLogin(getActivity());
-                        return;
+                    int balance = 0, exp = 0;
+
+                    try {
+                        JSONObject object = new JSONObject(s);
+                        exp = object.getInt("Exp");
+                        balance = object.getInt("wallet");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                     mTVWalletBalance.setText(ToolMaster.convertToPriceString(balance));
+                    mTVExp.setText(String.format("经验：%d", exp));
                 }
             });
         }
     };
+
+    private void onAddUserExp(String inviteCode){
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("正在验证推荐人ID，请稍后");
+        progressDialog.show();
+
+        HttpParams params = new HttpParams();
+
+        UserBase userBase = ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity());
+        params.put("userId", userBase.getUserId());
+        params.put("inviteCode", inviteCode);
+
+        HttpClient.atomicPost(getActivity(), HttpUrlConfig.URL_ROOT + "User/AddUserExp", params, new HttpClient.MyHttpHandler() {
+            @Override
+            public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+                progressDialog.dismiss();
+                UIHelper.toast(getActivity(), "无法连接到服务器，请稍后再试");
+            }
+
+            @Override
+            public void onSuccess(int i, Header[] headers, String s) {
+                progressDialog.dismiss();
+                int exp = 0;
+                try{
+                    exp = Integer.parseInt(s);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    UIHelper.toast(getActivity(), "服务器繁忙，请稍后再试");
+                }
+                if(exp == 0){
+                    UIHelper.toast(getActivity(), "推荐人ID不正确，请输入正确的推荐人ID");
+                }else {
+                    UIHelper.toast(getActivity(), String.format("获得%dEXP", exp));
+                }
+            }
+        });
+    }
 
     @Override
     public void onClick(View v){
@@ -236,7 +329,18 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
             case R.id.home_self_group_linearLayout_exp:
                 onExp();
                 break;
+            case R.id.home_self_group_tv_click_copy:
+                onCopyUserInviteCode();
+                break;
         }
+    }
+
+    private void onCopyUserInviteCode(){
+        UserBase userBase = ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity());
+        ClipboardManager clipboardManager = (ClipboardManager)getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clipData = ClipData.newPlainText(null, userBase.getUserInviteCode());
+        clipboardManager.setPrimaryClip(clipData);
+        UIHelper.toast(getActivity(), "已复制到粘帖板");
     }
 
     private void onChangePortrait(){

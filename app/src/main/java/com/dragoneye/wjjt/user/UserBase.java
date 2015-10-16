@@ -71,6 +71,32 @@ public class UserBase implements Serializable{
      */
     private boolean isPerfectInfo;
 
+    public boolean isInvited() {
+        return isInvited;
+    }
+
+    public void setIsInvited(boolean isInvited) {
+        this.isInvited = isInvited;
+    }
+
+    /**
+     * 是否领取过推荐人奖励
+     */
+    private boolean isInvited;
+
+    public String getUserInviteCode() {
+        return userInviteCode;
+    }
+
+    public void setUserInviteCode(String userInviteCode) {
+        this.userInviteCode = userInviteCode;
+    }
+
+    /**
+     *  推荐人ID
+     */
+    private String userInviteCode;
+
     public String getUserId() {
         return userId;
     }
