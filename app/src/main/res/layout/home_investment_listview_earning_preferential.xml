@@ -85,8 +85,7 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="20dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -118,18 +117,6 @@
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="39dp"
-                    android:id="@+id/imageView31"
-                    android:layout_gravity="center"
-                    android:scaleType="fitStart"
-                    android:src="@mipmap/icon_money"
-                    android:layout_weight="0.8"
-                    android:paddingBottom="3dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/textView43"
-                    android:layout_toEndOf="@+id/textView43" />
             </RelativeLayout>
 
         </LinearLayout>
