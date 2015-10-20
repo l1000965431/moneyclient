@@ -20,8 +20,7 @@
             <com.dragoneye.wjjt.view.DotViewPager
                 android:layout_width="fill_parent"
                 android:layout_height="170dp"
-                android:id="@+id/investment_project_detail_dot_viewpager"
-                android:visibility="gone" />
+                android:id="@+id/investment_project_detail_dot_viewpager" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -298,7 +297,7 @@
                             android:orientation="horizontal"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:paddingLeft="30dp"
+                            android:paddingLeft="10dp"
                             android:visibility="visible"
                             >
 
@@ -321,7 +320,7 @@
                                 android:textIsSelectable="false"
                                 android:layout_gravity="center"
                                 android:gravity="center_vertical"
-                                android:layout_marginLeft="10dp" />
+                                android:layout_marginLeft="8dp" />
 
                             <EditText
                                 android:layout_width="fill_parent"
@@ -332,74 +331,6 @@
                                 android:inputType="number"
                                 android:textColor="#ff63595f" />
 
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="(单期可用)"
-                            android:id="@+id/textView74"
-                            android:textSize="12dp"
-                            android:textColor="#ff7c7c7c"
-                            android:textIsSelectable="false"
-                            android:layout_gravity="center|left"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginLeft="70dp"
-                            android:layout_marginBottom="-27dp" />
-
-                        <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:paddingLeft="30dp"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginLeft="20dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="V券数选择："
-                                android:id="@+id/textView73"
-                                android:textSize="15dp"
-                                android:textColor="#ff2a2a2a"
-                                android:textIsSelectable="false"
-                                android:layout_gravity="center"
-                                android:gravity="center_vertical"
-                                android:layout_marginLeft="20dp" />
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:id="@+id/imageView24"
-                                android:layout_gravity="center"
-                                android:src="@mipmap/icon_less"
-                                android:layout_marginLeft="20dp"
-                                android:tint="#ff63595f" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="7/1"
-                                android:id="@+id/textView76"
-                                android:textSize="17dp"
-                                android:textColor="#ff2a2a2a"
-                                android:textIsSelectable="false"
-                                android:layout_gravity="center"
-                                android:gravity="center_vertical"
-                                android:layout_marginLeft="20dp" />
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:id="@+id/imageView27"
-                                android:layout_gravity="center"
-                                android:src="@mipmap/icon_add"
-                                android:layout_marginLeft="30dp"
-                                android:tint="#ff63595f" />
                         </LinearLayout>
 
                         <LinearLayout

@@ -82,6 +82,72 @@
                     android:layout_height="wrap_content"
                     android:visibility="visible">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="(单期可用)"
+                        android:id="@+id/textView40"
+                        android:textSize="12dp"
+                        android:textColor="#ffed540d"
+                        android:textIsSelectable="false"
+                        android:layout_gravity="center|left"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="45dp"
+                        android:layout_marginBottom="-27dp" />
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="45dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="V券抵金选择："
+                            android:id="@+id/textView35"
+                            android:textSize="15dp"
+                            android:textColor="#ff2a2a2a"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical" />
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:id="@+id/imageView21"
+                            android:layout_gravity="center"
+                            android:src="@mipmap/icon_less"
+                            android:tint="#ff63595f"
+                            android:layout_marginLeft="15dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="7/1"
+                            android:id="@+id/textView38"
+                            android:textSize="17dp"
+                            android:textColor="#ff2a2a2a"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="20dp" />
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:id="@+id/imageView30"
+                            android:layout_gravity="center"
+                            android:src="@mipmap/icon_add"
+                            android:layout_marginLeft="30dp"
+                            android:tint="#ff63595f" />
+                    </LinearLayout>
+
                     <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="fill_parent"
