@@ -246,18 +246,22 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                         UIHelper.toast(getActivity(), getString(R.string.http_server_exception));
                         return;
                     }
-                    int balance = 0, exp = 0;
+                    int balance = 0, exp = 0, vTicket = 0, leadTicket = 0;
 
                     try {
                         JSONObject object = new JSONObject(s);
                         exp = object.getInt("Exp");
                         balance = object.getInt("wallet");
+                        vTicket = object.getInt("virtualSecurities");
+                        leadTicket = object.getInt("ledSecurities");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     mTVWalletBalance.setText(ToolMaster.convertToPriceString(balance));
                     mTVExp.setText(String.format("经验：%d", exp));
+                    mTVMicroTicket.setText(String.format("微券：%d", vTicket));
+                    mTVLeadTicket.setText(String.format("领投券：%d", leadTicket));
                 }
             });
         }
@@ -392,7 +396,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                         oks.show(getActivity());
                     }
                 })
-                .setMessage("分享微聚竞投给你的朋友，可获得V券（V券可用来提高入资的额度，增加返金几率）")
+                .setMessage("分享微聚竞投给你的朋友，可获得V券（V券可用来提高入资的额度，增加返金几率）。")
                 .create();
         alertDialog.show();
     }
@@ -406,7 +410,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                     }
                 })
                 .setMessage("关注微聚竞投的全新项目发布，参与相应活动可获得新项目的领投券" +
-                        "（领投券即是项目的领投资格，一张券代表一次领投机会）")
+                        "（领投券即是项目的领投资格，一张券代表一次领投机会）。")
                 .create();
         alertDialog.show();
     }
@@ -420,7 +424,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                     }
                 })
                 .setMessage("参与项目投资或分享微聚竞投给你的朋友，都可以获得一定的EXP经验积分；" +
-                        "经验越高可参加越多的特惠活动，免费参与特惠项目福利返现")
+                        "经验越高可参加越多的特惠活动，免费参与特惠项目福利返现。")
                 .create();
         alertDialog.show();
     }

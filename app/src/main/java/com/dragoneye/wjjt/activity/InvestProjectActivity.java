@@ -38,6 +38,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -63,13 +64,18 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     private View mIVLeadSubtract;
     private View mIVFallowAdd;
     private View mIVFallowSubtract;
+    private View mIVVTicketAdd;
+    private View mIVVTicketSubtract;
     private TextView mTVLeadStage;
     private TextView mTVFallowStage;
     private TextView mTVMaxFallowPrice;
+    private TextView mTVVTicket;
     private EditText mETInvestPrice;
 //    private int mProjectStageMaxNum;
     private int mSelectedLeadStageNum;
     private int mSelectedFallowStageNum;
+    private int mSelectedVTicketNum;
+    private int mVTicketLeft;
     private int mLeadInvestPrice;
     private int mFallowInvestPrice;
     private int mFallowInvestTicketLeft;
@@ -209,6 +215,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mIVFallowSubtract.setOnClickListener(this);
         mIVFallowArrow = (ImageView)findViewById(R.id.invest_project_iv_fallowArrow);
 
+        mIVVTicketAdd = findViewById(R.id.invest_project_iv_vTicketAdd);
+        mIVVTicketAdd.setOnClickListener(this);
+        mIVVTicketSubtract = findViewById(R.id.invest_project_iv_vTicketSub);
+        mIVVTicketSubtract.setOnClickListener(this);
+        mTVVTicket = (TextView)findViewById(R.id.invest_project_tv_vTicket);
+
         String title = mProjectDetailModel.getName();
         if( title.length() > 10 ){
             title = title.substring(0, 10) + "...";
@@ -242,13 +254,13 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mTextViewProjectProgress.setText(strProgress);
         mProgressBar.setProgress(progress);
 
-        handler.post(getInvestInfo_r);
+        handler.post(getWalletBalance_r);
         setStartLoading();
     }
 
     @Override
     public void onRetryLoading(){
-        handler.post(getInvestInfo_r);
+        handler.post(getWalletBalance_r);
     }
 
     public void onClick(View v){
@@ -273,6 +285,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                 break;
             case R.id.investment_ll_fallowButton:
                 onFallow();
+                break;
+            case R.id.invest_project_iv_vTicketAdd:
+                onVTicketAdd();
+                break;
+            case R.id.invest_project_iv_vTicketSub:
+                onVTicketSub();
                 break;
         }
     }
@@ -348,6 +366,20 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         }
     }
 
+    private void onVTicketAdd(){
+        if( mSelectedVTicketNum < mVTicketLeft ){
+            mSelectedVTicketNum++;
+            setVTicketNum(mSelectedVTicketNum);
+        }
+    }
+
+    private void onVTicketSub(){
+        if( mSelectedVTicketNum > 0 ){
+            mSelectedVTicketNum--;
+            setVTicketNum(mSelectedVTicketNum);
+        }
+    }
+
     private void resetLead(){
         if( mSelectedLeadStageNum != 0 ){
             setLeadStageNum(0);
@@ -362,6 +394,11 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         if( mSelectedFallowStageNum != 0 ){
             setFallowStageNum(0);
         }
+        if( mSelectedVTicketNum != 0 ){
+            setVTicketNum(0);
+        }
+
+        mSelectedVTicketNum = 0;
         mSelectedFallowStageNum = 0;
         mLLFallowPanel.setVisibility(View.GONE);
         mIVFallowArrow.setRotation(-90.0f);
@@ -374,9 +411,46 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         updateBrEarningProportion(num);
     }
 
+    private void setVTicketNum(int num){
+        mTVVTicket.setText(String.format("%d/%d", num, mVTicketLeft));
+    }
+
     private void setFallowStageNum(int num){
         mTVFallowStage.setText(String.format("%d/%d", num, mFallowStageLeft));
     }
+
+    Runnable getWalletBalance_r = new Runnable() {
+        @Override
+        public void run() {
+            HttpParams params = new HttpParams();
+
+            MyApplication application = (MyApplication)getApplication();
+            params.put("userId", application.getCurrentUser(InvestProjectActivity.this).getUserId());
+            params.put("token", application.getToken(InvestProjectActivity.this));
+
+            HttpClient.atomicPost(InvestProjectActivity.this, HttpUrlConfig.URL_ROOT + "User/getUserSetInfo", params, new HttpClient.MyHttpHandler() {
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+                    finishLoading(false);
+                }
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    if (s == null) {
+                        UIHelper.toast(InvestProjectActivity.this, getString(R.string.http_server_exception));
+                        return;
+                    }
+                    int balance = 0, exp = 0, vTicket = 0, leadTicket = 0;
+                    try {
+                        JSONObject object = new JSONObject(s);
+                        mVTicketLeft = object.getInt("virtualSecurities");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    handler.post(getInvestInfo_r);
+                }
+            });
+        }
+    };
 
     Runnable getInvestInfo_r = new Runnable() {
         @Override

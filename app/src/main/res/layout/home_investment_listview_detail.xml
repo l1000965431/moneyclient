@@ -373,7 +373,7 @@
                             <ImageView
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:id="@+id/imageView24"
+                                android:id="@+id/invest_project_iv_vTicketSub"
                                 android:layout_gravity="center"
                                 android:src="@mipmap/icon_less"
                                 android:layout_marginLeft="20dp"
@@ -384,7 +384,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:text="7/1"
-                                android:id="@+id/textView76"
+                                android:id="@+id/invest_project_tv_vTicket"
                                 android:textSize="17dp"
                                 android:textColor="#ff2a2a2a"
                                 android:textIsSelectable="false"
@@ -395,7 +395,7 @@
                             <ImageView
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:id="@+id/imageView27"
+                                android:id="@+id/invest_project_iv_vTicketAdd"
                                 android:layout_gravity="center"
                                 android:src="@mipmap/icon_add"
                                 android:layout_marginLeft="30dp"
