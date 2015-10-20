@@ -31,9 +31,8 @@
                         android:orientation="vertical"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:paddingBottom="25dp"
                         android:visibility="visible"
-                        android:paddingTop="10dp">
+                        android:paddingTop="30dp">
 
                         <LinearLayout
                             android:orientation="horizontal"
@@ -121,9 +120,9 @@
                             android:textIsSelectable="false"
                             android:layout_gravity="center|left"
                             android:gravity="center_vertical"
-                            android:layout_marginTop="20dp"
                             android:layout_marginLeft="45dp"
-                            android:layout_marginBottom="-27dp" />
+                            android:layout_marginBottom="-27dp"
+                            android:layout_marginTop="10dp" />
 
                         <LinearLayout
                             android:orientation="horizontal"
@@ -183,7 +182,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginLeft="70dp"
-                        android:layout_marginTop="10dp">
+                        android:layout_marginTop="30dp">
 
                         <TextView
                             android:layout_width="fill_parent"
