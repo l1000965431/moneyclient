@@ -166,7 +166,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                     progressDialog.dismiss();
                     HttpClient.getClient().removeHeader("userId");
                     if (s == null) {
-                        UIHelper.toast(ChangePasswordActivity.this, "服务器繁忙，请稍后再试");
+                        UIHelper.toast(ChangePasswordActivity.this, getString(R.string.http_server_exception));
                         return;
                     }
                     onChangeResult(s);

@@ -241,7 +241,7 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
                     finishLoading(true);
                     String result = HttpClient.getValueFromHeader(headers, GetProjectListProtocol.GET_PROJECT_INFO_RESULT_KEY);
                     if (result == null || s == null) {
-                        UIHelper.toast(ProjectDetailActivity.this, "服务器繁忙");
+                        UIHelper.toast(ProjectDetailActivity.this, getString(R.string.http_server_exception));
                         return;
                     }
                     onUpdateProjectDetailResult(result, s);

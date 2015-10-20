@@ -49,6 +49,9 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
+
 /**
  * Created by happysky on 15-6-19.
  */
@@ -240,7 +243,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
                     if (s == null) {
-                        UIHelper.toast(getActivity(), "服务器繁忙，稍后再试");
+                        UIHelper.toast(getActivity(), getString(R.string.http_server_exception));
                         return;
                     }
                     int balance = 0, exp = 0;
@@ -275,7 +278,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
             @Override
             public void onFailure(int i, Header[] headers, String s, Throwable throwable){
                 progressDialog.dismiss();
-                UIHelper.toast(getActivity(), "无法连接到服务器，请稍后再试");
+                UIHelper.toast(getActivity(), getString(R.string.http_can_not_connect_to_server));
             }
 
             @Override
@@ -364,13 +367,32 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 
     private void onMicroTicket(){
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                .setPositiveButton("去分享", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        ShareSDK.initSDK(getActivity());
+                        OnekeyShare oks = new OnekeyShare();
 
+                        oks.disableSSOWhenAuthorize();
+
+                        oks.setTitle("测试分享");
+
+                        oks.setText("我是分享文本");
+//            // url仅在微信（包括好友和朋友圈）中使用
+//            oks.setUrl("http://sharesdk.cn");
+//            // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+//            oks.setComment("我是测试评论文本");
+//            // site是分享此内容的网站名称，仅在QQ空间使用
+//            oks.setSite(getString(R.string.app_name));
+//            // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+//            oks.setSiteUrl("http://sharesdk.cn");
+
+//
+//// 启动分享GUI
+                        oks.show(getActivity());
                     }
                 })
-                .setMessage("微券")
+                .setMessage("分享微聚竞投给你的朋友，可获得V券（V券可用来提高入资的额度，增加返金几率）")
                 .create();
         alertDialog.show();
     }
@@ -383,7 +405,8 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 
                     }
                 })
-                .setMessage("领投券")
+                .setMessage("关注微聚竞投的全新项目发布，参与相应活动可获得新项目的领投券" +
+                        "（领投券即是项目的领投资格，一张券代表一次领投机会）")
                 .create();
         alertDialog.show();
     }
@@ -396,7 +419,8 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 
                     }
                 })
-                .setMessage("经验")
+                .setMessage("参与项目投资或分享微聚竞投给你的朋友，都可以获得一定的EXP经验积分；" +
+                        "经验越高可参加越多的特惠活动，免费参与特惠项目福利返现")
                 .create();
         alertDialog.show();
     }

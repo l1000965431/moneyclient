@@ -3,7 +3,10 @@ package com.dragoneye.wjjt.activity.fragments.invest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -22,17 +25,24 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
+import com.dragoneye.wjjt.activity.ProjectDetailActivity;
 import com.dragoneye.wjjt.activity.fragments.BaseFragment;
 import com.dragoneye.wjjt.application.MyApplication;
+import com.dragoneye.wjjt.config.BroadcastConfig;
 import com.dragoneye.wjjt.config.HttpUrlConfig;
 import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
+import com.dragoneye.wjjt.model.EarningModel;
 import com.dragoneye.wjjt.model.PreferentialModel;
+import com.dragoneye.wjjt.tool.ToolMaster;
+import com.dragoneye.wjjt.tool.UIHelper;
+import com.dragoneye.wjjt.user.UserBase;
 import com.dragoneye.wjjt.view.LoadingMoreFooterProxy;
 import com.dragoneye.wjjt.view.RefreshableView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -41,12 +51,16 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -73,6 +87,11 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
     Vibrator vibrator = null;
     private int mAutoCloseCount;
 
+    PreferentialModel mCurSelectedModel;
+    private boolean mIsWaittingResult = false;
+
+    private int mExp;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,7 +113,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                     public void run() {
                         mLoadingMoreProxy.reset();
                         mCurPageIndex = -1;
-                        handler.post(onUpdateProjectList_r);
+                        handler.post(getWalletBalance_r);
                     }
                 });
             }
@@ -124,11 +143,40 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         vibrator = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
     }
 
+    private IntentFilter intentFilter = new IntentFilter(BroadcastConfig.NEW_PREFERENTIAL_MESSAGE);
+    private BroadcastReceiver earnPreferentialReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            progressDialog.dismiss();
+            if(mIsWaittingResult && mCurSelectedModel != null){
+                String activityId = intent.getStringExtra("activityId");
+                int earningPrice = intent.getIntExtra("earningPrice", 0);
+                if( earningPrice > 0 ){
+                    rushSuccess(earningPrice, mCurSelectedModel);
+                }else {
+                    rushFailure(mCurSelectedModel);
+                }
+            }
+        }
+    };
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            if( refreshableView != null ){
+                refreshableView.doRefreshImmediately();
+            }
+        }
+
+    }
+
     @Override
     public void onPause()
     {
         super.onPause();
         sensorManager.unregisterListener(this);
+        getActivity().unregisterReceiver(earnPreferentialReceiver);
     }
 
     @Override
@@ -138,7 +186,49 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
+        getActivity().registerReceiver(earnPreferentialReceiver, intentFilter);
     }
+
+    Runnable getWalletBalance_r = new Runnable() {
+        @Override
+        public void run() {
+            HttpParams params = new HttpParams();
+
+            MyApplication application = (MyApplication)getActivity().getApplication();
+            params.put("userId", application.getCurrentUser(getActivity()).getUserId());
+            params.put("token", application.getToken(getActivity()));
+
+            HttpClient.atomicPost(getActivity(), HttpUrlConfig.URL_ROOT + "User/getUserSetInfo", params, new HttpClient.MyHttpHandler() {
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    refreshableView.finishRefreshing();
+                    if (mLoadingMoreProxy.isLoadingMore()) {
+                        mLoadingMoreProxy.setLoadingFailed();
+                    }
+                }
+
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    refreshableView.finishRefreshing();
+                    if (s == null) {
+                        UIHelper.toast(getActivity(), getString(R.string.http_server_exception));
+                        return;
+                    }
+                    int exp = 0;
+
+                    try {
+                        JSONObject object = new JSONObject(s);
+                        exp = object.getInt("Exp");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    mExp = exp;
+                    handler.post(onUpdateProjectList_r);
+                }
+            });
+        }
+    };
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy)
@@ -164,18 +254,52 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                     return;
 
                 vibrator.vibrate(500);
-                startRush();
+                startRush(mCurSelectedModel);
             }
         }
     }
 
-    private void startRush(){
-        rushFailure();
+    private void startRush(PreferentialModel preferentialModel){
+        mMainAlertDialog.dismiss();
+        progressDialog.show();
+        mIsWaittingResult = false;
+        HttpParams params = new HttpParams();
+
+        UserBase userBase = ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity());
+
+        params.put("userId", userBase.getUserId());
+        params.put("activityId", preferentialModel.getActivityId());
+
+        HttpClient.atomicPost(getActivity(), HttpUrlConfig.URL_ROOT + "ActivityPreferentialController/JoinActivityPreferentialInfo",
+                params, new HttpClient.MyHttpHandler() {
+                    @Override
+                    public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                        UIHelper.toast(getActivity(), getString(R.string.http_can_not_connect_to_server));
+                    }
+
+                    @Override
+                    public void onSuccess(int i, Header[] headers, String s) {
+                        int result = 0;
+                        try {
+                            result = Integer.parseInt(s);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        mIsWaittingResult = true;
+                    }
+                });
+//        rushFailure();
     }
 
-    private void rushSuccess(){
+    private void rushSuccess(int price, PreferentialModel preferentialModel){
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View dialog = inflater.inflate(R.layout.home_investment_listview_earning_preferential, null);
+
+        final TextView tvEarningPrice = (TextView)dialog.findViewById(R.id.rush_success_tv_earning_price);
+        final TextView tvProjectName = (TextView)dialog.findViewById(R.id.rush_success_tv_activity_name);
+
+        tvEarningPrice.setText(String.valueOf(price));
+        tvProjectName.setText(preferentialModel.getName());
 
         mRushResultAlertDialog = new AlertDialog.Builder(getActivity())
                 .setView(dialog)
@@ -183,11 +307,14 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         mRushResultAlertDialog.show();
     }
 
-    private void rushFailure(){
+    private void rushFailure(PreferentialModel preferentialModel){
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View dialog = inflater.inflate(R.layout.home_investment_listview_failure_preferential, null);
 
         final TextView tvAutoClose = (TextView)dialog.findViewById(R.id.rush_failure_tv_auto_close);
+        final TextView tvActivityName = (TextView)dialog.findViewById(R.id.rush_failure_tv_activity_name);
+
+        tvActivityName.setText(preferentialModel.getName());
 
         mRushResultAlertDialog = new AlertDialog.Builder(getActivity())
                 .setView(dialog)
@@ -215,8 +342,8 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         @Override
         public void run() {
             HttpParams params = new HttpParams();
-//            params.put("pageIndex", mCurPageIndex + 1);
-//            params.put("numPerPage", 10);
+            params.put("page", mCurPageIndex + 1);
+            params.put("findNum", 5);
 
             HttpClient.atomicPost(getActivity(), HttpUrlConfig.URL_ROOT + "ActivityPreferentialController/getActivityPreferentialInfo",
                     params, new HttpClient.MyHttpHandler() {
@@ -290,6 +417,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         preferentialModel.setExp(jsonObject.getInt("userEXP"));
         preferentialModel.setBonusPool(jsonObject.getInt("activityLines"));
         preferentialModel.setSummary(jsonObject.getString("summary"));
+        preferentialModel.setActivityCompleteId(jsonObject.getString("activityCompleteId"));
 
         String dateString = jsonObject.getString("activityStartTime");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -300,6 +428,24 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
             e.printStackTrace();
         }
         preferentialModel.setDate(date);
+
+        JSONObject earnings = jsonObject.getJSONObject("activitySREarning");
+        Iterator<String> keys = earnings.keys();
+        List<EarningModel> earningModelList = new ArrayList<>();
+        while(keys.hasNext()){
+            String key = keys.next();
+            EarningModel earningModel = new EarningModel();
+            earningModel.setPrice(Integer.parseInt(key));
+            earningModel.setNum(earnings.getInt(key));
+            earningModelList.add(earningModel);
+        }
+        Collections.sort(earningModelList, new Comparator<EarningModel>() {
+            @Override
+            public int compare(EarningModel lhs, EarningModel rhs) {
+                return lhs.getPrice() > rhs.getPrice() ? -1 : 1;
+            }
+        });
+        preferentialModel.setEarnings(earningModelList);
 
         return preferentialModel;
     }
@@ -316,10 +462,14 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         PreferentialModel preferentialModel = (PreferentialModel)mListView.getItemAtPosition(position);
+//        if(preferentialModel.getState() != PreferentialModel.STATE_START){
+//            return;
+//        }
         showProjectDetailDialog(preferentialModel);
     }
 
     private void showProjectDetailDialog(PreferentialModel preferentialModel){
+        mCurSelectedModel = preferentialModel;
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View dialog = inflater.inflate(R.layout.home_investment_listview_detail_preferential, null);
 
@@ -329,6 +479,19 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         final ImageView ivShake = (ImageView)dialog.findViewById(R.id.home_investment_listview_detail_preferential_iv_shake);
         Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
         ivShake.startAnimation(shake);
+
+        final LinearLayout llEarningsRoot = (LinearLayout)dialog.findViewById(R.id.home_investment_listview_detail_preferential_ll_earnings_root);
+        for(int i = 0; i < preferentialModel.getEarnings().size(); i++){
+            EarningModel earningModel = preferentialModel.getEarnings().get(i);
+            String string = String.format("%d等奖：    %s     (%d名)", i + 1, ToolMaster.convertToPriceString(earningModel.getPrice()),
+                    earningModel.getNum());
+            TextView textView = new TextView(getActivity());
+            textView.setTextColor(Color.WHITE);
+            textView.setTextSize(20);
+            textView.setPadding( UIHelper.dip2px(getActivity(), 30), 0, 0, 0 );
+            textView.setText(string);
+            llEarningsRoot.addView(textView);
+        }
 
         mMainAlertDialog = new AlertDialog.Builder(getActivity())
                 .setView(dialog)
@@ -377,7 +540,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            PreferentialModel preferentialModel = (PreferentialModel)getItem(position);
+            final PreferentialModel preferentialModel = (PreferentialModel)getItem(position);
 
             ViewHolder viewHolder;
             if (convertView == null) {
@@ -410,12 +573,15 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                     viewHolder.vFinish.setVisibility(View.GONE);
                     Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
                     viewHolder.ivShake.startAnimation(shake);
+                    viewHolder.vBegin.setVisibility(View.VISIBLE);
                     break;
                 case PreferentialModel.STATE_FINISH:
                     viewHolder.vBegin.setVisibility(View.GONE);
+                    viewHolder.vFinish.setVisibility(View.VISIBLE);
                     break;
             }
 
+            final ArrayList<String> imageUrls = new ArrayList<>();
             try{
                 JSONArray jsonArray = new JSONArray(preferentialModel.getImageUrl());
                 if( jsonArray.length() > 0 ){
@@ -432,9 +598,20 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                     viewHolder.ivLogo.setImageBitmap(BitmapFactory.decodeResource(getResources(),
                             ((MyApplication) (context.getApplicationContext())).images.get(position % 7)));
                 }
+                for(int i = 0; i < jsonArray.length(); i++){
+                    imageUrls.add(jsonArray.getString(i));
+                }
             }catch (JSONException e){
                 e.printStackTrace();
             }
+            viewHolder.ivLogo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ProjectDetailActivity.CallProjectDetailActivity(getActivity(), preferentialModel.getActivityCompleteId(),
+                            preferentialModel.getName(), imageUrls, 0, 0);
+                }
+            });
+
             viewHolder.tvName.setText(preferentialModel.getName());
             viewHolder.tvSummary.setText(preferentialModel.getSummary());
             viewHolder.tvBonusPool.setText(String.valueOf(preferentialModel.getBonusPool()));

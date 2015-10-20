@@ -53,7 +53,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="XXXXXX  特惠项目"
-                        android:id="@+id/payment_tv_stageInfo"
+                        android:id="@+id/rush_success_tv_activity_name"
                         android:textSize="17dp"
                         android:textColor="#ff767676"
                         android:textIsSelectable="false"
@@ -108,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="999,999"
-                    android:id="@+id/textView43"
+                    android:id="@+id/rush_success_tv_earning_price"
                     android:textSize="39dp"
                     android:textColor="#ffdb475a"
                     android:textIsSelectable="false"
@@ -128,8 +128,8 @@
                     android:layout_weight="0.8"
                     android:paddingBottom="3dp"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/textView43"
-                    android:layout_toEndOf="@+id/textView43" />
+                    android:layout_toRightOf="@+id/rush_success_tv_earning_price"
+                    android:layout_toEndOf="@+id/rush_success_tv_earning_price" />
             </RelativeLayout>
 
         </LinearLayout>

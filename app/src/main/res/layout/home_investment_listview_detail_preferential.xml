@@ -111,14 +111,16 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:visibility="visible"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/home_investment_listview_detail_preferential_ll_earnings_root">
 
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:paddingLeft="30dp"
-                        android:layout_marginTop="7dp" >
+                        android:layout_marginTop="7dp"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -164,7 +166,8 @@
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:paddingLeft="30dp"
-                        android:layout_marginTop="7dp" >
+                        android:layout_marginTop="7dp"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -210,7 +213,8 @@
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:paddingLeft="30dp"
-                        android:layout_marginTop="7dp" >
+                        android:layout_marginTop="7dp"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"

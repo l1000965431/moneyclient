@@ -187,7 +187,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 //                String token = s;
                 HttpClient.getClient().removeHeader("userId");
                 if (s == null || s.isEmpty()) {
-                    UIHelper.toast(LoginActivity.this, "服务器繁忙，请稍后再试");
+                    UIHelper.toast(LoginActivity.this, getString(R.string.http_server_exception));
                     return;
                 }
                 try {

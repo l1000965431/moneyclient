@@ -1,6 +1,7 @@
 package com.dragoneye.wjjt.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by happysky on 15-10-15.
@@ -11,6 +12,16 @@ public class PreferentialModel {
     public static final int STATE_WAITING = 7;
 
     String activityId;
+
+    public String getActivityCompleteId() {
+        return activityCompleteId;
+    }
+
+    public void setActivityCompleteId(String activityCompleteId) {
+        this.activityCompleteId = activityCompleteId;
+    }
+
+    String activityCompleteId;
     String imageUrl;
     String name;
     String summary;
@@ -18,6 +29,16 @@ public class PreferentialModel {
     int exp;
     int state;
     Date date;
+
+    public List<EarningModel> getEarnings() {
+        return earnings;
+    }
+
+    public void setEarnings(List<EarningModel> earnings) {
+        this.earnings = earnings;
+    }
+
+    List<EarningModel> earnings;
 
     public String getActivityId() {
         return activityId;

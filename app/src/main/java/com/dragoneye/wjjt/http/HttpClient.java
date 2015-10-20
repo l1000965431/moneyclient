@@ -4,6 +4,7 @@ package com.dragoneye.wjjt.http;
 import android.content.Context;
 import android.os.Handler;
 
+import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.application.AppInfoManager;
 import com.dragoneye.wjjt.config.HttpProtocolConfig;
 import com.dragoneye.wjjt.tool.UIHelper;
@@ -75,7 +76,7 @@ public class HttpClient {
         client.post(strHttpUrl, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                UIHelper.toast(context, "无法连接到服务器，请稍后再试");
+                UIHelper.toast(context, context.getString(R.string.http_can_not_connect_to_server));
                 myHttpHandler.onFailure(i, headers, s, throwable);
                 mPostingUrl.remove(strHttpUrl);
                 return;
