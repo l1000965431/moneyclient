@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.DotViewPagerActivity;
-import com.dragoneye.wjjt.application.AppInfoManager;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.HttpUrlConfig;
 import com.dragoneye.wjjt.http.HttpClient;
@@ -44,6 +43,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class InvestProjectActivity extends DotViewPagerActivity implements View.OnClickListener {
 
@@ -64,12 +64,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     private View mIVLeadSubtract;
     private View mIVFallowAdd;
     private View mIVFallowSubtract;
-    private View mIVVTicketAdd;
-    private View mIVVTicketSubtract;
+//    private View mIVVTicketAdd;
+//    private View mIVVTicketSubtract;
     private TextView mTVLeadStage;
     private TextView mTVFallowStage;
     private TextView mTVMaxFallowPrice;
-    private TextView mTVVTicket;
+//    private TextView mTVVTicket;
     private EditText mETInvestPrice;
 //    private int mProjectStageMaxNum;
     private int mSelectedLeadStageNum;
@@ -215,11 +215,11 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mIVFallowSubtract.setOnClickListener(this);
         mIVFallowArrow = (ImageView)findViewById(R.id.invest_project_iv_fallowArrow);
 
-        mIVVTicketAdd = findViewById(R.id.invest_project_iv_vTicketAdd);
-        mIVVTicketAdd.setOnClickListener(this);
-        mIVVTicketSubtract = findViewById(R.id.invest_project_iv_vTicketSub);
-        mIVVTicketSubtract.setOnClickListener(this);
-        mTVVTicket = (TextView)findViewById(R.id.invest_project_tv_vTicket);
+//        mIVVTicketAdd = findViewById(R.id.invest_project_iv_vTicketAdd);
+//        mIVVTicketAdd.setOnClickListener(this);
+//        mIVVTicketSubtract = findViewById(R.id.invest_project_iv_vTicketSub);
+//        mIVVTicketSubtract.setOnClickListener(this);
+//        mTVVTicket = (TextView)findViewById(R.id.invest_project_tv_vTicket);
 
         String title = mProjectDetailModel.getName();
         if( title.length() > 10 ){
@@ -286,12 +286,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             case R.id.investment_ll_fallowButton:
                 onFallow();
                 break;
-            case R.id.invest_project_iv_vTicketAdd:
-                onVTicketAdd();
-                break;
-            case R.id.invest_project_iv_vTicketSub:
-                onVTicketSub();
-                break;
+//            case R.id.invest_project_iv_vTicketAdd:
+////                onVTicketAdd();
+//                break;
+//            case R.id.invest_project_iv_vTicketSub:
+////                onVTicketSub();
+//                break;
         }
     }
 
@@ -366,19 +366,19 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         }
     }
 
-    private void onVTicketAdd(){
-        if( mSelectedVTicketNum < mVTicketLeft ){
-            mSelectedVTicketNum++;
-            setVTicketNum(mSelectedVTicketNum);
-        }
-    }
-
-    private void onVTicketSub(){
-        if( mSelectedVTicketNum > 0 ){
-            mSelectedVTicketNum--;
-            setVTicketNum(mSelectedVTicketNum);
-        }
-    }
+//    private void onVTicketAdd(){
+//        if( mSelectedVTicketNum < mVTicketLeft ){
+//            mSelectedVTicketNum++;
+//            setVTicketNum(mSelectedVTicketNum);
+//        }
+//    }
+//
+//    private void onVTicketSub(){
+//        if( mSelectedVTicketNum > 0 ){
+//            mSelectedVTicketNum--;
+//            setVTicketNum(mSelectedVTicketNum);
+//        }
+//    }
 
     private void resetLead(){
         if( mSelectedLeadStageNum != 0 ){
@@ -394,11 +394,11 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         if( mSelectedFallowStageNum != 0 ){
             setFallowStageNum(0);
         }
-        if( mSelectedVTicketNum != 0 ){
-            setVTicketNum(0);
-        }
-
-        mSelectedVTicketNum = 0;
+//        if( mSelectedVTicketNum != 0 ){
+//            setVTicketNum(0);
+//        }
+//
+//        mSelectedVTicketNum = 0;
         mSelectedFallowStageNum = 0;
         mLLFallowPanel.setVisibility(View.GONE);
         mIVFallowArrow.setRotation(-90.0f);
@@ -411,9 +411,9 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         updateBrEarningProportion(num);
     }
 
-    private void setVTicketNum(int num){
-        mTVVTicket.setText(String.format("%d/%d", num, mVTicketLeft));
-    }
+//    private void setVTicketNum(int num){
+//        mTVVTicket.setText(String.format("%d/%d", num, mVTicketLeft));
+//    }
 
     private void setFallowStageNum(int num){
         mTVFallowStage.setText(String.format("%d/%d", num, mFallowStageLeft));
@@ -600,15 +600,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         if( investPrice == 0 ){
             mLinearLayoutProportion.setVisibility(View.GONE);
         }else {
-            for(EarningModel model : mSrEarningModels){
-                TextView textView = new TextView(this);
+            List<TextView> list = getSrProportionTextView(investPrice);
+            for(TextView tv : list){
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(0, 5, 0, 0);
-                mLinearLayoutResultRoot.addView(textView, layoutParams);
-
-                float proportion = (float)investPrice / mFallowInvestPrice * model.getNum() * 100;
-                setProportion(textView, proportion, model.getPrice(), false);
+                mLinearLayoutResultRoot.addView(tv, layoutParams);
             }
         }
     }
@@ -619,18 +616,39 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         if( stageNum == 0 ){
             mLinearLayoutProportion.setVisibility(View.GONE);
         }else {
-            for(EarningModel model : mBrEarningModels){
-                TextView textView = new TextView(this);
+            List<TextView> list = getBrProportionTextView(stageNum);
+            for(TextView tv : list){
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(0, 5, 0, 0);
-                mLinearLayoutResultRoot.addView(textView, layoutParams);
-
-                float proportion = 1.0f / mBrEarningModels.size() * 100;
-                setProportion(textView, proportion, model.getPrice(), true);
+                mLinearLayoutResultRoot.addView(tv, layoutParams);
             }
         }
 
+    }
+
+    private List<TextView> getSrProportionTextView(int investPrice){
+        List<TextView> list = new ArrayList<>();
+        for(EarningModel model : mSrEarningModels){
+            TextView textView = new TextView(this);
+            float proportion = (float)investPrice / mFallowInvestPrice * model.getNum() * 100;
+            setProportion(textView, proportion, model.getPrice(), false);
+
+            list.add(textView);
+        }
+        return list;
+    }
+
+    private List<TextView> getBrProportionTextView(int stageNum){
+        List<TextView> list = new ArrayList<>();
+        for(EarningModel model : mBrEarningModels){
+            TextView textView = new TextView(this);
+            float proportion = 1.0f / mBrEarningModels.size() * 100;
+            setProportion(textView, proportion, model.getPrice(), true);
+
+            list.add(textView);
+        }
+        return list;
     }
 
     private void setProportion(TextView textView, float proportion, int price, boolean isBr){
@@ -680,25 +698,94 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         flInvestStageNum = investStageNum;
         flInvestPriceNum = investPriceNum;
 
-        new AlertDialog.Builder(this).setTitle(AppInfoManager.getApplicationName(this))
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//                        Intent intent = new Intent(InvestProjectActivity.this, PaymentActivity.class);
-//                        intent.putExtra(EXTRA_PROJECT_MODEL, mProjectDetailModel);
-//                        intent.putExtra(PaymentActivity.EXTRA_INVEST_TYPE, flInvestType);
-//                        intent.putExtra(PaymentActivity.EXTRA_INVEST_STAGE_NUM, flInvestStageNum);
-//                        intent.putExtra(PaymentActivity.EXTRA_INVEST_PRICE_NUM, flInvestPriceNum);
-//                        startActivity(intent);
-                        onInvest(flInvestType, flInvestStageNum, flInvestPriceNum, 1);
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View dialog = inflater.inflate(R.layout.home_investment_listview_order, null);
 
+
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setView(dialog)
+                .show();
+
+
+        final TextView tvTotalPrice = (TextView)dialog.findViewById(R.id.invest_confirm_tv_totalPrice);
+        tvTotalPrice.setText(String.valueOf(flInvestPriceNum));
+        final TextView tvTotalStage = (TextView)dialog.findViewById(R.id.invest_confirm_tv_stageNum);
+        tvTotalStage.setText(String.valueOf(flInvestStageNum));
+        final View llVTicketPanel = dialog.findViewById(R.id.invest_confirm_ll_vTicketPanel);
+
+        if(flInvestType == InvestProjectProtocol.INVEST_TYPE_LEAD || flInvestStageNum > 1 ){
+            llVTicketPanel.setVisibility(View.GONE);
+        }else {
+            final TextView tvVTicket = (TextView)dialog.findViewById(R.id.invest_confirm_tv_vTicketNum);
+            if(mVTicketLeft >= 1){
+                mSelectedVTicketNum = 1;
+                tvVTicket.setText(String.format("%d/%d", mSelectedVTicketNum, mVTicketLeft));
+            }else {
+                mSelectedVTicketNum = 0;
+                tvVTicket.setText(String.format("%d/%d", 0, 0));
+            }
+
+            final View vAdd = dialog.findViewById(R.id.invest_confirm_iv_vTicketadd);
+            vAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mSelectedVTicketNum < mVTicketLeft){
+                        ++mSelectedVTicketNum;
+                        tvVTicket.setText(String.format("%d/%d", mSelectedVTicketNum, mVTicketLeft));
                     }
-                }).setMessage(tips).show();
+                }
+            });
+            final View vSub = dialog.findViewById(R.id.invest_confirm_iv_vTicketSub);
+            vSub.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mSelectedVTicketNum > 0){
+                        --mSelectedVTicketNum;
+                        tvVTicket.setText(String.format("%d/%d", mSelectedVTicketNum, mVTicketLeft));
+                    }
+                }
+            });
+        }
+
+        List<TextView> list;
+        list = flInvestType == InvestProjectProtocol.INVEST_TYPE_LEAD ? getBrProportionTextView(flInvestStageNum)
+                : getSrProportionTextView(flInvestPriceNum);
+        final LinearLayout llProbabilityPanel = (LinearLayout)dialog.findViewById(R.id.invset_confirm_ll_earnProbability_root);
+        for(TextView tv : list){
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 5, 0, 0);
+            llProbabilityPanel.addView(tv, layoutParams);
+        }
+
+        final View confirmButton = dialog.findViewById(R.id.invest_confirm_tv_confirm);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onInvest(flInvestType, flInvestStageNum, flInvestPriceNum, 1);
+                alertDialog.dismiss();
+            }
+        });
+
+//        new AlertDialog.Builder(this).setTitle(AppInfoManager.getApplicationName(this))
+//                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+////                        Intent intent = new Intent(InvestProjectActivity.this, PaymentActivity.class);
+////                        intent.putExtra(EXTRA_PROJECT_MODEL, mProjectDetailModel);
+////                        intent.putExtra(PaymentActivity.EXTRA_INVEST_TYPE, flInvestType);
+////                        intent.putExtra(PaymentActivity.EXTRA_INVEST_STAGE_NUM, flInvestStageNum);
+////                        intent.putExtra(PaymentActivity.EXTRA_INVEST_PRICE_NUM, flInvestPriceNum);
+////                        startActivity(intent);
+//
+//                    }
+//                })
+//                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                }).setMessage(tips).show();
 
     }
 
