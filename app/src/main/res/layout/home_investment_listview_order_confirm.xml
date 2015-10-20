@@ -213,7 +213,7 @@
             android:layout_height="50dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="确定"
-            android:id="@+id/payment_tv_goToPay"
+            android:id="@+id/rush_failure_tv_auto_close"
             android:layout_gravity="center"
             android:textSize="15dp"
             android:background="@color/home_red"

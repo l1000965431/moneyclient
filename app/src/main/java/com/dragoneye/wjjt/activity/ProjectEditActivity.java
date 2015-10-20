@@ -450,7 +450,7 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
             HttpClient.post(url, httpParams, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    UIHelper.toast(ProjectEditActivity.this, "无法连接到服务器");
+                    UIHelper.toast(ProjectEditActivity.this, getString(R.string.http_can_not_connect_to_server));
                     cancelUpload();
                 }
 

@@ -53,7 +53,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="XXXXXX  特惠项目"
-                        android:id="@+id/payment_tv_stageInfo"
+                        android:id="@+id/rush_failure_tv_activity_name"
                         android:textSize="17dp"
                         android:textColor="#ff767676"
                         android:textIsSelectable="false"
@@ -98,15 +98,15 @@
                     android:layout_weight="0.8"
                     android:paddingBottom="3dp"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/textView43"
-                    android:layout_toStartOf="@+id/textView43" />
+                    android:layout_toLeftOf="@+id/rush_success_tv_earning_price"
+                    android:layout_toStartOf="@+id/rush_success_tv_earning_price" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="没抢到哇！"
-                    android:id="@+id/textView43"
+                    android:id="@+id/rush_success_tv_earning_price"
                     android:textSize="27dp"
                     android:textColor="#ff453f41"
                     android:textIsSelectable="false"
@@ -139,7 +139,7 @@
             android:layout_height="50dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="（3）秒后自动关闭"
-            android:id="@+id/payment_tv_goToPay"
+            android:id="@+id/rush_failure_tv_auto_close"
             android:layout_gravity="center"
             android:textSize="15dp"
             android:background="#ff8a8486"

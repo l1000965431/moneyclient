@@ -163,7 +163,7 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
                     if( s == null ){
-                        UIHelper.toast(UserInfoActivity.this, "服务器繁忙，请稍后再试");
+                        UIHelper.toast(UserInfoActivity.this, getString(R.string.http_server_exception));
                         cancelUpload();
                         return;
                     }

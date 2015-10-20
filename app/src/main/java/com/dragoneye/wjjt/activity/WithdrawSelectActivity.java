@@ -34,14 +34,14 @@ public class WithdrawSelectActivity extends BaseActivity implements View.OnClick
         mRBAlipay = (RadioButton)findViewById(R.id.home_self_group_order_rb_alipay);
         mRBAlipay.setOnCheckedChangeListener(this);
 
-        View confirm = findViewById(R.id.payment_tv_goToPay);
+        View confirm = findViewById(R.id.rush_failure_tv_auto_close);
         confirm.setOnClickListener( this );
     }
 
     @Override
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.payment_tv_goToPay:
+            case R.id.rush_failure_tv_auto_close:
                 onConfirmPayType();
                 break;
         }

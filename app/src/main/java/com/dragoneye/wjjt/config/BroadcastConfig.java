@@ -7,4 +7,5 @@ public interface BroadcastConfig {
     String BROADCAST_ROOT = "com.dragoneye.wjjt.";
 
     String NEW_EARNING_MESSAGE = "NEW_EARNING_MESSAGE";
+    String NEW_PREFERENTIAL_MESSAGE = "NEW_PREFERENTIAL_MESSAGE";
 }

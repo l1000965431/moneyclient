@@ -20,6 +20,7 @@ import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.tool.PreferencesHelper;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.user.UserBase;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -40,8 +41,12 @@ import com.umeng.message.UmengMessageHandler;
 import com.umeng.message.UmengRegistrar;
 import com.umeng.message.entity.UMessage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -239,11 +244,31 @@ public class MyApplication extends Application {
                     @Override
                     public void run() {
                         //显示收益的红点
-                        if (msg.custom.equals("redpoint")) {
-                            Intent intent = new Intent(BroadcastConfig.NEW_EARNING_MESSAGE);
-                            sendBroadcast(intent);
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(msg.custom);
 
-                            PreferencesHelper.setIsHaveEarningMessage(MyApplication.this, true);
+                            if (jsonObject != null) {
+                                String messageType = jsonObject.getString("MessageType");
+                                if (messageType.equals("redpoint")) {
+                                    Intent intent = new Intent(BroadcastConfig.NEW_EARNING_MESSAGE);
+                                    sendBroadcast(intent);
+
+                                    PreferencesHelper.setIsHaveEarningMessage(MyApplication.this, true);
+                                } else if (messageType.equals("activityPreferentialLottery")){
+                                    String body = jsonObject.getString("MessageBody");
+                                    HashMap<String, String> bodyMap = ToolMaster.gsonInstance().fromJson(body,
+                                            new TypeToken<HashMap<String, String>>(){}.getType());
+                                    String activityId = bodyMap.get("ActivityId");
+                                    int earningPrice = Integer.parseInt(bodyMap.get("Lines"));
+                                    Intent intent = new Intent(BroadcastConfig.NEW_PREFERENTIAL_MESSAGE);
+                                    intent.putExtra("activityId", activityId);
+                                    intent.putExtra("earningPrice", earningPrice);
+                                    sendBroadcast(intent);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 });

@@ -165,7 +165,7 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
                     progressDialog.dismiss();
                     HttpClient.getClient().removeHeader("userId");
                     if (s == null) {
-                        UIHelper.toast(RetrievePasswordActivity.this, "服务器繁忙，请稍后再试");
+                        UIHelper.toast(RetrievePasswordActivity.this, getString(R.string.http_server_exception));
                         return;
                     }
                     onChangeResult(s);
