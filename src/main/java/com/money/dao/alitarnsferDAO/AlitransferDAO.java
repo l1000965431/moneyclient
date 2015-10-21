@@ -51,7 +51,7 @@ public class AlitransferDAO extends BaseDao {
             this.saveNoTransaction(NewalitransferModel);
             return 1;
         } else {
-            String sql = "update alitransfer set TransferLines = TransferLines+?0, AlitransferDate=?1 where UserId = ?2";
+            String sql = "update alitransfer set TransferLines = TransferLines+?, AlitransferDate=?1 where UserId = ?";
             Session session = this.getNewSession();
             SQLQuery query = session.createSQLQuery(sql);
             query.setParameter(0, Lines);
@@ -82,7 +82,7 @@ public class AlitransferDAO extends BaseDao {
      * @return 0:错误 >0:成功
      */
     public int Clearalitansfer(String UserId) throws ParseException {
-        String sql = "update alitransfer set Lines = 0 , AlitransferDate=?0 where UserId = ?1";
+        String sql = "update alitransfer set Lines = 0 , AlitransferDate=? where UserId = ?";
         Session session = this.getNewSession();
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, UserId);

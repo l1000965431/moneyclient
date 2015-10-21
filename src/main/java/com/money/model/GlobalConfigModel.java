@@ -13,31 +13,27 @@ import javax.persistence.*;
 @Entity(name = "globalconfig")
 @Table
 @org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
-public class GlobalConfigModel extends BaseModel{
-    /**
-     * 键
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    int id;
+public class  GlobalConfigModel extends BaseModel{
 
     /**
      * 值
      */
+
     @Column(columnDefinition = "TEXT")
     String value;
 
     /**
-     *
+     * 键
      */
-    String Configkey;
+    @Id
+    String ConfigKey;
 
     public String getConfigkey() {
-        return Configkey;
+        return ConfigKey;
     }
 
     public void setConfigkey(String configkey) {
-        Configkey = configkey;
+        ConfigKey = configkey;
     }
 
     public String getValue() {
@@ -48,11 +44,4 @@ public class GlobalConfigModel extends BaseModel{
         this.value = value;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 }

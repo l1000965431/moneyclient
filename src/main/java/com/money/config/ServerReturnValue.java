@@ -120,6 +120,12 @@ public class ServerReturnValue {
      */
     public static final int PERFECTREFRESH = 103;
 
+
+    /**
+     * 微劵小与系统的最小值
+     */
+    public static final int MINVIRTUALSECURITIESBUY = 104;
+
     /**
      * 获取项目详情成功
      */

@@ -145,6 +145,7 @@ public class UserDAO extends BaseDao {
         userModel.setUserType(userType);
         userModel.setWxOpenId(userID);
         userModel.setAlipayId("0");
+        userModel.setUserInvitecode(ShareCodeUtil.toSerialCode(ShareCodeUtil.codeToId(userID)));
         saveNoTransaction(userModel);
 
         if (userType == Config.INVESTOR) {
@@ -435,6 +436,33 @@ public class UserDAO extends BaseDao {
         return userModel;
     }
 
+
+    public UserModel getUSerModelByInviteCode(final String userInvitecode) {
+        final UserModel[] userModel = {null};
+
+        this.excuteTransactionByCallback(new TransactionCallback() {
+            public void callback(BaseDao basedao) throws Exception {
+                userModel[0] = (UserModel) basedao.getNewSession().createCriteria(UserModel.class)
+                        .setMaxResults(1)
+                        .add(Restrictions.eq("userInvitecode", userInvitecode))
+                        .uniqueResult();
+            }
+        });
+
+        return userModel[0];
+    }
+
+    public UserModel getUSerModelByInviteCodeNoTransaction(final String userInvitecode) {
+        final UserModel userModel;
+
+        userModel = (UserModel) getNewSession().createCriteria(UserModel.class)
+                .setMaxResults(1)
+                .add(Restrictions.eq("userInvitecode", userInvitecode))
+                .uniqueResult();
+
+        return userModel;
+    }
+
     //1:绑定成功 2:绑定失败 3:已经绑定
     public int BindingOpenId(String openId, String UserId) {
         UserModel userModel = getUSerModel(UserId);
@@ -493,4 +521,38 @@ public class UserDAO extends BaseDao {
         }
 
     }
+
+
+    public int AddUserExpByUserId( String userId,int AddExp ){
+        String sql = "update User set userExp=userExp+? where userId = ?";
+        Session session = this.getSession();
+        SQLQuery sqlQuery = session.createSQLQuery(sql);
+        sqlQuery.setParameter( 0,AddExp );
+        sqlQuery.setParameter( 1,userId );
+
+
+        return sqlQuery.executeUpdate();
+    }
+
+
+    public int AddUserExpByInviteCode( String inviteCode,int AddExp ){
+        String sql = "update User set userExp=userExp+? where userInvitecode = ?";
+        Session session = this.getSession();
+        SQLQuery sqlQuery = session.createSQLQuery(sql);
+        sqlQuery.setParameter( 0,AddExp );
+        sqlQuery.setParameter( 1,inviteCode );
+
+
+        return sqlQuery.executeUpdate();
+    }
+
+    public int UpdateUserInvited( String userId ){
+        String sql = "update User set IsInvited=true where userId = ?";
+        Session session = this.getSession();
+        SQLQuery sqlQuery = session.createSQLQuery(sql);
+        sqlQuery.setParameter( 0,userId );
+
+        return sqlQuery.executeUpdate();
+    }
+
 }

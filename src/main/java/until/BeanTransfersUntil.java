@@ -6,19 +6,20 @@ import org.slf4j.LoggerFactory;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * bean与Map互相转换工具
+ * bean转换工具
  * <p>User: 刘旻
  * <p>Date: 15-7-13
  * <p>Version: 1.0
  */
-public class BeanTransfersBetweenMapUntil {
+public class BeanTransfersUntil {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BeanTransfersBetweenMapUntil.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BeanTransfersUntil.class);
 
 
     public static Map<String, Object> TransBean2Map(Object obj) {
@@ -61,4 +62,31 @@ public class BeanTransfersBetweenMapUntil {
             LOGGER.error("Map转换Object失败", e);
         }
     }
+
+    /**对象转byte[]
+     * @param obj
+     * @return
+     * @throws IOException
+     */
+    public static byte[] objectToBytes(Object obj) throws Exception{
+        ByteArrayOutputStream bo = new ByteArrayOutputStream();
+        ObjectOutputStream oo = new ObjectOutputStream(bo);
+        oo.writeObject(obj);
+        byte[] bytes = bo.toByteArray();
+        bo.close();
+        oo.close();
+        return bytes;
+    }
+    /**byte[]转对象
+     * @param bytes
+     * @return
+     * @throws Exception
+     */
+    public static Object bytesToObject(byte[] bytes) throws Exception{
+        ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+        ObjectInputStream sIn = new ObjectInputStream(in);
+        return sIn.readObject();
+    }
+
+
 }

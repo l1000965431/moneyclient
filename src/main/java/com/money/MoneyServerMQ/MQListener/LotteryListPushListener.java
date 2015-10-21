@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.money.MoneyServerMQ.MoneyServerListener;
 import com.money.model.LotteryPeoples;
 import until.GsonUntil;
+import until.UmengPush.UMengMessage;
 import until.UmengPush.UMengPush;
 import until.UmengPush.UmengSendParameter;
 
@@ -46,7 +47,8 @@ public class LotteryListPushListener extends MoneyServerListener {
             }
 
             for (String userid : TempList) {
-                UmengSendParameter umengSendParameter = new UmengSendParameter(userid, "redpoint", "收益通知红点");
+
+                UmengSendParameter umengSendParameter = new UmengSendParameter( new UMengMessage( userid,"redpoint","","收益通知红点" ) );
 
                 UMengPush.CustomizedcastSendMessage(umengSendParameter);
             }

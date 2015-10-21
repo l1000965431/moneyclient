@@ -200,6 +200,16 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         return walletModel.IsLinesEnough(Lines);
     }
 
+    public boolean IsvirtualSecuritiesEnough(String UserID, int Lines) {
+        WalletModel walletModel = (WalletModel) generaDAO.loadNoTransaction(WalletModel.class, UserID);
+
+        if (walletModel == null) {
+            return false;
+        }
+
+        return walletModel.IsvirtualSecuritiesEnough(Lines);
+    }
+
     /**
      * 金额增加
      *
@@ -208,7 +218,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
      * @return
      */
     private int WalletAdd(String UserId, int Lines) {
-        String sql = "update wallet set WalletLines = WalletLines+?0 where UserID = ?1";
+        String sql = "update wallet set WalletLines = WalletLines+? where UserID = ? ";
         Session session = generaDAO.getNewSession();
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, Lines);
@@ -224,7 +234,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
      * @return
      */
     private int WalletCost(String UserId, int Lines) {
-        String sql = "update wallet set WalletLines = WalletLines-?0 where UserID = ?1 and WalletLines-?2 >= 0";
+        String sql = "update wallet set WalletLines = WalletLines-? where UserID = ? and WalletLines-? >= 0";
         Session session = generaDAO.getNewSession();
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, Lines);
@@ -233,6 +243,37 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         return query.executeUpdate();
     }
 
+    /**
+     * 微劵花费
+     * @param UserId
+     * @param Lines
+     * @return
+     */
+    public int virtualSecuritiesCost(String UserId, int Lines) {
+        String sql = "update wallet set virtualSecurities = virtualSecurities-? where UserID = ? and virtualSecurities-? >= 0";
+        Session session = generaDAO.getNewSession();
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setParameter(0, Lines);
+        query.setParameter(1, UserId);
+        query.setParameter(2, Lines);
+        return query.executeUpdate();
+    }
+
+    /**
+     * 微劵充值
+     * @param UserId
+     * @param Lines
+     * @return
+     */
+    public int virtualSecuritiesAdd(String UserId, int Lines) {
+        String sql = "update wallet set virtualSecurities = virtualSecurities+? where UserID = ? and virtualSecurities+?<=?";
+        Session session = generaDAO.getNewSession();
+        SQLQuery query = session.createSQLQuery(sql);
+        query.setParameter(0, Lines);
+        query.setParameter(1, UserId);
+        query.setParameter(2, Config.MaxVirtualSecurities);
+        return query.executeUpdate();
+    }
 
     /**
      * 获得支付宝提现申请清单
@@ -293,10 +334,11 @@ public class WalletService extends ServiceBase implements ServiceInterface {
 
     /**
      * 清空支付宝绑定
+     *
      * @param UserId
      * @return
      */
-    public String ClearalipayId( final String UserId ){
+    public String ClearalipayId(final String UserId) {
 
         return alitransferDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
@@ -358,7 +400,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
                     objects[0] = userModel;
                     objects[1] = Lines;
                     objects[2] = MoneyServerDate.getDateCurDate();
-                    LOGGER.error( "提交提现申请失败",objects );
+                    LOGGER.error("提交提现申请失败", objects);
                     return false;
                 }
 
@@ -402,8 +444,8 @@ public class WalletService extends ServiceBase implements ServiceInterface {
                 if (Faildetails != null) {
                     FaildetailsList = AlipayService.ParsingNotifyParam(Faildetails);
 
-                    if( FaildetailsList == null ){
-                        LOGGER.error( "FaildetailsList == null" );
+                    if (FaildetailsList == null) {
+                        LOGGER.error("FaildetailsList == null");
                         return false;
                     }
                     for (List<String> aFaildetailsList : FaildetailsList) {
@@ -425,8 +467,8 @@ public class WalletService extends ServiceBase implements ServiceInterface {
                 if (Successdetails != null) {
                     SuccessdetailsList = AlipayService.ParsingNotifyParam(Successdetails);
 
-                    if( SuccessdetailsList == null ){
-                        LOGGER.error( "SuccessdetailsList == null" );
+                    if (SuccessdetailsList == null) {
+                        LOGGER.error("SuccessdetailsList == null");
                         return false;
                     }
 
@@ -445,10 +487,6 @@ public class WalletService extends ServiceBase implements ServiceInterface {
 
                     }
                 }
-
-
-
-
 
 
                 return true;

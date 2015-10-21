@@ -230,44 +230,6 @@ public class ServiceGroupActivity extends ServiceBase implements ServiceInterfac
         return ticketModels;
     }
 
-    /**
-     * 根据投资金额和喊卡系数计算出投资层次列表
-     *
-     * @param configService
-     * @param investAmount
-     * @param cutFactor
-     * @return
-     */
-    public List<Integer> getInvestLevelList(GlobalConfigService configService, int investAmount, int cutFactor) {
-        int maxLevel = (int) ((float) investAmount / cutFactor);
-        List<Integer> investLevelList = configService.getInvestLevelList();
-        ArrayList<Integer> resultList = new ArrayList();
-        for (int i = 0; i < investLevelList.size(); i++) {
-            if (investLevelList.get(i) > maxLevel) {
-                break;
-            }
-            resultList.add(investLevelList.get(i));
-        }
-
-        return resultList;
-    }
-
-    /**
-     * 根据投资层次与全局配置获得各个层次的投资分布比例
-     *
-     * @param configService
-     * @param investLevelSize
-     * @return
-     */
-    public List<Float> getInvestProportionList(GlobalConfigService configService, int investLevelSize) {
-        HashMap<Integer, ArrayList<Float>> investProportions = configService.getInvestProportion();
-        ArrayList<Float> proportionList = investProportions.get(investLevelSize);
-        if (proportionList == null) {
-            return new ArrayList<Float>();
-        }
-
-        return proportionList;
-    }
 
     /**
      * 计算每期的项目收益

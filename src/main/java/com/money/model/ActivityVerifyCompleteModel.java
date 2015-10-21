@@ -40,7 +40,7 @@ public class ActivityVerifyCompleteModel extends BaseModel {
     Set<ActivityDynamicModel> activityDynamicModels = new HashSet();
 
     /**
-     *  项目分期动态列表
+     *  小R中奖信息
      */
     @OneToMany(mappedBy = "activityVerifyCompleteModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<SREarningModel> srEarningModels = new HashSet();

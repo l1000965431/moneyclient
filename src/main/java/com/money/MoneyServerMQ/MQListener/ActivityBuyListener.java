@@ -11,6 +11,7 @@ import com.money.Service.PurchaseInAdvance.PurchaseInAdvance;
 import com.money.Service.activity.ActivityService;
 import com.money.config.Config;
 import com.money.config.MoneyServerMQ_Topic;
+import com.money.config.ServerReturnValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.GsonUntil;
 import until.UmengPush.UmengSendParameter;
@@ -45,13 +46,14 @@ public class ActivityBuyListener extends MoneyServerListener {
 
             final String InstallmentActivityID = map.get( "InstallmentActivityID" );
             final String UserID = map.get( "UserID" );
-            int PurchaseNum = Integer.valueOf( map.get( "PurchaseNum" ));
+            int PurchaseNum = Integer.valueOf(map.get("PurchaseNum"));
             int AdvanceNum = Integer.valueOf( map.get( "AdvanceNum" ));
             int PurchaseType = Integer.valueOf( map.get( "PurchaseType" ) );
+            int VirtualSecurities = Integer.valueOf( map.get( "VirtualSecurities" ) );
             String OrderID = map.get( "OrderID" ).toString();
 
             //修改订单状态 修改项目参与人数 修改项目当前金额
-            ActivityBuy( InstallmentActivityID,UserID,PurchaseNum,AdvanceNum,PurchaseType,OrderID );
+            ActivityBuy( InstallmentActivityID,UserID,PurchaseNum,AdvanceNum,PurchaseType,OrderID,VirtualSecurities );
             return Action.CommitMessage;
         } catch (Exception e) {
             return Action.CommitMessage;
@@ -67,16 +69,24 @@ public class ActivityBuyListener extends MoneyServerListener {
      * @param OrderID
      * @throws Exception
      */
-    public void ActivityBuy( String InstallmentActivityID,String UserID,int PurchaseNum ,int AdvanceNum,int PurchaseType,String OrderID ) throws Exception {
+    public void ActivityBuy( String InstallmentActivityID,String UserID,
+                             int PurchaseNum ,int AdvanceNum,
+                             int PurchaseType,String OrderID,int VirtualSecurities ) throws Exception {
 
         StringBuffer ActivityName = new StringBuffer();
         int Result = 0;
         switch( PurchaseType ){
             case Config.PURCHASEPRICKSILK:
-                Result = purchaseInAdvance.PurchaseInAdvance( InstallmentActivityID, UserID,PurchaseNum,AdvanceNum,OrderID,ActivityName );
+                Result = purchaseInAdvance.PurchaseInAdvance( InstallmentActivityID,
+                        UserID,PurchaseNum,AdvanceNum,OrderID,ActivityName );
                 break;
             case Config.PURCHASELOCALTYRANTS:
-                Result = purchaseInAdvance.LocalTyrantsPurchaseActivity( InstallmentActivityID,UserID,AdvanceNum,OrderID,ActivityName );
+                if( VirtualSecurities > 0 && VirtualSecurities < Config.MinVirtualSecuritiesBuy ){
+                    break;
+                }
+
+                Result = purchaseInAdvance.LocalTyrantsPurchaseActivity( InstallmentActivityID,
+                        UserID,AdvanceNum,OrderID,VirtualSecurities,ActivityName );
                 break;
         }
 

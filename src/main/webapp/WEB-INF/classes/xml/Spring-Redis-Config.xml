@@ -4,8 +4,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
        <bean id="MemCachService" class="com.money.memcach.MemCachService" >
-              <property name="shardedPool" ref="shardedJedisPool"/>
+              <property name="shareJedisPool" ref="shardedJedisPool"/>
        </bean>
+
 
        <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
               <!--<property name="maxActive" value="${redis.pool.maxActive}"/>-->

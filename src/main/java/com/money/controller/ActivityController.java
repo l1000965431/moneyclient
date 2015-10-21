@@ -9,10 +9,10 @@ import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import com.money.dao.GeneraDAO;
 import com.money.dao.TransactionSessionCallback;
-import com.money.model.*;
+import com.money.model.ActivityDetailModel;
+import com.money.model.ActivityDynamicModel;
+import com.money.model.ActivityVerifyCompleteModel;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +21,9 @@ import until.GsonUntil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 项目控制
@@ -122,7 +124,7 @@ public class ActivityController extends ControllerBase implements IController {
         UserService userService = ServiceFactory.getService("userService");
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
-        if( activityService == null ){
+        if (activityService == null) {
             return null;
         }
 
@@ -152,7 +154,7 @@ public class ActivityController extends ControllerBase implements IController {
         int page = Integer.valueOf(request.getParameter("page"));
         int findNum = Integer.valueOf(request.getParameter("findNum"));
 
-        if( !this.UserIsLand( UserID,Token ) ){
+        if (!this.UserIsLand(UserID, Token)) {
             return Config.STRLANDFAILED;
         }
 
@@ -176,7 +178,7 @@ public class ActivityController extends ControllerBase implements IController {
         String activityId = request.getParameter("activityId");
         ActivityService activityService = ServiceFactory.getService("ActivityService");
 
-        if( activityService == null ){
+        if (activityService == null) {
             return null;
         }
 
@@ -195,7 +197,7 @@ public class ActivityController extends ControllerBase implements IController {
         final String activityStageId = request.getParameter("ActivityStageId");
         final String[] Json = new String[1];
         final ActivityService activityService = ServiceFactory.getService("ActivityService");
-        if( activityService == null ){
+        if (activityService == null) {
             return null;
         }
 
@@ -235,72 +237,47 @@ public class ActivityController extends ControllerBase implements IController {
         final String token = request.getParameter("token");
         final int Page = Integer.valueOf(request.getParameter("page"));
         final int FindNum = Integer.valueOf(request.getParameter("findNum"));
-        final List<Object> ListJson = new ArrayList();
 
-        if( !this.UserIsLand( UserID,token ) ){
+
+        if (!this.UserIsLand(UserID, token)) {
             return Config.STRLANDFAILED;
         }
 
-        generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
-            public boolean callback(Session session) throws Exception {
-                List<UserEarningsModel> userEarningsModelList = session.createCriteria(UserEarningsModel.class)
-                        .setMaxResults(FindNum)
-                        .setFirstResult(Page * FindNum)
-                        .addOrder(Order.desc("UserEarningsDate"))
-                        .add(Restrictions.eq("UserID", UserID))
-                        .list();
-                ActivityService activityService = ServiceFactory.getService("ActivityService");
+        ActivityService activityService = ServiceFactory.getService("ActivityService");
+        if (activityService == null) {
+            return Config.SERVICE_FAILED;
+        }
 
-                for (UserEarningsModel userEarningsModel : userEarningsModelList) {
-                    ActivityDetailModel activityDetailModel = activityService.getActivityDetailsNoTran(userEarningsModel.getActivityStageId());
-                    if (activityDetailModel == null) {
-                        return false;
-                    }
-
-                    List<String> ActivityChildInfo = new ArrayList();
-                    ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
-                    ActivityChildInfo.add(activityDetailModel.getActivityStageId());
-                    ActivityChildInfo.add(activityVerifyCompleteModel.getName());
-                    ActivityChildInfo.add(Integer.toString(activityVerifyCompleteModel.getTotalInstallmentNum()));
-                    ActivityChildInfo.add(Integer.toString(activityDetailModel.getStageIndex()));
-                    ActivityChildInfo.add(activityVerifyCompleteModel.getActivityId());
-                    ActivityChildInfo.add(activityVerifyCompleteModel.getImageUrl());
-                    ActivityChildInfo.add(Integer.toString(userEarningsModel.getUserEarningLines()));
-                    ActivityChildInfo.add( userEarningsModel.getUserEarningsDate().toString() );
-                    ActivityChildInfo.add( Integer.toString(userEarningsModel.getId()) );
-                    ListJson.add( ActivityChildInfo );
-                }
-                return true;
-            }
-        });
+        List<Object> ListJson = activityService.getActivityEarnings( UserID,Page,FindNum );
 
         return GsonUntil.JavaClassToJson(ListJson);
     }
 
     /**
      * 更改项目状态
+     *
      * @param request
      * @return
      */
     @RequestMapping("/changeActivityStatus")
     @ResponseBody
-    public String changeActivityStatus(HttpServletRequest request){
+    public String changeActivityStatus(HttpServletRequest request) {
         String activityId;
         int result;
-        try{
+        try {
             activityId = request.getParameter("activityId");
             result = Integer.parseInt(request.getParameter("status"));
-        }catch (Exception e){
+        } catch (Exception e) {
             return "paramIncorrect";
         }
 
         ActivityService activityService = ServiceFactory.getService("ActivityService");
-        if(activityService == null){
+        if (activityService == null) {
             return Config.SERVICE_FAILED;
         }
-        try{
+        try {
             activityService.changeActivityStatus(activityId, result);
-        }catch (Exception e){
+        } catch (Exception e) {
             return Config.SERVICE_FAILED;
         }
         return Config.SERVICE_SUCCESS;

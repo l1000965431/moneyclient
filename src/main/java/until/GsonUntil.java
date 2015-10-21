@@ -5,6 +5,8 @@ import com.money.model.*;
 import org.springframework.stereotype.Component;
 import until.Adapter.InvestInfoAdapter;
 import until.Adapter.LotteryPeopleAdpter;
+import until.Adapter.UmessageAdpter;
+import until.UmengPush.UMengMessage;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -44,11 +46,11 @@ public class GsonUntil {
             public JsonElement serialize(ActivityVerifyCompleteModel src, Type typeOfSrc,
                                          JsonSerializationContext context) {
                 JsonObject o = new JsonObject();
-                o.addProperty( "Id",src.getActivityId());
+                o.addProperty("Id", src.getActivityId());
                 o.addProperty("activityName", src.getName());
                 o.addProperty("totalInstallmentNum", src.getTotalInstallmentNum());
                 o.addProperty("originalFund", src.getOriginalFund());
-                o.addProperty("totalFund", src.getTotalLines()+src.getTotalLinePeoples());
+                o.addProperty("totalFund", src.getTotalLines() + src.getTotalLinePeoples());
                 o.addProperty("status", src.getStatus());
                 o.addProperty("marketAnalysis", src.getMarketAnalysis());
                 o.addProperty("profitMode", src.getProfitMode());
@@ -90,6 +92,7 @@ public class GsonUntil {
             }
         })
                 .registerTypeAdapter(SREarningModel.class, new InvestInfoAdapter())
+                .registerTypeAdapter(UMengMessage.class, new UmessageAdpter())
                 .create();
     }
 

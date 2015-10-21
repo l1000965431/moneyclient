@@ -67,6 +67,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
         final int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
         final int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
         final int MessageType = Integer.valueOf(request.getParameter("MessageType"));
+        final int VirtualSecurities = Integer.valueOf( request.getParameter("VirtualSecurities") );
         final int[] Refresh = {0};
 
         if( !this.UserIsLand( UserID,token ) ){
@@ -78,6 +79,11 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
             return ServerReturnValue.PERFECTINFO;
         } else {
             //项目检查
+
+            if( VirtualSecurities > 0 && VirtualSecurities < Config.MinVirtualSecuritiesBuy ){
+                return ServerReturnValue.MINVIRTUALSECURITIESBUY;
+            }
+
             final int[] state = {0};
             if (!Objects.equals(activityInfoDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
                 public boolean callback(Session session) throws Exception {
@@ -132,7 +138,8 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
                             break;
                     }
 
-                    if (!walletService.IsWalletEnough(UserID, costLines)) {
+                    if (!walletService.IsWalletEnough(UserID, costLines) ||
+                            walletService.IsvirtualSecuritiesEnough( UserID,VirtualSecurities ) ) {
                         state[0] = 2;
                         return false;
                     }
@@ -151,6 +158,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
             map.put("UserID", UserID);
             map.put("PurchaseType", PurchaseType);
             map.put("OrderID", UUID.randomUUID().toString());
+            map.put("VirtualSecurities", VirtualSecurities);
             String messageBody = GsonUntil.JavaClassToJson(map);
 
             MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_ACTIVITYBUY_TOPIC,

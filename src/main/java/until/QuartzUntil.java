@@ -96,6 +96,7 @@ public class QuartzUntil {
             //创建任务
             JobDetail jobDetail = JobBuilder.newJob(jobClass)
                     .withIdentity(job.getJobName(), job.getJobGroup())
+                    .withDescription( job.getDesc() )
                     .build();
 
             jobDetail.getJobDataMap().put("scheduleJob", job);

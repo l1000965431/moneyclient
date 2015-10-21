@@ -2,16 +2,23 @@ package com.money.Service.user;
 
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
+import com.money.Service.Wallet.WalletService;
 import com.money.config.Config;
 import com.money.config.ServerReturnValue;
 import com.money.dao.TransactionSessionCallback;
 import com.money.dao.userDAO.UserDAO;
 import com.money.model.UserModel;
+import com.money.model.WalletModel;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import until.GsonUntil;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by fisher on 2015/7/6.
@@ -25,9 +32,12 @@ public class UserService extends ServiceBase implements ServiceInterface {
     @Autowired
     UserDAO userDAO;
 
+    @Autowired
+    WalletService walletService;
+
     //用户注册，判断验证码是否正确，正确则完成用户注册
     public int userRegister(final String username, final String code,
-                            final String password, final int userType,final String inviteCode) {
+                            final String password, final int userType, final String inviteCode) {
         //用户名 密码合法性
 
         if (!userDAO.userIsRight(username) || !userDAO.passwordIsRight(password)) {
@@ -39,7 +49,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
         }
 
         final int[] state = new int[1];
-        if( userDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+        if (userDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
                 if (userDAO.checkUserName(username)) {
                     state[0] = ServerReturnValue.REQISTEREDUSERNAMEREPEAT;
@@ -48,7 +58,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
                 }
                 //判断手机验证码是否输入正确
                 if (userDAO.checkTeleCode(username, code)) {
-                    state[0] = userDAO.registered(username, password, userType,inviteCode);
+                    state[0] = userDAO.registered(username, password, userType, inviteCode);
                     return true;
                 } else {
                     state[0] = ServerReturnValue.REQISTEREDCODEERROR;
@@ -56,7 +66,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
                 }
 
             }
-        }) != Config.SERVICE_SUCCESS ){
+        }) != Config.SERVICE_SUCCESS) {
             return ServerReturnValue.REQISTEREDCODEERROR;
         }
 
@@ -352,6 +362,109 @@ public class UserService extends ServiceBase implements ServiceInterface {
      */
     public String getUserToken(String userId) {
         return userDAO.getUserToken(userId);
+    }
+
+
+    public void addUserExpByUserId(final String userId, final int AddExp) {
+        userDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            @Override
+            public boolean callback(Session session) throws Exception {
+                userDAO.AddUserExpByUserId(userId, AddExp);
+                return true;
+            }
+        });
+
+    }
+
+    public void addUserExpByInviteCode(final String InviteCode, final int AddExp) {
+        userDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            @Override
+            public boolean callback(Session session) throws Exception {
+                userDAO.AddUserExpByInviteCode(InviteCode, AddExp);
+                return true;
+            }
+        });
+    }
+
+    /**
+     * 邀请活动
+     *
+     * @param userId
+     * @param userAddExp   被邀请人的增加的经验
+     * @param InviteCode
+     * @param InviteAddExp 邀请人增加的经验
+     */
+    public int addUserExp(final String userId, final int userAddExp, final String InviteCode, final int InviteAddExp) {
+        if (Objects.equals(userDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            @Override
+            public boolean callback(Session session) throws Exception {
+
+                UserModel inviteUserModel = userDAO.getUSerModelByInviteCodeNoTransaction( InviteCode );
+
+                if( inviteUserModel == null ){
+                    return false;
+                }
+
+                if (userDAO.AddUserExpByInviteCode(InviteCode, InviteAddExp) == 0 ||
+                        userDAO.AddUserExpByUserId(userId, userAddExp) == 0 ||
+                        userDAO.UpdateUserInvited(userId) == 0 ||
+                        walletService.virtualSecuritiesAdd( userId,Config.AddVirtualSecuritiesSelf ) == 0 ||
+                        walletService.virtualSecuritiesAdd( inviteUserModel.getUserId(),Config.AddVirtualSecuritiesInvite ) == 0 ) {
+                    return false;
+                }
+                return true;
+            }
+        }), Config.SERVICE_SUCCESS)) {
+            return userAddExp;
+        } else {
+            return 0;
+        }
+
+
+    }
+
+    /**
+     * 获取用户设置信息
+     *
+     * @param userId
+     * @return
+     */
+    public String getUserSetInfo(final String userId) {
+
+        final int[] Exp = {0};
+        final int[] wallet = new int[1];
+        final int[] virtualSecurities = new int[1];
+        final int[] ledSecurities = new int[1];
+        userDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            @Override
+            public boolean callback(Session session) throws Exception {
+                UserModel userModel = userDAO.getUSerModelNoTransaction(userId);
+
+                if (userModel == null) {
+                    return false;
+                }
+
+                WalletModel walletModel = (WalletModel) userDAO.loadNoTransaction(WalletModel.class, userId);
+
+                if (walletModel == null) {
+                    return false;
+                }
+
+                Exp[0] = userModel.getUserExp();
+                wallet[0] = walletModel.getWalletLines();
+                virtualSecurities[0] = walletModel.getVirtualSecurities();
+                ledSecurities[0] = walletModel.getLedSecurities();
+                return true;
+            }
+        });
+
+        Map<String,String> map = new HashMap<>();
+
+        map.put( "Exp",Integer.toString( Exp[0] ) );
+        map.put( "wallet",Integer.toString( wallet[0] ) );
+        map.put( "virtualSecurities",Integer.toString( virtualSecurities[0] ) );
+        map.put( "ledSecurities",Integer.toString( ledSecurities[0] ) );
+        return GsonUntil.JavaClassToJson( map );
     }
 
 }

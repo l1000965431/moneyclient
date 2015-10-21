@@ -118,7 +118,7 @@ public class UserController extends ControllerBase implements IController {
         int userType = Integer.valueOf(mapData.get("userType"));
         String inviteCode = mapData.get("inviteCode");
 
-        return userService.userRegister(userName, "", password, userType,inviteCode);
+        return userService.userRegister(userName, "", password, userType, inviteCode);
     }
 
     @RequestMapping("/submitTeleNum")
@@ -271,6 +271,34 @@ public class UserController extends ControllerBase implements IController {
             response.sendRedirect("../project/BindingResult.jsp?result=2");
             return 2;
         }
+    }
+
+    @RequestMapping("/AddUserExp")
+    @ResponseBody
+    public int addUserExp( HttpServletRequest request ) {
+
+        String userId = request.getParameter("userId");
+        String inviteCode = request.getParameter("inviteCode");
+
+        return userService.addUserExp( userId,0,inviteCode,Config.AddExpInvite );
+    }
+
+    /**
+     * 获取用户设置信息
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getUserSetInfo")
+    @ResponseBody
+    public String getUserSetInfo( HttpServletRequest request ){
+        String userId = request.getParameter("userId");
+        String token = request.getParameter("token");
+
+/*        if (!this.UserIsLand(userId, token)) {
+            return Config.SERVICE_FAILED;
+        }*/
+
+        return userService.getUserSetInfo( userId );
     }
 
 }

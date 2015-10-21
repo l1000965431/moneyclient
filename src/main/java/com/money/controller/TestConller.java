@@ -3,10 +3,12 @@ package com.money.controller;
 import com.money.Service.PurchaseInAdvance.PurchaseInAdvance;
 import com.money.Service.ServiceFactory;
 import com.money.Service.activity.ActivityService;
+import com.money.Service.activityPreferential.ActivityPreferentialService;
 import com.money.Service.user.UserService;
-import com.money.job.LotteryPushJob;
+import com.money.config.Config;
 import com.money.job.TestJob;
 import com.money.memcach.MemCachService;
+import com.money.model.PreferentiaLotteryModel;
 import com.money.model.SREarningModel;
 import com.money.model.UserModel;
 import org.quartz.DateBuilder;
@@ -19,6 +21,7 @@ import until.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -187,7 +190,7 @@ public class TestConller extends ControllerBase implements IController {
     String TestBean22Map(){
         UserService userService = ServiceFactory.getService("UserService");
         UserModel userModel = userService.getUserInfo("18511583205");
-        Map map = BeanTransfersBetweenMapUntil.TransBean2Map( userModel );
+        Map map = BeanTransfersUntil.TransBean2Map(userModel);
         return GsonUntil.JavaClassToJson( map );
     }
 
@@ -206,6 +209,131 @@ public class TestConller extends ControllerBase implements IController {
         } catch (SchedulerException e) {
             return;
         }
+    }
+
+    @RequestMapping("/TestActivityPreferential")
+    @ResponseBody
+    void TestActivityPreferential( HttpServletRequest request ) throws ParseException {
+
+        String ActivityID = request.getParameter( "activityId" );
+        ActivityPreferentialService activityPreferentialService = ServiceFactory.getService("ActivityPreferentialService");
+
+        if( activityPreferentialService == null ){
+            return;
+        }
+
+        String a = "[\n" +
+                "    {\n" +
+                "        \"earningPrice\": 6,\n" +
+                "        \"earningType\": 2,\n" +
+                "        \"num\": 1\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"earningPrice\": 4,\n" +
+                "        \"earningType\": 2,\n" +
+                "        \"num\": 1\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"earningPrice\": 3,\n" +
+                "        \"earningType\": 2,\n" +
+                "        \"num\": 1\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"earningPrice\": 2,\n" +
+                "        \"earningType\": 2,\n" +
+                "        \"num\": 1\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"earningPrice\": 1,\n" +
+                "        \"earningType\": 2,\n" +
+                "        \"num\": 1\n" +
+                "    }\n" +
+                "]\n";
+
+        activityPreferentialService.InsertActivityPreferential(100, MoneyServerDate.getDateCurDate(), ActivityID, a,50);
+    }
+
+    @RequestMapping("/TestActivityPreferentialStart")
+    @ResponseBody
+    String TestActivityPreferentialStart( HttpServletRequest request ) throws Exception {
+
+        String ActivityID = request.getParameter( "activityId" );
+        String ActivityInfoKey = Config.PREFERENTIUNBLLLED + ActivityID;
+        MemCachService.RemoveValue(ActivityInfoKey);
+
+
+        ActivityPreferentialService activityPreferentialService = ServiceFactory.getService("ActivityPreferentialService");
+
+        activityPreferentialService.StartActivityPreferential( Integer.valueOf( ActivityID ) );
+
+
+
+        List<byte[]> list = MemCachService.getRedisList( ActivityInfoKey.getBytes() );
+
+        List<PreferentiaLotteryModel> re = new ArrayList<>();
+
+        for( byte[] a :list ){
+            re.add( (PreferentiaLotteryModel)BeanTransfersUntil.bytesToObject( a ) );
+        }
+
+        return GsonUntil.JavaClassToJson( re );
+    }
+
+    @RequestMapping("/TestActivityPreferentialInfo")
+    @ResponseBody
+    String TestActivityPreferentialInfo( HttpServletRequest request ) throws Exception {
+
+        String ActivityID = request.getParameter("activityId");
+        String ActivityInfoKey = Config.PREFERENTIINFO + ActivityID;
+
+        return new String( MemCachService.MemCachgGet( ActivityInfoKey.getBytes() ));
+    }
+
+    @RequestMapping("/TestActivityPreferentialBilled")
+    @ResponseBody
+    String TestActivityPreferentialBilled( HttpServletRequest request ) throws Exception {
+
+        String ActivityID = request.getParameter("activityId");
+        String ActivityInfoKey = Config.PREFERENTIBLLLED + ActivityID;
+
+        List<byte[]> list = MemCachService.getRedisList(ActivityInfoKey.getBytes());
+
+        List<PreferentiaLotteryModel> re = new ArrayList<>();
+
+        for( byte[] a :list ){
+            re.add( (PreferentiaLotteryModel)BeanTransfersUntil.bytesToObject( a ) );
+        }
+
+        return GsonUntil.JavaClassToJson( re );
+    }
+
+    @RequestMapping("/TestActivityPreferentialUnBilled")
+    @ResponseBody
+    String TestActivityPreferentialUnBilled( HttpServletRequest request ) throws Exception {
+
+        String ActivityID = request.getParameter("activityId");
+        String ActivityInfoKey = Config.PREFERENTIUNBLLLED + ActivityID;
+
+        List<byte[]> list = MemCachService.getRedisList(ActivityInfoKey.getBytes());
+
+        List<PreferentiaLotteryModel> re = new ArrayList<>();
+
+        for( byte[] a :list ){
+            re.add( (PreferentiaLotteryModel)BeanTransfersUntil.bytesToObject( a ) );
+        }
+
+        return GsonUntil.JavaClassToJson( re );
+    }
+
+    @RequestMapping("/TestActivityPreferentialJoin")
+    @ResponseBody
+    int TestActivityPreferentialJoin( HttpServletRequest request ) throws Exception {
+
+        String ActivityID = request.getParameter("activityId");
+        String UserId = request.getParameter("userId");
+        ActivityPreferentialService activityPreferentialService = ServiceFactory.getService("ActivityPreferentialService");
+
+        return activityPreferentialService.JoinActivityPreferential( Integer.valueOf( ActivityID ),UserId,0 );
     }
 
 }

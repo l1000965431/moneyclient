@@ -333,7 +333,7 @@ public class activityDAO extends BaseDao {
     public List<ActivityDetailModel> getActivityDetailByGroupID(String ActivityID, int GroupID) {
         Session session = this.getNewSession();
         List<ActivityDetailModel> list;
-        String sql = "select * from activitydetails where activityVerifyCompleteModel_activityId=?0 and groupId=?1;";
+        String sql = "select * from activitydetails where activityVerifyCompleteModel_activityId=? and groupId=?;";
 
         SQLQuery sqlQuery = session.createSQLQuery(sql).addEntity(ActivityDetailModel.class);
         sqlQuery.setParameter(0, ActivityID);

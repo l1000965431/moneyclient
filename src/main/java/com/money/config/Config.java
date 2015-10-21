@@ -168,4 +168,37 @@ public class Config {
     public static final int LANDFAILED = -1;
 
     public static final String STRLANDFAILED = "LANDFAILED";
+
+    /**
+     * 特惠项目
+     */
+
+    //未发的红包队列
+    public static final String PREFERENTIUNBLLLED = "PreferentialUnbilled_";
+
+    //已发的红包队列
+    public static final String PREFERENTIBLLLED = "PreferentialBilled_";
+
+    //特惠项目信息
+    public static final String PREFERENTIINFO= "PreferentialInfo_";
+
+    //填写邀请ID时给邀请人的经验值
+    public static int AddExpInvite = 0;
+
+    //填写邀请ID时给邀请人的微卷值
+    public static int AddVirtualSecuritiesInvite = 0;
+
+    //项目购买时增加的经验值
+    public static int AddExpPurchase = 0;
+
+    //填写邀请ID时给自己增加的微卷值
+    public static int AddVirtualSecuritiesSelf = 0;
+
+    //个人拥有的微劵最大值
+    public static int MaxVirtualSecurities = 0;
+
+    //单次购买使用微劵的最小值
+    public static int MinVirtualSecuritiesBuy = 0;
 }
+
+

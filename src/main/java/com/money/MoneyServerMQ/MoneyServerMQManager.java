@@ -6,8 +6,14 @@ import com.aliyun.openservices.ons.api.Producer;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.money.config.Config;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import until.GsonUntil;
+import until.UmengPush.UMengMessage;
+import until.UmengPush.UmengSendParameter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
