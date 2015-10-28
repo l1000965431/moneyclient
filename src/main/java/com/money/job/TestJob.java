@@ -3,6 +3,7 @@ package com.money.job;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import until.MoneyServerDate;
 import until.ScheduleJob;
 
 import java.io.Serializable;
@@ -14,8 +15,8 @@ import java.io.Serializable;
 
 public class TestJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        System.out.println("任务成功运行");
-        ScheduleJob scheduleJob = (ScheduleJob)jobExecutionContext.getMergedJobDataMap().get("scheduleJob");
-        System.out.println("任务名称 = [" + scheduleJob.getJobName() + "]");
+        System.out.println("任务成功运行"+":TestJob1"+ MoneyServerDate.getStringCurDate());
+        /*ScheduleJob scheduleJob = (ScheduleJob)jobExecutionContext.getMergedJobDataMap().get("scheduleJob");
+        System.out.println("任务名称 = [" + scheduleJob.getJobName() + "]");*/
     }
 }

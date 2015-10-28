@@ -1,9 +1,13 @@
 package com.money.Service.Wallet;
 
+import com.google.gson.reflect.TypeToken;
+import com.money.MoneyServerMQ.MoneyServerMQManager;
+import com.money.MoneyServerMQ.MoneyServerMessage;
 import com.money.Service.ServiceBase;
 import com.money.Service.ServiceInterface;
 import com.money.Service.alipay.AlipayService;
 import com.money.config.Config;
+import com.money.config.MoneyServerMQ_Topic;
 import com.money.dao.TransactionSessionCallback;
 import com.money.dao.alitarnsferDAO.AlitransferDAO;
 import com.money.dao.userDAO.UserDAO;
@@ -13,8 +17,10 @@ import org.hibernate.Session;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import until.GsonUntil;
 import until.MoneyServerDate;
 import until.MoneyServerOrderID;
+import until.UmengPush.UmengSendParameter;
 
 import java.text.ParseException;
 import java.util.List;
@@ -76,6 +82,67 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         return 1;
     }
 
+    /**
+     * ping++的支付服务回掉
+     *
+     * @param body
+     * @return
+     */
+    public int RechargeWalletService(String body) throws Exception {
+        String UserID;
+
+        final Map<String, Object> map = GsonUntil.jsonToJavaClass(body, new TypeToken<Map<String, Object>>() {
+        }.getType());
+
+        if (map == null) {
+            return Config.SENDCODE_FAILED;
+        }
+
+        final Map<String, Object> mapdata = (Map) map.get("data");
+        Map<String, Object> mapobject = (Map) mapdata.get("object");
+        Map<String, Object> mapMetadata = (Map) mapobject.get("metadata");
+
+        if (mapMetadata == null) {
+            return Config.SENDCODE_FAILED;
+        }
+
+        UserID = mapMetadata.get("UserID").toString();
+        Double nLinse = (Double) mapobject.get("amount");
+        final int Lines = (nLinse.intValue() / 100);
+        final String OrderID = mapobject.get("order_no").toString();
+        final String ChannelID = mapobject.get("channel").toString();
+
+        final String finalUserID = UserID;
+        if (generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+            public boolean callback(Session session) throws Exception {
+                if (RechargeWallet(finalUserID, Lines) == 0) {
+                    LOGGER.error("充值失败RechargeWallet", mapdata);
+                    return false;
+                }
+                InsertWalletOrder(OrderID, Lines, ChannelID);
+                return true;
+            }
+        }) != Config.SERVICE_SUCCESS) {
+            if (UserID != null || UserID.length() != 0) {
+                UmengSendParameter umengSendParameter = new UmengSendParameter(UserID, "微距竞投", "充值失败", "你的充值遇到了问题请重新操作", "充值失败");
+                String Json = GsonUntil.JavaClassToJson(umengSendParameter);
+                MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TOPIC,
+                        MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG, Json, "充值失败"));
+                return Config.SENDCODE_FAILED;
+            }
+        }
+
+        UmengSendParameter umengSendParameter = new UmengSendParameter(UserID, "微距竞投", "充值成功", "充值成功,成功充入" + Integer.toString(Lines) + "元", "充值成功");
+        String Json = GsonUntil.JavaClassToJson(umengSendParameter);
+        MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TOPIC,
+                MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG, Json, "充值成功"));
+
+
+        return Config.SENDCODE_SUCESS;
+
+
+    }
+
     public int TestRechargeWallet(final String UserID, final int Lines) throws Exception {
 
         generaDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
@@ -114,6 +181,34 @@ public class WalletService extends ServiceBase implements ServiceInterface {
 
         return WalletCost(UserID, CostLines) != 0;
 
+    }
+
+    /**
+     * ping++的提现服务
+     *
+     * @param body
+     * @return
+     */
+    public int TranferLinesService(String body) throws Exception {
+        Map<String, Object> map = GsonUntil.jsonToJavaClass(body, new TypeToken<Map<String, Object>>() {
+        }.getType());
+
+        if (map == null) {
+            return Config.SENDCODE_FAILED;
+        }
+
+        Map<String, Object> mapdata = (Map) map.get("data");
+        Map<String, Object> mapobject = (Map) mapdata.get("object");
+
+        String status = mapobject.get("status").toString();
+        double ammont = Double.valueOf(mapobject.get("amount").toString()) / 100.0;
+        String openId = mapobject.get("recipient").toString();
+        String orderId = mapobject.get("transaction_no").toString();
+        if (status.equals("paid")) {
+            TransferLines(orderId, openId, (int) ammont, status);
+        }
+
+        return Config.SENDCODE_SUCESS;
     }
 
     public boolean TransferLines(final String OrderId, final String OpenId, final int Lines, final String status) throws ParseException {
@@ -245,6 +340,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
 
     /**
      * 微劵花费
+     *
      * @param UserId
      * @param Lines
      * @return
@@ -261,6 +357,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
 
     /**
      * 微劵充值
+     *
      * @param UserId
      * @param Lines
      * @return
@@ -271,7 +368,8 @@ public class WalletService extends ServiceBase implements ServiceInterface {
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, Lines);
         query.setParameter(1, UserId);
-        query.setParameter(2, Config.MaxVirtualSecurities);
+        query.setParameter(2, Lines);
+        query.setParameter(3, Config.MaxVirtualSecurities);
         return query.executeUpdate();
     }
 

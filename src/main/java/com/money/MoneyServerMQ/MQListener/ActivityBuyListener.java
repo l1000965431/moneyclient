@@ -77,16 +77,17 @@ public class ActivityBuyListener extends MoneyServerListener {
         int Result = 0;
         switch( PurchaseType ){
             case Config.PURCHASEPRICKSILK:
-                Result = purchaseInAdvance.PurchaseInAdvance( InstallmentActivityID,
-                        UserID,PurchaseNum,AdvanceNum,OrderID,ActivityName );
-                break;
-            case Config.PURCHASELOCALTYRANTS:
-                if( VirtualSecurities > 0 && VirtualSecurities < Config.MinVirtualSecuritiesBuy ){
+                if( VirtualSecurities > 0 && VirtualSecurities > Config.MaxVirtualSecuritiesBuy ){
                     break;
                 }
 
+                Result = purchaseInAdvance.PurchaseInAdvance( InstallmentActivityID,
+                        UserID,PurchaseNum,AdvanceNum,OrderID,VirtualSecurities,ActivityName );
+                break;
+            case Config.PURCHASELOCALTYRANTS:
+
                 Result = purchaseInAdvance.LocalTyrantsPurchaseActivity( InstallmentActivityID,
-                        UserID,AdvanceNum,OrderID,VirtualSecurities,ActivityName );
+                        UserID,AdvanceNum,OrderID,ActivityName );
                 break;
         }
 

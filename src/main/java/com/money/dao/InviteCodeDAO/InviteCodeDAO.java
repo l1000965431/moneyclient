@@ -47,7 +47,7 @@ public class InviteCodeDAO extends BaseDao {
         }
         Vaules = Vaules.substring(0,Vaules.length()-1);
         Sql += Vaules;
-        SQLQuery sqlQuery = this.getSession().createSQLQuery( Sql );
+        SQLQuery sqlQuery = this.getNewSession().createSQLQuery( Sql );
         sqlQuery.executeUpdate();
         //this.getSession().flush();
     }
@@ -61,7 +61,7 @@ public class InviteCodeDAO extends BaseDao {
     public int userInviteCode(String userId,String InviteCode) throws ParseException {
 
         String Sql = "select * from invitecode where userId='0' and inviteCode=? ;";
-        Session session = this.getSession();
+        Session session = this.getNewSession();
 
         SQLQuery sqlQuery = session.createSQLQuery(Sql).addEntity(InviteCodeModel.class);
         sqlQuery.setParameter( 0,InviteCode );
@@ -83,7 +83,7 @@ public class InviteCodeDAO extends BaseDao {
      */
     public int countInviteCodeNum() {
         String Sql = "select count(Id) from invitecode where userId='0';";
-        Session session = this.getSession();
+        Session session = this.getNewSession();
         SQLQuery sqlQuery = session.createSQLQuery(Sql);
         return Integer.valueOf(sqlQuery.uniqueResult().toString());
 

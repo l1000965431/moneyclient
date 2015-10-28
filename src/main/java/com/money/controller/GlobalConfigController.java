@@ -34,10 +34,17 @@ public class GlobalConfigController extends ControllerBase implements IControlle
         globalConfigService.SetConfigVaule( map );
     }
 
+    @RequestMapping("/InitConfigVaule")
+    public void InitConfigVaule(){
+        Map<String,String> map = globalConfigService.GetConfigVaule();
+
+        globalConfigService.SetConfigVaule( map );
+    }
+
     @RequestMapping("/GetConfigVaule")
     @ResponseBody
     public String GetConfigVaule(){
-        return globalConfigService.GetConfigVaule();
+        return GsonUntil.JavaClassToJson(globalConfigService.GetConfigVaule());
     }
 
 }

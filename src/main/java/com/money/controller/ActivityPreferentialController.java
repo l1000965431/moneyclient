@@ -5,6 +5,7 @@ import com.money.MoneyServerMQ.MoneyServerMessage;
 import com.money.Service.activityPreferential.ActivityPreferentialService;
 import com.money.Service.user.UserService;
 import com.money.config.MoneyServerMQ_Topic;
+import com.money.config.ServerReturnValue;
 import com.money.job.ActivityPreferentialStartJob;
 import com.money.job.TestJob;
 import com.money.model.UserModel;
@@ -47,7 +48,12 @@ public class ActivityPreferentialController extends ControllerBase implements IC
         return activityPreferentialService.getactivityPreferentialInfo( page,findNum );
     }
 
-
+    @RequestMapping("/getSingleActivityPreferentialInfo")
+    @ResponseBody
+    public String getSingleActivityPreferentialInfo( HttpServletRequest request ){
+        int ActivityId = Integer.valueOf(request.getParameter( "activityId" ));
+        return activityPreferentialService.getactivityPreferentialInfo( ActivityId );
+    }
 
     @RequestMapping("/JoinActivityPreferentialInfo")
     @ResponseBody
@@ -58,17 +64,21 @@ public class ActivityPreferentialController extends ControllerBase implements IC
 
         UserModel userModel = userService.getUserInfo( UserId );
         if( userModel == null ){
-            return 0;
+            return ServerReturnValue.SERVERRETURNERROR;
         }
 
-        Map<String,String> map = new HashMap<>();
+        Map<String,String> map = new HashMap();
         map.put( "userId",UserId );
         map.put( "activityId",ActivityId );
         map.put( "uerExp",Integer.toString(userModel.getUserExp()));
         String messageBody = GsonUntil.JavaClassToJson(map);
 
-        MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_JOINACTIVITYPREFERENTIAL_TOPIC,
+       /* MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_JOINACTIVITYPREFERENTIAL_TOPIC,
                 MoneyServerMQ_Topic.MONEYSERVERMQ_JOINACTIVITYPREFERENTIAL_TAG, messageBody, UserId));
+*/
+
+        MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TOPIC,
+                MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TAG, messageBody, UserId));
 
         return 1;
     }
@@ -78,12 +88,17 @@ public class ActivityPreferentialController extends ControllerBase implements IC
     public int InsertActivityPreferential( HttpServletRequest request ){
         int ActivityLines = Integer.valueOf(request.getParameter("activityLines"));
         int WinningChance = Integer.valueOf(request.getParameter("winningChance"));
+        int UserExp = Integer.valueOf(request.getParameter("UserExp"));
         Date StartTime = MoneyServerDate.StrToDate(request.getParameter("startTime"));
         String ActivityCompeleteId = request.getParameter("activityCompeleteId");
         String LinesEarnings = request.getParameter("linesEarnings");
 
         int ActivityId = activityPreferentialService.InsertActivityPreferential( ActivityLines,StartTime,
-                ActivityCompeleteId,LinesEarnings,WinningChance );
+                ActivityCompeleteId,LinesEarnings,WinningChance,UserExp );
+
+        if( ActivityId == 0 ){
+            return 0;
+        }
 
         //开始任务
         ScheduleJob job = new ScheduleJob();
@@ -101,4 +116,10 @@ public class ActivityPreferentialController extends ControllerBase implements IC
         }
     }
 
+    @RequestMapping("/StopActivityPreferential")
+    @ResponseBody
+    public int StopActivityPreferential( HttpServletRequest request ){
+        String ActivityCompeleteId = request.getParameter("activityCompeleteId");
+       return activityPreferentialService.StopActivityPreferential( ActivityCompeleteId );
+    }
 }

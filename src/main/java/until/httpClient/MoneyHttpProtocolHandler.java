@@ -5,6 +5,11 @@ import org.apache.http.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -16,10 +21,18 @@ import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /* *
  *类名：HttpProtocolHandler
@@ -73,28 +86,39 @@ public class MoneyHttpProtocolHandler {
     /**
      * 私有的构造方法
      */
-    private MoneyHttpProtocolHandler() {
+    private MoneyHttpProtocolHandler(){
         // 创建一个线程安全的HTTP连接池
-/*        SSLContext sslContext = SSLContexts.custom().useTLS().build();
-        sslContext.init(null,
-                new TrustManager[] { new X509TrustManager() {
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContexts.custom().useTLS().build();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+        try {
+            sslContext.init(null,
+                    new TrustManager[]{new X509TrustManager() {
 
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return null;
-                    }
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
 
-                    public void checkClientTrusted(
-                            X509Certificate[] certs, String authType) {
-                    }
+                        public void checkClientTrusted(
+                                X509Certificate[] certs, String authType) {
+                        }
 
-                    public void checkServerTrusted(
-                            X509Certificate[] certs, String authType) {
-                    }
-                }}, null);*/
+                        public void checkServerTrusted(
+                                X509Certificate[] certs, String authType) {
+                        }
+                    }}, null);
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
 
         Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.INSTANCE)
-                //.register("https", new SSLConnectionSocketFactory(sslContext))
+                .register("https", new SSLConnectionSocketFactory(sslContext))
                 .build();
         connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
         connectionManager.setMaxTotal(defaultMaxTotalConn);
@@ -185,7 +209,7 @@ public class MoneyHttpProtocolHandler {
 
 
     public MoneyHttpResponse execute(HttpPost request) throws IOException {
-        HttpClient httpclient = HttpClients.custom().setConnectionManager( connectionManager ).setDefaultRequestConfig(requestConfig).build();
+        HttpClient httpclient = HttpClients.custom().setConnectionManager(connectionManager).setDefaultRequestConfig(requestConfig).build();
         request.setHeader("Content-Type", "application/x-www-form-urlencoded; text/html; charset=UTF-8");
         // 设置Http Header中的User-Agent属性
         request.setHeader("User-Agent", "Mozilla/4.0");
@@ -194,7 +218,7 @@ public class MoneyHttpProtocolHandler {
         try {
             HttpResponse response = httpclient.execute(request);
             entity = response.getEntity();
-            moneyHttpResponse.setStringResult( EntityUtils.toString(entity, Consts.UTF_8));
+            moneyHttpResponse.setStringResult(EntityUtils.toString(entity, Consts.UTF_8));
         } catch (UnknownHostException ex) {
 
             return null;
@@ -215,6 +239,7 @@ public class MoneyHttpProtocolHandler {
         return moneyHttpResponse;
 
     }
+
 
     /**
      * 将NameValuePairs数组转变为字符串
@@ -241,4 +266,5 @@ public class MoneyHttpProtocolHandler {
 
         return buffer.toString();
     }
+
 }

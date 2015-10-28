@@ -28,14 +28,14 @@ public class BaseDao {
     @Autowired
     protected SessionFactory sessionFactory;
 
-    /**
+/*    *//**
      * gerCurrentSession 会自动关闭session，使用的是当前的session事务
      *
      * @return
-     */
+     *//*
     public Session getSession() {
-        return sessionFactory.openSession();
-    }
+        return sessionFactory.getCurrentSession();
+    }*/
 
     /**
      * openSession 需要手动关闭session 意思是打开一个新的session

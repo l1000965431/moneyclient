@@ -109,6 +109,17 @@ public class QuartzUntil {
 
             scheduler.scheduleJob(jobDetail, trigger);
             //把任务插入数据库
+        }else{
+            // Trigger已存在，那么更新相应的定时设置
+
+            //按新的cronExpression表达式重新构建trigger
+            trigger = trigger.getTriggerBuilder()
+                    .withIdentity(job.getJobName(), job.getJobGroup())
+                    .startAt(startTime)
+                    .build();
+
+            //按新的trigger重新设置job执行
+            scheduler.rescheduleJob(triggerKey, trigger);
         }
     }
 

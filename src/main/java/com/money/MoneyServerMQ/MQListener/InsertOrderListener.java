@@ -15,15 +15,15 @@ import until.GsonUntil;
 
 public class InsertOrderListener extends MoneyServerListener {
 
-    @Autowired
-    private GeneraDAO baseDao;
+/*    @Autowired
+    private GeneraDAO baseDao;*/
 
     @Override
     public Action consume(Message message, ConsumeContext consumeContext) {
         try {
             String bodyString = BodyToString( message.getBody() );
-            OrderModel orderModel = GsonUntil.jsonToJavaClass(bodyString, OrderModel.class);
-            baseDao.save( orderModel );
+           /* OrderModel orderModel = GsonUntil.jsonToJavaClass(bodyString, OrderModel.class);
+            baseDao.save( orderModel );*/
             return Action.CommitMessage;
         } catch (Exception e) {
             return Action.ReconsumeLater;

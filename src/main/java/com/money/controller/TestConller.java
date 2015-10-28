@@ -1,5 +1,6 @@
 package com.money.controller;
 
+import com.google.gson.reflect.TypeToken;
 import com.money.Service.PurchaseInAdvance.PurchaseInAdvance;
 import com.money.Service.ServiceFactory;
 import com.money.Service.activity.ActivityService;
@@ -250,7 +251,7 @@ public class TestConller extends ControllerBase implements IController {
                 "    }\n" +
                 "]\n";
 
-        activityPreferentialService.InsertActivityPreferential(100, MoneyServerDate.getDateCurDate(), ActivityID, a,50);
+        activityPreferentialService.InsertActivityPreferential(100, MoneyServerDate.getDateCurDate(), ActivityID, a,50,5);
     }
 
     @RequestMapping("/TestActivityPreferentialStart")
@@ -273,7 +274,7 @@ public class TestConller extends ControllerBase implements IController {
         List<PreferentiaLotteryModel> re = new ArrayList<>();
 
         for( byte[] a :list ){
-            re.add( (PreferentiaLotteryModel)BeanTransfersUntil.bytesToObject( a ) );
+            re.add( (PreferentiaLotteryModel)GsonUntil.jsonToJavaClass( new String(a),new TypeToken<PreferentiaLotteryModel>(){}.getType()) );
         }
 
         return GsonUntil.JavaClassToJson( re );

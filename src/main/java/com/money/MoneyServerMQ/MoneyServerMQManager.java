@@ -64,12 +64,14 @@ public class MoneyServerMQManager {
      * @param Message 消息信息
      */
 
-    public static String SendMessage( MoneyServerMessage Message ){
+    public static int SendMessage( MoneyServerMessage Message ){
         try {
+            LOGGER.error( Message.getTopic() );
             producer.send( Message );
-            return  Config.MESSAGE_SEND_SUCCESS;
+            return  Config.SENDCODE_SUCESS;
         }catch ( Exception e ){
-            return Config.MESSAGE_SEND_FAILED;
+            LOGGER.error( e.toString() );
+            return Config.SENDCODE_FAILED;
         }
     }
 

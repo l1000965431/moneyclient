@@ -12,6 +12,7 @@
         <param-name>log4jConfigLocation</param-name>
         <param-value>/WEB-INF/classes/conf/log4j.properties</param-value>
     </context-param>
+
     <filter>
         <filter-name>characterEncodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -48,10 +49,6 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
-        <url-pattern>*.jpg</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
         <url-pattern>*.js</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
@@ -60,6 +57,17 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
+        <url-pattern>*.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
         <url-pattern>*.png</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.jpg</url-pattern>
+    </servlet-mapping>
+<!--    <welcome-file-list>
+        <welcome-file>project/InitConfigVaule.jsp</welcome-file>
+    </welcome-file-list>-->
 </web-app>

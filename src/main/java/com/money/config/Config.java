@@ -16,16 +16,17 @@ public class Config {
     /**
      * 测试参数
      */
-    public static final String MESSAFE_PRODUCERID = "PID_MoneySever_1";
+/*    public static final String MESSAFE_PRODUCERID = "PID_MoneySever_1";
 
-    public static final String MESSAFE_CONSUMERID = "CID_MoneySever_1";
+    public static final String MESSAFE_CONSUMERID = "CID_MoneySever_1";*/
+
 
     /**
      * 生产参数
      */
-/*    public static final String MESSAFE_PRODUCERID = "PID_MoneySever_2";
+    public static final String MESSAFE_PRODUCERID = "PID_MoneySever_2";
 
-    public static final String MESSAFE_CONSUMERID = "CID_MoneySever_2";*/
+    public static final String MESSAFE_CONSUMERID = "CID_MoneySever_2";
 
     public static final String MESSAFE_ACCESSKEY = "lAj7wlmAwQF8l3o7";
 
@@ -198,7 +199,7 @@ public class Config {
     public static int MaxVirtualSecurities = 0;
 
     //单次购买使用微劵的最小值
-    public static int MinVirtualSecuritiesBuy = 0;
+    public static int MaxVirtualSecuritiesBuy = 0;
 }
 
 

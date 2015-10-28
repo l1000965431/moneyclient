@@ -3,12 +3,40 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <bean id="dataSourceQuarz" class="org.apache.commons.dbcp.BasicDataSource">
+        <property value= "${jdbc.driverClassName}" name="driverClassName"/>
+        <!--driverClassName指定了JDBC驱动类的全限定类名 -->
+        <property value="${jdbc.Quarzurl}" name="url"/>
+        <!-- 数据库所在IP地址和数据库名-->
+        <property value="${jdbc.username}" name="username"/>
+        <property value="${jdbc.password}" name="password"/>
+    </bean>
+
     <bean name="schedulerFactoryBean"
           class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-    <property name="applicationContextSchedulerContextKey"
-              value="applicationContextKey"/>
-    <property name="autoStartup" value="true"/>
-    <property name="configLocation" value="WEB-INF/classes/conf/quartz.properties"/>
+        <property name="applicationContextSchedulerContextKey"
+                  value="applicationContextKey"/>
+        <property name="autoStartup" value="true"/>
+        <property name="configLocation" value="WEB-INF/classes/conf/quartz.properties"/>
+        <property name="dataSource" ref="dataSourceQuarz"/>
+        <property name="triggers">
+            <list>
+                <ref bean="cronTriggerRedis" />
+            </list>
+        </property>
+
     </bean>
+
+
+    <!--redis aof压缩命令任务-->
+    <bean name="RedisJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="com.money.job.RedisAOFJob"/>
+    </bean>
+
+    <bean id="cronTriggerRedis" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="RedisJob" />
+        <property name="cronExpression" value="0 0/5 * * * ?" />
+    </bean>
+
 
 </beans>

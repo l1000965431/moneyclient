@@ -156,7 +156,7 @@ public class WalletController extends ControllerBase {
             return 0;
         }
 
-        if (userService.IsBinding(userId)) {
+        if (!userService.IsBinding(userId)) {
             return 3;
         }
         if (!walletService.IsWalletEnoughTransaction(userId, Lines)) {
@@ -197,14 +197,14 @@ public class WalletController extends ControllerBase {
     public String Webhooks(HttpServletRequest request, HttpServletResponse response) {
         try {
             PingPlus.Webhooks(request, response);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
         return Config.SERVICE_SUCCESS;
     }
 
     /**
-     * ping++ 充值的回掉函数
+     * ping++ 提现回掉函数
      *
      * @param request
      * @param response
@@ -215,7 +215,7 @@ public class WalletController extends ControllerBase {
     public String TranferWebhooks(HttpServletRequest request, HttpServletResponse response) {
         try {
             PingPlus.Webhooks(request, response);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Config.SERVICE_FAILED;
         }
         return Config.SERVICE_SUCCESS;

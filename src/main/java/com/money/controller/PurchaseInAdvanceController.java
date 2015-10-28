@@ -58,7 +58,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
 
     @RequestMapping("/PurchaseActivity")
     @ResponseBody
-    //-1:重新登录 1:期或票不够 2:钱不够 3:本期不够 预购后边的期 100:支付成功 103:支付成功客户端需要刷新 MessageType:1:判断本期 2:不判断本期
+    //-1:重新登录 1:期或票不够 2:钱不够 3:本期不够 预购后边的期 100:支付成功 103:支付成功客户端需要刷新104:微卷不够 MessageType:1:判断本期 2:不判断本期
     public int PurchaseActivity(HttpServletRequest request) {
         final String UserID = request.getParameter("UserID");
         final String token = request.getParameter("token");
@@ -80,7 +80,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
         } else {
             //项目检查
 
-            if( VirtualSecurities > 0 && VirtualSecurities < Config.MinVirtualSecuritiesBuy ){
+            if( VirtualSecurities > 0 && VirtualSecurities > Config.MaxVirtualSecuritiesBuy ){
                 return ServerReturnValue.MINVIRTUALSECURITIESBUY;
             }
 
@@ -139,7 +139,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
                     }
 
                     if (!walletService.IsWalletEnough(UserID, costLines) ||
-                            walletService.IsvirtualSecuritiesEnough( UserID,VirtualSecurities ) ) {
+                            !walletService.IsvirtualSecuritiesEnough( UserID,VirtualSecurities ) ) {
                         state[0] = 2;
                         return false;
                     }

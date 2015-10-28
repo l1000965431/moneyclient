@@ -399,19 +399,30 @@ public class UserService extends ServiceBase implements ServiceInterface {
             @Override
             public boolean callback(Session session) throws Exception {
 
-                UserModel inviteUserModel = userDAO.getUSerModelByInviteCodeNoTransaction( InviteCode );
+                UserModel inviteUserModel = userDAO.getUSerModelByInviteCodeNoTransaction(InviteCode);
+                UserModel userModel = userDAO.getUSerModelNoTransaction( userId );
 
-                if( inviteUserModel == null ){
+                if (inviteUserModel == null) {
+                    return false;
+                }
+
+                if( userModel.isInvited() ){
+                    return false;
+                }
+
+                if (inviteUserModel.getUserId().equals(userId)) {
                     return false;
                 }
 
                 if (userDAO.AddUserExpByInviteCode(InviteCode, InviteAddExp) == 0 ||
                         userDAO.AddUserExpByUserId(userId, userAddExp) == 0 ||
-                        userDAO.UpdateUserInvited(userId) == 0 ||
-                        walletService.virtualSecuritiesAdd( userId,Config.AddVirtualSecuritiesSelf ) == 0 ||
-                        walletService.virtualSecuritiesAdd( inviteUserModel.getUserId(),Config.AddVirtualSecuritiesInvite ) == 0 ) {
+                        userDAO.UpdateUserInvited(userId) == 0 ) {
                     return false;
                 }
+
+                walletService.virtualSecuritiesAdd(userId, Config.AddVirtualSecuritiesSelf);
+                walletService.virtualSecuritiesAdd(inviteUserModel.getUserId(), Config.AddVirtualSecuritiesInvite);
+
                 return true;
             }
         }), Config.SERVICE_SUCCESS)) {
@@ -435,6 +446,7 @@ public class UserService extends ServiceBase implements ServiceInterface {
         final int[] wallet = new int[1];
         final int[] virtualSecurities = new int[1];
         final int[] ledSecurities = new int[1];
+        final boolean[] IsInvited = new boolean[1];
         userDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             @Override
             public boolean callback(Session session) throws Exception {
@@ -454,17 +466,19 @@ public class UserService extends ServiceBase implements ServiceInterface {
                 wallet[0] = walletModel.getWalletLines();
                 virtualSecurities[0] = walletModel.getVirtualSecurities();
                 ledSecurities[0] = walletModel.getLedSecurities();
+                IsInvited[0] = userModel.isInvited();
                 return true;
             }
         });
 
-        Map<String,String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
 
-        map.put( "Exp",Integer.toString( Exp[0] ) );
-        map.put( "wallet",Integer.toString( wallet[0] ) );
-        map.put( "virtualSecurities",Integer.toString( virtualSecurities[0] ) );
-        map.put( "ledSecurities",Integer.toString( ledSecurities[0] ) );
-        return GsonUntil.JavaClassToJson( map );
+        map.put("Exp", Integer.toString(Exp[0]));
+        map.put("wallet", Integer.toString(wallet[0]));
+        map.put("virtualSecurities", Integer.toString(virtualSecurities[0]));
+        map.put("ledSecurities", Integer.toString(ledSecurities[0]));
+        map.put("IsInvited", Boolean.toString(IsInvited[0]));
+        return GsonUntil.JavaClassToJson(map);
     }
 
 }

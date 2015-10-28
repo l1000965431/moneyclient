@@ -213,6 +213,7 @@ public class ActivityController extends ControllerBase implements IController {
                 map.put("EarningPeoples", GsonUntil.jsonToJavaClass(activityVerifyCompleteModel.getEarningPeoples(), new TypeToken<List>() {
                 }.getType()));
                 map.put("SREarning", activityDetailModel.getActivityVerifyCompleteModel().getSrEarningModels());
+                map.put("MaxVirtualSecuritiesBuy",Integer.toString(Config.MaxVirtualSecuritiesBuy));
                 Json[0] = GsonUntil.JavaClassToJson(map);
 
                 response.setHeader("response", ServerReturnValue.ACTIVITY_INVEST_INFO_SUCCESS);

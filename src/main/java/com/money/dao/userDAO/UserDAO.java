@@ -146,6 +146,11 @@ public class UserDAO extends BaseDao {
         userModel.setWxOpenId(userID);
         userModel.setAlipayId("0");
         userModel.setUserInvitecode(ShareCodeUtil.toSerialCode(ShareCodeUtil.codeToId(userID)));
+        try {
+            userModel.setCreateTime( MoneyServerDate.getDateCurDate() );
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         saveNoTransaction(userModel);
 
         if (userType == Config.INVESTOR) {
@@ -505,7 +510,7 @@ public class UserDAO extends BaseDao {
         }
 
         String Sql = "select * from invitecode where userId='0' and inviteCode=?;";
-        Session session = this.getSession();
+        Session session = this.getNewSession();
 
         SQLQuery sqlQuery = session.createSQLQuery(Sql).addEntity(InviteCodeModel.class);
         sqlQuery.setParameter( 0,InviteCode );
@@ -525,7 +530,7 @@ public class UserDAO extends BaseDao {
 
     public int AddUserExpByUserId( String userId,int AddExp ){
         String sql = "update User set userExp=userExp+? where userId = ?";
-        Session session = this.getSession();
+        Session session = this.getNewSession();
         SQLQuery sqlQuery = session.createSQLQuery(sql);
         sqlQuery.setParameter( 0,AddExp );
         sqlQuery.setParameter( 1,userId );
@@ -537,7 +542,7 @@ public class UserDAO extends BaseDao {
 
     public int AddUserExpByInviteCode( String inviteCode,int AddExp ){
         String sql = "update User set userExp=userExp+? where userInvitecode = ?";
-        Session session = this.getSession();
+        Session session = this.getNewSession();
         SQLQuery sqlQuery = session.createSQLQuery(sql);
         sqlQuery.setParameter( 0,AddExp );
         sqlQuery.setParameter( 1,inviteCode );
@@ -548,7 +553,7 @@ public class UserDAO extends BaseDao {
 
     public int UpdateUserInvited( String userId ){
         String sql = "update User set IsInvited=true where userId = ?";
-        Session session = this.getSession();
+        Session session = this.getNewSession();
         SQLQuery sqlQuery = session.createSQLQuery(sql);
         sqlQuery.setParameter( 0,userId );
 

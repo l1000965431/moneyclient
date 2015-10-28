@@ -224,7 +224,6 @@ public class UserController extends ControllerBase implements IController {
             response.sendRedirect("../project/BindingResult.jsp?result=2");
             return;
         }
-
         WxOauth2Token wxOauth2Token;
         try {
             wxOauth2Token = wxBinding.getOauth2AccessToken(Config.WXAPPID, Config.WXAPPSECRET, code);
@@ -292,9 +291,9 @@ public class UserController extends ControllerBase implements IController {
     @ResponseBody
     public String getUserSetInfo( HttpServletRequest request ){
         String userId = request.getParameter("userId");
-        String token = request.getParameter("token");
+        /*String token = request.getParameter("token");
 
-/*        if (!this.UserIsLand(userId, token)) {
+        if (!this.UserIsLand(userId, token)) {
             return Config.SERVICE_FAILED;
         }*/
 
