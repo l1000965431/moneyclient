@@ -431,13 +431,14 @@ input[type="color"]:focus,
 }
 #testimonials .phrases_wrapper .phrase { }
 #testimonials .phrases_wrapper .phrase p.testimony {
-	color:#3a3f46;
+	color: #3a3f46;
 	font-style: italic;
 	font-size: 21px;
 	/*width: 60%;*/
 	line-height: 28px;
 	position: relative;
 	float: left;
+	font-weight: normal;
 }
 #testimonials .phrases_wrapper .phrase p.testimony span {
 	font-family: "Georgia", Arial;
@@ -767,7 +768,7 @@ input[type="color"]:focus,
 	padding: 50px 20px 20px 20px;
 	margin-right: -20px;
 	margin-left: -20px;
-	height: 400px;
+	height: 270px;
 	}
 	#hero .carousel-inner .item {
 		padding: 0px 70px;

@@ -47,7 +47,6 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
     @Autowired
     LotteryService lotteryService;
 
-
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ActivityService.class);
 
     public ActivityDetailModel getActivityDetails(String InstallmentActivityID) {
