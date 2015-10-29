@@ -109,20 +109,6 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:id="@+id/invest_confirm_ll_vTicketPanel">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="(单期可用)"
-                            android:id="@+id/textView40"
-                            android:textSize="12dp"
-                            android:textColor="#ffed540d"
-                            android:textIsSelectable="false"
-                            android:layout_gravity="center|left"
-                            android:gravity="center_vertical"
-                            android:layout_marginLeft="45dp"
-                            android:layout_marginBottom="-27dp"
-                            android:layout_marginTop="10dp" />
 
                         <LinearLayout
                             android:orientation="horizontal"
