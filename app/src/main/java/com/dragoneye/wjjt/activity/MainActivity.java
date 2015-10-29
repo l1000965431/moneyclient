@@ -5,27 +5,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
-import com.dragoneye.wjjt.activity.base.BaseActivity;
 import com.dragoneye.wjjt.activity.base.DoubleClickExitActivity;
 import com.dragoneye.wjjt.activity.fragments.BaseFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeInvestmentFragment;
@@ -33,15 +26,11 @@ import com.dragoneye.wjjt.activity.fragments.HomeMyselfFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeRecordFragment;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.BroadcastConfig;
-import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.PreferencesHelper;
-import com.dragoneye.wjjt.user.CurrentUser;
-import com.umeng.update.UmengUpdateAgent;
 
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
-import cn.smssdk.SMSSDK;
 
 public class MainActivity extends DoubleClickExitActivity implements View.OnClickListener{
     public static final int TAB_INVESTMENT = 0;
@@ -81,6 +70,7 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
     private BottomButton currentCheckedButton;
     private FragmentAdapter mFragmentAdapter;
     private ViewPager.OnPageChangeListener onPageChangeListener;
+    private MenuItem mMessageBoxMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,27 +152,37 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         super.onStart();
     }
 
-    private IntentFilter intentFilter = new IntentFilter(BroadcastConfig.NEW_EARNING_MESSAGE);
+    private IntentFilter newEarnIntentFilter = new IntentFilter(BroadcastConfig.NEW_EARNING_MESSAGE);
+    private IntentFilter newMessageBoxIntentFilter = new IntentFilter(BroadcastConfig.NEW_MESSAGE_BOX_ITEM);
     private BroadcastReceiver earningMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             recordButton.setShowDot(true);
         }
     };
+    private BroadcastReceiver messageBoxReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setMessageBoxIsHaveNewMessage(true);
+        }
+    };
 
     @Override
     public void onResume(){
         super.onResume();
-        registerReceiver(earningMessageReceiver, intentFilter);
+        registerReceiver(earningMessageReceiver, newEarnIntentFilter);
+        registerReceiver(messageBoxReceiver, newMessageBoxIntentFilter);
         if( PreferencesHelper.isHaveEarningMessage(this) ){
             recordButton.setShowDot(true);
         }
+        setMessageBoxIsHaveNewMessage( PreferencesHelper.isHaveNewMessageBoxMessage(this) );
     }
 
     @Override
     public void onPause(){
         super.onPause();
         unregisterReceiver(earningMessageReceiver);
+        unregisterReceiver(messageBoxReceiver);
     }
 
     @Override
@@ -209,20 +209,27 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         SubMenu subMenu = menu.addSubMenu("消息");
-        final MenuItem noticeItem = subMenu.getItem();
-        noticeItem.setIcon(R.mipmap.icon_message_prompt);
-        noticeItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        noticeItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        mMessageBoxMenuItem= subMenu.getItem();
+        mMessageBoxMenuItem.setIcon(R.mipmap.icon_message_prompt);
+        mMessageBoxMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        mMessageBoxMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
-                noticeItem.setIcon(R.mipmap.icon_message);
+                PreferencesHelper.setIsHaveNewMessageBoxMessage(MainActivity.this, false);
                 NoticeActivity.CallActivity(MainActivity.this);
                 return false;
             }
         });
+        setMessageBoxIsHaveNewMessage(PreferencesHelper.isHaveNewMessageBoxMessage(this));
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void setMessageBoxIsHaveNewMessage(boolean isHaveNewMessage){
+        if(mMessageBoxMenuItem != null){
+            mMessageBoxMenuItem.setIcon( isHaveNewMessage ? R.mipmap.icon_message_prompt : R.mipmap.icon_message);
+        }
     }
 
     @Override
@@ -232,31 +239,31 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if(id == R.id.main_menu_notice){
-//            NoticeActivity.CallActivity(this);
-            ShareSDK.initSDK(this);
-            OnekeyShare oks = new OnekeyShare();
-
-            oks.disableSSOWhenAuthorize();
-
-            oks.setTitle("测试分享");
-
-            oks.setText("我是分享文本");
-//            // url仅在微信（包括好友和朋友圈）中使用
-//            oks.setUrl("http://sharesdk.cn");
-//            // comment是我对这条分享的评论，仅在人人网和QQ空间使用
-//            oks.setComment("我是测试评论文本");
-//            // site是分享此内容的网站名称，仅在QQ空间使用
-//            oks.setSite(getString(R.string.app_name));
-//            // siteUrl是分享此内容的网站地址，仅在QQ空间使用
-//            oks.setSiteUrl("http://sharesdk.cn");
-
+//        if(id == R.id.main_menu_notice){
+////            NoticeActivity.CallActivity(this);
+//            ShareSDK.initSDK(this);
+//            OnekeyShare oks = new OnekeyShare();
 //
-//// 启动分享GUI
-            oks.show(this);
-
-            return true;
-        }
+//            oks.disableSSOWhenAuthorize();
+//
+//            oks.setTitle("测试分享");
+//
+//            oks.setText("我是分享文本");
+////            // url仅在微信（包括好友和朋友圈）中使用
+////            oks.setUrl("http://sharesdk.cn");
+////            // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+////            oks.setComment("我是测试评论文本");
+////            // site是分享此内容的网站名称，仅在QQ空间使用
+////            oks.setSite(getString(R.string.app_name));
+////            // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+////            oks.setSiteUrl("http://sharesdk.cn");
+//
+////
+////// 启动分享GUI
+//            oks.show(this);
+//
+//            return true;
+//        }
 
         //noinspection SimplifiableIfStatement
 //        if (id == R.id.main_menu_submit_project) {

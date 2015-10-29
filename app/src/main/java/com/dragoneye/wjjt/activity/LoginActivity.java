@@ -149,7 +149,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         mLoginUserId = mETUserId.getText().toString();
         mLoginUserPassword = mETUserPassword.getText().toString();
 
-        mProgressDialog.setMessage("登陆中");
+        mProgressDialog.setMessage("登录中");
         mProgressDialog.show();
         HttpParams params = new HttpParams();
 

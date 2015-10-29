@@ -15,6 +15,8 @@ import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.LoginActivity;
 import com.dragoneye.wjjt.config.BroadcastConfig;
 import com.dragoneye.wjjt.config.PreferencesConfig;
+import com.dragoneye.wjjt.dao.MessageBoxItem;
+import com.dragoneye.wjjt.dao.MessageBoxItemDao;
 import com.dragoneye.wjjt.dao.MyDaoMaster;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.tool.PreferencesHelper;
@@ -41,6 +43,7 @@ import com.umeng.message.UmengMessageHandler;
 import com.umeng.message.UmengRegistrar;
 import com.umeng.message.entity.UMessage;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -250,11 +253,13 @@ public class MyApplication extends Application {
 
                             if (jsonObject != null) {
                                 String messageType = jsonObject.getString("MessageType");
+                                // 新的收益消息
                                 if (messageType.equals("redpoint")) {
                                     Intent intent = new Intent(BroadcastConfig.NEW_EARNING_MESSAGE);
                                     sendBroadcast(intent);
 
                                     PreferencesHelper.setIsHaveEarningMessage(MyApplication.this, true);
+                                    // 特惠项目结果
                                 } else if (messageType.equals("activityPreferentialLottery")){
                                     String body = jsonObject.getString("MessageBody");
                                     HashMap<String, String> bodyMap = ToolMaster.gsonInstance().fromJson(body,
@@ -265,6 +270,22 @@ public class MyApplication extends Application {
                                     intent.putExtra("activityId", activityId);
                                     intent.putExtra("earningPrice", earningPrice);
                                     sendBroadcast(intent);
+                                    // 消息盒子消息
+                                } else if (messageType.equals("messagebox")) {
+                                    String messageJson = jsonObject.getString("MessageBody");
+
+                                    MessageBoxItem messageBoxItem = new MessageBoxItem();
+                                    messageBoxItem.setMessageJson(messageJson);
+                                    messageBoxItem.setIsRead(false);
+                                    messageBoxItem.setId(null);
+
+                                    MessageBoxItemDao dao = MyDaoMaster.getDaoSession().getMessageBoxItemDao();
+                                    dao.insert(messageBoxItem);
+
+                                    Intent intent = new Intent(BroadcastConfig.NEW_MESSAGE_BOX_ITEM);
+                                    sendBroadcast(intent);
+
+                                    PreferencesHelper.setIsHaveNewMessageBoxMessage(MyApplication.this, true);
                                 }
                             }
                         } catch (JSONException e) {

@@ -44,6 +44,11 @@ public interface PreferencesConfig {
      */
     String IS_HAVE_NEW_EARNING_MESSAGE = "IS_HAVE_NEW_EARNING_MESSAGE";
 
+    /**
+     * 记录是否有未读的消息盒子消息
+     */
+    String IS_HAVE_NEW_MESSAGE_BOX_MESSAGE = "IS_HAVE_NEW_MESSAGE_BOX_MESSAGE";
+
 
     String SHARESDKAPPKEY = "98bbea40c2d7";
     String SHARESDKAPPSECRET = "79b44d7eba1b2d29fc660b450a004e12";

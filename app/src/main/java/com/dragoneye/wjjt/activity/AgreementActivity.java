@@ -19,12 +19,21 @@ public class AgreementActivity extends BaseActivity {
     public static void OpenAgreement(Activity activity){
         Intent intent = new Intent(activity, AgreementActivity.class);
         intent.putExtra("url", HttpUrlConfig.URL_AGREEMENT);
+        intent.putExtra("title", R.string.title_activity_agreement);
         activity.startActivity(intent);
     }
 
     public static void OpenDevStuff(Activity activity){
         Intent intent = new Intent(activity, AgreementActivity.class);
         intent.putExtra("url", HttpUrlConfig.URL_DEV_STUFF);
+        intent.putExtra("title", R.string.title_activity_agreement);
+        activity.startActivity(intent);
+    }
+
+    public static void OpenUrl(Activity activity, String url, String title){
+        Intent intent = new Intent(activity, AgreementActivity.class);
+        intent.putExtra("url", url);
+        intent.putExtra("title", title);
         activity.startActivity(intent);
     }
 
@@ -35,6 +44,8 @@ public class AgreementActivity extends BaseActivity {
         setContentView(R.layout.activity_agreement);
         mWebView = (WebView)findViewById(R.id.agreement_wv_main);
         String url = getIntent().getStringExtra("url");
+        String title = getIntent().getStringExtra("title");
+        setTitle(title);
         mWebView.loadUrl(url);
     }
 }

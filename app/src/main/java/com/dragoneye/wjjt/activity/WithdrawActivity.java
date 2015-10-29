@@ -222,6 +222,7 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
     Runnable transferWalletWX_r = new Runnable() {
         @Override
         public void run() {
+            progressDialog.show();
             HttpParams params = new HttpParams();
 
             String userId = ((MyApplication)getApplication()).getCurrentUser(WithdrawActivity.this).getUserId();
@@ -249,8 +250,14 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
             HttpClient.getClient().addHeader("userId", (userId));
 
             HttpClient.atomicPost(WithdrawActivity.this, HttpUrlConfig.URL_ROOT + "Wallet/TransferWallet", params, new HttpClient.MyHttpHandler() {
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+                    UIHelper.toast(WithdrawActivity.this, getString(R.string.http_can_not_connect_to_server));
+                    progressDialog.dismiss();
+                }
+
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
+                    progressDialog.dismiss();
                     onTransferWalletResult(s);
                 }
             });
@@ -260,6 +267,7 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
     Runnable transferWalletALIPAY_r = new Runnable() {
         @Override
         public void run() {
+            progressDialog.show();
             HttpParams params = new HttpParams();
 
             String userId = ((MyApplication)getApplication()).getCurrentUser(WithdrawActivity.this).getUserId();
@@ -286,9 +294,14 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
             HttpClient.getClient().addHeader("userId", (userId));
 
             HttpClient.atomicPost(WithdrawActivity.this, HttpUrlConfig.URL_ROOT + "Wallet/alipayTransfer", params, new HttpClient.MyHttpHandler() {
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+                    UIHelper.toast(WithdrawActivity.this, getString(R.string.http_can_not_connect_to_server));
+                    progressDialog.dismiss();
+                }
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
                     onTransferWalletResult(s);
+                    progressDialog.dismiss();
                 }
             });
         }

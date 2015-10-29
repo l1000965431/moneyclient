@@ -36,6 +36,7 @@ public class ExampleDaoGenerator {
 //        addInvestedProject(schema);
         addInvestRecord(schema);
         addEarningRecord(schema);
+        addMessageBoxItem(schema);
         new DaoGenerator().generateAll(schema, "../money/app/src/main/java/");
     }
 
@@ -49,6 +50,13 @@ public class ExampleDaoGenerator {
         Entity earningRecord = schema.addEntity("EarningRecord");
         earningRecord.addLongProperty("id").primaryKey();
         earningRecord.addBooleanProperty("isRead");
+    }
+
+    private static void addMessageBoxItem(Schema schema){
+        Entity messageBoxItem = schema.addEntity("MessageBoxItem");
+        messageBoxItem.addIdProperty();
+        messageBoxItem.addStringProperty("messageJson");
+        messageBoxItem.addBooleanProperty("isRead");
     }
 
 //    private static void addProject(Schema schema){

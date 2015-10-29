@@ -174,8 +174,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void onAgreement(){
-        Intent intent = new Intent(this, AgreementActivity.class);
-        startActivity(intent);
+        AgreementActivity.OpenAgreement(this);
     }
 
     private void onSendCode(){
