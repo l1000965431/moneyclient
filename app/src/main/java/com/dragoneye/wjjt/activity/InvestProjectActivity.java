@@ -80,6 +80,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     private int mFallowInvestPrice;
     private int mFallowInvestTicketLeft;
     private int mFallowInvestMaxPrice = 0;
+    private int mVTicketMaxUse = 0;
     private int mFallowStageLeft;
     private int mLeadStageLeft;
 
@@ -485,6 +486,10 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                     JSONObject object = new JSONObject(result);
                     mLeadInvestPrice = object.getInt("TotalLinePeoples");
                     mFallowInvestPrice = object.getInt("TotalLines");;
+                    mVTicketMaxUse = object.getInt("MaxVirtualSecuritiesBuy");
+                    if(mVTicketMaxUse > mVTicketLeft){
+                        mVTicketMaxUse = mVTicketLeft;
+                    }
                     JSONArray srEarnings = object.getJSONArray("SREarning");
                     mSrEarningModels.clear();
                     for(int i = 0; i < srEarnings.length(); i++){
@@ -717,9 +722,9 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             llVTicketPanel.setVisibility(View.GONE);
         }else {
             final TextView tvVTicket = (TextView)dialog.findViewById(R.id.invest_confirm_tv_vTicketNum);
-            if(mVTicketLeft >= 1){
+            if(mVTicketMaxUse >= 1){
                 mSelectedVTicketNum = 1;
-                tvVTicket.setText(String.format("%d/%d", mSelectedVTicketNum, mVTicketLeft));
+                tvVTicket.setText(String.format("%d/%d", mSelectedVTicketNum, mVTicketMaxUse));
             }else {
                 mSelectedVTicketNum = 0;
                 tvVTicket.setText(String.format("%d/%d", 0, 0));
@@ -729,9 +734,9 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             vAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mSelectedVTicketNum < mVTicketLeft){
+                    if(mSelectedVTicketNum < mVTicketMaxUse){
                         ++mSelectedVTicketNum;
-                        tvVTicket.setText(String.format("%d/%d", mSelectedVTicketNum, mVTicketLeft));
+                        tvVTicket.setText(String.format("%d/%d", mSelectedVTicketNum, mVTicketMaxUse));
                     }
                 }
             });
@@ -741,7 +746,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                 public void onClick(View v) {
                     if(mSelectedVTicketNum > 0){
                         --mSelectedVTicketNum;
-                        tvVTicket.setText(String.format("%d/%d", mSelectedVTicketNum, mVTicketLeft));
+                        tvVTicket.setText(String.format("%d/%d", mSelectedVTicketNum, mVTicketMaxUse));
                     }
                 }
             });
@@ -762,7 +767,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onInvest(flInvestType, flInvestStageNum, flInvestPriceNum, 1);
+                onInvest(flInvestType, flInvestStageNum, flInvestPriceNum, 1, mSelectedVTicketNum);
                 alertDialog.dismiss();
             }
         });
@@ -821,7 +826,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         return mSelectedFallowStageNum > 0;
     }
 
-    private void onInvest(int investType, final int investStageNum, final int investPriceNum, int messageType){
+    private void onInvest(int investType, final int investStageNum, final int investPriceNum, int messageType, int ticketUse){
         mProgressDialog.setMessage("正在提交");
         mProgressDialog.show();
         HttpParams params = new HttpParams();
@@ -833,6 +838,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         params.put(InvestProjectProtocol.INVEST_PROJECT_PARAM_INVEST_PRICE_NUM, investPriceNum);
         params.put("MessageType", messageType);
         params.put("token", ((MyApplication)getApplication()).getToken(InvestProjectActivity.this));
+        params.put("VirtualSecurities", ticketUse);
 
         HttpClient.atomicPost(this, InvestProjectProtocol.URL_INVEST_PROJECT, params, new HttpClient.MyHttpHandler() {
             @Override
@@ -912,7 +918,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                         .setPositiveButton("是", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                onInvest(flInvestType, flInvestStageNum, flInvestPriceNum, 2);
+                                onInvest(flInvestType, flInvestStageNum, flInvestPriceNum, 2, mSelectedVTicketNum);
                             }
                         })
                         .setNegativeButton("否", null)
@@ -921,6 +927,9 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                 break;
             case -1:
                 ((MyApplication)getApplication()).reLogin(this);
+                break;
+            case InvestProjectProtocol.INVEST_RESULT_TICKET_USE_ERROR:
+                UIHelper.toast(this, "微券花费错误");
                 break;
             default:
                 UIHelper.toast(this, "服务器异常");

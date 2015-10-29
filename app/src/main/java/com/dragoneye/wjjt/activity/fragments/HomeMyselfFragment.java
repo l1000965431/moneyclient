@@ -161,7 +161,13 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                 @Override
                 public void afterTextChanged(Editable s) {
                     if (s.length() >= 6) {
-                        onAddUserExp(s.toString());
+                        String str = s.toString().toLowerCase();
+                        String userInviteCode = ((MyApplication) getActivity().getApplication()).getCurrentUser(getActivity()).getUserInviteCode();
+                        if (str.toLowerCase().compareTo(userInviteCode.toLowerCase()) == 0) {
+                            UIHelper.toast(getActivity(), "不能填写自己的id!");
+                            return;
+                        }
+                        onAddUserExp(str);
                         mETInviteCode.setText("");
                     }
                 }
@@ -247,6 +253,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                         return;
                     }
                     int balance = 0, exp = 0, vTicket = 0, leadTicket = 0;
+                    boolean isInvited = true;
 
                     try {
                         JSONObject object = new JSONObject(s);
@@ -254,6 +261,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                         balance = object.getInt("wallet");
                         vTicket = object.getInt("virtualSecurities");
                         leadTicket = object.getInt("ledSecurities");
+                        isInvited = object.getBoolean("IsInvited");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -262,6 +270,9 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                     mTVExp.setText(String.format("经验：%d", exp));
                     mTVMicroTicket.setText(String.format("微券：%d", vTicket));
                     mTVLeadTicket.setText(String.format("领投券：%d", leadTicket));
+                    if(isInvited){
+                        mETInviteCode.setVisibility(View.GONE);
+                    }
                 }
             });
         }
@@ -390,6 +401,8 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 //            oks.setSite(getString(R.string.app_name));
 //            // siteUrl是分享此内容的网站地址，仅在QQ空间使用
 //            oks.setSiteUrl("http://sharesdk.cn");
+
+                        oks.setImageUrl("http://7xjewm.com1.z0.glb.clouddn.com/ic_launcher.png");
 
 //
 //// 启动分享GUI
