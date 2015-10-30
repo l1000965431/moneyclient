@@ -23,7 +23,7 @@
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#82000000">
+            android:background="#ff8d8d8d">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
                 android:text="卡西欧游戏机"
                 android:id="@+id/home_record_earning_tv_projectName"
                 android:textColor="#ffffffff"
-                android:textSize="15dp"
+                android:textSize="20dp"
                 android:paddingLeft="7dp"
                 android:paddingRight="7dp"
                 android:gravity="center_vertical|center_horizontal" />
@@ -44,7 +44,7 @@
                 android:text="NEW"
                 android:id="@+id/home_record_earning_tv_new"
                 android:textColor="#ff79ff19"
-                android:textSize="13dp"
+                android:textSize="15dp"
                 android:paddingLeft="7dp"
                 android:paddingRight="7dp"
                 android:gravity="center_vertical|center_horizontal" />
