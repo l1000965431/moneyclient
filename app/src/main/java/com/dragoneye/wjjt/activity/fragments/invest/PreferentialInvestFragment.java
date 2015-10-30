@@ -263,7 +263,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         mMainAlertDialog.dismiss();
         progressDialog.show();
         mIsWaittingResult = false;
-        HttpParams params = new HttpParams();
+        final HttpParams params = new HttpParams();
 
         UserBase userBase = ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity());
 
@@ -274,6 +274,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                 params, new HttpClient.MyHttpHandler() {
                     @Override
                     public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                        progressDialog.dismiss();
                         UIHelper.toast(getActivity(), getString(R.string.http_can_not_connect_to_server));
                     }
 

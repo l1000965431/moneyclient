@@ -251,6 +251,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 earningModel.setActivityId(jsonArray1.getString(4));
                 earningModel.setImageUrl(jsonArray1.getString(5));
                 earningModel.setEarningPrice(jsonArray1.getInt(6));
+                earningModel.setEarningType(jsonArray1.getInt(7));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try{
                     earningModel.setEarningDate(sdf.parse(jsonArray1.getString(7)));
@@ -319,6 +320,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 viewHolder.tvEarningPrice = (TextView)convertView.findViewById(R.id.home_record_earning_tv_earningPrice);
                 viewHolder.tvStageIndex = (TextView)convertView.findViewById(R.id.home_record_earning_tv_stageIndex);
                 viewHolder.tvNew = (TextView)convertView.findViewById(R.id.home_record_earning_tv_new);
+                viewHolder.tvEarningType = (TextView)convertView.findViewById(R.id.home_record_earning_tv_earningType);
 
                 convertView.setTag(viewHolder);
             }else{
@@ -357,6 +359,18 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             viewHolder.tvEarningDate.setText(sdf.format(myEarningModel.getEarningDate()));
 
+            switch (myEarningModel.getEarningType()){
+                case MyEarningModel.EARNING_TYPE_LEAD:
+                    viewHolder.tvEarningType.setText("(参与领投)");
+                    break;
+                case MyEarningModel.EARNING_TYPE_FALLOW:
+                    viewHolder.tvEarningType.setText("(参与跟投)");
+                    break;
+                case MyEarningModel.EARNING_TYPE_PREFERENTIAL:
+                    viewHolder.tvEarningType.setText("(参与特惠项目)");
+                    break;
+            }
+
             return convertView;
         }
 
@@ -366,6 +380,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
             TextView tvStageIndex;
             TextView tvEarningDate;
             TextView tvEarningPrice;
+            TextView tvEarningType;
             TextView tvNew;
         }
     }

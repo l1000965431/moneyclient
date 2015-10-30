@@ -2,8 +2,8 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.dragoneye.wjjt.activity.WithdrawActivity">
-    <item android:id="@+id/menu_withdraw_unbind"
-          android:title="解除绑定"
-          android:orderInCategory="100"
-          app:showAsAction="ifRoom"/>
+    <!--<item android:id="@+id/menu_withdraw_unbind"-->
+          <!--android:title="解除绑定"-->
+          <!--android:orderInCategory="100"-->
+          <!--app:showAsAction="ifRoom"/>-->
 </menu>

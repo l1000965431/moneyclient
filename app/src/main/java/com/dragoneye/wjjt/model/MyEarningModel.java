@@ -17,6 +17,20 @@ public class MyEarningModel {
     private Date earningDate;
     private int id;
 
+    public static final int EARNING_TYPE_LEAD = 1;
+    public static final int EARNING_TYPE_FALLOW = 2;
+    public static final int EARNING_TYPE_PREFERENTIAL = 3;
+
+    public int getEarningType() {
+        return earningType;
+    }
+
+    public void setEarningType(int earningType) {
+        this.earningType = earningType;
+    }
+
+    private int earningType;
+
     public String getActivityId() {
         return activityId;
     }

@@ -13,6 +13,7 @@ import com.dragoneye.wjjt.R;
  * Created by happysky on 15-8-12.
  */
 public class LoadingMoreFooterProxy {
+    private LinearLayout mLLBackground;
     private LinearLayout mLLIsLoadingMore;
     private LinearLayout mLLNoMore;
     private View mFooter;
@@ -25,6 +26,7 @@ public class LoadingMoreFooterProxy {
         mListView = listView;
         mFooter = LayoutInflater.from(context).inflate(R.layout.loading_list_view_item, listView, false);
 
+        mLLBackground = (LinearLayout)mFooter.findViewById(R.id.loading_more_root_panel);
         mLLIsLoadingMore = (LinearLayout)mFooter.findViewById(R.id.loading_list_view_item_panelLoadingMore);
         mLLNoMore = (LinearLayout)mFooter.findViewById(R.id.loading_list_view_item_panelNoMore);
 
@@ -56,6 +58,10 @@ public class LoadingMoreFooterProxy {
 
     public void setOnLoadingMoreListener(OnLoadingMoreListener onLoadingMoreListener){
         this.onLoadingMoreListener = onLoadingMoreListener;
+    }
+
+    public void setBackgroundColor(int color){
+        mLLBackground.setBackgroundColor(color);
     }
 
     public void setIsLoadingMore(){

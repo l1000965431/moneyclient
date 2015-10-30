@@ -42,6 +42,10 @@ public class ToolMaster {
         return format.format(price);
     }
 
+    public static String convertRMBPriceString(int price){
+        return String.valueOf(price) + "   元";
+    }
+
     /**
      * 根据uri 获取文件真实路径
      * @param context

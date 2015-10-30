@@ -126,13 +126,7 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
                     }
 
                     mTVWalletBalance.setText(String.format("钱包余额：%s", ToolMaster.convertToPriceString(balance)));
-
-                    if( mWithdrawType == WITHDRAW_TYPE_WX ){
-                        handler.post(checkIsBindWeChat_r);
-                    }else if( mWithdrawType == WITHDRAW_TYPE_ALIPAY ){
-                        handler.post(checkIsBindAlipay_r);
-                    }
-
+                    finishLoading(true);
                 }
             });
         }
@@ -208,6 +202,7 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
                     UIHelper.toast(this, "请输入登录密码");
                     break;
                 }
+
                 if(mWithdrawType == WITHDRAW_TYPE_WX){
                     handler.post(transferWalletWX_r);
                 }else {
@@ -320,8 +315,14 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
                 case 2:     // 提现现金不足
                     UIHelper.toast(this, "提现现金不足");
                     break;
-                case 3:     // 没有绑定微信账号
-                    UIHelper.toast(this, "没有绑定微信账号");
+                case 3:     // 没有绑定微信或支付宝账号
+                    if(mWithdrawType == WITHDRAW_TYPE_WX){
+                        UIHelper.toast(this, "没有绑定微信账号");
+                        WxBindActivity.CallActivity(WithdrawActivity.this);
+                    }else {
+                        UIHelper.toast(this, "没有绑定支付宝账号");
+                        AlipayBindActivity.CallActivity(WithdrawActivity.this);
+                    }
                     break;
                 case 4:
                     UIHelper.toast(this, "密码不正确");
@@ -346,51 +347,22 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        switch (id){
-            case R.id.menu_withdraw_unbind:
-                onUnbind();
-                break;
-        }
+//        switch (id){
+//            case R.id.menu_withdraw_unbind:
+//                onUnbind();
+//                break;
+//        }
 
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void onUnbind(){
-        if(mWithdrawType == WITHDRAW_TYPE_ALIPAY){
-            handler.post(unbindAlipay_r);
-        }
-    }
+//    private void onUnbind(){
+//        if(mWithdrawType == WITHDRAW_TYPE_ALIPAY){
+//            handler.post(unbindAlipay_r);
+//        }
+//    }
 
-    Runnable unbindAlipay_r = new Runnable() {
-        @Override
-        public void run() {
-            progressDialog.show();
 
-            HttpParams params = new HttpParams();
-
-            String userId = ((MyApplication)getApplication()).getCurrentUser(WithdrawActivity.this).getUserId();
-
-            params.put("userId", userId);
-
-            HttpClient.atomicPost(WithdrawActivity.this, HttpUrlConfig.URL_ROOT + "Wallet/ClearalipayId", params, new HttpClient.MyHttpHandler() {
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable){
-                    progressDialog.dismiss();
-                    UIHelper.toast(WithdrawActivity.this, "连接服务器失败");
-                }
-
-                @Override
-                public void onSuccess(int i, Header[] headers, String s) {
-                    progressDialog.dismiss();
-                    if(s != null && s.compareTo("SUCCESS") == 0){
-                        UIHelper.toast(WithdrawActivity.this, "解除支付宝绑定成功");
-                        finish();
-                    }else{
-                        UIHelper.toast(WithdrawActivity.this, "解除支付宝绑定失败");
-                    }
-                }
-            });
-        }
-    };
 
 }

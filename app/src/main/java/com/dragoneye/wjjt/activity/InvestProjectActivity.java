@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.base.DotViewPagerActivity;
@@ -52,8 +53,10 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     private TextView mTextViewConfirm;
     private ProgressBar mProgressBar;
     private TextView mTextViewProjectProgress;
-    private LinearLayout mLinearLayoutResultRoot;
-    private LinearLayout mLinearLayoutProportion;
+    private LinearLayout mLinearLayoutSrResultRoot;
+    private LinearLayout mLinearLayoutSrProportion;
+    private LinearLayout mLinearLayoutBrResultRoot;
+    private LinearLayout mLinearLayoutBrProportion;
     private ProjectDetailModel mProjectDetailModel;
 
     private TextView mTVStageInfo;
@@ -151,9 +154,13 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         mProgressBar = (ProgressBar)findViewById(R.id.invest_project_progressbar);
         mTextViewProjectProgress = (TextView)findViewById(R.id.invest_project_tv_project_progress);
 
-        // 投资收益几率显示
-        mLinearLayoutProportion = (LinearLayout)findViewById(R.id.investment_ll_proportion_layout);
-        mLinearLayoutResultRoot = (LinearLayout)findViewById(R.id.investment_ll_result_root);
+        // 领投投资收益几率显示
+        mLinearLayoutBrProportion = (LinearLayout)findViewById(R.id.investment_ll_proportion_layout_br);
+        mLinearLayoutBrResultRoot = (LinearLayout)findViewById(R.id.investment_ll_result_root_br);
+
+        // 跟投投资收益几率显示
+        mLinearLayoutSrProportion = (LinearLayout)findViewById(R.id.investment_ll_proportion_layout);
+        mLinearLayoutSrResultRoot = (LinearLayout)findViewById(R.id.investment_ll_result_root);
 
         // 投资期数显示标签
         mTVLeadStage = (TextView)findViewById(R.id.invest_project_tv_leadStage);
@@ -227,6 +234,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             title = title.substring(0, 10) + "...";
         }
         setTitle(title);
+
+        setImageScaleType(ImageView.ScaleType.CENTER_CROP);
     }
 
     private void initData(){
@@ -301,6 +310,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         if( mLLLeadPanel.getVisibility() == View.VISIBLE ){
             mLLLeadPanel.setVisibility(View.GONE);
             mIVLeadArrow.setRotation(-90.0f);
+            mSelectedLeadStageNum = 0;
+            setLeadStageNum(mSelectedLeadStageNum);
         }else {
             mLLLeadPanel.setVisibility(View.VISIBLE);
             mIVLeadArrow.setRotation(0);
@@ -320,6 +331,9 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         if( mLLFallowPanel.getVisibility() == View.VISIBLE ){
             mLLFallowPanel.setVisibility(View.GONE);
             mIVFallowArrow.setRotation(-90.0f);
+            mSelectedFallowStageNum = 0;
+            setFallowStageNum(mSelectedFallowStageNum);
+            updateSrEarningProportion(0);
         }else {
             mLLFallowPanel.setVisibility(View.VISIBLE);
             mIVFallowArrow.setRotation(0);
@@ -367,19 +381,6 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         }
     }
 
-//    private void onVTicketAdd(){
-//        if( mSelectedVTicketNum < mVTicketLeft ){
-//            mSelectedVTicketNum++;
-//            setVTicketNum(mSelectedVTicketNum);
-//        }
-//    }
-//
-//    private void onVTicketSub(){
-//        if( mSelectedVTicketNum > 0 ){
-//            mSelectedVTicketNum--;
-//            setVTicketNum(mSelectedVTicketNum);
-//        }
-//    }
 
     private void resetLead(){
         if( mSelectedLeadStageNum != 0 ){
@@ -395,11 +396,6 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         if( mSelectedFallowStageNum != 0 ){
             setFallowStageNum(0);
         }
-//        if( mSelectedVTicketNum != 0 ){
-//            setVTicketNum(0);
-//        }
-//
-//        mSelectedVTicketNum = 0;
         mSelectedFallowStageNum = 0;
         mLLFallowPanel.setVisibility(View.GONE);
         mIVFallowArrow.setRotation(-90.0f);
@@ -412,9 +408,6 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         updateBrEarningProportion(num);
     }
 
-//    private void setVTicketNum(int num){
-//        mTVVTicket.setText(String.format("%d/%d", num, mVTicketLeft));
-//    }
 
     private void setFallowStageNum(int num){
         mTVFallowStage.setText(String.format("%d/%d", num, mFallowStageLeft));
@@ -600,33 +593,33 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     };
 
     private void updateSrEarningProportion(int investPrice){
-        mLinearLayoutResultRoot.removeAllViews();
-        mLinearLayoutProportion.setVisibility(View.VISIBLE);
+        mLinearLayoutSrResultRoot.removeAllViews();
+        mLinearLayoutSrProportion.setVisibility(View.VISIBLE);
         if( investPrice == 0 ){
-            mLinearLayoutProportion.setVisibility(View.GONE);
+            mLinearLayoutSrProportion.setVisibility(View.GONE);
         }else {
             List<TextView> list = getSrProportionTextView(investPrice);
             for(TextView tv : list){
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(0, 5, 0, 0);
-                mLinearLayoutResultRoot.addView(tv, layoutParams);
+                mLinearLayoutSrResultRoot.addView(tv, layoutParams);
             }
         }
     }
 
     private void updateBrEarningProportion(int stageNum){
-        mLinearLayoutResultRoot.removeAllViews();
-        mLinearLayoutProportion.setVisibility(View.VISIBLE);
+        mLinearLayoutBrResultRoot.removeAllViews();
+        mLinearLayoutBrProportion.setVisibility(View.VISIBLE);
         if( stageNum == 0 ){
-            mLinearLayoutProportion.setVisibility(View.GONE);
+            mLinearLayoutBrProportion.setVisibility(View.GONE);
         }else {
             List<TextView> list = getBrProportionTextView(stageNum);
             for(TextView tv : list){
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(0, 5, 0, 0);
-                mLinearLayoutResultRoot.addView(tv, layoutParams);
+                mLinearLayoutBrResultRoot.addView(tv, layoutParams);
             }
         }
 
@@ -713,12 +706,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
 
 
         final TextView tvTotalPrice = (TextView)dialog.findViewById(R.id.invest_confirm_tv_totalPrice);
-        tvTotalPrice.setText(String.valueOf(flInvestPriceNum));
+        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum));
         final TextView tvTotalStage = (TextView)dialog.findViewById(R.id.invest_confirm_tv_stageNum);
-        tvTotalStage.setText(String.valueOf(flInvestStageNum));
+        tvTotalStage.setText(String.valueOf(flInvestStageNum) + "   期");
         final View llVTicketPanel = dialog.findViewById(R.id.invest_confirm_ll_vTicketPanel);
 
-        if(flInvestType == InvestProjectProtocol.INVEST_TYPE_LEAD || flInvestStageNum > 1 ){
+        if(flInvestType == InvestProjectProtocol.INVEST_TYPE_LEAD || flInvestStageNum > 1 || flInvestPriceNum < 2 || mVTicketMaxUse== 0 ){
             llVTicketPanel.setVisibility(View.GONE);
         }else {
             final TextView tvVTicket = (TextView)dialog.findViewById(R.id.invest_confirm_tv_vTicketNum);
@@ -728,6 +721,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             }else {
                 mSelectedVTicketNum = 0;
                 tvVTicket.setText(String.format("%d/%d", 0, 0));
+                tvVTicket.setVisibility(View.GONE);
             }
 
             final View vAdd = dialog.findViewById(R.id.invest_confirm_iv_vTicketadd);
@@ -771,40 +765,21 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                 alertDialog.dismiss();
             }
         });
-
-//        new AlertDialog.Builder(this).setTitle(AppInfoManager.getApplicationName(this))
-//                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-////                        Intent intent = new Intent(InvestProjectActivity.this, PaymentActivity.class);
-////                        intent.putExtra(EXTRA_PROJECT_MODEL, mProjectDetailModel);
-////                        intent.putExtra(PaymentActivity.EXTRA_INVEST_TYPE, flInvestType);
-////                        intent.putExtra(PaymentActivity.EXTRA_INVEST_STAGE_NUM, flInvestStageNum);
-////                        intent.putExtra(PaymentActivity.EXTRA_INVEST_PRICE_NUM, flInvestPriceNum);
-////                        startActivity(intent);
-//
-//                    }
-//                })
-//                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                    }
-//                }).setMessage(tips).show();
-
     }
 
     private boolean checkUserInput(){
+        if( !isLeadInvest() && !isFallowInvest() ){
+            UIHelper.toast(this, "请选择跟投或领投", Toast.LENGTH_LONG);
+            return false;
+        }
+
         if( isLeadInvest() ){
             return true;
-        }else if( isFallowInvest() ){
+        }else{
             if( mETInvestPrice.getText().length() == 0 ){
                 UIHelper.toast(this, "请输入要跟投的数量");
                 return false;
             }
-        }else {
-            UIHelper.toast(this, "请选你的领投或跟投期数");
-            return false;
         }
 
         return true;
@@ -951,9 +926,9 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         titleString = String.format("您已入资 %s 项目", titleString);
         title.setText(titleString);
 
-        pricePerStage.setText(String.valueOf(investPriceNum));
-        stageNum.setText(String.valueOf(investStageNum));
-        totalPrice.setText(String.valueOf(investStageNum * investPriceNum));
+        pricePerStage.setText(ToolMaster.convertRMBPriceString(investPriceNum));
+        stageNum.setText(String.valueOf(investStageNum) + "   期");
+        totalPrice.setText(ToolMaster.convertRMBPriceString(investStageNum * investPriceNum));
 
         final AlertDialog alertDialog = new AlertDialog.Builder(this)
             .setView(dialog)

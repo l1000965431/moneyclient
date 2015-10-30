@@ -152,7 +152,7 @@
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="55dp"
-                    android:id="@+id/imageView7"
+                    android:id="@+id/home_self_group_order_iv_wxpay"
                     android:src="@mipmap/pay_by_weixin"
                     android:layout_gravity="center"
                     android:scaleType="fitCenter" />
@@ -176,7 +176,7 @@
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="55dp"
-                    android:id="@+id/imageView10"
+                    android:id="@+id/home_self_group_order_iv_alipay"
                     android:src="@mipmap/pay_by_zhifubao"
                     android:layout_gravity="center"
                     android:scaleType="fitCenter" />
