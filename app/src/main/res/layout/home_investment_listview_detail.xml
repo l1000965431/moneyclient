@@ -21,7 +21,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="170dp"
                 android:id="@+id/investment_project_detail_dot_viewpager"
-                />
+                android:visibility="gone" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -128,8 +128,7 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="#ffbbbbbb">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -223,6 +222,38 @@
                             android:layout_marginLeft="30dp"
                             android:tint="#ff63595f" />
                     </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingBottom="10dp"
+                    android:id="@+id/linearLayout25"
+                    android:background="#ffcecece">
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="领投获得收益概率："
+                            android:textSize="12sp"
+                            android:layout_marginTop="7dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginBottom="7dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/linearLayout24"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -395,7 +426,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingBottom="10dp"
-                    android:id="@+id/investment_ll_proportion_layout">
+                    android:id="@+id/investment_ll_proportion_layout"
+                    android:background="#ffcecece">
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -403,7 +435,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="获得收益概率："
+                            android:text="跟投获得收益概率："
                             android:textSize="12sp"
                             android:layout_marginTop="7dp"
                             android:layout_marginLeft="20dp"
