@@ -44,8 +44,10 @@
 
     <!-- 投资界面 -->
     <string name="invest_project_invested_price">您已入资:%s</string>
-    <string name="invest_project_invested_quantity">购买数量:%d</string>
+    <string name="invest_project_invested_quantity">购买金额:%d</string>
     <string name="invest_project_invested_earnings">您的收益:X</string>
+    <string name="invest_project_invested_led">(参与领投)</string>
+    <string name="invest_project_invested_follow">(参与跟投)</string>
     <string name="invest_project_invested_goal">本期筹款目标:</string>
     <string name="invest_project_invested_installments">您购买了:%d期</string>
     <string name="invest_project_no_invested_price">您尚未入资</string>
