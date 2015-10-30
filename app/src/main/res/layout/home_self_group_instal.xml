@@ -116,6 +116,32 @@
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/linearLayout26"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffffffff"
+        android:paddingRight="10dp"
+        android:paddingLeft="40dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="解绑提现指定支付宝账号"
+            android:id="@+id/textView43"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="fill_parent"
                   android:layout_height="57dp"
                   android:orientation="horizontal"
@@ -131,7 +157,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="解除微信绑定"
+            android:text="解绑提现指定微信账号"
             android:id="@+id/home_self_group_instal_tv_wx_bind"
             android:textColor="#ff332b38"
             android:textSize="17dp"
