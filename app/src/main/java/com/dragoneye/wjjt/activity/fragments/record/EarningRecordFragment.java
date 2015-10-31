@@ -251,7 +251,6 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 earningModel.setActivityId(jsonArray1.getString(4));
                 earningModel.setImageUrl(jsonArray1.getString(5));
                 earningModel.setEarningPrice(jsonArray1.getInt(6));
-                earningModel.setEarningType(jsonArray1.getInt(7));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try{
                     earningModel.setEarningDate(sdf.parse(jsonArray1.getString(7)));
@@ -260,6 +259,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 }
                 earningModel.setId(jsonArray1.getInt(8));
                 earningModels.add(earningModel);
+                earningModel.setEarningType(jsonArray1.getInt(9));
             }
 
         }catch (JSONException e){

@@ -15,7 +15,8 @@
             android:id="@+id/home_investment_normal_grid_view"
             android:layout_centerHorizontal="true"
             android:numColumns="2"
-            android:horizontalSpacing="3dp"/>
+            android:horizontalSpacing="1dp"
+            android:verticalSpacing="2dp"/>
     </com.dragoneye.wjjt.view.RefreshableView>
 
 </RelativeLayout>

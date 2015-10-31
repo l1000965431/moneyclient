@@ -298,6 +298,8 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
 
         final TextView tvEarningPrice = (TextView)dialog.findViewById(R.id.rush_success_tv_earning_price);
         final TextView tvProjectName = (TextView)dialog.findViewById(R.id.rush_success_tv_activity_name);
+        final View confirmButton = dialog.findViewById(R.id.rush_failure_tv_auto_close);
+
 
         tvEarningPrice.setText(String.valueOf(price));
         tvProjectName.setText(preferentialModel.getName());
@@ -306,6 +308,13 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                 .setView(dialog)
                 .create();
         mRushResultAlertDialog.show();
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRushResultAlertDialog.dismiss();
+            }
+        });
     }
 
     private void rushFailure(PreferentialModel preferentialModel){
