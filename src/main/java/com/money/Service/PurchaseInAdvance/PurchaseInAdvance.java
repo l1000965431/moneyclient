@@ -9,6 +9,7 @@ import com.money.config.ServerReturnValue;
 import com.money.dao.PurchaseInAdvanceDAO.PurchaseInAdvanceDAO;
 import com.money.dao.TransactionSessionCallback;
 import com.money.dao.activityDAO.activityDAO;
+import com.money.dao.userDAO.UserDAO;
 import com.money.model.ActivityDetailModel;
 import com.money.model.ActivityDynamicModel;
 import com.money.model.ActivityVerifyCompleteModel;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -42,6 +44,9 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private UserDAO userDAO;
+
     /**
      * 项目预购
      *
@@ -51,13 +56,13 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
      * @param AdvanceNum            预购期数
      */
     public int PurchaseInAdvance(final String InstallmentActivityID, final String UserID, final int PurchaseNum,
-                                 final int AdvanceNum, final String OrderID, StringBuffer out_ActivityName) {
+                                 final int AdvanceNum, final String OrderID, final int VirtualSecurities,StringBuffer out_ActivityName) {
         final String[] ActivityName = new String[1];
         if (AdvanceNum == 0) {
             return 0;
         }
 
-        if (activityInfoDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+        if (Objects.equals(activityInfoDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
                 ActivityDetailModel activityDetailModel = activityInfoDAO.getActivityDetaillNoTransaction(InstallmentActivityID);
                 ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDetailModel.getActivityVerifyCompleteModel();
@@ -83,12 +88,12 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                         int activityInstallmentNum = activityVerifyCompleteModel.getTotalInstallmentNum();
                         int activityCurLines = activityVerifyCompleteModel.getCurLines();
 
-                        int temp = activityTotalLines/activityInstallmentNum;
+                        int temp = activityTotalLines / activityInstallmentNum;
                         //+2因为要计算从哪一期开始的预购  activityCurLines/temp+1代表进行到了哪期 从下一期开始 (activityCurLines/temp + 1）+ 1
-                        if( activityCurLines/temp < activityInstallmentNum-1 ){
-                            OrderStartAndvance = activityCurLines/temp + 2;
-                        }else{
-                            OrderStartAndvance = activityCurLines/temp+1;
+                        if (activityCurLines / temp < activityInstallmentNum - 1) {
+                            OrderStartAndvance = activityCurLines / temp + 2;
+                        } else {
+                            OrderStartAndvance = activityCurLines / temp + 1;
                         }
 
                     } else {
@@ -125,22 +130,26 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                 if (PurchaseInAdvanceNum > 0) {
                     purchaseInAdvanceDAO.InsertPurchaseInAdvance(ActivityID, UserID,
                             PurchaseNum, PurchaseInAdvanceNum, Config.PURCHASEPRICKSILK, OrderID);
+                }else{
+                    //购买的是单期要扣除微劵
+                    walletService.virtualSecuritiesCost( UserID,VirtualSecurities );
                 }
 
 
-                if(purchaseInAdvanceDAO.updateActivityLines( ActivityID,costLines ) == 0){
+                if (purchaseInAdvanceDAO.updateActivityLines(ActivityID, costLines) == 0) {
                     return false;
                 }
+
+                //增加任务经验
+                userDAO.AddUserExpByUserId( UserID,Config.AddExpPurchase*costLines );
 
                 orderService.createOrder(UserID, InstallmentActivityID, PurchaseNum * AdvanceNum, PurchaseNum,
                         AdvanceNum, Config.PURCHASEPRICKSILK, OrderID, OrderStartAndvance);
 
 
-
-
                 return true;
             }
-        }) == Config.SERVICE_SUCCESS) {
+        }), Config.SERVICE_SUCCESS)) {
             out_ActivityName.append(ActivityName[0]);
             return 1;
         }
@@ -321,30 +330,23 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
      * @return
      */
     public int LocalTyrantsPurchaseActivity(final String InstallmentActivityID,
-                                            final String UserID, final int AdvanceNum, final String OrderID, StringBuffer out_ActivityName) {
+                                            final String UserID, final int AdvanceNum,
+                                            final String OrderID,
+                                            StringBuffer out_ActivityName) {
         final String[] ActivityName = new String[1];
         if (AdvanceNum == 0) {
             return 0;
         }
 
-        if (activityInfoDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
+        if (Objects.equals(activityInfoDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             public boolean callback(Session session) throws Exception {
                 ActivityDynamicModel activityDynamicModel = activityInfoDAO.getActivityDynamicModelNoTransaction(InstallmentActivityID);
                 ActivityDetailModel activityDetailModel = activityDynamicModel.getActivityDetailModel();
                 ActivityVerifyCompleteModel activityVerifyCompleteModel = activityDynamicModel.getActivityVerifyCompleteModel();
                 String ActivityID = activityDynamicModel.getActivityVerifyCompleteModel().getActivityId();
 
-/*                int a1 = activityVerifyCompleteModel.getCurLinePeoples();
-
-                int b1 = orderService.TestLingTou();
-
-                if( a1 != b1 ){
-                    return false;
-                }*/
-
-
                 ActivityName[0] = activityVerifyCompleteModel.getName();
-                int OrderStartAndvance = 0;
+                int OrderStartAndvance;
                 int Lines = activityDynamicModel.getActivityTotalLinesPeoples() * AdvanceNum;
                 int TempAdvanceNum;
                 if (!IsEnoughLocalTyrantsTickets(InstallmentActivityID)) {
@@ -367,7 +369,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                         return false;
                     }
 
-                    int PurchaseResult = LocalTyrantsPurchase(InstallmentActivityID, UserID, activityDynamicModel.getActivityTotalLinesPeoples() );
+                    int PurchaseResult = LocalTyrantsPurchase(InstallmentActivityID, UserID, activityDynamicModel.getActivityTotalLinesPeoples());
                     if (PurchaseResult == ServerReturnValue.SERVERRETURNERROR) {
                         return false;
                     }
@@ -395,9 +397,12 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
                     return false;
                 }
 
-                if( purchaseInAdvanceDAO.updateActivityLinesPeoples( ActivityID,Lines ) == 0 ){
+                if (purchaseInAdvanceDAO.updateActivityLinesPeoples(ActivityID, Lines) == 0) {
                     return false;
                 }
+
+                //增加人物经验
+                userDAO.AddUserExpByUserId( UserID,Config.AddExpPurchase*Lines );
 
                 orderService.createOrder(UserID, InstallmentActivityID, Lines, activityDynamicModel.getActivityTotalLinesPeoples(),
                         AdvanceNum, Config.PURCHASELOCALTYRANTS, OrderID, OrderStartAndvance);
@@ -413,7 +418,7 @@ public class PurchaseInAdvance extends ServiceBase implements ServiceInterface {
 
                 return true;
             }
-        }) == Config.SERVICE_SUCCESS) {
+        }), Config.SERVICE_SUCCESS)) {
             out_ActivityName.append(ActivityName[0]);
             return 1;
         }

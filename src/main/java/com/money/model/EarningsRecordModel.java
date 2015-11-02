@@ -9,9 +9,9 @@ import java.util.Date;
  * Created by liumin on 15/8/20.
  */
 
-@Entity
-@Table(name = "EarningsRecord")
-public class EarningsRecordModel {
+@Entity(name = "EarningsRecord")
+@Table
+public class EarningsRecordModel extends BaseModel {
 
     @Id
     String activityStageId;

@@ -9,8 +9,8 @@ import java.util.Date;
  * <p>Date: 15-7-8
  * <p>Version: 1.0
  */
-@Entity
-@Table(name = "activityverify")
+@Entity(name = "activityverify")
+@Table
 public class ActivityVerifyModel extends BaseModel {
     /**
      * 初次审核
@@ -51,6 +51,11 @@ public class ActivityVerifyModel extends BaseModel {
      * 未通过审核
      */
     public static final int STATUS_AUDITOR_NOT_PASS = 7;
+
+    /**
+     * 特惠项目开始等待
+     */
+    public static final int STATUS_AUDITOR_WAIT_START = 8;
 
     /**
      * 项目ID

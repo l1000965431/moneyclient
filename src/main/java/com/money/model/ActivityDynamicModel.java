@@ -1,7 +1,6 @@
 package com.money.model;
 
 import org.hibernate.annotations.DynamicUpdate;
-
 import javax.persistence.*;
 
 /**
@@ -11,8 +10,8 @@ import javax.persistence.*;
  * <p>Version: 1.0
  */
 
-@Entity
-@Table(name = "activitydynamic")
+@Entity(name = "activitydynamic")
+@Table
 @DynamicUpdate(true)
 public class ActivityDynamicModel extends BaseModel {
 
@@ -38,7 +37,7 @@ public class ActivityDynamicModel extends BaseModel {
      * 父项目
      */
     @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "parentActivityId", referencedColumnName = "activityId")
+    /*@JoinColumn(name = "parentActivityId", referencedColumnName = "activityId")*/
     ActivityVerifyCompleteModel activityVerifyCompleteModel;
 
     /**

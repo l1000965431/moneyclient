@@ -100,9 +100,6 @@ public class TicketService extends ServiceBase implements ServiceInterface {
         LotteryService lotteryService = ServiceFactory.getService("LotteryService");
 
         //创建项目组中奖表
-        if ( false ) {
-            return null;
-        }
 
         Iterator<Map.Entry<Integer, Map<Integer, Integer>>> TicketDetailsit = mapTicketDetails.entrySet().iterator();
 
@@ -154,7 +151,7 @@ public class TicketService extends ServiceBase implements ServiceInterface {
 
                 if (LinesLotteryProbability.get(linesGradation) == null) {
                     //生成中奖几率表
-                    Map<Integer, Integer> lotteryProbabilityMap = new HashMap<Integer, Integer>();
+                    Map<Integer, Integer> lotteryProbabilityMap = new HashMap();
                     int curlotteryProbability = lotteryProbability * (linesGradation / baseLines);
 
                     lotteryProbabilityMap.put(lotterylines, curlotteryProbability);
@@ -206,8 +203,7 @@ public class TicketService extends ServiceBase implements ServiceInterface {
      */
     Map<Integer, Integer> GetBasetLinesInterval(int InvestmentLines) {
         try {
-            Map<Integer, Integer> map = MapLinesLotteryInterval.get(InvestmentLines);
-            return map;
+            return MapLinesLotteryInterval.get(InvestmentLines);
         } catch (Exception e) {
             return null;
         }
@@ -236,8 +232,7 @@ public class TicketService extends ServiceBase implements ServiceInterface {
      */
     int GetLinesLotteryCurPeoples(int LotteryLinse) {
         try {
-            int curlinespeoples = mapCurLotteryPeoples.get(LotteryLinse);
-            return curlinespeoples;
+            return mapCurLotteryPeoples.get(LotteryLinse);
         } catch (Exception e) {
             return Config.RETURNERROR;
         }
@@ -273,9 +268,9 @@ public class TicketService extends ServiceBase implements ServiceInterface {
             return false;
         }
 
-        for (int i = 0; i < LotteryGradation.size(); ++i) {
+        for (Integer aLotteryGradation : LotteryGradation) {
 
-            if (!IsLinesLotteryCompelete(LotteryGradation.get(i))) {
+            if (!IsLinesLotteryCompelete(aLotteryGradation)) {
                 return false;
             }
         }
@@ -338,8 +333,8 @@ public class TicketService extends ServiceBase implements ServiceInterface {
             return false;
         }
 
-        for (int i = 0; i < LotteryPeople.size(); ++i) {
-            StartLotteryByLines((LotteryModel) LotteryPeople.get(i));
+        for (Object aLotteryPeople : LotteryPeople) {
+            StartLotteryByLines((LotteryModel) aLotteryPeople);
         }
 
         return true;
@@ -406,16 +401,16 @@ public class TicketService extends ServiceBase implements ServiceInterface {
         }
     }
 
-    /**
+/*    *//**
      * 金点发放
      *
      * @param GlodPoinPeoples
-     */
+     *//*
     void LotteryGoldPoint(List GlodPoinPeoples) {
         if (GlodPoinPeoples == null) {
             return;
         }
-    }
+    }*/
 
     /**
      * 创建票ID

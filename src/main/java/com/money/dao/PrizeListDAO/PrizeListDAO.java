@@ -21,7 +21,7 @@ public class PrizeListDAO extends BaseDao {
      */
     public PrizeListModel getListPrizeListModel( String InstallmentActivityID ){
 
-        PrizeListModel prizeListModel = null;
+        PrizeListModel prizeListModel;
         Session session = getNewSession();
         prizeListModel = (PrizeListModel) session.createCriteria( PrizeListModel.class )
                 .add( Restrictions.eq( "ActivityIID",InstallmentActivityID ) )

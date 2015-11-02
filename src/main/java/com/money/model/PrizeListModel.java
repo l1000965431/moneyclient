@@ -7,8 +7,8 @@ import java.util.Date;
  * Created by liumin on 15/7/25.
  */
 
-@Entity
-@javax.persistence.Table(name = "PrizeList")
+@Entity(name = "PrizeList")
+@Table
 public class PrizeListModel extends BaseModel {
 
     /**
@@ -33,6 +33,10 @@ public class PrizeListModel extends BaseModel {
      */
     Date PrizeDate;
 
+    /**
+     * 项目类型
+     */
+    int ActivityType=1;
 
     public String getPrizeSituation() {
         return PrizeSituation;
@@ -64,5 +68,13 @@ public class PrizeListModel extends BaseModel {
 
     public void setPrizeDate(Date prizeDate) {
         PrizeDate = prizeDate;
+    }
+
+    public int getActivityType() {
+        return ActivityType;
+    }
+
+    public void setActivityType(int activityType) {
+        ActivityType = activityType;
     }
 }

@@ -9,8 +9,8 @@ import java.util.Date;
  * Created by liumin on 15/9/28.
  */
 
-@Entity
-@Table(name = "aliTransferNotify")
+@Entity(name = "aliTransferNotify")
+@Table
 public class AliTransferNotifyModel extends BaseModel {
 
     /**

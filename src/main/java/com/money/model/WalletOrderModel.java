@@ -11,8 +11,8 @@ import java.util.Date;
  * Created by liumin on 15/8/9.
  */
 
-@Entity
-@Table(name = "walletorder")
+@Entity(name = "walletorder")
+@Table
 @DynamicUpdate(true)
 public class WalletOrderModel {
 

@@ -4,7 +4,9 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import until.httpClient.MoneyHttpProtocolHandler;
 import until.httpClient.HttpResultType;
@@ -23,8 +25,11 @@ import java.util.Map;
 @Component
 public class WxBinding {
 
+    @Qualifier("moneyHttpProtocolHandler")
     @Autowired
     private MoneyHttpProtocolHandler client;
+
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(WxBinding.class);
 
     public WxOauth2Token getOauth2AccessToken(String appId, String appSecret, String code) throws IOException, HttpException {
 
@@ -32,13 +37,14 @@ public class WxBinding {
 
         MoneyHttpRequest moneyHttpRequest = new MoneyHttpRequest(HttpResultType.STRING );
         moneyHttpRequest.setUrl(requestUrl);
-        List<NameValuePair> parmer = new ArrayList<NameValuePair>();
+        List<NameValuePair> parmer = new ArrayList();
         parmer.add( new BasicNameValuePair( "APPID",appId ));
         parmer.add( new BasicNameValuePair( "SECRET",appSecret ));
         parmer.add( new BasicNameValuePair( "CODE",code ));
+        parmer.add( new BasicNameValuePair( "grant_type","authorization_code" ));
+        moneyHttpRequest.setParameters( parmer );
         MoneyHttpResponse moneyHttpResponse = client.execute(moneyHttpRequest, "", "");
         String result = moneyHttpResponse.getStringResult();
-
 
         Map<String,Object> map = GsonUntil.jsonToJavaClass( result,new TypeToken<Map<String,Object>>(){}.getType());
         if( map == null ){

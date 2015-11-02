@@ -81,7 +81,7 @@ public class AlipaySubmit {
     public static String buildRequest(Map<String, String> sParaTemp, String strMethod, String strButtonName) {
         //待请求参数数组
         Map<String, String> sPara = buildRequestPara(sParaTemp);
-        List<String> keys = new ArrayList<String>(sPara.keySet());
+        List<String> keys = new ArrayList(sPara.keySet());
 
         StringBuffer sbHtml = new StringBuffer();
 
@@ -123,8 +123,8 @@ public class AlipaySubmit {
                       + "\">");
 
         for (int i = 0; i < keys.size(); i++) {
-            String name = (String) keys.get(i);
-            String value = (String) sPara.get(name);
+            String name = keys.get(i);
+            String value = sPara.get(name);
 
             sbHtml.append("<input type=\"hidden\" name=\"" + name + "\" value=\"" + value + "\"/>");
         }

@@ -9,8 +9,8 @@ import java.util.Date;
  * Created by liumin on 15/8/26.
  */
 
-@Entity
-@Table(name = "Transfer")
+@Entity(name = "Transfer")
+@Table
 @DynamicUpdate(true)
 public class TransferModel extends BaseModel {
 

@@ -11,16 +11,19 @@
     <mvc:annotation-driven>
         <mvc:message-converters register-defaults="true">
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="writeAcceptCharset" value="false"/>
                 <property name="supportedMediaTypes">
                     <list>
-                        <value>text/html;charset=UTF-8</value>
+                        <value>text/plain;charset=UTF-8</value>
                     </list>
                 </property>
+                <constructor-arg value="UTF-8"/>
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
 
     <context:annotation-config/>
+
 
     <!--声明controller-->
     <context:component-scan base-package="com.money.controller">
@@ -44,27 +47,27 @@
     </context:component-scan>
 
     <!-- 配置RestTemplate -->
-<!--    <bean id="pollingConnectionManager"
-          class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager">
-        <property name="maxTotal" value="30"/>
-        <property name="defaultMaxPerRoute" value="10"/>
-    </bean>
+    <!--    <bean id="pollingConnectionManager"
+              class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager">
+            <property name="maxTotal" value="30"/>
+            <property name="defaultMaxPerRoute" value="10"/>
+        </bean>
 
-    <bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder"
-          factory-method="create">
-        <property name="connectionManager" ref="pollingConnectionManager"/>
-    </bean>
+        <bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder"
+              factory-method="create">
+            <property name="connectionManager" ref="pollingConnectionManager"/>
+        </bean>
 
-    <bean id="httpClient" factory-bean="httpClientBuilder"
-          factory-method="build"/>
+        <bean id="httpClient" factory-bean="httpClientBuilder"
+              factory-method="build"/>
 
-    &lt;!&ndash; &ndash;&gt;
-    <bean id="clientHttpRequestFactory"
-          class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
-        <constructor-arg ref="httpClient"/>
-        <property name="connectTimeout" value="30000"/>
-        <property name="readTimeout" value="30000"/>
-    </bean>-->
+        &lt;!&ndash; &ndash;&gt;
+        <bean id="clientHttpRequestFactory"
+              class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+            <constructor-arg ref="httpClient"/>
+            <property name="connectTimeout" value="30000"/>
+            <property name="readTimeout" value="30000"/>
+        </bean>-->
 
     <!-- 读取配置文件-->
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

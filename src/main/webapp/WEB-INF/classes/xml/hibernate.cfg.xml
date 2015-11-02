@@ -6,17 +6,18 @@
 
 <hibernate-configuration>
     <session-factory>
-        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+        <!--<property name="hibernate.hbm2ddl.auto">update</property>-->
         <property name="hibernate.show_sql">false</property>
         <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.batch_size">50</property>
         <property name="hibernate.current_session_context_class">thread</property>
         <property name="hibernate.connection.isolation">4</property>
         <property name="connection.autocommit">false</property>
         <property name="hibernate.connection.provider_class">org.hibernate.c3p0.internal.C3P0ConnectionProvider</property>
-        <property name="connection.url">jdbc:mysql://rdsam4y7614j11jki04bprivate.mysql.rds.aliyuncs.com:3306/moneyserver</property>
+        <property name="connection.url">jdbc:mysql://rdswp598pmka3388cg81.mysql.rds.aliyuncs.com:3306/moneyserver</property>
         <property name="connection.username">money</property>
-        <property name="connection.password">123456</property>
+        <property name="connection.password">moneylongyan6688</property>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->
         <property name="acquireIncrement">5</property>
@@ -47,7 +48,7 @@
             通过多线程实现多个操作同时被执行。Default: 3-->
         <property name="numHelperThreads">3</property>
         <!-- 最大连接数 -->
-        <property name="hibernate.c3p0.max_size">30</property>
+        <property name="hibernate.c3p0.max_size">45</property>
         <!-- 最小连接数 -->
         <property name="hibernate.c3p0.min_size">10</property>
         <!-- 获得连接的超时时间,如果超过这个时间,会抛出异常，单位毫秒 -->

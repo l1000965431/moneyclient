@@ -14,8 +14,8 @@ import javax.persistence.Table;
  * <p>Version: 1.0
  */
 
-@Entity
-@Table(name = "wallet")
+@Entity(name = "wallet")
+@Table
 @DynamicUpdate(true)
 public class WalletModel extends BaseModel{
 
@@ -25,6 +25,18 @@ public class WalletModel extends BaseModel{
     //钱包金额
     @Column( nullable=false,columnDefinition="INT default 0" )
     int WalletLines;
+
+    /**
+     * 微劵
+     */
+    @Column( nullable=false,columnDefinition="INT default 0" )
+    int virtualSecurities;
+
+    /**
+     * 领投劵
+     */
+    @Column( nullable=false,columnDefinition="INT default 0" )
+    int ledSecurities;
 
     public String getUserID() {
         return UserID;
@@ -46,5 +58,27 @@ public class WalletModel extends BaseModel{
         return WalletLines>=CostLines;
     }
 
+    public boolean IsvirtualSecuritiesEnough( int CostvirtualSecurities ){
+        return virtualSecurities>=CostvirtualSecurities;
+    }
 
+    public boolean IsledSecuritiesEnough( int CostledSecurities ){
+        return ledSecurities >= CostledSecurities;
+    }
+
+    public int getVirtualSecurities() {
+        return virtualSecurities;
+    }
+
+    public void setVirtualSecurities(int virtualSecurities) {
+        this.virtualSecurities = virtualSecurities;
+    }
+
+    public int getLedSecurities() {
+        return ledSecurities;
+    }
+
+    public void setLedSecurities(int ledSecurities) {
+        this.ledSecurities = ledSecurities;
+    }
 }

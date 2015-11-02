@@ -30,7 +30,7 @@ public class AlipayCore {
      */
     public static Map<String, String> paraFilter(Map<String, String> sArray) {
 
-        Map<String, String> result = new HashMap<String, String>();
+        Map<String, String> result = new HashMap();
 
         if (sArray == null || sArray.size() <= 0) {
             return result;
@@ -55,7 +55,7 @@ public class AlipayCore {
      */
     public static String createLinkString(Map<String, String> params) {
 
-        List<String> keys = new ArrayList<String>(params.keySet());
+        List<String> keys = new ArrayList(params.keySet());
         Collections.sort(keys);
 
         String prestr = "";

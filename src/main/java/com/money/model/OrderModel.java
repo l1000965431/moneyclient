@@ -10,8 +10,8 @@ import java.util.Date;
  * <p>Version: 1.0
  */
 
-@Entity
-@Table(name = "activityorder")
+@Entity(name = "activityorder")
+@Table
 public class OrderModel extends BaseModel {
 
     //订单未提交
@@ -65,7 +65,7 @@ public class OrderModel extends BaseModel {
      * 项目信息
      */
     @ManyToOne(cascade = {CascadeType.ALL}, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn( name = "orderactivityId", referencedColumnName = "activityStageId")
+    /*@JoinColumn( name = "orderactivityId", referencedColumnName = "activityStageId")*/
     private ActivityDetailModel activityDetailModel;
 
     public String getOrderId() {

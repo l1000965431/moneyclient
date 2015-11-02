@@ -31,12 +31,10 @@ public class LotteryDAO extends BaseDao {
         int Peoples1 = 0,Peoples2 = 0;
 
         //计算总共多少人中奖
-        Iterator<SREarningModel> it = srEarningModelSet.iterator();
-        while (it.hasNext()) {
-            SREarningModel str = it.next();
-            if( str.getEarningType() == Config.PURCHASELOCALTYRANTS )
+        for (SREarningModel str : srEarningModelSet) {
+            if (str.getEarningType() == Config.PURCHASELOCALTYRANTS)
                 Peoples1 += str.getNum();
-            else if(  str.getEarningType() == Config.PURCHASEPRICKSILK )
+            else if (str.getEarningType() == Config.PURCHASEPRICKSILK)
                 Peoples2 += str.getNum();
         }
 

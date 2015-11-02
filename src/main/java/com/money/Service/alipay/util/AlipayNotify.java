@@ -120,7 +120,7 @@ public class AlipayNotify {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection
                 .getInputStream()));
-            inputLine = in.readLine().toString();
+            inputLine = in.readLine();
         } catch (Exception e) {
             e.printStackTrace();
             inputLine = "";
@@ -132,10 +132,10 @@ public class AlipayNotify {
     public static Map<String,String> getalipayInfo( HttpServletRequest request ){
         //获取支付宝POST过来反馈信息
 
-        Map<String,String> params = new HashMap<String,String>();
+        Map<String,String> params = new HashMap();
         Map requestParams = request.getParameterMap();
-        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
-            String name = (String) iter.next();
+        for (Object o : requestParams.keySet()) {
+            String name = (String) o;
             String[] values = (String[]) requestParams.get(name);
             String valueStr = "";
             for (int i = 0; i < values.length; i++) {

@@ -4,13 +4,13 @@ import org.hibernate.annotations.DynamicUpdate;
 import until.Base32;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by fisher on 2015/7/18.
  */
-@Entity
-@Table(name = "User")
+@Entity(name = "User")
+@Table
 @DynamicUpdate(true)
 public class UserModel extends BaseModel {
 
@@ -62,6 +62,20 @@ public class UserModel extends BaseModel {
     public String getUserId() {
         return userId;
     }
+
+    public int userExp = 0;
+
+    /**
+     * 用户邀请码
+     */
+    String userInvitecode;
+
+    /**
+     * 是否被邀请
+     */
+    boolean IsInvited = false;
+
+    Date CreateTime;
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -247,5 +261,37 @@ public class UserModel extends BaseModel {
 
     public void setAlipayRealName(String alipayRealName) {
         this.alipayRealName = alipayRealName;
+    }
+
+    public int getUserExp() {
+        return userExp;
+    }
+
+    public void setUserExp(int userExp) {
+        this.userExp = userExp;
+    }
+
+    public String getUserInvitecode() {
+        return userInvitecode;
+    }
+
+    public void setUserInvitecode(String userInvitecode) {
+        this.userInvitecode = userInvitecode;
+    }
+
+    public boolean isInvited() {
+        return IsInvited;
+    }
+
+    public void setIsInvited(boolean isInvited) {
+        IsInvited = isInvited;
+    }
+
+    public Date getCreateTime() {
+        return CreateTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        CreateTime = createTime;
     }
 }

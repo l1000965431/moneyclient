@@ -9,8 +9,8 @@ import java.io.Serializable;
  * Created by GuoHong on 15-7-27.
  *
  */
-@Entity
-@Table(name = "adminstrator")
+@Entity(name = "adminstrator")
+@Table
 public class AdministratorModel implements Serializable {
     /**
      *  系统管理员，账号的增加与删除

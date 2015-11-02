@@ -102,7 +102,7 @@ public class AuditActivityDao extends BaseDao {
                 .setMaxResults(pageNum)
                 .list();
 
-        ArrayList<String> ids = new ArrayList<String>();
+        ArrayList<String> ids = new ArrayList();
         for(ActivityVerifyModel model : activityVerifyModels){
             if(model.getAuditorStatus() == ActivityVerifyModel.STATUS_AUDITOR_PASS_AND_KEEP){
                 ids.add(String.valueOf(model.getId()));

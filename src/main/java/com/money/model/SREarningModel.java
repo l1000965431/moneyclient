@@ -9,8 +9,8 @@ import java.io.Serializable;
  * <p>Date: 15-7-8
  * <p>Version: 1.0
  */
-@Entity
-@Table(name = "srearning")
+@Entity(name = "srearning")
+@Table
 public class SREarningModel extends BaseModel {
     /**
      *  ID

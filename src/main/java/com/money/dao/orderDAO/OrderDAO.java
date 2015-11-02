@@ -1,16 +1,12 @@
 package com.money.dao.orderDAO;
 
 import com.money.dao.BaseDao;
-import com.money.dao.TransactionCallback;
 import com.money.dao.TransactionSessionCallback;
-import com.money.model.ActivityDetailModel;
 import com.money.model.OrderModel;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,16 +50,14 @@ public class OrderDAO extends BaseDao {
         String sql = "SELECT sum(orderLines) FROM moneyserver.activityorder where PurchaseType = 2;";
         Session session = getNewSession();
 
-        Integer result = Integer.valueOf( session.createSQLQuery(sql).uniqueResult().toString());
-        return result;
+        return Integer.valueOf( session.createSQLQuery(sql).uniqueResult().toString());
     }
 
     public int TestLingTou(){
         String sql = "SELECT sum(orderLines) FROM moneyserver.activityorder where PurchaseType = 1;";
         Session session = getNewSession();
 
-        Integer result = Integer.valueOf( session.createSQLQuery(sql).uniqueResult().toString());
-        return result;
+        return Integer.valueOf( session.createSQLQuery(sql).uniqueResult().toString());
     }
 
 }

@@ -48,14 +48,14 @@ public class ServiceAuditActivity extends ServiceBase implements ServiceInterfac
     }
 
     public List<ActivityVerifyModel> getAuditingActivityList(int pageIndex, int pageNum){
-        ArrayList<Integer> status = new ArrayList<Integer>();
+        ArrayList<Integer> status = new ArrayList();
         status.add(ActivityVerifyModel.STATUS_FIRST_AUDITING);
         status.add(ActivityVerifyModel.STATUS_REVAMPED);
         return auditActivityDao.getActivityList(status, pageIndex, pageNum);
     }
 
     public List<ActivityVerifyModel> getNotPassedActivityList(int pageIndex, int pageNum){
-        ArrayList<Integer> status = new ArrayList<Integer>();
+        ArrayList<Integer> status = new ArrayList();
         status.add(ActivityVerifyModel.STATUS_AUDITOR_NOT_PASS);
         return auditActivityDao.getActivityList(status, pageIndex, pageNum);
     }

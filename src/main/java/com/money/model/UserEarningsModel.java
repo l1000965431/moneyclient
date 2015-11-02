@@ -8,10 +8,13 @@ import java.util.Date;
 /**
  * Created by liumin on 15/8/13.
  */
-@Entity
-@Table(name = "UserEarnings")
+@Entity(name = "UserEarnings")
+@Table
 @DynamicUpdate(true)
 public class UserEarningsModel extends BaseModel {
+
+    public static final int ACTIVITYTYPE = 1;
+    public static final int ACTIVITYPREFERENTIALTYPE = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +27,10 @@ public class UserEarningsModel extends BaseModel {
     int UserEarningLines;
 
     String ActivityStageId;
+
+    int UserEarningsType;
+
+    int PurchaseType = 0;
 
     public int getId() {
         return Id;
@@ -63,5 +70,21 @@ public class UserEarningsModel extends BaseModel {
 
     public void setActivityStageId(String activityStageId) {
         ActivityStageId = activityStageId;
+    }
+
+    public int getUserEarningsType() {
+        return UserEarningsType;
+    }
+
+    public void setUserEarningsType(int userEarningsType) {
+        UserEarningsType = userEarningsType;
+    }
+
+    public int getPurchaseType() {
+        return PurchaseType;
+    }
+
+    public void setPurchaseType(int purchaseType) {
+        PurchaseType = purchaseType;
     }
 }

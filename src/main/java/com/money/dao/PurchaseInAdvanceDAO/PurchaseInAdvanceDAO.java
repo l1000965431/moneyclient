@@ -153,7 +153,7 @@ public class PurchaseInAdvanceDAO extends BaseDao {
     }
 
     public int updateActivityLinesPeoples( String ActivityId, int Lines ){
-        String sql = "update activityverifycomplete set CurLinePeoples = CurLinePeoples+?,curFund = curFund+? where activityId = ? and CurLinePeoples+? <= TotalLinePeoples ";
+        String sql = "update activityverifycomplete set CurLinePeoples = CurLinePeoples+? ,curFund = curFund+? where activityId = ? and CurLinePeoples+? <= TotalLinePeoples ";
         Session session = this.getNewSession();
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, Lines);
@@ -164,7 +164,7 @@ public class PurchaseInAdvanceDAO extends BaseDao {
     }
 
     public int updateActivityLines( String ActivityId,int Lines ){
-        String sql = "update activityverifycomplete set CurLines = CurLines+?,curFund = curFund+? where activityId = ? and CurLines+? <= TotalLines ";
+        String sql = "update activityverifycomplete set CurLines = CurLines+? ,curFund = curFund+? where activityId = ? and CurLines+? <= TotalLines ";
         Session session = this.getNewSession();
         SQLQuery query = session.createSQLQuery(sql);
         query.setParameter(0, Lines);

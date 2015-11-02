@@ -8,8 +8,8 @@ import java.util.Date;
  * Created by liumin on 15/9/25.
  */
 
-@Entity
-@Table(name = "alitransfer")
+@Entity(name = "alitransfer")
+@Table
 public class AlitransferModel extends BaseModel {
 
     @Id

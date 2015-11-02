@@ -205,6 +205,18 @@ public class Config {
 
     //单次购买使用微劵的最小值
     public static int MaxVirtualSecuritiesBuy = 0;
+
+    //红点的消息提示:新普通项目项目
+    public static String RedPointNewActivity = "RedPointNewActivity";
+
+    //红点的消息提示:新特惠项目
+    public static String RedPointNewActivityPreferential = "RedPointNewActivityPreferential";
+
+    //红点的消息提示:新收益提示
+    public static String RedPointNewLottery = "RedPointNewLottery";
+
+    //红点的消息提示:新投资项目
+    public static String RedPointNewJoinActivity = "RedPointNewJoinActivity";
 }
 
 

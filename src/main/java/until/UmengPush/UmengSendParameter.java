@@ -39,9 +39,15 @@ public class UmengSendParameter {
     public UmengSendParameter( String Alias,String ticker,String title,String text,String description  ){
         this.appkey = "55c5affbe0f55a4474006226";
         this.timestamp = Integer.toString((int)(System.currentTimeMillis() / 1000));
-        this.type = "customizedcast";
-        this.alias_type = "SINA_WEIBO";
-        this.alias = Alias;
+
+        if( Alias == null || Alias.length() == 0 ){
+            this.type = "broadcast";
+        }else{
+            this.type = "customizedcast";
+            this.alias_type = "SINA_WEIBO";
+            this.alias = Alias;
+        }
+
         this.payload = new HashMap<String, Object>();
         this.payload.put( "display_type","notification" );
 
@@ -55,19 +61,26 @@ public class UmengSendParameter {
         this.production_mode = true;
     }
 
-    public UmengSendParameter( String Alias,String bodymessage,String description  ){
+    public UmengSendParameter( UMengMessage uMengMessage  ){
+
+        String UserId = uMengMessage.getUserId();
+
         this.appkey = "55c5affbe0f55a4474006226";
         this.timestamp = Integer.toString((int)(System.currentTimeMillis() / 1000));
-        this.type = "customizedcast";
-        this.alias_type = "SINA_WEIBO";
-        this.alias = Alias;
-        this.payload = new HashMap<String, Object>();
+        this.payload = new HashMap();
         this.payload.put( "display_type","message" );
-        Map<String,Object> body = new HashMap<String, Object>();
-        body.put( "custom",bodymessage );
+        Map<String,Object> body = new HashMap();
+        body.put( "custom",uMengMessage.toMessageBodyString() );
         this.payload.put( "body",body );
-        this.description = description;
+        this.description = uMengMessage.getDescription();
         this.production_mode = true;
+        if( UserId == null || UserId.length() == 0 ){
+            this.type = "broadcast";
+        }else{
+            this.type = "customizedcast";
+            this.alias_type = "SINA_WEIBO";
+            this.alias = uMengMessage.getUserId();
+        }
     }
 
 
