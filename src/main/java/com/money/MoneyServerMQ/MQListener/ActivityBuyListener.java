@@ -14,6 +14,7 @@ import com.money.config.MoneyServerMQ_Topic;
 import com.money.config.ServerReturnValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import until.GsonUntil;
+import until.UmengPush.UMengMessage;
 import until.UmengPush.UmengSendParameter;
 
 import java.util.Map;
@@ -97,8 +98,14 @@ public class ActivityBuyListener extends MoneyServerListener {
             //发送成功入资的消息
             UmengSendParameter umengSendParameter = new UmengSendParameter( UserID,"微距竞投","购买成功","您已成功入资"+ActivityName.toString()+"项目","购买成功" );
             String Json = GsonUntil.JavaClassToJson( umengSendParameter );
+            MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TOPIC,
+                    MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG, Json, "购买成功"));
+
+            //发送新项目红点消息
+            UmengSendParameter umengSendParameterRed = new UmengSendParameter( new UMengMessage( "","redpoint", Config.RedPointNewJoinActivity,"新项目上线通知" ) );
+            String JsonRed = GsonUntil.JavaClassToJson( umengSendParameterRed );
             MoneyServerMQManager.SendMessage( new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TOPIC,
-                    MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG,Json,"购买成功"));
+                    MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG,JsonRed,"新项目上线通知"));
         }else{
             //发送失败的消息
             if( ActivityName == null || ActivityName.length() == 0 ){

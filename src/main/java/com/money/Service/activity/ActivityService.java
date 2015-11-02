@@ -22,7 +22,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import until.GsonUntil;
+import until.UmengPush.UMengMessage;
+import until.UmengPush.UmengSendParameter;
 
+import javax.activation.CommandInfo;
 import java.util.*;
 
 /**
@@ -297,7 +300,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
      * @return
      */
     public boolean ActivityCompleteStart(final String ActivityID) {
-        activityDao.excuteTransactionByCallback(new TransactionCallback() {
+       if( Objects.equals(activityDao.excuteTransactionByCallback(new TransactionCallback() {
             public void callback(BaseDao basedao) throws Exception {
                 //创建预购项目表
                 activityDao.CreatePurchaseInAdvanceDB(ActivityID);
@@ -306,7 +309,14 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
                 //设置第一期开始
                 InstallmentActivityIDStart(ActivityID, 1);
             }
-        });
+        }), Config.SERVICE_SUCCESS)==true){
+           //发送新项目红点消息
+           UmengSendParameter umengSendParameter = new UmengSendParameter( new UMengMessage( "","redpoint", Config.RedPointNewActivity,"新项目上线通知" ) );
+           String Json = GsonUntil.JavaClassToJson( umengSendParameter );
+           MoneyServerMQManager.SendMessage( new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TOPIC,
+                   MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG,Json,"新项目上线通知"));
+       }
+
         return true;
     }
 

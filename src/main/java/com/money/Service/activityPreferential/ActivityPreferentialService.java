@@ -346,6 +346,12 @@ public class ActivityPreferentialService extends ServiceBase implements ServiceI
             for (PreferentiaLotteryModel temp : list) {
                 activityPreferentialDAO.pushActivityPreferentialUnBilled(ActivityId, temp);
             }
+
+            //发送新项目红点消息
+            UmengSendParameter umengSendParameter = new UmengSendParameter( new UMengMessage( "","redpoint", Config.RedPointNewActivityPreferential,"特惠项目新项目上线通知" ) );
+            String Json = GsonUntil.JavaClassToJson( umengSendParameter );
+            MoneyServerMQManager.SendMessage( new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TOPIC,
+                    MoneyServerMQ_Topic.MONEYSERVERMQ_PUSH_TAG,Json,"特惠项目新项目上线通知"));
         }
     }
 
