@@ -282,7 +282,8 @@ public class LotteryService extends ServiceBase implements ServiceInterface {
             UserEarningsModel userEarningsModel = new UserEarningsModel();
             userEarningsModel.setUserID(UserID);
             userEarningsModel.setUserEarningLines(itLotteryPeoples.getLotteryLines());
-            userEarningsModel.setUserEarningsType( UserEarningsModel.ACTIVITYTYPE );
+            userEarningsModel.setUserEarningsType(UserEarningsModel.ACTIVITYTYPE);
+            userEarningsModel.setPurchaseType( itLotteryPeoples.getPurchaseType() );
             try {
                 userEarningsModel.setUserEarningsDate(MoneyServerDate.getDateCurDate());
             } catch (ParseException ignored) {

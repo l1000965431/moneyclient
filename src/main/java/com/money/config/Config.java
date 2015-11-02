@@ -135,6 +135,11 @@ public class Config {
     public static final int PURCHASEPRICKSILK = 2;
 
     /**
+     * 特惠项目发奖
+     */
+    public static final int PURCHASEPREFERENTIAL = 3;
+
+    /**
      * 短信验证码的超时时间
      */
     public static final int USERCODETIME = 120;

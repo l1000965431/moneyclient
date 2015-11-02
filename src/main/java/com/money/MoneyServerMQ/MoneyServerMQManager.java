@@ -66,7 +66,6 @@ public class MoneyServerMQManager {
 
     public static int SendMessage( MoneyServerMessage Message ){
         try {
-            LOGGER.error( Message.getTopic() );
             producer.send( Message );
             return  Config.SENDCODE_SUCESS;
         }catch ( Exception e ){

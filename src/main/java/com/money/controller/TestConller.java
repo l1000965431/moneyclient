@@ -1,5 +1,6 @@
 package com.money.controller;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.money.Service.PurchaseInAdvance.PurchaseInAdvance;
 import com.money.Service.ServiceFactory;
@@ -23,10 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -167,43 +165,43 @@ public class TestConller extends ControllerBase implements IController {
                 "0315006^xinjie_xj@163.com^星辰公司^20.00^F^TXN _RESULT_TRANSFER_OUT_CAN_NOT_EQUAL_IN^200810248427065^20081024143651";
 
         List<List<String>> c = new ArrayList<List<String>>();
-        String[] b = a.split( "\\|" );
-        for( int i = 0; i < b.length; i++ ){
-            List<String> d = Arrays.asList(b[i].split( "\\^" ));
-            c.add( d );
+        String[] b = a.split("\\|");
+        for (int i = 0; i < b.length; i++) {
+            List<String> d = Arrays.asList(b[i].split("\\^"));
+            c.add(d);
         }
 
-        String json = GsonUntil.JavaClassToJson( c );
+        String json = GsonUntil.JavaClassToJson(c);
 
         return json;
     }
 
     @RequestMapping("/TestDownLoad")
     @ResponseBody
-    void TestDownLoad( HttpServletRequest request,HttpServletResponse response ) throws IOException {
+    void TestDownLoad(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String a = request.getSession().getId();
 
-         response.sendRedirect("http://p.gdown.baidu.com/58ebaf2831bb441e9ee3605aa1a809f7b36dee8a7618473419a33a0354cafd0a2a10c55cbf934846e0ec064e283e33be852c01ee7d062f92d6ff5aee1e8081b1514725476657f847544a3dcd927f5535141cf0cf4368df612cd2816ac355708eb471ee58b44e3273333aa69a8d7ab90e05df928e9af10fea108c3adda329dc23315a713107726a14561e14ea0fee26c9d5e17eb1cc279a8051e2142f2121b6689303a8383beba488");
+        response.sendRedirect("http://p.gdown.baidu.com/58ebaf2831bb441e9ee3605aa1a809f7b36dee8a7618473419a33a0354cafd0a2a10c55cbf934846e0ec064e283e33be852c01ee7d062f92d6ff5aee1e8081b1514725476657f847544a3dcd927f5535141cf0cf4368df612cd2816ac355708eb471ee58b44e3273333aa69a8d7ab90e05df928e9af10fea108c3adda329dc23315a713107726a14561e14ea0fee26c9d5e17eb1cc279a8051e2142f2121b6689303a8383beba488");
     }
 
     @RequestMapping("/TestBeanToMap")
     @ResponseBody
-    String TestBean22Map(){
+    String TestBean22Map() {
         UserService userService = ServiceFactory.getService("UserService");
         UserModel userModel = userService.getUserInfo("18511583205");
         Map map = BeanTransfersUntil.TransBean2Map(userModel);
-        return GsonUntil.JavaClassToJson( map );
+        return GsonUntil.JavaClassToJson(map);
     }
 
     @RequestMapping("/TestQrtzJob")
     @ResponseBody
-    void TestQrtzJob(){
+    void TestQrtzJob() {
         ScheduleJob job = new ScheduleJob();
         job.setJobGroup("TestQrtzJob");
         job.setCronExpression("2 * * * * ?");
         job.setJobId("1");
-        job.setJobName("TestQrtzJob1" );
-        job.setJobStatus( "1" );
+        job.setJobName("TestQrtzJob1");
+        job.setJobStatus("1");
 
         try {
             QuartzUntil.getQuartzUntil().AddTick(job, TestJob.class, DateBuilder.nextGivenSecondDate(null, 0));
@@ -214,12 +212,12 @@ public class TestConller extends ControllerBase implements IController {
 
     @RequestMapping("/TestActivityPreferential")
     @ResponseBody
-    void TestActivityPreferential( HttpServletRequest request ) throws ParseException {
+    void TestActivityPreferential(HttpServletRequest request) throws ParseException {
 
-        String ActivityID = request.getParameter( "activityId" );
+        String ActivityID = request.getParameter("activityId");
         ActivityPreferentialService activityPreferentialService = ServiceFactory.getService("ActivityPreferentialService");
 
-        if( activityPreferentialService == null ){
+        if (activityPreferentialService == null) {
             return;
         }
 
@@ -251,48 +249,48 @@ public class TestConller extends ControllerBase implements IController {
                 "    }\n" +
                 "]\n";
 
-        activityPreferentialService.InsertActivityPreferential(100, MoneyServerDate.getDateCurDate(), ActivityID, a,50,5);
+        activityPreferentialService.InsertActivityPreferential(100, MoneyServerDate.getDateCurDate(), ActivityID, a, 50, 5);
     }
 
     @RequestMapping("/TestActivityPreferentialStart")
     @ResponseBody
-    String TestActivityPreferentialStart( HttpServletRequest request ) throws Exception {
+    String TestActivityPreferentialStart(HttpServletRequest request) throws Exception {
 
-        String ActivityID = request.getParameter( "activityId" );
+        String ActivityID = request.getParameter("activityId");
         String ActivityInfoKey = Config.PREFERENTIUNBLLLED + ActivityID;
         MemCachService.RemoveValue(ActivityInfoKey);
 
 
         ActivityPreferentialService activityPreferentialService = ServiceFactory.getService("ActivityPreferentialService");
 
-        activityPreferentialService.StartActivityPreferential( Integer.valueOf( ActivityID ) );
+        activityPreferentialService.StartActivityPreferential(Integer.valueOf(ActivityID));
 
 
-
-        List<byte[]> list = MemCachService.getRedisList( ActivityInfoKey.getBytes() );
+        List<byte[]> list = MemCachService.getRedisList(ActivityInfoKey.getBytes());
 
         List<PreferentiaLotteryModel> re = new ArrayList<>();
 
-        for( byte[] a :list ){
-            re.add( (PreferentiaLotteryModel)GsonUntil.jsonToJavaClass( new String(a),new TypeToken<PreferentiaLotteryModel>(){}.getType()) );
+        for (byte[] a : list) {
+            re.add((PreferentiaLotteryModel) GsonUntil.jsonToJavaClass(new String(a), new TypeToken<PreferentiaLotteryModel>() {
+            }.getType()));
         }
 
-        return GsonUntil.JavaClassToJson( re );
+        return GsonUntil.JavaClassToJson(re);
     }
 
     @RequestMapping("/TestActivityPreferentialInfo")
     @ResponseBody
-    String TestActivityPreferentialInfo( HttpServletRequest request ) throws Exception {
+    String TestActivityPreferentialInfo(HttpServletRequest request) throws Exception {
 
         String ActivityID = request.getParameter("activityId");
         String ActivityInfoKey = Config.PREFERENTIINFO + ActivityID;
 
-        return new String( MemCachService.MemCachgGet( ActivityInfoKey.getBytes() ));
+        return new String(MemCachService.MemCachgGet(ActivityInfoKey.getBytes()));
     }
 
     @RequestMapping("/TestActivityPreferentialBilled")
     @ResponseBody
-    String TestActivityPreferentialBilled( HttpServletRequest request ) throws Exception {
+    String TestActivityPreferentialBilled(HttpServletRequest request) throws Exception {
 
         String ActivityID = request.getParameter("activityId");
         String ActivityInfoKey = Config.PREFERENTIBLLLED + ActivityID;
@@ -301,16 +299,16 @@ public class TestConller extends ControllerBase implements IController {
 
         List<PreferentiaLotteryModel> re = new ArrayList<>();
 
-        for( byte[] a :list ){
-            re.add( (PreferentiaLotteryModel)BeanTransfersUntil.bytesToObject( a ) );
+        for (byte[] a : list) {
+            re.add((PreferentiaLotteryModel) BeanTransfersUntil.bytesToObject(a));
         }
 
-        return GsonUntil.JavaClassToJson( re );
+        return GsonUntil.JavaClassToJson(re);
     }
 
     @RequestMapping("/TestActivityPreferentialUnBilled")
     @ResponseBody
-    String TestActivityPreferentialUnBilled( HttpServletRequest request ) throws Exception {
+    String TestActivityPreferentialUnBilled(HttpServletRequest request) throws Exception {
 
         String ActivityID = request.getParameter("activityId");
         String ActivityInfoKey = Config.PREFERENTIUNBLLLED + ActivityID;
@@ -319,22 +317,36 @@ public class TestConller extends ControllerBase implements IController {
 
         List<PreferentiaLotteryModel> re = new ArrayList<>();
 
-        for( byte[] a :list ){
-            re.add( (PreferentiaLotteryModel)BeanTransfersUntil.bytesToObject( a ) );
+        for (byte[] a : list) {
+            re.add((PreferentiaLotteryModel) BeanTransfersUntil.bytesToObject(a));
         }
 
-        return GsonUntil.JavaClassToJson( re );
+        return GsonUntil.JavaClassToJson(re);
     }
 
     @RequestMapping("/TestActivityPreferentialJoin")
     @ResponseBody
-    int TestActivityPreferentialJoin( HttpServletRequest request ) throws Exception {
+    int TestActivityPreferentialJoin(HttpServletRequest request) throws Exception {
 
         String ActivityID = request.getParameter("activityId");
         String UserId = request.getParameter("userId");
         ActivityPreferentialService activityPreferentialService = ServiceFactory.getService("ActivityPreferentialService");
 
-        return activityPreferentialService.JoinActivityPreferential( Integer.valueOf( ActivityID ),UserId,0 );
+        return activityPreferentialService.JoinActivityPreferential(Integer.valueOf(ActivityID), UserId, 0);
+    }
+
+    @RequestMapping("/TestGlobalConfig")
+    @ResponseBody
+    String TestGlobalConfig() throws Exception {
+        Map<String, Integer> map = new HashMap<>();
+        map.put( "AddExpInvite",Config.AddExpInvite );
+        map.put( "AddVirtualSecuritiesInvite",Config.AddVirtualSecuritiesInvite );
+        map.put( "AddExpPurchase",Config.AddExpPurchase );
+        map.put( "AddVirtualSecuritiesSelf",Config.AddVirtualSecuritiesSelf );
+        map.put( "MaxVirtualSecurities",Config.MaxVirtualSecurities );
+        map.put( "MaxVirtualSecuritiesBuy",Config.MaxVirtualSecuritiesBuy );
+
+        return GsonUntil.JavaClassToJson( map );
     }
 
 }

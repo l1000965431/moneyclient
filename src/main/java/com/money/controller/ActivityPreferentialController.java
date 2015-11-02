@@ -73,12 +73,8 @@ public class ActivityPreferentialController extends ControllerBase implements IC
         map.put( "uerExp",Integer.toString(userModel.getUserExp()));
         String messageBody = GsonUntil.JavaClassToJson(map);
 
-       /* MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_JOINACTIVITYPREFERENTIAL_TOPIC,
+        MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_JOINACTIVITYPREFERENTIAL_TOPIC,
                 MoneyServerMQ_Topic.MONEYSERVERMQ_JOINACTIVITYPREFERENTIAL_TAG, messageBody, UserId));
-*/
-
-        MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TOPIC,
-                MoneyServerMQ_Topic.MONEYSERVERMQ_ORDERINSERT_TAG, messageBody, UserId));
 
         return 1;
     }

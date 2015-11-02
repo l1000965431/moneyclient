@@ -334,7 +334,7 @@ public class WalletController extends ControllerBase {
             return Config.SERVICE_FAILED;
         }
 
-        return walletService.ClearalipayId( userId );
+        return walletService.ClearalipayId(userId);
     }
 
     /**
@@ -345,7 +345,7 @@ public class WalletController extends ControllerBase {
      */
     @RequestMapping("/alipayTransfer")
     @ResponseBody
-    //-1:提现错误 1:提现申请已经提交 2:尚未绑定帐号 0:提现金额不足 4:密码不正确
+    //0:提现错误 1:提现申请已经提交 2:提现现金不足 3:没有绑定微信帐号 4:密码不正确
     public int alipayTransfer(HttpServletRequest request, HttpServletResponse response) {
         Map<String, String> mapData = DecryptionDataToMapByUserId(request.getParameter("data"),
                 this.initDesKey(request.getHeader("userId")));
@@ -363,7 +363,7 @@ public class WalletController extends ControllerBase {
 
 
         if( !userService.IsBindingalipayID(userId) ){
-            return 2;
+            return 3;
         }
 
         return walletService.alipayTransfer( userId,Lines );

@@ -324,9 +324,9 @@ public class ActivityPreferentialService extends ServiceBase implements ServiceI
         if (Objects.equals(activityPreferentialDAO.excuteTransactionByCallback(new TransactionSessionCallback() {
             @Override
             public boolean callback(Session session) throws Exception {
-                activityPreferentialDAO.CacheActivityPreferentialInfo(ActivityId);
 
                 activityPreferentialDAO.SetActivityPreferentialState(ActivityId, ActivityVerifyModel.STATUS_START_RAISE);
+                activityPreferentialDAO.CacheActivityPreferentialInfo(ActivityId);
 
                 Set<SREarningModel> set = activityPreferentialDAO.getActivityPreferentialEarnings(ActivityId);
 
@@ -399,6 +399,7 @@ public class ActivityPreferentialService extends ServiceBase implements ServiceI
                 userEarningsModel.setUserEarningsDate(MoneyServerDate.getDateCurDate());
                 userEarningsModel.setUserID(UserId);
                 userEarningsModel.setUserEarningsType(UserEarningsModel.ACTIVITYPREFERENTIALTYPE);
+                userEarningsModel.setPurchaseType( Config.PURCHASEPREFERENTIAL );
                 activityPreferentialDAO.saveNoTransaction(userEarningsModel);
 
 

@@ -127,6 +127,11 @@ public class ServerReturnValue {
     public static final int MINVIRTUALSECURITIESBUY = 104;
 
     /**
+     * 购买错误
+     */
+    public static final int PERFECTERROR = 105;
+
+    /**
      * 获取项目详情成功
      */
     public static final String ACTIVITY_INFO_SUCCESS = "100";

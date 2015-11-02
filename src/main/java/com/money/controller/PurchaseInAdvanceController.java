@@ -58,7 +58,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
 
     @RequestMapping("/PurchaseActivity")
     @ResponseBody
-    //-1:重新登录 1:期或票不够 2:钱不够 3:本期不够 预购后边的期 100:支付成功 103:支付成功客户端需要刷新104:微卷不够 MessageType:1:判断本期 2:不判断本期
+    //-1:重新登录 1:期或票不够 2:钱不够 3:本期不够 预购后边的期 100:支付成功 103:支付成功客户端需要刷新104:微卷不够 105:错误 MessageType:1:判断本期 2:不判断本期
     public int PurchaseActivity(HttpServletRequest request) {
         final String UserID = request.getParameter("UserID");
         final String token = request.getParameter("token");
@@ -69,6 +69,10 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
         final int MessageType = Integer.valueOf(request.getParameter("MessageType"));
         final int VirtualSecurities = Integer.valueOf( request.getParameter("VirtualSecurities") );
         final int[] Refresh = {0};
+
+        if( PurchaseNum == 0 || AdvanceNum == 0 ){
+            return ServerReturnValue.PERFECTERROR;
+        }
 
         if( !this.UserIsLand( UserID,token ) ){
             return Config.LANDFAILED;

@@ -8,6 +8,7 @@ public class MoneyServerMQ_Topic {
     /**
      * 测试参数
      */
+
 /*    public static final String MONEYSERVERMQ_ORDERINSERT_TOPIC = "MoneyServer_Order_Insert";
     public static final String MONEYSERVERMQ_ORDERINSERT_TAG = "MoneyServer_Order_Insert";
 
@@ -51,10 +52,10 @@ public class MoneyServerMQ_Topic {
     public static final String MONEYSERVERMQ_UMENGPUSHCUSTOMMESSAGE_TOPIC = "MoneyServer_PushCustomMessageListener_Listener";
     public static final String MONEYSERVERMQ_UMENGPUSHCUSTOMMESSAGE_TAG = "MoneyServer_PushCustomMessageListener_Listener";*/
 
+
     /**
      * 生产参数
      */
-
     public static final String MONEYSERVERMQ_ORDERINSERT_TOPIC = "MoneyServer_Order_Insert_liveQ";
     public static final String MONEYSERVERMQ_ORDERINSERT_TAG = "MoneyServer_Order_Insert_liveQ";
 

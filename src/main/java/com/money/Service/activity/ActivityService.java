@@ -619,6 +619,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
                             ActivityChildInfo.add(Integer.toString(userEarningsModel.getUserEarningLines()));
                             ActivityChildInfo.add(userEarningsModel.getUserEarningsDate().toString());
                             ActivityChildInfo.add(Integer.toString(userEarningsModel.getId()));
+                            ActivityChildInfo.add(Integer.toString(userEarningsModel.getPurchaseType()));
                             ListJson.add(ActivityChildInfo);
 
                         }
@@ -640,6 +641,7 @@ public class ActivityService extends ServiceBase implements ServiceInterface {
                             ActivityChildInfo.add(Integer.toString(userEarningsModel.getUserEarningLines()));
                             ActivityChildInfo.add(userEarningsModel.getUserEarningsDate().toString());
                             ActivityChildInfo.add(Integer.toString(userEarningsModel.getId()));
+                            ActivityChildInfo.add(Integer.toString(userEarningsModel.getPurchaseType()));
                             ListJson.add(ActivityChildInfo);
 
                         }

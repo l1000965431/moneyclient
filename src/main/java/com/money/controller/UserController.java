@@ -76,11 +76,15 @@ public class UserController extends ControllerBase implements IController {
 
     @RequestMapping("/perfectInfo")
     @ResponseBody
-    public int perfectInfo(HttpServletRequest request) {
+    public String perfectInfo(HttpServletRequest request) {
         String userID = request.getParameter("userID");
         String token = request.getParameter("token");
         String info = request.getParameter("info");
-        return userService.perfectInfo(userID, token, info);
+        if( userService.perfectInfo(userID, token, info) == 1){
+            return info;
+        }else{
+            return "";
+        }
     }
 
     @RequestMapping("/changeInfo")
@@ -195,10 +199,14 @@ public class UserController extends ControllerBase implements IController {
         return userService.ChangeUserHeadPortrait(userID, Url);
     }
 
+    /**
+     * 解除微信帐号绑定
+     * @param request
+     * @return
+     */
     @RequestMapping("/ClearOpenId")
     @ResponseBody
-    public int ClearOpenId(HttpServletRequest request,
-                                      HttpServletResponse response) {
+    public int ClearOpenId(HttpServletRequest request) {
         String userID = request.getParameter("userId");
         if (userID == null || userID.length() == 0) {
             return ServerReturnValue.SERVERRETURNERROR;

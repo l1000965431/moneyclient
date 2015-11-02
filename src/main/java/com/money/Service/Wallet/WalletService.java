@@ -461,7 +461,7 @@ public class WalletService extends ServiceBase implements ServiceInterface {
      * @param Lines
      * @return
      */
-    //-1:失败 0:余额不足 1:提交成功
+    //0:失败 1:提交成功 2:余额不足
     public int alipayTransfer(final String UserId, final int Lines) {
 
         //计算支付宝的手续费
@@ -483,12 +483,12 @@ public class WalletService extends ServiceBase implements ServiceInterface {
                 UserModel userModel = generaDAO.getUSerModelNoTransaction(UserId);
 
                 if (userModel == null) {
-                    state[0] = -1;
+                    state[0] = 0;
                     return false;
                 }
 
                 if (!CostLines(UserId, costLines)) {
-                    state[0] = 0;
+                    state[0] = 2;
                     return false;
                 }
 
