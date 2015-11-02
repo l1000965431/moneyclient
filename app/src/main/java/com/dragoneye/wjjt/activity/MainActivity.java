@@ -26,11 +26,9 @@ import com.dragoneye.wjjt.activity.fragments.HomeMyselfFragment;
 import com.dragoneye.wjjt.activity.fragments.HomeRecordFragment;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.BroadcastConfig;
+import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.PreferencesHelper;
-
-import cn.sharesdk.framework.ShareSDK;
-import cn.sharesdk.onekeyshare.OnekeyShare;
 
 public class MainActivity extends DoubleClickExitActivity implements View.OnClickListener{
     public static final int TAB_INVESTMENT = 0;
@@ -72,6 +70,8 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
     private ViewPager.OnPageChangeListener onPageChangeListener;
     private MenuItem mMessageBoxMenuItem;
 
+    private BaseFragment currentFragement, investFragment, recordFragment, myselfFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +90,9 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         investButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_investment_red);
         investButton.background = (LinearLayout)findViewById(R.id.function_switch_bottom_button_investment);
         investButton.background.setOnClickListener(this);
+        if(PreferencesHelper.isHaveNewMessage(this, PreferencesConfig.IS_HAVE_NEW_ACTIVITYS)){
+            investButton.setShowDot(true);
+        }
 
         recordButton = new BottomButton();
         recordButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_record_imageView);
@@ -97,6 +100,9 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         recordButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_record_red);
         recordButton.background = (LinearLayout)findViewById(R.id.function_switch_bottom_button_record);
         recordButton.background.setOnClickListener(this);
+        if(PreferencesHelper.isHaveNewMessage(this, PreferencesConfig.IS_HAVE_NEW_RECORDS)){
+            recordButton.setShowDot(true);
+        }
 
         myselfButton = new BottomButton();
         myselfButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_me_imageView);
@@ -123,10 +129,14 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
                     case TAB_INVESTMENT:
                         investButton.setChecked(true);
                         currentCheckedButton = investButton;
+                        investButton.setShowDot(false);
+                        PreferencesHelper.setIsHaveNewMessage(MainActivity.this, false, PreferencesConfig.IS_HAVE_NEW_ACTIVITYS);
                         break;
                     case TAB_RECORD:
                         recordButton.setChecked(true);
                         currentCheckedButton = recordButton;
+                        recordButton.setShowDot(false);
+                        PreferencesHelper.setIsHaveNewMessage(MainActivity.this, false, PreferencesConfig.IS_HAVE_NEW_RECORDS);
                         break;
                     case TAB_MYSELF:
                         myselfButton.setChecked(true);
@@ -152,12 +162,33 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         super.onStart();
     }
 
-    private IntentFilter newEarnIntentFilter = new IntentFilter(BroadcastConfig.NEW_EARNING_MESSAGE);
+    private IntentFilter newEarnIntentFilter = new IntentFilter(BroadcastConfig.NEW_MAIN_ACTIVITY_NEW_ITEM_MESSAGE);
     private IntentFilter newMessageBoxIntentFilter = new IntentFilter(BroadcastConfig.NEW_MESSAGE_BOX_ITEM);
     private BroadcastReceiver earningMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            recordButton.setShowDot(true);
+            String messageType = intent.getStringExtra("messageType");
+            switch (messageType){
+                case PreferencesConfig.IS_HAVE_NEW_NORMAL_ACTIVITY:
+                case PreferencesConfig.IS_HAVE_NEW_PREFERENTIAL_ACTIVITY:
+                    if(currentCheckedButton != investButton){
+                        investButton.setShowDot(true);
+                    }else {
+                        PreferencesHelper.setIsHaveNewMessage(MainActivity.this, false, PreferencesConfig.IS_HAVE_NEW_ACTIVITYS);
+                    }
+                    break;
+                case PreferencesConfig.IS_HAVE_NEW_EARNING_MESSAGE:
+                case PreferencesConfig.IS_HAVE_NEW_INVEST_MESSAGE:
+                    if(currentCheckedButton != recordButton){
+                        investButton.setShowDot(true);
+                    }else {
+                        PreferencesHelper.setIsHaveNewMessage(MainActivity.this, false, PreferencesConfig.IS_HAVE_NEW_RECORDS);
+                    }
+                    break;
+            }
+            if(currentFragement != null){
+                currentFragement.onNewMessage(messageType);
+            }
         }
     };
     private BroadcastReceiver messageBoxReceiver = new BroadcastReceiver() {
@@ -172,10 +203,10 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         super.onResume();
         registerReceiver(earningMessageReceiver, newEarnIntentFilter);
         registerReceiver(messageBoxReceiver, newMessageBoxIntentFilter);
-        if( PreferencesHelper.isHaveEarningMessage(this) ){
+        if( PreferencesHelper.isHaveNewMessage(this, PreferencesConfig.IS_HAVE_NEW_EARNING_MESSAGE) ){
             recordButton.setShowDot(true);
         }
-        setMessageBoxIsHaveNewMessage( PreferencesHelper.isHaveNewMessageBoxMessage(this) );
+        setMessageBoxIsHaveNewMessage( PreferencesHelper.isHaveNewMessage(this, PreferencesConfig.IS_HAVE_NEW_MESSAGE_BOX_MESSAGE) );
     }
 
     @Override
@@ -192,8 +223,6 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
                 viewPager.setCurrentItem(TAB_INVESTMENT);
                 break;
             case R.id.function_switch_bottom_button_record:
-                recordButton.setShowDot(false);
-                PreferencesHelper.setIsHaveEarningMessage(this, false);
                 viewPager.setCurrentItem(TAB_RECORD);
                 break;
             case R.id.function_switch_bottom_button_me:
@@ -216,12 +245,12 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
-                PreferencesHelper.setIsHaveNewMessageBoxMessage(MainActivity.this, false);
+                PreferencesHelper.setIsHaveNewMessage(MainActivity.this, false, PreferencesConfig.IS_HAVE_NEW_MESSAGE_BOX_MESSAGE);
                 NoticeActivity.CallActivity(MainActivity.this);
                 return false;
             }
         });
-        setMessageBoxIsHaveNewMessage(PreferencesHelper.isHaveNewMessageBoxMessage(this));
+        setMessageBoxIsHaveNewMessage(PreferencesHelper.isHaveNewMessage(this, PreferencesConfig.IS_HAVE_NEW_MESSAGE_BOX_MESSAGE));
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -296,11 +325,17 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         public Fragment getItem(int id) {
             switch (id) {
                 case TAB_INVESTMENT:
-                    return new HomeInvestmentFragment();
+                    investFragment = new HomeInvestmentFragment();
+                    currentFragement = investFragment;
+                    return investFragment;
                 case TAB_RECORD:
-                    return new HomeRecordFragment();
+                    recordFragment = new HomeRecordFragment();
+                    currentFragement = recordFragment;
+                    return recordFragment;
                 case TAB_MYSELF:
-                    return new HomeMyselfFragment();
+                    myselfFragment = new HomeMyselfFragment();
+                    currentFragement = myselfFragment;
+                    return myselfFragment;
 
             }
             return null;

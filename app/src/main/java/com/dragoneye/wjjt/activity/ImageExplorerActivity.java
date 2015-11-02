@@ -68,7 +68,7 @@ public class ImageExplorerActivity extends BaseActivity {
                 try {
                     imageView = new ZoomImageView(ImageExplorerActivity.this);
 
-//                    imageView.setImageBitmap( MediaStore.Images.Media.getBitmap(getContentResolver(),
+//                    ivLine.setImageBitmap( MediaStore.Images.Media.getBitmap(getContentResolver(),
 //                            uris.get(position) ) );
                     ImageLoader.getInstance().displayImage( uris.get(position).toString(), imageView, null, new ImageLoadingListener() {
                         @Override

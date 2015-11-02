@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -43,7 +41,6 @@ import com.umeng.message.UmengMessageHandler;
 import com.umeng.message.UmengRegistrar;
 import com.umeng.message.entity.UMessage;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,8 +49,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import cn.smssdk.SMSSDK;
 
 /**
  * Created by happysky on 15-6-30.
@@ -251,43 +246,72 @@ public class MyApplication extends Application {
                         try {
                             jsonObject = new JSONObject(msg.custom);
 
-                            if (jsonObject != null) {
-                                String messageType = jsonObject.getString("MessageType");
-                                // 新的收益消息
-                                if (messageType.equals("redpoint")) {
-                                    Intent intent = new Intent(BroadcastConfig.NEW_EARNING_MESSAGE);
-                                    sendBroadcast(intent);
+                            String messageType = jsonObject.getString("MessageType");
+                            // 新的收益消息
+                            if (messageType.equals("redpoint")) {
 
-                                    PreferencesHelper.setIsHaveEarningMessage(MyApplication.this, true);
-                                    // 特惠项目结果
-                                } else if (messageType.equals("activityPreferentialLottery")){
-                                    String body = jsonObject.getString("MessageBody");
-                                    HashMap<String, String> bodyMap = ToolMaster.gsonInstance().fromJson(body,
-                                            new TypeToken<HashMap<String, String>>(){}.getType());
-                                    String activityId = bodyMap.get("ActivityId");
-                                    int earningPrice = Integer.parseInt(bodyMap.get("Lines"));
-                                    Intent intent = new Intent(BroadcastConfig.NEW_PREFERENTIAL_MESSAGE);
-                                    intent.putExtra("activityId", activityId);
-                                    intent.putExtra("earningPrice", earningPrice);
-                                    sendBroadcast(intent);
-                                    // 消息盒子消息
-                                } else if (messageType.equals("messagebox")) {
-                                    String messageJson = jsonObject.getString("MessageBody");
-
-                                    MessageBoxItem messageBoxItem = new MessageBoxItem();
-                                    messageBoxItem.setMessageJson(messageJson);
-                                    messageBoxItem.setIsRead(false);
-                                    messageBoxItem.setId(null);
-
-                                    MessageBoxItemDao dao = MyDaoMaster.getDaoSession().getMessageBoxItemDao();
-                                    dao.insert(messageBoxItem);
-
-                                    Intent intent = new Intent(BroadcastConfig.NEW_MESSAGE_BOX_ITEM);
-                                    sendBroadcast(intent);
-
-                                    PreferencesHelper.setIsHaveNewMessageBoxMessage(MyApplication.this, true);
+                                Intent intent = new Intent(BroadcastConfig.NEW_MAIN_ACTIVITY_NEW_ITEM_MESSAGE);
+                                String newMessage = jsonObject.getString("MessageBody");
+                                String extra = "";
+                                switch (newMessage) {
+                                    // 新的普通项目
+                                    case "RedPointNewActivity":
+                                        PreferencesHelper.setIsHaveNewMessage(MyApplication.this, true, PreferencesConfig.IS_HAVE_NEW_NORMAL_ACTIVITY);
+                                        PreferencesHelper.setIsHaveNewMessage(MyApplication.this, true, PreferencesConfig.IS_HAVE_NEW_ACTIVITYS);
+                                        extra = PreferencesConfig.IS_HAVE_NEW_NORMAL_ACTIVITY;
+                                        break;
+                                    // 新的特惠项目
+                                    case "RedPointNewActivityPreferential":
+                                        PreferencesHelper.setIsHaveNewMessage(MyApplication.this, true, PreferencesConfig.IS_HAVE_NEW_PREFERENTIAL_ACTIVITY);
+                                        PreferencesHelper.setIsHaveNewMessage(MyApplication.this, true, PreferencesConfig.IS_HAVE_NEW_ACTIVITYS);
+                                        extra = PreferencesConfig.IS_HAVE_NEW_PREFERENTIAL_ACTIVITY;
+                                        break;
+                                    // 新的收益
+                                    case "RedPointNewLottery":
+                                        PreferencesHelper.setIsHaveNewMessage(MyApplication.this, true, PreferencesConfig.IS_HAVE_NEW_EARNING_MESSAGE);
+                                        PreferencesHelper.setIsHaveNewMessage(MyApplication.this, true, PreferencesConfig.IS_HAVE_NEW_RECORDS);
+                                        extra = PreferencesConfig.IS_HAVE_NEW_EARNING_MESSAGE;
+                                        break;
+                                    // 新的投资项目
+                                    case "RedPointNewJoinActivity":
+                                        PreferencesHelper.setIsHaveNewMessage(MyApplication.this, true, PreferencesConfig.IS_HAVE_NEW_INVEST_MESSAGE);
+                                        PreferencesHelper.setIsHaveNewMessage(MyApplication.this, true, PreferencesConfig.IS_HAVE_NEW_RECORDS);
+                                        extra = PreferencesConfig.IS_HAVE_NEW_INVEST_MESSAGE;
+                                        break;
                                 }
+                                intent.putExtra("messageType", extra);
+                                sendBroadcast(intent);
+
+                                // 特惠项目结果
+                            } else if (messageType.equals("activityPreferentialLottery")) {
+                                String body = jsonObject.getString("MessageBody");
+                                HashMap<String, String> bodyMap = ToolMaster.gsonInstance().fromJson(body,
+                                        new TypeToken<HashMap<String, String>>() {
+                                        }.getType());
+                                String activityId = bodyMap.get("ActivityId");
+                                int earningPrice = Integer.parseInt(bodyMap.get("Lines"));
+                                Intent intent = new Intent(BroadcastConfig.NEW_PREFERENTIAL_RESULT_MESSAGE);
+                                intent.putExtra("activityId", activityId);
+                                intent.putExtra("earningPrice", earningPrice);
+                                sendBroadcast(intent);
+                                // 消息盒子消息
+                            } else if (messageType.equals("messagebox")) {
+                                String messageJson = jsonObject.getString("MessageBody");
+
+                                MessageBoxItem messageBoxItem = new MessageBoxItem();
+                                messageBoxItem.setMessageJson(messageJson);
+                                messageBoxItem.setIsRead(false);
+                                messageBoxItem.setId(null);
+
+                                MessageBoxItemDao dao = MyDaoMaster.getDaoSession().getMessageBoxItemDao();
+                                dao.insert(messageBoxItem);
+
+                                Intent intent = new Intent(BroadcastConfig.NEW_MESSAGE_BOX_ITEM);
+                                sendBroadcast(intent);
+
+                                PreferencesHelper.setIsHaveNewMessage(MyApplication.this, true, PreferencesConfig.IS_HAVE_NEW_MESSAGE_BOX_MESSAGE);
                             }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

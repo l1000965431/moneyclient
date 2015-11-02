@@ -72,18 +72,18 @@ public abstract class DotViewPagerActivity extends BaseActivity {
 
     private void initViewPagerImages(){
 //        for(String url : mImageUrl){
-//            ImageView imageView = new ImageView(this);
+//            ImageView ivLine = new ImageView(this);
 //            if( isUseImageLoader ){
-//                ImageLoader.getInstance().displayImage(url, imageView);
+//                ImageLoader.getInstance().displayImage(url, ivLine);
 //            }else {
 //                try{
-//                    imageView.setImageBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(),
+//                    ivLine.setImageBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(),
 //                            Uri.parse(url)));
 //                }catch (IOException e){
 //                    e.printStackTrace();
 //                }
 //            }
-//            viewContainer.add(imageView);
+//            viewContainer.add(ivLine);
 //        }
         mDotViewPager.setAdapter(new ImageViewPagerAdapter());
     }

@@ -31,6 +31,7 @@ import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.model.MyEarningModel;
 import com.dragoneye.wjjt.protocol.GetProjectListProtocol;
+import com.dragoneye.wjjt.tool.PreferencesHelper;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.view.LoadingMoreFooterProxy;
 import com.dragoneye.wjjt.view.RefreshableView;
@@ -80,6 +81,8 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_EARNING_MESSAGE);
+                        getTopButton().setIsHaveNew(false);
                         mLoadingMoreProxy.reset();
                         mCurEarningRecordPageIndex = -1;
                         handler.post(onUpdateEarningList_r);

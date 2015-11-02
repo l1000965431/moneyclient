@@ -33,6 +33,7 @@ import com.dragoneye.wjjt.model.EarningModel;
 import com.dragoneye.wjjt.model.OrderModel;
 import com.dragoneye.wjjt.protocol.GetProjectListProtocol;
 import com.dragoneye.wjjt.protocol.InvestProjectProtocol;
+import com.dragoneye.wjjt.tool.PreferencesHelper;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.view.LoadingMoreFooterProxy;
 import com.dragoneye.wjjt.view.RefreshableView;
@@ -86,6 +87,8 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_INVEST_MESSAGE);
+                        getTopButton().setIsHaveNew(false);
                         mLoadingMoreProxy.reset();
                         mCurInvestRecordPageIndex = -1;
                         handler.post(onUpdateOrderList_r);

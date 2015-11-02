@@ -40,9 +40,20 @@ public interface PreferencesConfig {
 
 
     /**
-     *  记录是否有未读的收益消息
+     *  记录是否有新的条目消息
      */
-    String IS_HAVE_NEW_EARNING_MESSAGE = "IS_HAVE_NEW_EARNING_MESSAGE";
+    // 新的项目
+    String IS_HAVE_NEW_ACTIVITYS = "IS_HAVE_NEW_ACTIVITYS";
+        // 新普通项目
+        String IS_HAVE_NEW_NORMAL_ACTIVITY = "IS_HAVE_NEW_NORMAL_ACTIVITY";
+        // 新特惠项目
+        String IS_HAVE_NEW_PREFERENTIAL_ACTIVITY = "IS_HAVE_NEW_PREFERENTIAL_ACTIVITY";
+    // 新的记录
+    String IS_HAVE_NEW_RECORDS = "IS_HAVE_NEW_RECORDS";
+        // 新收益项目
+        String IS_HAVE_NEW_EARNING_MESSAGE = "IS_HAVE_NEW_EARNING_MESSAGE";
+        // 新投资项目
+        String IS_HAVE_NEW_INVEST_MESSAGE = "IS_HAVE_NEW_INVEST_MESSAGE";
 
     /**
      * 记录是否有未读的消息盒子消息

@@ -21,13 +21,19 @@ import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.InvestProjectActivity;
+import com.dragoneye.wjjt.activity.ProjectDetailActivity;
 import com.dragoneye.wjjt.activity.fragments.BaseFragment;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.PreferencesConfig;
+import com.dragoneye.wjjt.dao.MyDaoMaster;
+import com.dragoneye.wjjt.dao.NewNormalActivity;
+import com.dragoneye.wjjt.dao.NewNormalActivityDao;
+import com.dragoneye.wjjt.dao.NewPreferentialActivityDao;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.model.ProjectDetailModel;
 import com.dragoneye.wjjt.protocol.GetProjectListProtocol;
+import com.dragoneye.wjjt.tool.PreferencesHelper;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.view.GridViewWithHeaderAndFooter;
 import com.dragoneye.wjjt.view.LoadingMoreFooterProxy;
@@ -41,6 +47,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * Created by happysky on 15-10-13.
@@ -69,7 +77,6 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
     public void onActivityCreated(@Nullable Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
         initView();
-        initData();
     }
 
     private void initView(){
@@ -80,6 +87,8 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_NORMAL_ACTIVITY);
+                        getTopButton().setIsHaveNew(false);
                         mLoadingMoreProxy.reset();
                         mCurPageIndex = -1;
                         handler.post(updateInvestmentList_r);
@@ -104,17 +113,38 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
 
         mAdapter = new InvestmentListViewAdapter(getActivity(), mProjectList);
         mGridView.setAdapter(mAdapter);
-    }
 
-    private void initData(){
         mCurPageIndex = -1;
         refreshableView.doRefreshImmediately();
     }
 
 
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser){
         super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            if( refreshableView != null ){
+                refreshableView.doRefreshImmediately();
+            }
+        }else {
+            setNewRead();
+        }
+    }
+
+    private void setNewRead(){
+        if(refreshableView != null){
+            NewNormalActivityDao dao = MyDaoMaster.getDaoSession().getNewNormalActivityDao();
+
+            QueryBuilder queryBuilder = dao.queryBuilder();
+            queryBuilder.where(NewNormalActivityDao.Properties.IsRead.eq(false));
+
+            List<NewNormalActivity> unReadList = queryBuilder.list();
+            for(NewNormalActivity newNormalActivity : unReadList){
+                newNormalActivity.setIsRead(true);
+            }
+            dao.updateInTx(unReadList);
+        }
     }
 
     Runnable updateInvestmentList_r = new Runnable() {
@@ -142,6 +172,7 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
                 public void onSuccess(int i, Header[] headers, String s) {
                     refreshableView.finishRefreshing();
                     ArrayList<ProjectDetailModel> detailModels = jsonToProjectList(s);
+                    addToRecord(detailModels);
                     mCurPageIndex += 1;
                     if (mLoadingMoreProxy.isLoadingMore()) {
                         loadMoreProjectToList(detailModels);
@@ -152,6 +183,26 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
             });
         }
     };
+
+    private void addToRecord(List<ProjectDetailModel> list){
+        ArrayList<NewNormalActivity> records = new ArrayList<>();
+        for(ProjectDetailModel projectDetailModel : list){
+            NewNormalActivity newNormalActivity = new NewNormalActivity();
+            newNormalActivity.setId(projectDetailModel.getActivityId());
+            newNormalActivity.setIsRead(false);
+            records.add(newNormalActivity);
+        }
+
+        ArrayList<NewNormalActivity> recordsToInsert = new ArrayList<>();
+        NewNormalActivityDao dao = MyDaoMaster.getDaoSession().getNewNormalActivityDao();
+        for(NewNormalActivity earningRecord : records){
+            if(dao.load(earningRecord.getId()) == null){
+                recordsToInsert.add(earningRecord);
+            }
+        }
+
+        dao.insertInTx(recordsToInsert);
+    }
 
     private void loadMoreProjectToList(ArrayList<ProjectDetailModel> projectDetailModels){
         if(projectDetailModels.isEmpty()){
@@ -327,7 +378,10 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
                 e.printStackTrace();
             }
 
-
+            NewNormalActivityDao dao = MyDaoMaster.getDaoSession().getNewNormalActivityDao();
+            NewNormalActivity normalActivity = dao.load(project.getActivityId());
+            if(normalActivity != null){
+            }
 
 
             return convertView;
@@ -335,6 +389,7 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
 
         private class ViewHolder{
             ImageView ivLogo;
+            ImageView ivNew;
             TextView tvSummary;
             TextView tvTargetFundNum;
             TextView tvTargetFund;

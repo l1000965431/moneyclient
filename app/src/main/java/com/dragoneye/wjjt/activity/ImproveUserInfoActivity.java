@@ -221,7 +221,8 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         HttpParams params = new HttpParams();
         params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_TOKEN, ((MyApplication)getApplication()).getToken(this));
         params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_TYPE, ((MyApplication)getApplication()).getCurrentUser(this).getUserType());
-        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_INFO, ToolMaster.gsonInstance().toJson(getUserImproveInfo()) );
+        final HashMap<String, String> userImproveInfo = getUserImproveInfo();
+        params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_INFO, ToolMaster.gsonInstance().toJson(userImproveInfo) );
         params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_ID, ((MyApplication)getApplication()).getCurrentUser(this).getUserId());
 
         HttpClient.atomicPost(this, UserProtocol.URL_IMPROVE_USER_INFO, params, new HttpClient.MyHttpHandler() {
@@ -231,13 +232,13 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
                     UIHelper.toast(ImproveUserInfoActivity.this, "服务器异常");
                     return;
                 }
-                onImproveResult(s);
+                onImproveResult(s, userImproveInfo);
             }
         });
 
     }
 
-    private void onImproveResult(String result){
+    private void onImproveResult(String result, HashMap<String, String> userImproveInfo){
         int resultCode = 0;
         try{
             resultCode = Integer.parseInt(result);
@@ -259,8 +260,20 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
                 UIHelper.toast(this, "用户类型错误");
                 break;
             case UserProtocol.IMPROVE_USER_INFO_RESULT_SUCCESS:
-                ((MyApplication)getApplication()).getCurrentUser(this).setIsPerfectInfo(true);
                 UIHelper.toast(this, "更改成功");
+                UserBase userBase = ((MyApplication)getApplication()).getCurrentUser(this);
+                userBase.setIsPerfectInfo(true);
+                userBase.setUserName(userImproveInfo.get("userName"));
+                userBase.setEmail(userImproveInfo.get("mail"));
+                userBase.setRealName(userImproveInfo.get("realName"));
+                userBase.setIdentityId(userImproveInfo.get("identity"));
+                if(userBase.getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
+                    userBase.setIntroduction(userImproveInfo.get("selfintroduce"));
+                    userBase.setExpertise(userImproveInfo.get("goodAtField"));
+                    userBase.setEduInfo(userImproveInfo.get("education"));
+                    userBase.setCareer(userImproveInfo.get("personalProfile"));
+                }
+
                 finish();
                 break;
         }

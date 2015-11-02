@@ -16,15 +16,23 @@ public class TopTabButton {
         this.context = context;
     }
 
-    public ImageView imageView;
-    public TextView textView;
+    public ImageView ivLine;
+    public TextView tvTitle;
+    public ImageView ivNewDot;
+
     public void setChecked(boolean checked){
         if(checked){
-            imageView.setVisibility(View.VISIBLE);
-            textView.setTextColor(context.getResources().getColor(R.color.home_investment_top_button_selected));
+            ivLine.setVisibility(View.VISIBLE);
+            tvTitle.setTextColor(context.getResources().getColor(R.color.home_investment_top_button_selected));
         }else {
-            imageView.setVisibility(View.INVISIBLE);
-            textView.setTextColor(context.getResources().getColor(R.color.home_investment_top_button_unselected));
+            ivLine.setVisibility(View.INVISIBLE);
+            tvTitle.setTextColor(context.getResources().getColor(R.color.home_investment_top_button_unselected));
+        }
+    }
+
+    public void setIsHaveNew(boolean b){
+        if(ivNewDot != null ){
+            ivNewDot.setVisibility( b ? View.VISIBLE : View.GONE);
         }
     }
 }

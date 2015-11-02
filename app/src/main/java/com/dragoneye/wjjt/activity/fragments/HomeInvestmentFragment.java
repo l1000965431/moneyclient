@@ -1,6 +1,5 @@
 package com.dragoneye.wjjt.activity.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +17,8 @@ import android.widget.TextView;
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.fragments.invest.NormalInvestFragment;
 import com.dragoneye.wjjt.activity.fragments.invest.PreferentialInvestFragment;
+import com.dragoneye.wjjt.config.PreferencesConfig;
+import com.dragoneye.wjjt.tool.PreferencesHelper;
 import com.dragoneye.wjjt.view.TopTabButton;
 
 /**
@@ -48,6 +49,18 @@ public class HomeInvestmentFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
         initView();
+    }
+
+    @Override
+    public void onNewMessage(String messageType){
+        switch (messageType){
+            case PreferencesConfig.IS_HAVE_NEW_NORMAL_ACTIVITY:
+                mNormalButton.setIsHaveNew(true);
+                break;
+            case PreferencesConfig.IS_HAVE_NEW_PREFERENTIAL_ACTIVITY:
+                mPreferentialButton.setIsHaveNew(true);
+                break;
+        }
     }
 
     @Override
@@ -88,16 +101,21 @@ public class HomeInvestmentFragment extends BaseFragment {
         };
 
         mNormalButton = new TopTabButton(getActivity());
-        mNormalButton.imageView = (ImageView)getActivity().findViewById(R.id.home_invest_top_tab_ll_normal_iv);
-        mNormalButton.textView = (TextView)getActivity().findViewById(R.id.home_invest_top_tab_ll_normal_tv);
+        mNormalButton.ivLine = (ImageView)getActivity().findViewById(R.id.home_invest_top_tab_ll_normal_iv);
+        mNormalButton.tvTitle = (TextView)getActivity().findViewById(R.id.home_invest_top_tab_ll_normal_tv);
+        mNormalButton.ivNewDot = (ImageView)getActivity().findViewById(R.id.home_invest_top_tab_ll_normal_iv_dot);
         LinearLayout linearLayout = (LinearLayout)getActivity().findViewById(R.id.home_invest_top_tab_ll_normal);
         linearLayout.setOnClickListener(tabButtonOnClickListener);
+        mNormalButton.setIsHaveNew(PreferencesHelper.isHaveNewMessage(getActivity(), PreferencesConfig.IS_HAVE_NEW_NORMAL_ACTIVITY));
+
 
         mPreferentialButton = new TopTabButton(getActivity());
-        mPreferentialButton.imageView = (ImageView)getActivity().findViewById(R.id.home_invest_top_tab_ll_preferential_iv);
-        mPreferentialButton.textView = (TextView)getActivity().findViewById(R.id.home_invest_top_tab_ll_preferential_tv);
+        mPreferentialButton.ivLine = (ImageView)getActivity().findViewById(R.id.home_invest_top_tab_ll_preferential_iv);
+        mPreferentialButton.tvTitle = (TextView)getActivity().findViewById(R.id.home_invest_top_tab_ll_preferential_tv);
+        mPreferentialButton.ivNewDot = (ImageView)getActivity().findViewById(R.id.home_invest_top_tab_ll_preferential_iv_dot);
         LinearLayout linearLayout1 = (LinearLayout)getActivity().findViewById(R.id.home_invest_top_tab_ll_preferential);
         linearLayout1.setOnClickListener(tabButtonOnClickListener);
+        mPreferentialButton.setIsHaveNew(PreferencesHelper.isHaveNewMessage(getActivity(), PreferencesConfig.IS_HAVE_NEW_PREFERENTIAL_ACTIVITY));
 
 
         mViewPager = (ViewPager)getActivity().findViewById(R.id.home_invest_main_viewPager);
@@ -119,10 +137,14 @@ public class HomeInvestmentFragment extends BaseFragment {
                     case TAB_INVEST_NORMAL:
                         mNormalButton.setChecked(true);
                         mCurrentSelectButton = mNormalButton;
+                        mNormalButton.setIsHaveNew(false);
+                        PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_NORMAL_ACTIVITY);
                         break;
                     case TAB_INVEST_PREFERENTIAL:
                         mPreferentialButton.setChecked(true);
                         mCurrentSelectButton = mPreferentialButton;
+                        mPreferentialButton.setIsHaveNew(false);
+                        PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_PREFERENTIAL_ACTIVITY);
                         break;
                 }
                 BaseFragment baseFragment = (BaseFragment) mFragmentAdapter.getItem(position);
@@ -158,11 +180,13 @@ public class HomeInvestmentFragment extends BaseFragment {
                 case TAB_INVEST_NORMAL:
                     if(mNormalInvestFragment == null){
                         mNormalInvestFragment = new NormalInvestFragment();
+                        mNormalInvestFragment.setTopButton(mNormalButton);
                     }
                     return mNormalInvestFragment;
                 case TAB_INVEST_PREFERENTIAL:
                     if(mPreferentialInvestFragment == null){
                         mPreferentialInvestFragment = new PreferentialInvestFragment();
+                        mPreferentialInvestFragment.setTopButton(mPreferentialButton);
                     }
                     return mPreferentialInvestFragment;
 
