@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.dragoneye.wjjt.R;
 import com.dragoneye.wjjt.activity.fragments.record.EarningRecordFragment;
 import com.dragoneye.wjjt.activity.fragments.record.InvestRecordFragment;
+import com.dragoneye.wjjt.config.PreferencesConfig;
+import com.dragoneye.wjjt.tool.PreferencesHelper;
 import com.dragoneye.wjjt.view.TopTabButton;
 
 /**
@@ -28,7 +30,7 @@ public class HomeRecordFragment extends BaseFragment {
     private static final int TAB_EARNING_RECORD = 1;
     private static final int TAB_COUNT = 2;
 
-    private TopTabButton mIncomingButton, mInvestmentButton, mCurrentSelectButton;
+    private TopTabButton mInvestButton, mEarningButton, mCurrentSelectButton;
 
     private ViewPager mViewPager;
     private FragmentAdapter mFragmentAdapter;
@@ -47,6 +49,18 @@ public class HomeRecordFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
         initView();
+    }
+
+    @Override
+    public void onNewMessage(String messageType){
+        switch (messageType){
+            case PreferencesConfig.IS_HAVE_NEW_INVEST_MESSAGE:
+                mInvestButton.setIsHaveNew(true);
+                break;
+            case PreferencesConfig.IS_HAVE_NEW_EARNING_MESSAGE:
+                mEarningButton.setIsHaveNew(true);
+                break;
+        }
     }
 
     @Override
@@ -73,30 +87,34 @@ public class HomeRecordFragment extends BaseFragment {
                 }
                 switch (v.getId()){
                     case R.id.home_record_top_tab_ll_incoming:
-                        mIncomingButton.setChecked(true);
-                        mCurrentSelectButton = mIncomingButton;
+                        mInvestButton.setChecked(true);
+                        mCurrentSelectButton = mInvestButton;
                         mViewPager.setCurrentItem(TAB_INVEST_RECORD);
                         break;
                     case R.id.home_record_top_tab_ll_investment:
-                        mInvestmentButton.setChecked(true);
-                        mCurrentSelectButton = mInvestmentButton;
+                        mEarningButton.setChecked(true);
+                        mCurrentSelectButton = mEarningButton;
                         mViewPager.setCurrentItem(TAB_EARNING_RECORD);
                         break;
                 }
             }
         };
 
-        mIncomingButton = new TopTabButton(getActivity());
-        mIncomingButton.imageView = (ImageView)getActivity().findViewById(R.id.home_record_top_tab_ll_incoming_iv);
-        mIncomingButton.textView = (TextView)getActivity().findViewById(R.id.home_record_top_tab_ll_incoming_tv);
+        mInvestButton = new TopTabButton(getActivity());
+        mInvestButton.ivLine = (ImageView)getActivity().findViewById(R.id.home_record_top_tab_ll_incoming_iv);
+        mInvestButton.tvTitle = (TextView)getActivity().findViewById(R.id.home_record_top_tab_ll_incoming_tv);
+        mInvestButton.ivNewDot = (ImageView)getActivity().findViewById(R.id.home_record_top_tab_ll_incoming_iv_dot);
         LinearLayout linearLayout = (LinearLayout)getActivity().findViewById(R.id.home_record_top_tab_ll_incoming);
         linearLayout.setOnClickListener(tabButtonOnClickListener);
+        mInvestButton.setIsHaveNew(PreferencesHelper.isHaveNewMessage(getActivity(), PreferencesConfig.IS_HAVE_NEW_INVEST_MESSAGE));
 
-        mInvestmentButton = new TopTabButton(getActivity());
-        mInvestmentButton.imageView = (ImageView)getActivity().findViewById(R.id.home_record_top_tab_ll_investment_iv);
-        mInvestmentButton.textView = (TextView)getActivity().findViewById(R.id.home_record_top_tab_ll_investment_tv);
+        mEarningButton = new TopTabButton(getActivity());
+        mEarningButton.ivLine = (ImageView)getActivity().findViewById(R.id.home_record_top_tab_ll_investment_iv);
+        mEarningButton.tvTitle = (TextView)getActivity().findViewById(R.id.home_record_top_tab_ll_investment_tv);
+        mEarningButton.ivNewDot = (ImageView)getActivity().findViewById(R.id.home_record_top_tab_ll_investment_iv_dot);
         LinearLayout linearLayout1 = (LinearLayout)getActivity().findViewById(R.id.home_record_top_tab_ll_investment);
         linearLayout1.setOnClickListener(tabButtonOnClickListener);
+        mEarningButton.setIsHaveNew(PreferencesHelper.isHaveNewMessage(getActivity(), PreferencesConfig.IS_HAVE_NEW_EARNING_MESSAGE));
 
 
         mViewPager = (ViewPager)getActivity().findViewById(R.id.home_record_main_viewPager);
@@ -116,12 +134,12 @@ public class HomeRecordFragment extends BaseFragment {
                 }
                 switch (position) {
                     case TAB_INVEST_RECORD:
-                        mIncomingButton.setChecked(true);
-                        mCurrentSelectButton = mIncomingButton;
+                        mInvestButton.setChecked(true);
+                        mCurrentSelectButton = mInvestButton;
                         break;
                     case TAB_EARNING_RECORD:
-                        mInvestmentButton.setChecked(true);
-                        mCurrentSelectButton = mInvestmentButton;
+                        mEarningButton.setChecked(true);
+                        mCurrentSelectButton = mEarningButton;
                         break;
                 }
                 BaseFragment baseFragment = (BaseFragment) mFragmentAdapter.getItem(position);
@@ -148,11 +166,13 @@ public class HomeRecordFragment extends BaseFragment {
                 case TAB_INVEST_RECORD:
                     if(mInvestRecordFragment == null){
                         mInvestRecordFragment = new InvestRecordFragment();
+                        mInvestRecordFragment.setTopButton(mInvestButton);
                     }
                     return mInvestRecordFragment;
                 case TAB_EARNING_RECORD:
                     if(mEarningRecordFragment == null){
                         mEarningRecordFragment = new EarningRecordFragment();
+                        mEarningRecordFragment.setTopButton(mEarningButton);
                     }
                     return mEarningRecordFragment;
 

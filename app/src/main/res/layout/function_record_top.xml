@@ -19,14 +19,14 @@
             <ImageView
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:id="@+id/imageView15"
+                android:id="@+id/home_record_top_tab_ll_incoming_iv_dot"
                 android:src="@mipmap/icon_point"
                 android:layout_gravity="center|right"
                 android:tint="#ff79ff19"
                 android:scaleType="fitXY"
                 android:layout_marginBottom="-10dp"
                 android:layout_marginRight="70dp"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
             <ImageView
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:id="@+id/imageView16"
+                android:id="@+id/home_record_top_tab_ll_investment_iv_dot"
                 android:src="@mipmap/icon_point"
                 android:layout_gravity="center|right"
                 android:tint="#ff79ff19"

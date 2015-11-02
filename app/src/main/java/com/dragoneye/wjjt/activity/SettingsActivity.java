@@ -1,6 +1,7 @@
 package com.dragoneye.wjjt.activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.HttpUrlConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
+import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
 
 import org.apache.http.Header;
@@ -23,10 +25,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     View mLLWxBind;
     TextView mTVWxBind;
+    View mLLAlipayBind;
+    TextView mTVAlipayBind;
 
     Handler handler = new Handler();
 
     private boolean mIsWxBind = false;
+    private boolean mIsAlipayBind = false;
+
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +62,19 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         // 微信绑定
         mLLWxBind = findViewById(R.id.home_self_group_instal_wx);
-        mLLWxBind.setVisibility(View.GONE);
+//        mLLWxBind.setVisibility(View.GONE);
         mLLWxBind.setOnClickListener(this);
 
         mTVWxBind = (TextView)findViewById(R.id.home_self_group_instal_tv_wx_bind);
+
+        // 支付宝绑定
+        mLLAlipayBind = findViewById(R.id.home_self_group_instal_alipay);
+//        mLLAlipayBind.setVisibility(View.GONE);
+        mLLAlipayBind.setOnClickListener(this);
+
+        mTVAlipayBind = (TextView)findViewById(R.id.home_self_group_instal_tv_alipay_bind);
+
+        progressDialog = new ProgressDialog(this);
     }
 
     private void initData(){
@@ -68,7 +84,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onResume(){
         super.onResume();
-//        handler.post(checkIsBindWeChat_r);
+        handler.post(checkIsBindWeChat_r);
+        handler.post(checkIsBindAlipay_r);
     }
 
     @Override
@@ -88,6 +105,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.home_self_group_instal_wx:
                 onWxBind();
+                break;
+            case R.id.home_self_group_instal_alipay:
+                onAlipayUnbind();
                 break;
         }
     }
@@ -128,9 +148,17 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void onWxBind(){
         if(mIsWxBind){
-
+            handler.post(unbindWx_r);
         }else {
-            WxBindActivity.CallActivity(this);
+            UIHelper.toast(this, "您尚未绑定微信支付");
+        }
+    }
+
+    private void onAlipayUnbind(){
+        if(mIsAlipayBind){
+            handler.post(unbindAlipay_r);
+        }else {
+            UIHelper.toast(this, "您尚未绑定支付宝");
         }
     }
 
@@ -144,24 +172,113 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             HttpClient.atomicPost(SettingsActivity.this, HttpUrlConfig.URL_ROOT + "Wallet/IsBinding", params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    finishLoading(false);
+//                    finishLoading(false);
                 }
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
                     if (s == null) {
-                        finishLoading(false);
+//                        finishLoading(false);
                         return;
                     }
 
                     if (s.compareTo("true") != 0) {
                         mIsWxBind = false;
-                        mLLWxBind.setVisibility(View.VISIBLE);
-                        mTVWxBind.setText("绑定微信");
                     } else {
                         mIsWxBind = true;
-                        mLLWxBind.setVisibility(View.VISIBLE);
-                        mTVWxBind.setText("解除微信绑定");
+                    }
+                }
+            });
+        }
+    };
+
+    Runnable checkIsBindAlipay_r = new Runnable() {
+        @Override
+        public void run() {
+            HttpParams params = new HttpParams();
+
+            params.put("userId", ((MyApplication)getApplication()).getCurrentUser(SettingsActivity.this).getUserId());
+
+            HttpClient.atomicPost(SettingsActivity.this, HttpUrlConfig.URL_ROOT + "Wallet/IsalipayBinding", params, new HttpClient.MyHttpHandler() {
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+//                    finishLoading(false);
+                }
+
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    if (s == null) {
+//                        finishLoading(false);
+                        return;
+                    }
+
+                    if(s.compareTo("true") != 0){
+                        mIsAlipayBind = false;
+                    }else {
+                        mIsAlipayBind = true;
+                        finishLoading(true);
+                    }
+                }
+            });
+        }
+    };
+
+    Runnable unbindAlipay_r = new Runnable() {
+        @Override
+        public void run() {
+            progressDialog.show();
+
+            HttpParams params = new HttpParams();
+
+            String userId = ((MyApplication)getApplication()).getCurrentUser(SettingsActivity.this).getUserId();
+
+            params.put("userId", userId);
+
+            HttpClient.atomicPost(SettingsActivity.this, HttpUrlConfig.URL_ROOT + "Wallet/ClearalipayId", params, new HttpClient.MyHttpHandler() {
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+                    progressDialog.dismiss();
+                    UIHelper.toast(SettingsActivity.this, "连接服务器失败");
+                }
+
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    progressDialog.dismiss();
+                    if(s != null && s.compareTo("SUCCESS") == 0){
+                        UIHelper.toast(SettingsActivity.this, "解除支付宝绑定成功");
+                        finish();
+                    }else{
+                        UIHelper.toast(SettingsActivity.this, "解除支付宝绑定失败");
+                    }
+                }
+            });
+        }
+    };
+
+    Runnable unbindWx_r = new Runnable() {
+        @Override
+        public void run() {
+            progressDialog.show();
+
+            HttpParams params = new HttpParams();
+
+            String userId = ((MyApplication)getApplication()).getCurrentUser(SettingsActivity.this).getUserId();
+
+            params.put("userId", userId);
+
+            HttpClient.atomicPost(SettingsActivity.this, HttpUrlConfig.URL_ROOT + "User/ClearOpenId", params, new HttpClient.MyHttpHandler() {
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+                    progressDialog.dismiss();
+                    UIHelper.toast(SettingsActivity.this, "连接服务器失败");
+                }
+
+                @Override
+                public void onSuccess(int i, Header[] headers, String s) {
+                    progressDialog.dismiss();
+                    if(s != null && s.compareTo("SUCCESS") == 0){
+                        UIHelper.toast(SettingsActivity.this, "解除微信绑定成功");
+                        finish();
+                    }else{
+                        UIHelper.toast(SettingsActivity.this, "解除微信绑定失败");
                     }
                 }
             });

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -198,6 +199,7 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
             title = title.substring(0, 10) + "...";
         }
         setTitle(title);
+        setImageScaleType(ImageView.ScaleType.CENTER_CROP);
     }
 
     private void initData(){

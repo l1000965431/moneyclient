@@ -36,10 +36,15 @@ import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.BroadcastConfig;
 import com.dragoneye.wjjt.config.HttpUrlConfig;
 import com.dragoneye.wjjt.config.PreferencesConfig;
+import com.dragoneye.wjjt.dao.InvestRecordDao;
+import com.dragoneye.wjjt.dao.MyDaoMaster;
+import com.dragoneye.wjjt.dao.NewPreferentialActivity;
+import com.dragoneye.wjjt.dao.NewPreferentialActivityDao;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.model.EarningModel;
 import com.dragoneye.wjjt.model.PreferentialModel;
+import com.dragoneye.wjjt.tool.PreferencesHelper;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.UserBase;
@@ -51,7 +56,6 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -62,6 +66,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * Created by happysky on 15-10-13.
@@ -111,6 +117,8 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_PREFERENTIAL_ACTIVITY);
+                        getTopButton().setIsHaveNew(false);
                         mLoadingMoreProxy.reset();
                         mCurPageIndex = -1;
                         handler.post(getWalletBalance_r);
@@ -141,9 +149,11 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
 
         sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         vibrator = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
+
+        mCurPageIndex = -1;
     }
 
-    private IntentFilter intentFilter = new IntentFilter(BroadcastConfig.NEW_PREFERENTIAL_MESSAGE);
+    private IntentFilter intentFilter = new IntentFilter(BroadcastConfig.NEW_PREFERENTIAL_RESULT_MESSAGE);
     private BroadcastReceiver earnPreferentialReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -167,9 +177,27 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
             if( refreshableView != null ){
                 refreshableView.doRefreshImmediately();
             }
+        }else {
+            setNewRead();
         }
 
     }
+
+    private void setNewRead(){
+        if(refreshableView != null){
+            NewPreferentialActivityDao dao = MyDaoMaster.getDaoSession().getNewPreferentialActivityDao();
+
+            QueryBuilder queryBuilder = dao.queryBuilder();
+            queryBuilder.where(InvestRecordDao.Properties.IsRead.eq(false));
+
+            List<NewPreferentialActivity> unReadList = queryBuilder.list();
+            for(NewPreferentialActivity newPreferentialActivity : unReadList){
+                newPreferentialActivity.setIsRead(true);
+            }
+            dao.updateInTx(unReadList);
+        }
+    }
+
 
     @Override
     public void onPause()
@@ -263,7 +291,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         mMainAlertDialog.dismiss();
         progressDialog.show();
         mIsWaittingResult = false;
-        HttpParams params = new HttpParams();
+        final HttpParams params = new HttpParams();
 
         UserBase userBase = ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity());
 
@@ -274,6 +302,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                 params, new HttpClient.MyHttpHandler() {
                     @Override
                     public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                        progressDialog.dismiss();
                         UIHelper.toast(getActivity(), getString(R.string.http_can_not_connect_to_server));
                     }
 
@@ -297,6 +326,8 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
 
         final TextView tvEarningPrice = (TextView)dialog.findViewById(R.id.rush_success_tv_earning_price);
         final TextView tvProjectName = (TextView)dialog.findViewById(R.id.rush_success_tv_activity_name);
+        final View confirmButton = dialog.findViewById(R.id.rush_failure_tv_auto_close);
+
 
         tvEarningPrice.setText(String.valueOf(price));
         tvProjectName.setText(preferentialModel.getName());
@@ -305,6 +336,13 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                 .setView(dialog)
                 .create();
         mRushResultAlertDialog.show();
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRushResultAlertDialog.dismiss();
+            }
+        });
     }
 
     private void rushFailure(PreferentialModel preferentialModel){
@@ -364,6 +402,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                         public void onSuccess(int i, Header[] headers, String s) {
                             refreshableView.finishRefreshing();
                             ArrayList<PreferentialModel> detailModels = jsonToProjectList(s);
+                            addToRecord(detailModels);
                             mCurPageIndex += 1;
                             if (mLoadingMoreProxy.isLoadingMore()) {
                                 loadMoreProjectToList(detailModels);
@@ -375,6 +414,26 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
 
         }
     };
+
+    private void addToRecord(List<PreferentialModel> list){
+        ArrayList<NewPreferentialActivity> records = new ArrayList<>();
+        for(PreferentialModel preferentialModel : list){
+            NewPreferentialActivity newNormalActivity = new NewPreferentialActivity();
+            newNormalActivity.setId(preferentialModel.getActivityId());
+            newNormalActivity.setIsRead(false);
+            records.add(newNormalActivity);
+        }
+
+        ArrayList<NewPreferentialActivity> recordsToInsert = new ArrayList<>();
+        NewPreferentialActivityDao dao = MyDaoMaster.getDaoSession().getNewPreferentialActivityDao();
+        for(NewPreferentialActivity earningRecord : records){
+            if(dao.load(earningRecord.getId()) == null){
+                recordsToInsert.add(earningRecord);
+            }
+        }
+
+        dao.insertInTx(recordsToInsert);
+    }
 
     private void loadMoreProjectToList(ArrayList<PreferentialModel> projectDetailModels){
         if(projectDetailModels.isEmpty()){
@@ -623,6 +682,12 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
             viewHolder.tvMonth.setText(String.valueOf(calendar.get(Calendar.MONTH)));
             viewHolder.tvDay.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
             viewHolder.tvHour.setText(String.format("%d:00", calendar.get(Calendar.HOUR_OF_DAY)));
+
+            NewPreferentialActivityDao dao = MyDaoMaster.getDaoSession().getNewPreferentialActivityDao();
+            NewPreferentialActivity preferentialActivity = dao.load(preferentialModel.getActivityId());
+            if(preferentialActivity != null){
+            }
+
 
             return convertView;
         }

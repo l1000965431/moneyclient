@@ -34,6 +34,11 @@ public class WithdrawSelectActivity extends BaseActivity implements View.OnClick
         mRBAlipay = (RadioButton)findViewById(R.id.home_self_group_order_rb_alipay);
         mRBAlipay.setOnCheckedChangeListener(this);
 
+        View ivWxPay = findViewById(R.id.home_self_group_order_iv_wxpay);
+        ivWxPay.setOnClickListener(this);
+        View ivAlipay = findViewById(R.id.home_self_group_order_iv_alipay);
+        ivAlipay.setOnClickListener(this);
+
         View confirm = findViewById(R.id.rush_failure_tv_auto_close);
         confirm.setOnClickListener( this );
     }
@@ -43,6 +48,12 @@ public class WithdrawSelectActivity extends BaseActivity implements View.OnClick
         switch (v.getId()){
             case R.id.rush_failure_tv_auto_close:
                 onConfirmPayType();
+                break;
+            case R.id.home_self_group_order_iv_wxpay:
+                mRBWxPay.setChecked(true);
+                break;
+            case R.id.home_self_group_order_iv_alipay:
+                mRBAlipay.setChecked(true);
                 break;
         }
     }

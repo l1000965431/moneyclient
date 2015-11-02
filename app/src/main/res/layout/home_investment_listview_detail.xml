@@ -229,7 +229,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingBottom="10dp"
-                    android:id="@+id/linearLayout25"
+                    android:id="@+id/investment_ll_proportion_layout_br"
                     android:background="#ffcecece">
 
                     <LinearLayout
@@ -250,7 +250,7 @@
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/linearLayout24"
+                        android:id="@+id/investment_ll_result_root_br"
                         android:gravity="center_horizontal"
                         android:orientation="vertical" />
                 </LinearLayout>

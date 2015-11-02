@@ -141,6 +141,10 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         mIVExpNew = (ImageView)getActivity().findViewById(R.id.home_self_group_iv_exp_new);
         mTVExp = (TextView)getActivity().findViewById(R.id.home_self_group_tv_exp_new);
 
+        // 分享
+        View shareLayout = getActivity().findViewById(R.id.home_self_group_ll_share);
+        shareLayout.setOnClickListener(this);
+
         // 推荐人ID
         if( userBase.isInvited() ){
             View inputInviteCodeLayout = getActivity().findViewById(R.id.home_self_group_ll_input_invite_code);
@@ -350,6 +354,9 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
             case R.id.home_self_group_tv_click_copy:
                 onCopyUserInviteCode();
                 break;
+            case R.id.home_self_group_ll_share:
+                onShare();
+                break;
         }
     }
 
@@ -385,14 +392,23 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                 .setPositiveButton("去分享", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ShareSDK.initSDK(getActivity());
-                        OnekeyShare oks = new OnekeyShare();
+                        onShare();
+                    }
+                })
+                .setMessage("分享微聚竞投给你的朋友，可获得V券（V券可用来提高入资的额度，增加返金几率）。")
+                .create();
+        alertDialog.show();
+    }
 
-                        oks.disableSSOWhenAuthorize();
+    private void onShare(){
+        ShareSDK.initSDK(getActivity());
+        OnekeyShare oks = new OnekeyShare();
 
-                        oks.setTitle("测试分享");
+        oks.disableSSOWhenAuthorize();
 
-                        oks.setText("我是分享文本");
+        oks.setTitle("测试分享");
+
+        oks.setText("我是分享文本");
 //            // url仅在微信（包括好友和朋友圈）中使用
 //            oks.setUrl("http://sharesdk.cn");
 //            // comment是我对这条分享的评论，仅在人人网和QQ空间使用
@@ -402,16 +418,11 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 //            // siteUrl是分享此内容的网站地址，仅在QQ空间使用
 //            oks.setSiteUrl("http://sharesdk.cn");
 
-                        oks.setImageUrl("http://7xjewm.com1.z0.glb.clouddn.com/ic_launcher.png");
+        oks.setImageUrl("http://7xjewm.com1.z0.glb.clouddn.com/ic_launcher.png");
 
 //
 //// 启动分享GUI
-                        oks.show(getActivity());
-                    }
-                })
-                .setMessage("分享微聚竞投给你的朋友，可获得V券（V券可用来提高入资的额度，增加返金几率）。")
-                .create();
-        alertDialog.show();
+        oks.show(getActivity());
     }
 
     private void onLeadTicket(){

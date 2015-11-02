@@ -305,7 +305,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="57dp"
                 android:orientation="horizontal"
-                android:id="@+id/linearLayout21"
+                android:id="@+id/home_self_group_ll_share"
                 android:background="#ffffffff"
                 android:paddingRight="10dp"
                 android:paddingLeft="40dp" >

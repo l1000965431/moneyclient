@@ -149,7 +149,7 @@ public class EditPage extends EditPageFakeActivity implements OnClickListener, T
 	private View makeImageItemView(final ImageInfo imageInfo) {
 		final View view = LayoutInflater.from(activity).inflate(getLayoutRes(activity, "skyblue_editpage_inc_image_layout"), null);
 
-		ImageView imageView = (ImageView) view.findViewById(getIdRes(activity, "imageView"));
+		ImageView imageView = (ImageView) view.findViewById(getIdRes(activity, "ivLine"));
 		imageView.setImageBitmap(imageInfo.bitmap);
 		imageView.setOnClickListener(new OnClickListener() {
 			@Override

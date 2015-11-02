@@ -39,6 +39,7 @@ public class HttpClient {
         client.addHeader(HttpProtocolConfig.HEADER_CLIENT_VERSION, String.valueOf(AppInfoManager.getAppVersionCode(context)));
         client.addHeader(HttpProtocolConfig.HEADER_CLIENT_TOKEN, "this is token");
         client.addHeader(HttpProtocolConfig.HEADER_CLIENT_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+        client.setUserAgent("Android_" + android.os.Build.VERSION.SDK_INT);
 
         handler.postDelayed(clearTimeOutUrl_r, 0);
     }

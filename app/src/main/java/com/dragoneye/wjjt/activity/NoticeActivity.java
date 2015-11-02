@@ -25,6 +25,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
@@ -53,6 +55,12 @@ public class NoticeActivity extends BaseActivity {
 
         mData.addAll(queryBuilder.list());
 
+        Collections.sort(mData, new Comparator<MessageBoxItem>() {
+            @Override
+            public int compare(MessageBoxItem lhs, MessageBoxItem rhs) {
+                return lhs.getId() > rhs.getId() ? -1 : 1;
+            }
+        });
 
         mListView = (ListView)findViewById(R.id.common_listview_listView);
         mAdapter = new NoticeAdapter(this, mData);
@@ -67,6 +75,7 @@ public class NoticeActivity extends BaseActivity {
             }
         });
         loadingMoreFooterProxy.reset();
+        loadingMoreFooterProxy.setBackgroundColor(0x96000000);
     }
 
     private View.OnClickListener urlOnClickListener = new View.OnClickListener() {

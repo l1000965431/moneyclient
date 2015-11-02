@@ -31,6 +31,7 @@ import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.model.MyEarningModel;
 import com.dragoneye.wjjt.protocol.GetProjectListProtocol;
+import com.dragoneye.wjjt.tool.PreferencesHelper;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.view.LoadingMoreFooterProxy;
 import com.dragoneye.wjjt.view.RefreshableView;
@@ -80,6 +81,8 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_EARNING_MESSAGE);
+                        getTopButton().setIsHaveNew(false);
                         mLoadingMoreProxy.reset();
                         mCurEarningRecordPageIndex = -1;
                         handler.post(onUpdateEarningList_r);
@@ -259,6 +262,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 }
                 earningModel.setId(jsonArray1.getInt(8));
                 earningModels.add(earningModel);
+                earningModel.setEarningType(jsonArray1.getInt(9));
             }
 
         }catch (JSONException e){
@@ -319,6 +323,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 viewHolder.tvEarningPrice = (TextView)convertView.findViewById(R.id.home_record_earning_tv_earningPrice);
                 viewHolder.tvStageIndex = (TextView)convertView.findViewById(R.id.home_record_earning_tv_stageIndex);
                 viewHolder.tvNew = (TextView)convertView.findViewById(R.id.home_record_earning_tv_new);
+                viewHolder.tvEarningType = (TextView)convertView.findViewById(R.id.home_record_earning_tv_earningType);
 
                 convertView.setTag(viewHolder);
             }else{
@@ -357,6 +362,18 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             viewHolder.tvEarningDate.setText(sdf.format(myEarningModel.getEarningDate()));
 
+            switch (myEarningModel.getEarningType()){
+                case MyEarningModel.EARNING_TYPE_LEAD:
+                    viewHolder.tvEarningType.setText("(参与领投)");
+                    break;
+                case MyEarningModel.EARNING_TYPE_FALLOW:
+                    viewHolder.tvEarningType.setText("(参与跟投)");
+                    break;
+                case MyEarningModel.EARNING_TYPE_PREFERENTIAL:
+                    viewHolder.tvEarningType.setText("(参与特惠项目)");
+                    break;
+            }
+
             return convertView;
         }
 
@@ -366,6 +383,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
             TextView tvStageIndex;
             TextView tvEarningDate;
             TextView tvEarningPrice;
+            TextView tvEarningType;
             TextView tvNew;
         }
     }
