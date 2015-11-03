@@ -67,14 +67,14 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
         final int PurchaseNum = Integer.valueOf(request.getParameter("PurchaseNum"));
         final int AdvanceNum = Integer.valueOf(request.getParameter("AdvanceNum"));
         final int MessageType = Integer.valueOf(request.getParameter("MessageType"));
-        final int VirtualSecurities = Integer.valueOf( request.getParameter("VirtualSecurities") );
+        final int VirtualSecurities = Integer.valueOf(request.getParameter("VirtualSecurities"));
         final int[] Refresh = {0};
 
-        if( PurchaseNum == 0 || AdvanceNum == 0 ){
+        if (PurchaseNum == 0 || AdvanceNum == 0) {
             return ServerReturnValue.PERFECTERROR;
         }
 
-        if( !this.UserIsLand( UserID,token ) ){
+        if (!this.UserIsLand(UserID, token)) {
             return Config.LANDFAILED;
         }
 
@@ -84,7 +84,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
         } else {
             //项目检查
 
-            if( VirtualSecurities > 0 && VirtualSecurities > Config.MaxVirtualSecuritiesBuy ){
+            if (VirtualSecurities > 0 && VirtualSecurities > Config.MaxVirtualSecuritiesBuy) {
                 return ServerReturnValue.MINVIRTUALSECURITIESBUY;
             }
 
@@ -143,7 +143,7 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
                     }
 
                     if (!walletService.IsWalletEnough(UserID, costLines) ||
-                            !walletService.IsvirtualSecuritiesEnough( UserID,VirtualSecurities ) ) {
+                            !walletService.IsvirtualSecuritiesEnough(UserID, VirtualSecurities)) {
                         state[0] = 2;
                         return false;
                     }
@@ -168,9 +168,9 @@ public class PurchaseInAdvanceController extends ControllerBase implements ICont
             MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_ACTIVITYBUY_TOPIC,
                     MoneyServerMQ_Topic.MONEYSERVERMQ_ACTIVITYBUY_TAG, messageBody, UserID));
 
-            if( Refresh[0] == 1 ){
+            if (Refresh[0] == 1) {
                 return ServerReturnValue.PERFECTREFRESH;
-            }else{
+            } else {
                 return ServerReturnValue.PERFECTSUCCESS;
             }
         }

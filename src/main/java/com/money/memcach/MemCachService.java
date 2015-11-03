@@ -196,6 +196,80 @@ public class MemCachService {
     }
 
     /**
+     * 递增
+     * @param Key
+     * @param num
+     */
+    public static void increment(String Key,long num) {
+        ShardedJedis shardedJedis = null;
+        try {
+            shardedJedis = redisService.getShareJedisPoolConnection();
+            if (shardedJedis.exists(Key)) {
+                shardedJedis.incrBy(Key,num);
+            }
+        } catch (Exception e) {
+
+        } finally {
+            if (shardedJedis != null) {
+                shardedJedis.close();
+            }
+        }
+    }
+
+    public static void increment(byte[] Key,long num) {
+        ShardedJedis shardedJedis = null;
+        try {
+            shardedJedis = redisService.getShareJedisPoolConnection();
+            if (shardedJedis.exists(Key)) {
+                shardedJedis.incrBy(Key,num);
+            }
+        } catch (Exception e) {
+
+        } finally {
+            if (shardedJedis != null) {
+                shardedJedis.close();
+            }
+        }
+    }
+
+    /**
+     * 递减
+     * @param Key
+     * @param num
+     */
+    public static void decrement(String Key,long num) {
+        ShardedJedis shardedJedis = null;
+        try {
+            shardedJedis = redisService.getShareJedisPoolConnection();
+            if (shardedJedis.exists(Key)) {
+                shardedJedis.decrBy(Key, num);
+            }
+        } catch (Exception e) {
+
+        } finally {
+            if (shardedJedis != null) {
+                shardedJedis.close();
+            }
+        }
+    }
+
+    public static void decrement(byte[] Key,long num) {
+        ShardedJedis shardedJedis = null;
+        try {
+            shardedJedis = redisService.getShareJedisPoolConnection();
+            if (shardedJedis.exists(Key)) {
+                shardedJedis.decrBy(Key,num);
+            }
+        } catch (Exception e) {
+
+        } finally {
+            if (shardedJedis != null) {
+                shardedJedis.close();
+            }
+        }
+    }
+
+    /**
      * 获取一个键值对的失效时间
      */
     public static Long GetTimeOfKey(String Key) {

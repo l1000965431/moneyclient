@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-<!--    <bean id="InsertOrderListener" class="com.money.MoneyServerMQ.MQListener.InsertOrderListener">
+    <bean id="InsertOrderListener" class="com.money.MoneyServerMQ.MQListener.InsertOrderListener">
         <property name="messageTopic" value="MoneyServer_Order_Insert"/>
     </bean>
 
@@ -52,10 +52,10 @@
     <bean id="PushCustomMessageListener"
           class="com.money.MoneyServerMQ.MQListener.PushCustomMessageListener">
         <property name="messageTopic" value="MoneyServer_PushCustomMessageListener_Listener"/>
-    </bean>-->
+    </bean>
 
 
-    <bean id="InsertOrderListener" class="com.money.MoneyServerMQ.MQListener.InsertOrderListener">
+   <!-- <bean id="InsertOrderListener" class="com.money.MoneyServerMQ.MQListener.InsertOrderListener">
         <property name="messageTopic" value="MoneyServer_Order_Insert_liveQ"/>
     </bean>
 
@@ -100,7 +100,7 @@
     <bean id="PushCustomMessageListener"
           class="com.money.MoneyServerMQ.MQListener.PushCustomMessageListener">
         <property name="messageTopic" value="MoneyServer_PushCustomMessageListener_Listener_liveQ"/>
-    </bean>
+    </bean>-->
 
     <bean id="MoneySeverMQManager" class="com.money.MoneyServerMQ.MoneyServerMQManager">
         <constructor-arg>

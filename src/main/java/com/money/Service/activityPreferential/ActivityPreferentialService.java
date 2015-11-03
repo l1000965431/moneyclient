@@ -142,6 +142,9 @@ public class ActivityPreferentialService extends ServiceBase implements ServiceI
                         return -1;
                     }
 
+                    String ActivityBoundsKey = Config.PREFERENTIBOUNDS + Integer.toString(ActivityId);
+                    MemCachService.decrement( ActivityBoundsKey.getBytes(),(long)finalLines );
+
                     //设置完成
                     if (activityPreferentialDAO.IsActivityPreferentialComplete(ActivityId)) {
                         EndActivityPreferential(ActivityId);
@@ -151,6 +154,8 @@ public class ActivityPreferentialService extends ServiceBase implements ServiceI
                     mapPush.put("Lines", Integer.toString(Lines));
                     mapPush.put("userId", userId);
                     mapPush.put("ActivityId", Integer.toString(ActivityId));
+                    mapPush.put("RemainingBonus", new String( MemCachService.MemCachgGet( ActivityBoundsKey.getBytes() )));
+
                     String Json = GsonUntil.JavaClassToJson(mapPush);
                     MoneyServerMQManager.SendMessage(new MoneyServerMessage(MoneyServerMQ_Topic.MONEYSERVERMQ_LOTTERVACTIVITYPREFERENTIAL_TOPIC,
                             MoneyServerMQ_Topic.MONEYSERVERMQ_LOTTERVACTIVITYPREFERENTIAL_TAG, Json, "特惠项目参加_" + userId));
@@ -371,6 +376,7 @@ public class ActivityPreferentialService extends ServiceBase implements ServiceI
         }), Config.SERVICE_SUCCESS)) {
             activityPreferentialDAO.delActivityPreferentialBilled(ActivityId);
             activityPreferentialDAO.delActivityPreferentialUnBilled(ActivityId);
+            activityPreferentialDAO.delActivityPreferentialBounds(ActivityId);
             activityPreferentialDAO.SetActivityTime(ActivityId);
             activityPreferentialDAO.SetCacheActivityEnd(ActivityId);
         }

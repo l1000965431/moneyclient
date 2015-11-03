@@ -11,32 +11,6 @@
         </webroots>
       </configuration>
     </facet>
-    <facet type="Spring" name="Spring">
-      <configuration>
-        <fileset id="web spring servlet context" name="MVC spring servlet context" removed="true">
-          <dependency>web application context</dependency>
-          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/classes/xml/Spring-Config.xml</file>
-        </fileset>
-        <fileset id="fileset" name="Spring Application Context" removed="false">
-          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/classes/xml/Spring-Redis-Config.xml</file>
-          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/classes/xml/Spring-Service-Config.xml</file>
-          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/classes/applicationContext.xml</file>
-          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/classes/xml/Spring-MQ-Config.xml</file>
-        </fileset>
-      </configuration>
-    </facet>
-    <facet type="hibernate" name="Hibernate">
-      <configuration>
-        <datasource-map>
-          <unit-entry name="sessionFactory" value="dataSource" />
-          <unit-entry name="src:hibernate.cfg.xml" />
-          <unit-entry name="src:main:webapp:WEB-INF:classes:xml:hibernate.cfg.xml" />
-        </datasource-map>
-        <naming-strategy-map />
-        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/hibernate.cfg.xml" />
-        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/main/webapp/WEB-INF/classes/xml/hibernate.cfg.xml" />
-      </configuration>
-    </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
@@ -46,7 +20,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:4.1.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aop:4.1.6.RELEASE" level="project" />
@@ -63,7 +37,6 @@
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.36" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.2.4" level="project" />
     <orderEntry type="library" name="Maven: jstl:jstl:1.2" level="project" />
-    <orderEntry type="library" name="Maven: taglibs:standard:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-validator:5.1.3.Final" level="project" />
     <orderEntry type="library" name="Maven: javax.validation:validation-api:1.1.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.logging:jboss-logging:3.1.3.GA" level="project" />

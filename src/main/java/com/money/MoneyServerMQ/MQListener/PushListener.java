@@ -23,10 +23,8 @@ public class PushListener extends MoneyServerListener {
         try {
             String body = BodyToString(message.getBody());
             UmengSendParameter mapBody = GsonUntil.jsonToJavaClass(body, UmengSendParameter.class);
+            UMengPush.CustomizedcastSendMessage( mapBody );
 
-            if( mapBody.getType().equals( "customizedcast" ) ){
-                UMengPush.CustomizedcastSendMessage( mapBody );
-            }
             return Action.CommitMessage;
         } catch (Exception e) {
             return Action.ReconsumeLater;

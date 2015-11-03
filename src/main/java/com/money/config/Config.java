@@ -16,17 +16,17 @@ public class Config {
     /**
      * 测试参数
      */
-/*    public static final String MESSAFE_PRODUCERID = "PID_MoneySever_1";
+    public static final String MESSAFE_PRODUCERID = "PID_MoneySever_1";
 
-    public static final String MESSAFE_CONSUMERID = "CID_MoneySever_1";*/
+    public static final String MESSAFE_CONSUMERID = "CID_MoneySever_1";
 
 
     /**
      * 生产参数
      */
-    public static final String MESSAFE_PRODUCERID = "PID_MoneySever_2";
+/*    public static final String MESSAFE_PRODUCERID = "PID_MoneySever_2";
 
-    public static final String MESSAFE_CONSUMERID = "CID_MoneySever_2";
+    public static final String MESSAFE_CONSUMERID = "CID_MoneySever_2";*/
 
     public static final String MESSAFE_ACCESSKEY = "lAj7wlmAwQF8l3o7";
 
@@ -187,6 +187,9 @@ public class Config {
 
     //特惠项目信息
     public static final String PREFERENTIINFO= "PreferentialInfo_";
+
+    //特惠项目奖金总数
+    public static final String PREFERENTIBOUNDS= "PreferentialBonus_";
 
     //填写邀请ID时给邀请人的经验值
     public static int AddExpInvite = 0;

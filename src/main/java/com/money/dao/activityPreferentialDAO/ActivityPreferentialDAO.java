@@ -76,6 +76,9 @@ public class ActivityPreferentialDAO extends BaseDao {
         String ActivityInfoKey = Config.PREFERENTIINFO + Integer.toString(ActitvityId);
         MemCachService.MemCachSet(ActivityInfoKey.getBytes(), GsonUntil.JavaClassToJson(map).getBytes());
 
+        String ActivityBoundsKey = Config.PREFERENTIBOUNDS + Integer.toString(ActitvityId);
+        MemCachService.MemCachSet(ActivityBoundsKey.getBytes(),
+                Integer.toString(activityPreferentialModel.getActivityLines()).getBytes());
     }
 
     /**
@@ -180,6 +183,11 @@ public class ActivityPreferentialDAO extends BaseDao {
     public boolean IsActivityPreferentialComplete(int ActivityId) {
         String ActivityInfoKey = Config.PREFERENTIUNBLLLED + Integer.toString(ActivityId);
         return MemCachService.getLen(ActivityInfoKey.getBytes()) <= 0;
+    }
+
+    public void delActivityPreferentialBounds( int ActivityId ){
+        String ActivityInfoKey = Config.PREFERENTIBOUNDS + Integer.toString(ActivityId);
+        MemCachService.RemoveValue(ActivityInfoKey);
     }
 
     public void SetActivityPreferentialState(int ActivityId, int State) {
