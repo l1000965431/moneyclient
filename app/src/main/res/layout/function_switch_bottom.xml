@@ -3,6 +3,20 @@
     android:layout_width="fill_parent" android:layout_height="fill_parent"
     android:gravity="bottom"
     android:id="@+id/function_switch_bottom">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="网络连接异常,请检查您的网络连接"
+        android:id="@+id/textView40"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="#ff4d393a"
+        android:textColor="#ffffffff"
+        android:textSize="15dp" />
+
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
