@@ -399,7 +399,7 @@
                         <TextView
                             android:layout_width="fill_parent"
                             android:layout_height="50dp"
-                            android:text="支持jpg,png,jpeg每张大小不超过500K，推荐尺寸：630*260，上传的第一张会默认为封面图。最多不要超过8张"
+                            android:text="支持jpg,png,jpeg，推荐尺寸：630*260，上传的第一张会默认为封面图。最多不要超过8张"
                             android:id="@+id/textView30"
                             android:textSize="10dp"
                             android:gravity="center_vertical"
@@ -497,7 +497,8 @@
                     android:id="@+id/linearLayout8"
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="15dp"
-                    android:layout_marginTop="7dp">
+                    android:layout_marginTop="7dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="78dp"
