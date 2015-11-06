@@ -259,6 +259,12 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
             case UserProtocol.IMPROVE_USER_INFO_RESULT_INFO_USER_TYPE_ERROR:
                 UIHelper.toast(this, "用户类型错误");
                 break;
+            case UserProtocol.IMPROVE_USER_INFO_RESULT_INFO_IDENTITY_CONFILCT:
+                UIHelper.toast(this, "身份证号已存在");
+                break;
+            case UserProtocol.IMPROVE_USER_INFO_RESULT_INFO_EMAIL_CONFILCT:
+                UIHelper.toast(this, "邮箱已被占用");
+                break;
             case UserProtocol.IMPROVE_USER_INFO_RESULT_SUCCESS:
                 UIHelper.toast(this, "更改成功");
                 UserBase userBase = ((MyApplication)getApplication()).getCurrentUser(this);

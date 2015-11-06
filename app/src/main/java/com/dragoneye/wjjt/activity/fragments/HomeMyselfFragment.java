@@ -184,6 +184,11 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
             withdrawButton.setVisibility(View.GONE);
             walletDesc.setVisibility(View.GONE);
             mTVWalletBalance.setVisibility(View.GONE);
+            leadTicketButton.setVisibility(View.GONE);
+            expButton.setVisibility(View.GONE);
+            microTicketButton.setVisibility(View.GONE);
+            shareLayout.setVisibility(View.GONE);
+            getActivity().findViewById(R.id.home_self_group_ll_user_invite_code).setVisibility(View.GONE);
         }else {
             devStuff.setVisibility(View.GONE);
         }
@@ -232,6 +237,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                     .build();
             ImageLoader.getInstance().displayImage(userPortrait, mIVPortrait, options);
         }
+        mTVUserName.setText(((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserName());
     }
 
     @Override

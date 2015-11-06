@@ -115,7 +115,12 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
         mGridView.setAdapter(mAdapter);
 
         mCurPageIndex = -1;
-        refreshableView.doRefreshImmediately();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refreshableView.doRefreshImmediately();
+            }
+        }, 100);
     }
 
 
@@ -130,6 +135,18 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
         }else {
             setNewRead();
         }
+    }
+
+    @Override
+    public void onShow(){
+        if( refreshableView != null ){
+            refreshableView.doRefreshImmediately();
+        }
+    }
+
+    @Override
+    public void onHide(){
+        setNewRead();
     }
 
     private void setNewRead(){
@@ -329,6 +346,7 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
                 viewHolder.pbProjectProgress = (ProgressBar)convertView.findViewById(R.id.home_investment_list_view_item_pb_progress);
                 viewHolder.tvStageInfo = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_stageInfo);
                 viewHolder.tvProgress = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_progress);
+                viewHolder.tvNew = (TextView)convertView.findViewById(R.id.home_investment_list_view_item_tv_new);
 
                 convertView.setTag(viewHolder);
             }else{
@@ -381,6 +399,7 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
             NewNormalActivityDao dao = MyDaoMaster.getDaoSession().getNewNormalActivityDao();
             NewNormalActivity normalActivity = dao.load(project.getActivityId());
             if(normalActivity != null){
+                viewHolder.tvNew.setVisibility( normalActivity.getIsRead() ? View.INVISIBLE : View.VISIBLE);
             }
 
 
@@ -389,7 +408,7 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
 
         private class ViewHolder{
             ImageView ivLogo;
-            ImageView ivNew;
+            TextView tvNew;
             TextView tvSummary;
             TextView tvTargetFundNum;
             TextView tvTargetFund;

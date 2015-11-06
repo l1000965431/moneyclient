@@ -37,7 +37,7 @@
             android:layout_height="fill_parent"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="NEW"
-            android:id="@+id/textView53"
+            android:id="@+id/home_invest_preferential_listview_item_tv_new"
             android:textColor="#ff79ff19"
             android:textSize="15dp"
             android:paddingLeft="7dp"

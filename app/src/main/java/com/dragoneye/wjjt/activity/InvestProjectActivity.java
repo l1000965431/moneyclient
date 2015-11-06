@@ -315,7 +315,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         }else {
             mLLLeadPanel.setVisibility(View.VISIBLE);
             mIVLeadArrow.setRotation(0);
-            mSelectedLeadStageNum = 1;
+            mSelectedLeadStageNum = mLeadStageLeft >= 1 ? 1 : 0;
             setLeadStageNum(mSelectedLeadStageNum);
             handler.post(new Runnable() {
                 @Override
@@ -337,18 +337,19 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         }else {
             mLLFallowPanel.setVisibility(View.VISIBLE);
             mIVFallowArrow.setRotation(0);
-            mSelectedFallowStageNum = 1;
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mScrollView.fullScroll(View.FOCUS_DOWN);
+                }
+            });
+            mSelectedFallowStageNum = mFallowStageLeft >= 1 ? 1 : 0;
             setFallowStageNum(mSelectedFallowStageNum);
+            updateSrEarningProportion(0);
             if( mFallowInvestMaxPrice >= 1 ){
                 mETInvestPrice.setText(String.valueOf(1));
                 mETInvestPrice.setSelection(mETInvestPrice.getText().length());
                 updateSrEarningProportion(1);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mScrollView.fullScroll(View.FOCUS_DOWN);
-                    }
-                });
             }
         }
     }
@@ -498,6 +499,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                             mSrEarningModels.add(earningModel);
                         }
                     }
+                    mTVMaxFallowPrice.setText(String.format("(最大跟投数额:%d)", mFallowInvestMaxPrice));
                     Collections.sort(mSrEarningModels, new Comparator<EarningModel>() {
                         @Override
                         public int compare(EarningModel lhs, EarningModel rhs) {
@@ -562,7 +564,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                             mFallowInvestMaxPrice = mFallowInvestTicketLeft;
                         }
 
-                        if( mLeadStageLeft == 0 && mFallowStageLeft == 0 ){
+                        if( mLeadStageLeft == 0 && mFallowStageLeft == 0 && mFallowInvestTicketLeft == 0 ){
                             UIHelper.toast(InvestProjectActivity.this, "此项目筹款已结束");
                             setResult(RESULT_OK);
                             finish();
@@ -574,7 +576,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                             mLLLeadPanel.setVisibility(View.GONE);
                         }
 
-                        if( mFallowStageLeft == 0 ){
+                        if( mFallowStageLeft == 0 && mFallowInvestTicketLeft == 0 ){
                             mLLFallowButton.setVisibility(View.GONE);
                             mLLFallowPanel.setVisibility(View.GONE);
                         }
@@ -774,8 +776,16 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         }
 
         if( isLeadInvest() ){
+            if(mSelectedLeadStageNum < 1){
+                UIHelper.toast(this, "请输入要领投的期数");
+                return false;
+            }
             return true;
         }else{
+            if(mSelectedFallowStageNum < 1){
+                UIHelper.toast(this, "请输入要跟投的期数");
+                return false;
+            }
             if( mETInvestPrice.getText().length() == 0 ){
                 UIHelper.toast(this, "请输入要跟投的数量");
                 return false;
@@ -794,11 +804,11 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     }
 
     private boolean isLeadInvest(){
-        return mSelectedLeadStageNum > 0;
+        return mLLLeadPanel.getVisibility() == View.VISIBLE;
     }
 
     private boolean isFallowInvest(){
-        return mSelectedFallowStageNum > 0;
+        return mLLFallowPanel.getVisibility() == View.VISIBLE;
     }
 
     private void onInvest(int investType, final int investStageNum, final int investPriceNum, int messageType, int ticketUse){

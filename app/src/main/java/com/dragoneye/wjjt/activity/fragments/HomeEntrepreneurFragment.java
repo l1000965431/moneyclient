@@ -292,8 +292,8 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
                 e.printStackTrace();
             }
 
-            viewHolder.tvGotoEdit.setVisibility(View.INVISIBLE);
-            viewHolder.tvParam.setVisibility(View.INVISIBLE);
+            viewHolder.tvGotoEdit.setVisibility(View.GONE);
+            viewHolder.tvParam.setVisibility(View.GONE);
             switch (project.getAuditorStatus()){
                 case MyProjectModel.STATUS_FIRST_AUDITING:
                 case MyProjectModel.STATUS_REVAMPED:

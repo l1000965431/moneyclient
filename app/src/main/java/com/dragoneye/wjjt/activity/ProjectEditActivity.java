@@ -307,8 +307,9 @@ public class ProjectEditActivity extends ImageSelectedActivity implements View.O
 
         File file = new File(filePath);
         if(file.length() > MAX_IMAGE_SIZE){
-            UIHelper.toast(this, "图片太大!");
-            return;
+//            UIHelper.toast(this, "图片太大!");
+//            return;
+            uri = ToolMaster.compressImage(this, uri);
         }
 
         addImageToShow(uri);

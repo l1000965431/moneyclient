@@ -71,6 +71,8 @@ public class HomeInvestmentFragment extends BaseFragment {
             BaseFragment baseFragment = (BaseFragment)((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(curPos);
             if(isVisibleToUser){
                 baseFragment.onShow();
+                mNormalButton.setIsHaveNew(PreferencesHelper.isHaveNewMessage(getActivity(), PreferencesConfig.IS_HAVE_NEW_NORMAL_ACTIVITY));
+                mPreferentialButton.setIsHaveNew(PreferencesHelper.isHaveNewMessage(getActivity(), PreferencesConfig.IS_HAVE_NEW_PREFERENTIAL_ACTIVITY));
             }else {
                 baseFragment.onHide();
             }
