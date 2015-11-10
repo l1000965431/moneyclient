@@ -1,5 +1,6 @@
 package com.dragoneye.wjjt.activity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -40,6 +41,8 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
     private TextView mTVConfirmButton;
 
     private View mLLEntrepreneurInfo;
+
+    ProgressDialog progressDialog;
 
     /**
      *
@@ -95,7 +98,9 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         mCBExpertise.add((CheckBox)findViewById(R.id.checkBox7));
         mCBExpertise.add((CheckBox)findViewById(R.id.checkBox8));
 
-        setUIMode(((MyApplication)getApplication()).getCurrentUser(this).getUserType());
+        setUIMode(((MyApplication) getApplication()).getCurrentUser(this).getUserType());
+
+        progressDialog = new ProgressDialog(this);
     }
 
     private void initData(){
@@ -218,7 +223,8 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
             return;
         }
 
-        HttpParams params = new HttpParams();
+        progressDialog.show();
+        final HttpParams params = new HttpParams();
         params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_TOKEN, ((MyApplication)getApplication()).getToken(this));
         params.put(UserProtocol.IMPROVE_USER_INFO_PARAM_USER_TYPE, ((MyApplication)getApplication()).getCurrentUser(this).getUserType());
         final HashMap<String, String> userImproveInfo = getUserImproveInfo();
@@ -227,9 +233,14 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
 
         HttpClient.atomicPost(this, UserProtocol.URL_IMPROVE_USER_INFO, params, new HttpClient.MyHttpHandler() {
             @Override
+            public void onFailure(int i, Header[] headers, String s, Throwable throwable){
+                progressDialog.dismiss();
+            }
+            @Override
             public void onSuccess(int i, Header[] headers, String s) {
+                progressDialog.dismiss();
                 if (s == null) {
-                    UIHelper.toast(ImproveUserInfoActivity.this, "服务器异常");
+                    UIHelper.toast(ImproveUserInfoActivity.this, getString(R.string.http_server_exception));
                     return;
                 }
                 onImproveResult(s, userImproveInfo);
@@ -243,7 +254,7 @@ public class ImproveUserInfoActivity extends BaseActivity implements View.OnClic
         try{
             resultCode = Integer.parseInt(result);
         }catch (Exception e){
-            UIHelper.toast(this, "服务器异常");
+            UIHelper.toast(this, getString(R.string.http_server_exception));
         }
 
         switch (resultCode){

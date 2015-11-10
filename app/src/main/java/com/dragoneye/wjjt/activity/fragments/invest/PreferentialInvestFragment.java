@@ -712,7 +712,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
             NewPreferentialActivityDao dao = MyDaoMaster.getDaoSession().getNewPreferentialActivityDao();
             NewPreferentialActivity preferentialActivity = dao.load(preferentialModel.getActivityId());
             if(preferentialActivity != null){
-                viewHolder.tvNew.setVisibility( preferentialActivity.getIsRead() ? View.INVISIBLE : View.VISIBLE);
+                viewHolder.tvNew.setVisibility( preferentialActivity.getIsRead() ? View.GONE : View.VISIBLE);
             }
 
 

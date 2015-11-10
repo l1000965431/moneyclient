@@ -2,6 +2,7 @@ package com.dragoneye.wjjt.activity;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -65,6 +66,7 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
         mTVSexuality = (TextView)findViewById(R.id.home_self_group_pinfo_linearLayout5_num);
         mIBPortrait = (RoundCornerImageView)findViewById(R.id.home_self_group_pinfo_imageButton1_group);
         mIBPortrait.setOnClickListener(this);
+//        mIBPortrait.setShowBorderline(true);
         String userPortrait = ((MyApplication)getApplication()).getCurrentUser(this).getUserHeadPortrait();
         if( userPortrait != null && userPortrait.length() > 0 ){
             DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -75,6 +77,7 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
                     .displayer(new FadeInBitmapDisplayer(300))
                     .build();
             ImageLoader.getInstance().displayImage(userPortrait, mIBPortrait, options);
+//            mIBPortrait.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.pay_by_weixin));
         }
 
         mTVUserName.setText(((MyApplication) getApplication()).getCurrentUser(this).getUserName());

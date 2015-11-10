@@ -22,9 +22,9 @@ import com.dragoneye.wjjt.R;
 
 /**
  * �Զ���View��ʵ��Բ�ǣ�Բ�ε�Ч��
- * 
+ *
  * @author zhy
- * 
+ *
  */
 public class RoundCornerImageView extends ImageView
 {
@@ -36,12 +36,13 @@ public class RoundCornerImageView extends ImageView
 	private static final int TYPE_CIRCLE = 0;
 	private static final int TYPE_ROUND = 1;
 	private boolean isShowBorderline = false;
-	private static final int BORDERLINE_WIDTH = 3;
+	private static final int BORDERLINE_WIDTH = 5;
 
-	private Paint paint;
+	private Paint mPaint;
 	private int roundWidth = 30;
 	private int roundHeight = 30;
-	private Paint paint2;
+	private Paint mPaint2;
+	private Paint mPaint3;
 
 	public RoundCornerImageView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -70,35 +71,57 @@ public class RoundCornerImageView extends ImageView
 			roundHeight = (int) (roundHeight*density);
 		}
 
-		paint = new Paint();
-		paint.setColor(Color.WHITE);
-		paint.setAntiAlias(true);
-		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+		mPaint = new Paint();
+		mPaint.setAntiAlias(true);
+//		paint.setStyle(Paint.Style.STROKE);
+//		paint.setStrokeWidth(BORDERLINE_WIDTH);
+//		paint.setColor(Color.WHITE);
+		mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
 
-		paint2 = new Paint();
-		paint2.setXfermode(null);
+		mPaint2 = new Paint();
+		mPaint2.setXfermode(null);
+
+		mPaint3 = new Paint();
+		mPaint3.setAntiAlias(true);
+		mPaint3.setColor(Color.WHITE);
+		mPaint3.setStyle(Paint.Style.STROKE);
+		mPaint3.setStrokeWidth(BORDERLINE_WIDTH);
 	}
 
 	@Override
 	public void draw(Canvas canvas) {
-		Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Config.ARGB_8888);
-		Canvas canvas2 = new Canvas(bitmap);
-		super.draw(canvas2);
-		drawLiftUp(canvas2);
-		drawRightUp(canvas2);
-		drawLiftDown(canvas2);
-		drawRightDown(canvas2);
-		canvas.drawBitmap(bitmap, 0, 0, paint2);
-		bitmap.recycle();
-		if(isShowBorderline){
-			paint.reset();
-			paint.setAntiAlias(true);
-			paint.setColor(Color.WHITE);
-			paint.setStyle(Paint.Style.STROKE);
-			paint.setStrokeWidth(BORDERLINE_WIDTH);
-			RectF rect = new RectF(0, 0, getWidth(), getHeight());
-			canvas.drawRoundRect(rect, 10, 10, paint);
+		Bitmap bitmapSrc = Bitmap.createBitmap(getWidth(), getHeight(), Config.ARGB_8888);
+		Canvas canvasSrc = new Canvas(bitmapSrc);
+		super.draw(canvasSrc);
+		drawLiftUp(canvasSrc);
+		drawRightUp(canvasSrc);
+		drawLiftDown(canvasSrc);
+		drawRightDown(canvasSrc);
+
+		canvas.drawBitmap(bitmapSrc, 0, 0, mPaint2);
+		int padding = 2;
+		if (isShowBorderline) {
+//			paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+
+			RectF rect = new RectF(padding, padding, getWidth() - padding , getHeight() - padding );
+			canvas.drawRoundRect(rect, 25, 25, mPaint3);
 		}
+		bitmapSrc.recycle();
+
+//		roundSrc.drawBitmap(bitmapSrc, 0, 0, paint2);
+
+//		canvas.drawRoundRect(rect, roundWidth, roundWidth, paint2);
+//
+//
+////		if(isShowBorderline) {
+//////			paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+////
+////			RectF rect = new RectF(5, 5, getWidth(), getHeight());
+////			canvas2.drawRoundRect(rect, 30, 30, paint3);
+////		}
+//		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+//		canvas.drawBitmap(bitmapSrc, 0, 0, paint);
+//		bitmapSrc.recycle();
 	}
 
 	private void drawLiftUp(Canvas canvas) {
@@ -114,7 +137,7 @@ public class RoundCornerImageView extends ImageView
 				-90,
 				-90);
 		path.close();
-		canvas.drawPath(path, paint);
+		canvas.drawPath(path, mPaint);
 	}
 
 	private void drawLiftDown(Canvas canvas) {
@@ -130,7 +153,7 @@ public class RoundCornerImageView extends ImageView
 				90,
 				90);
 		path.close();
-		canvas.drawPath(path, paint);
+		canvas.drawPath(path, mPaint);
 	}
 
 	private void drawRightDown(Canvas canvas) {
@@ -144,7 +167,7 @@ public class RoundCornerImageView extends ImageView
 				getWidth(),
 				getHeight()), 0, 90);
 		path.close();
-		canvas.drawPath(path, paint);
+		canvas.drawPath(path, mPaint);
 	}
 
 	private void drawRightUp(Canvas canvas) {
@@ -160,7 +183,7 @@ public class RoundCornerImageView extends ImageView
 				-90,
 				90);
 		path.close();
-		canvas.drawPath(path, paint);
+		canvas.drawPath(path, mPaint);
 	}
 
 

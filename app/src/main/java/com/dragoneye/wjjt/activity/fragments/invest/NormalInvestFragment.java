@@ -399,7 +399,7 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
             NewNormalActivityDao dao = MyDaoMaster.getDaoSession().getNewNormalActivityDao();
             NewNormalActivity normalActivity = dao.load(project.getActivityId());
             if(normalActivity != null){
-                viewHolder.tvNew.setVisibility( normalActivity.getIsRead() ? View.INVISIBLE : View.VISIBLE);
+                viewHolder.tvNew.setVisibility( normalActivity.getIsRead() ? View.GONE : View.VISIBLE);
             }
 
 
