@@ -153,58 +153,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="57dp"
                 android:orientation="horizontal"
-                android:id="@+id/home_self_group_linearLayout_lead_ticket"
-                android:background="#ffffb04c"
-                android:paddingRight="10dp"
-                android:paddingLeft="40dp" >
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/imageView23"
-                    android:layout_gravity="center"
-                    android:src="@mipmap/icon_ling_voucher"
-                    android:scaleType="fitXY" />
-
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:id="@+id/home_self_group_iv_lead_ticket_new"
-                    android:layout_gravity="center"
-                    android:src="@mipmap/icon_point"
-                    android:tint="#ffff4330"
-                    android:layout_marginLeft="-10dp"
-                    android:layout_marginTop="-20dp"
-                    android:visibility="invisible" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="领投券：0"
-                    android:id="@+id/home_self_group_tv_lead_ticket"
-                    android:textColor="#ff332b38"
-                    android:textSize="17dp"
-                    android:paddingRight="3dp"
-                    android:paddingLeft="7dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.8" />
-
-                <ImageView
-                    android:layout_width="17dp"
-                    android:layout_height="17dp"
-                    android:id="@+id/imageView25"
-                    android:layout_gravity="center"
-                    android:src="@mipmap/icon_triangle"
-                    android:scaleType="fitXY"
-                    android:tint="#ffff3f31" />
-            </LinearLayout>
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="57dp"
-                android:orientation="horizontal"
                 android:id="@+id/home_self_group_linearLayout_exp"
-                android:background="#ffff9735"
+                android:background="#ffffb04c"
                 android:paddingRight="10dp"
                 android:paddingLeft="40dp" >
 
@@ -243,6 +193,57 @@
                     android:layout_width="17dp"
                     android:layout_height="17dp"
                     android:id="@+id/imageView28"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/icon_triangle"
+                    android:scaleType="fitXY"
+                    android:tint="#ffff3f31" />
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="57dp"
+                android:orientation="horizontal"
+                android:id="@+id/home_self_group_linearLayout_lead_ticket"
+                android:background="#ffff9735"
+                android:paddingRight="10dp"
+                android:paddingLeft="40dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/imageView23"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/icon_ling_voucher"
+                    android:scaleType="fitXY" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:id="@+id/home_self_group_iv_lead_ticket_new"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/icon_point"
+                    android:tint="#ffff4330"
+                    android:layout_marginLeft="-10dp"
+                    android:layout_marginTop="-20dp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="领投券：0"
+                    android:id="@+id/home_self_group_tv_lead_ticket"
+                    android:textColor="#ff332b38"
+                    android:textSize="17dp"
+                    android:paddingRight="3dp"
+                    android:paddingLeft="7dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.8" />
+
+                <ImageView
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:id="@+id/imageView25"
                     android:layout_gravity="center"
                     android:src="@mipmap/icon_triangle"
                     android:scaleType="fitXY"
