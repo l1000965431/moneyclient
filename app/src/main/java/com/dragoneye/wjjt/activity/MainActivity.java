@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -28,7 +30,10 @@ import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.BroadcastConfig;
 import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.protocol.UserProtocol;
+import com.dragoneye.wjjt.tool.NetworkTool;
 import com.dragoneye.wjjt.tool.PreferencesHelper;
+
+import java.lang.ref.WeakReference;
 
 public class MainActivity extends DoubleClickExitActivity implements View.OnClickListener{
     public static final int TAB_INVESTMENT = 0;
@@ -36,6 +41,8 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
     public static final int TAB_MYSELF = 2;
 
     public static final int TAB_COUNT = 3;
+
+    private static final int MESSAGE_CHECK_NETWORK = 1;
 
     private class BottomButton{
         public ImageView imageView;
@@ -69,8 +76,28 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
     private FragmentAdapter mFragmentAdapter;
     private ViewPager.OnPageChangeListener onPageChangeListener;
     private MenuItem mMessageBoxMenuItem;
+    private TextView mTVNetworkError;
 
     private BaseFragment currentFragement, investFragment, recordFragment, myselfFragment;
+
+    private static class MyHandler extends Handler {
+        private final WeakReference<MainActivity> mRef;
+
+        public MyHandler(MainActivity ref){
+            mRef = new WeakReference<>(ref);
+        }
+
+        @Override
+        public void handleMessage(Message msg){
+            switch (msg.what){
+                case MESSAGE_CHECK_NETWORK:
+                    mRef.get().updateNetworkState();
+                    break;
+            }
+        }
+    }
+
+    private MyHandler handler = new MyHandler(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +108,8 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
 
     private void initView(){
 
+        mTVNetworkError = (TextView)findViewById(R.id.function_switch_bottom_tv_network_error);
+        mTVNetworkError.setVisibility(View.GONE);
 
         viewPager = (ViewPager)findViewById(R.id.viewpager);
 
@@ -90,9 +119,6 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         investButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_investment_red);
         investButton.background = (LinearLayout)findViewById(R.id.function_switch_bottom_button_investment);
         investButton.background.setOnClickListener(this);
-        if(PreferencesHelper.isHaveNewMessage(this, PreferencesConfig.IS_HAVE_NEW_ACTIVITYS)){
-            investButton.setShowDot(true);
-        }
 
         recordButton = new BottomButton();
         recordButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_record_imageView);
@@ -100,9 +126,6 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         recordButton.dot = (ImageView)findViewById(R.id.function_switch_bottom_button_record_red);
         recordButton.background = (LinearLayout)findViewById(R.id.function_switch_bottom_button_record);
         recordButton.background.setOnClickListener(this);
-        if(PreferencesHelper.isHaveNewMessage(this, PreferencesConfig.IS_HAVE_NEW_RECORDS)){
-            recordButton.setShowDot(true);
-        }
 
         myselfButton = new BottomButton();
         myselfButton.imageView = (ImageView)findViewById(R.id.function_switch_bottom_button_me_imageView);
@@ -203,10 +226,18 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         super.onResume();
         registerReceiver(earningMessageReceiver, newEarnIntentFilter);
         registerReceiver(messageBoxReceiver, newMessageBoxIntentFilter);
-        if( PreferencesHelper.isHaveNewMessage(this, PreferencesConfig.IS_HAVE_NEW_EARNING_MESSAGE) ){
-            recordButton.setShowDot(true);
+        if( PreferencesHelper.isHaveNewMessage(this, PreferencesConfig.IS_HAVE_NEW_RECORDS) ){
+            if(currentCheckedButton != recordButton){
+                recordButton.setShowDot(true);
+            }
+        }
+        if( PreferencesHelper.isHaveNewMessage(this, PreferencesConfig.IS_HAVE_NEW_ACTIVITYS) ){
+            if(currentCheckedButton != investButton){
+                investButton.setShowDot(true);
+            }
         }
         setMessageBoxIsHaveNewMessage( PreferencesHelper.isHaveNewMessage(this, PreferencesConfig.IS_HAVE_NEW_MESSAGE_BOX_MESSAGE) );
+        updateNetworkState();
     }
 
     @Override
@@ -214,6 +245,15 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
         super.onPause();
         unregisterReceiver(earningMessageReceiver);
         unregisterReceiver(messageBoxReceiver);
+    }
+
+    private void updateNetworkState(){
+        if(NetworkTool.isNetworkConnected(this)){
+            mTVNetworkError.setVisibility(View.GONE);
+        }else {
+            mTVNetworkError.setVisibility(View.VISIBLE);
+        }
+        handler.sendMessageDelayed(handler.obtainMessage(MESSAGE_CHECK_NETWORK), 10000);
     }
 
     @Override

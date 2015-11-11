@@ -70,6 +70,8 @@ public interface UserProtocol {
     int IMPROVE_USER_INFO_RESULT_INFO_ERROR = 2;            // 信息不合法
     int IMPROVE_USER_INFO_RESULT_INFO_TOKEN_INCORRECT = 3;  // token不一致
     int IMPROVE_USER_INFO_RESULT_INFO_USER_TYPE_ERROR = 4;  // 用户类型错误
+    int IMPROVE_USER_INFO_RESULT_INFO_IDENTITY_CONFILCT = 5;// 用户身份证重复
+    int IMPROVE_USER_INFO_RESULT_INFO_EMAIL_CONFILCT = 6;   // 用户邮箱重复
     /*****************************************************************************************/
 
     /******************************************************************************************

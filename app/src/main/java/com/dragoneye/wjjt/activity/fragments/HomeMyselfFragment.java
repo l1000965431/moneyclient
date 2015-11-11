@@ -7,6 +7,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -49,6 +51,8 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
@@ -70,6 +74,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 
     private TextView mTVUserInviteCode;
     private EditText mETInviteCode;
+    private View mLLInviteCodeLayout;
 
     Handler handler = new Handler();
 
@@ -94,6 +99,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         View walletDesc = getActivity().findViewById(R.id.textView16);
 
         mIVPortrait = (RoundCornerImageView)getActivity().findViewById(R.id.home_self_group_iv_portrait);
+        mIVPortrait.setShowBorderline(true);
 
         // 充值
         View chargeButton = getActivity().findViewById(R.id.home_self_group_linearLayout2);
@@ -146,37 +152,34 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         shareLayout.setOnClickListener(this);
 
         // 推荐人ID
-        if( userBase.isInvited() ){
-            View inputInviteCodeLayout = getActivity().findViewById(R.id.home_self_group_ll_input_invite_code);
-            inputInviteCodeLayout.setVisibility(View.GONE);
-        }else {
-            mETInviteCode = (EditText)getActivity().findViewById(R.id.home_self_group_et_invite_code);
-            mETInviteCode.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        mLLInviteCodeLayout = getActivity().findViewById(R.id.home_self_group_ll_input_invite_code);
+        mLLInviteCodeLayout.setVisibility(View.GONE);
+        mETInviteCode = (EditText)getActivity().findViewById(R.id.home_self_group_et_invite_code);
+        mETInviteCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
+            }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                }
+            }
 
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if (s.length() >= 6) {
-                        String str = s.toString().toLowerCase();
-                        String userInviteCode = ((MyApplication) getActivity().getApplication()).getCurrentUser(getActivity()).getUserInviteCode();
-                        if (str.toLowerCase().compareTo(userInviteCode.toLowerCase()) == 0) {
-                            UIHelper.toast(getActivity(), "不能填写自己的id!");
-                            return;
-                        }
-                        onAddUserExp(str);
-                        mETInviteCode.setText("");
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() >= 10) {
+                    String str = s.toString().toLowerCase();
+                    String userInviteCode = ((MyApplication) getActivity().getApplication()).getCurrentUser(getActivity()).getUserInviteCode();
+                    if (str.toLowerCase().compareTo(userInviteCode.toLowerCase()) == 0) {
+                        UIHelper.toast(getActivity(), "不能填写自己的id!");
+                        return;
                     }
+                    onAddUserExp(str);
+                    mETInviteCode.setText("");
                 }
-            });
-        }
+            }
+        });
 
 
         if(((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
@@ -184,6 +187,11 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
             withdrawButton.setVisibility(View.GONE);
             walletDesc.setVisibility(View.GONE);
             mTVWalletBalance.setVisibility(View.GONE);
+            leadTicketButton.setVisibility(View.GONE);
+            expButton.setVisibility(View.GONE);
+            microTicketButton.setVisibility(View.GONE);
+            shareLayout.setVisibility(View.GONE);
+            getActivity().findViewById(R.id.home_self_group_ll_user_invite_code).setVisibility(View.GONE);
         }else {
             devStuff.setVisibility(View.GONE);
         }
@@ -231,7 +239,9 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                     .displayer(new FadeInBitmapDisplayer(300))
                     .build();
             ImageLoader.getInstance().displayImage(userPortrait, mIVPortrait, options);
+//            mIVPortrait.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.pay_by_weixin));
         }
+        mTVUserName.setText(((MyApplication) getActivity().getApplication()).getCurrentUser(getActivity()).getUserName());
     }
 
     @Override
@@ -275,7 +285,9 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                     mTVMicroTicket.setText(String.format("微券：%d", vTicket));
                     mTVLeadTicket.setText(String.format("领投券：%d", leadTicket));
                     if(isInvited){
-                        mETInviteCode.setVisibility(View.GONE);
+                        mLLInviteCodeLayout.setVisibility(View.GONE);
+                    }else {
+                        mLLInviteCodeLayout.setVisibility(View.VISIBLE);
                     }
                 }
             });
@@ -310,10 +322,11 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                     e.printStackTrace();
                     UIHelper.toast(getActivity(), "服务器繁忙，请稍后再试");
                 }
-                if(exp == 0){
+                if(exp == -1){
                     UIHelper.toast(getActivity(), "推荐人ID不正确，请输入正确的推荐人ID");
                 }else {
-                    UIHelper.toast(getActivity(), String.format("获得%dEXP", exp));
+                    UIHelper.toast(getActivity(), "填写成功");
+                    mLLInviteCodeLayout.setVisibility(View.GONE);
                 }
             }
         });
@@ -402,13 +415,27 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 
     private void onShare(){
         ShareSDK.initSDK(getActivity());
+        UserBase userBase = ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity());
         OnekeyShare oks = new OnekeyShare();
 
         oks.disableSSOWhenAuthorize();
 
-        oks.setTitle("测试分享");
+        oks.setTitle("微聚竞投");
+//
+        oks.setText("我正在玩微聚竞投，一起来玩吧；下载微聚竞投客户端，填写我的ID到推荐人获取新用户礼包！我的ID是：" + userBase.getUserInviteCode());
+        String path = getActivity().getCacheDir() + "sharge_lancher.jpg";
+        File file = new File(path);
+        if(file.exists()){
+            oks.setImagePath(file.getPath());
+        }else {
+            Bitmap bitmap = BitmapFactory.decodeResource(getActivity().getResources(), R.mipmap.ic_launcher);
+            file = ToolMaster.SavePicInLocal(bitmap, path );
+            if( file != null && file.exists() ){
+                oks.setImagePath(file.getPath());
+            }
+        }
 
-        oks.setText("我是分享文本");
+        oks.setUrl("https://www.baidu.com/");
 //            // url仅在微信（包括好友和朋友圈）中使用
 //            oks.setUrl("http://sharesdk.cn");
 //            // comment是我对这条分享的评论，仅在人人网和QQ空间使用
@@ -418,7 +445,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 //            // siteUrl是分享此内容的网站地址，仅在QQ空间使用
 //            oks.setSiteUrl("http://sharesdk.cn");
 
-        oks.setImageUrl("http://7xjewm.com1.z0.glb.clouddn.com/ic_launcher.png");
+//        oks.setImageUrl("http://7xjewm.com1.z0.glb.clouddn.com/ic_launcher.png");
 
 //
 //// 启动分享GUI

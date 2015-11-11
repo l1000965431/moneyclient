@@ -40,7 +40,7 @@
             android:layout_height="fill_parent"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="NEW"
-            android:id="@+id/textView45"
+            android:id="@+id/home_investment_list_view_item_tv_new"
             android:textColor="#ff79ff19"
             android:textSize="15dp"
             android:paddingLeft="7dp"

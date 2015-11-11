@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -18,9 +19,11 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.UUID;
 
 /**
  * Created by happysky on 15-6-19.
@@ -259,5 +262,64 @@ public class ToolMaster {
             }
         }
         return key;
+    }
+
+    /**
+     * 压缩图片
+     * @param context
+     * @param imageUri
+     * @return
+     */
+    public static Uri compressImage(Context context, Uri imageUri){
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+            if (bitmap.getWidth() > 1024) {
+                float factor = 1024F / bitmap.getWidth();
+                bitmap = zoomBitmap(bitmap, (int) (bitmap.getWidth() * factor),
+                        (int) (bitmap.getHeight() * factor));
+                File f = new File(context.getCacheDir(), UUID.randomUUID().toString() + ".jpg");
+                if (f.exists()) {
+                    f.delete();
+                }
+                try {
+                    FileOutputStream out = new FileOutputStream(f);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                    out.flush();
+                    out.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return Uri.fromFile(f);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return imageUri;
+    }
+
+    /**
+     * 缩放图片
+     * @param bitmap
+     * @param width
+     * @param height
+     * @return
+     */
+    public static Bitmap zoomBitmap(Bitmap bitmap, int width, int height) {
+
+        int w = bitmap.getWidth();
+
+        int h = bitmap.getHeight();
+
+        Matrix matrix = new Matrix();
+
+        float scaleWidth = ((float) width / w);
+
+        float scaleHeight = ((float) height / h);
+
+        matrix.postScale(scaleWidth, scaleHeight);// 利用矩阵进行缩放不会造成内存溢出
+
+        Bitmap newbmp = Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
+
+        return newbmp;
     }
 }

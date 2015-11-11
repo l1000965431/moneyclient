@@ -161,10 +161,11 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
             if(mIsWaittingResult && mCurSelectedModel != null){
                 String activityId = intent.getStringExtra("activityId");
                 int earningPrice = intent.getIntExtra("earningPrice", 0);
+                int priceLeft = intent.getIntExtra("priceLeft", 0);
                 if( earningPrice > 0 ){
                     rushSuccess(earningPrice, mCurSelectedModel);
                 }else {
-                    rushFailure(mCurSelectedModel);
+                    rushFailure(priceLeft, mCurSelectedModel);
                 }
             }
         }
@@ -181,6 +182,18 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
             setNewRead();
         }
 
+    }
+
+    @Override
+    public void onShow(){
+        if( refreshableView != null ){
+            refreshableView.doRefreshImmediately();
+        }
+    }
+
+    @Override
+    public void onHide(){
+        setNewRead();
     }
 
     private void setNewRead(){
@@ -287,7 +300,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         }
     }
 
-    private void startRush(PreferentialModel preferentialModel){
+    private void startRush(final PreferentialModel preferentialModel){
         mMainAlertDialog.dismiss();
         progressDialog.show();
         mIsWaittingResult = false;
@@ -308,11 +321,21 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
 
                     @Override
                     public void onSuccess(int i, Header[] headers, String s) {
+                        progressDialog.dismiss();
                         int result = 0;
                         try {
-                            result = Integer.parseInt(s);
+                            JSONObject jsonObject = new JSONObject(s);
+                            String activityId = jsonObject.getString("ActivityId");
+                            int earningPrice = jsonObject.getInt("Lines");
+                            int priceLeft = jsonObject.getInt("RemainingBonus");
+                            if(earningPrice > 0){
+                                rushSuccess(earningPrice, preferentialModel);
+                            }else {
+                                rushFailure(priceLeft, preferentialModel);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            UIHelper.toast(getActivity(), getString(R.string.http_server_exception));
                         }
                         mIsWaittingResult = true;
                     }
@@ -345,14 +368,16 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         });
     }
 
-    private void rushFailure(PreferentialModel preferentialModel){
+    private void rushFailure(int priceLeft, PreferentialModel preferentialModel){
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View dialog = inflater.inflate(R.layout.home_investment_listview_failure_preferential, null);
 
         final TextView tvAutoClose = (TextView)dialog.findViewById(R.id.rush_failure_tv_auto_close);
         final TextView tvActivityName = (TextView)dialog.findViewById(R.id.rush_failure_tv_activity_name);
+        final TextView tvPriceLeft = (TextView)dialog.findViewById(R.id.rush_failure_tv_price_left);
 
         tvActivityName.setText(preferentialModel.getName());
+        tvPriceLeft.setText("奖金剩余：" + ToolMaster.convertToPriceString(priceLeft));
 
         mRushResultAlertDialog = new AlertDialog.Builder(getActivity())
                 .setView(dialog)
@@ -618,6 +643,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                 viewHolder.vBegin = convertView.findViewById(R.id.home_invest_preferential_listview_item_rl_begin);
                 viewHolder.vFinish = convertView.findViewById(R.id.home_invest_preferential_listview_item_tv_finish);
                 viewHolder.ivShake = (ImageView)convertView.findViewById(R.id.home_invest_preferential_listview_item_iv_shake);
+                viewHolder.tvNew = (TextView)convertView.findViewById(R.id.home_invest_preferential_listview_item_tv_new);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
@@ -686,6 +712,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
             NewPreferentialActivityDao dao = MyDaoMaster.getDaoSession().getNewPreferentialActivityDao();
             NewPreferentialActivity preferentialActivity = dao.load(preferentialModel.getActivityId());
             if(preferentialActivity != null){
+                viewHolder.tvNew.setVisibility( preferentialActivity.getIsRead() ? View.GONE : View.VISIBLE);
             }
 
 
@@ -704,6 +731,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
             View vBegin;
             View vFinish;
             ImageView ivShake;
+            TextView tvNew;
         }
     }
 }

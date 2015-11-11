@@ -290,9 +290,11 @@ public class MyApplication extends Application {
                                         }.getType());
                                 String activityId = bodyMap.get("ActivityId");
                                 int earningPrice = Integer.parseInt(bodyMap.get("Lines"));
+                                int priceLeft = Integer.parseInt("RemainingBonus");
                                 Intent intent = new Intent(BroadcastConfig.NEW_PREFERENTIAL_RESULT_MESSAGE);
                                 intent.putExtra("activityId", activityId);
                                 intent.putExtra("earningPrice", earningPrice);
+                                intent.putExtra("priceLeft", priceLeft);
                                 sendBroadcast(intent);
                                 // 消息盒子消息
                             } else if (messageType.equals("messagebox")) {
@@ -312,7 +314,7 @@ public class MyApplication extends Application {
                                 PreferencesHelper.setIsHaveNewMessage(MyApplication.this, true, PreferencesConfig.IS_HAVE_NEW_MESSAGE_BOX_MESSAGE);
                             }
 
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }

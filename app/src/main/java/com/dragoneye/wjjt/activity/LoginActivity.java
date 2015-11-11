@@ -234,15 +234,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             userBase.setUserType(userType);
             userBase.setUserId(jsonObject.getString("userId"));
             userBase.setIsPerfectInfo(isPerfectInfo);
-            if( isPerfectInfo ){
+            userBase.setIsInvited(jsonObject.getBoolean("IsInvited"));
+            userBase.setUserInviteCode(jsonObject.getString("userInvitecode"));
+            if (isPerfectInfo ){
                 userBase.setUserName(jsonObject.getString("userName"));
                 userBase.setEmail(jsonObject.getString("mail"));
                 userBase.setAddress(jsonObject.getString("location"));
                 userBase.setRealName(jsonObject.getString("realName"));
                 userBase.setIdentityId(jsonObject.getString("identityId"));
                 userBase.setUserHeadPortrait(jsonObject.getString("userHeadPortrait"));
-                userBase.setIsInvited(jsonObject.getBoolean("IsInvited"));
-                userBase.setUserInviteCode(jsonObject.getString("userInvitecode"));
                 if(userType == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR){
                     userBase.setIntroduction(jsonObject.getString("introduction"));
                     userBase.setExpertise(jsonObject.getString("expertise"));

@@ -9,7 +9,7 @@
         android:layout_height="30dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="网络连接异常,请检查您的网络连接"
-        android:id="@+id/textView40"
+        android:id="@+id/function_switch_bottom_tv_network_error"
         android:gravity="center_vertical|center_horizontal"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"

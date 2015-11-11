@@ -557,7 +557,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             InvestRecordDao dao = MyDaoMaster.getDaoSession().getInvestRecordDao();
             InvestRecord investRecord = dao.load(orderModel.getId());
             if(investRecord != null){
-                viewHolder.tvNew.setVisibility( investRecord.getIsRead() ? View.INVISIBLE : View.VISIBLE);
+                viewHolder.tvNew.setVisibility( investRecord.getIsRead() ? View.GONE : View.VISIBLE);
             }
 
             return convertView;

@@ -356,7 +356,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
             EarningRecordDao dao = MyDaoMaster.getDaoSession().getEarningRecordDao();
             EarningRecord earningRecord = dao.load((long)myEarningModel.getId());
             if(earningRecord != null){
-                viewHolder.tvNew.setVisibility( earningRecord.getIsRead() ? View.INVISIBLE : View.VISIBLE);
+                viewHolder.tvNew.setVisibility( earningRecord.getIsRead() ? View.GONE : View.VISIBLE);
             }
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

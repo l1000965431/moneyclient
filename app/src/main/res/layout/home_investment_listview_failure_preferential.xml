@@ -122,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="剩余奖金:99999￥"
-                android:id="@+id/textView22"
+                android:id="@+id/rush_failure_tv_price_left"
                 android:textSize="17dp"
                 android:textColor="#ff313131"
                 android:textIsSelectable="false"
