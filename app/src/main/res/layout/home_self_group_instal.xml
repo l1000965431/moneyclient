@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:id="@+id/home_self_group_instal"
+    android:orientation="vertical">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="20dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_linearLayout1"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ff281b20"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="功能"
+            android:id="@+id/home_self_group_instal_linearLayout1_textView"
+            android:textColor="#90fff4ff"
+            android:textSize="12dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_linearLayout2"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffffffff"
+        android:paddingRight="10dp"
+        android:paddingLeft="40dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="消息提醒"
+            android:id="@+id/home_self_group_instal_linearLayout2_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/switch1"
+            android:layout_weight="0.8"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_linearLayout7"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#18000000"
+        android:paddingRight="10dp"
+        android:paddingLeft="40dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="修改密码"
+            android:id="@+id/home_self_group_instal_linearLayout7_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="20dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_linearLayout8"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ff281b20"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="其他"
+            android:id="@+id/home_self_group_instal_linearLayout8_textView"
+            android:textColor="#90fff4ff"
+            android:textSize="12dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_alipay"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffffffff"
+        android:paddingRight="10dp"
+        android:paddingLeft="40dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="解绑提现指定支付宝账号"
+            android:id="@+id/home_self_group_instal_tv_alipay_bind"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="fill_parent"
+                  android:layout_height="57dp"
+                  android:orientation="horizontal"
+                  android:measureWithLargestChild="false"
+                  android:id="@+id/home_self_group_instal_wx"
+                  android:columnCount="10"
+                  android:rowCount="10"
+                  android:touchscreenBlocksFocus="false"
+                  android:background="#18000000"
+                  android:paddingRight="10dp"
+                  android:paddingLeft="40dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="解绑提现指定微信账号"
+            android:id="@+id/home_self_group_instal_tv_wx_bind"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8"/>
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_linearLayout9"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffffffff"
+        android:paddingRight="10dp"
+        android:paddingLeft="40dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="关于微聚竞投"
+            android:id="@+id/home_self_group_instal_linearLayout9_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_instal_linearLayout10"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#18000000"
+        android:paddingRight="10dp"
+        android:paddingLeft="40dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="切换账号"
+            android:id="@+id/home_self_group_instal_linearLayout10_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/linearLayout20"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffffffff"
+        android:paddingRight="10dp"
+        android:paddingLeft="40dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="退出"
+            android:id="@+id/textView6"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+    </LinearLayout>
+
+</LinearLayout>

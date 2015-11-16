@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/home_investment_listview_detail_late"
+    android:background="#99232323">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/linearLayout23"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#ff1e1e1e">
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffffff">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="7dp"
+                android:paddingRight="7dp"
+                android:paddingBottom="5dp"
+                android:paddingTop="7dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/linearLayout15">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="XXXXXX  特惠项目"
+                        android:id="@+id/home_investment_listview_detail_preferential_tv_name"
+                        android:textSize="17dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="70dp"
+            android:background="@color/home_red" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:id="@+id/home_investment_listview_detail_preferential_iv_shake"
+                android:src="@mipmap/icon_shaking"
+                android:scaleType="fitEnd"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/textView72"
+                android:layout_toStartOf="@+id/textView72" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView72"
+                android:textSize="13dp"
+                android:textColor="#ffffffff"
+                android:textIsSelectable="false"
+                android:textStyle="bold"
+                android:text="@string/project_list_button_shaking"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#ff868686"
+            android:paddingBottom="10dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:visibility="visible"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/home_investment_listview_detail_preferential_ll_earnings_root">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:paddingLeft="30dp"
+                        android:layout_marginTop="7dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="一等奖："
+                            android:id="@+id/textView69"
+                            android:textSize="15dp"
+                            android:textColor="#ffffffff"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="999￥"
+                            android:id="@+id/textView70"
+                            android:textSize="17dp"
+                            android:textColor="#ffffffff"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="20dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="（1名）"
+                            android:id="@+id/textView71"
+                            android:textSize="17dp"
+                            android:textColor="#ffffffff"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="20dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:paddingLeft="30dp"
+                        android:layout_marginTop="7dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="一等奖："
+                            android:id="@+id/textView66"
+                            android:textSize="15dp"
+                            android:textColor="#ffffffff"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="999￥"
+                            android:id="@+id/textView67"
+                            android:textSize="17dp"
+                            android:textColor="#ffffffff"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="20dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="（1名）"
+                            android:id="@+id/textView68"
+                            android:textSize="17dp"
+                            android:textColor="#ffffffff"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="20dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:paddingLeft="30dp"
+                        android:layout_marginTop="7dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="一等奖："
+                            android:id="@+id/textView26"
+                            android:textSize="15dp"
+                            android:textColor="#ffffffff"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="999￥"
+                            android:id="@+id/payment_tv_totalPrice"
+                            android:textSize="17dp"
+                            android:textColor="#ffffffff"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="20dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="（1名）"
+                            android:id="@+id/textView64"
+                            android:textSize="17dp"
+                            android:textColor="#ffffffff"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="20dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="您已满足参见特惠项目的条件，直接摇动手机开奖！特惠项目会随机抽取用户发放现金!!!"
+                android:id="@+id/textView25"
+                android:textSize="15dp"
+                android:textColor="#ffe0e0e0"
+                android:textIsSelectable="false"
+                android:layout_gravity="center"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="10dp"
+                android:padding="10dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

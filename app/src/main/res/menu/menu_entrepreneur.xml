@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.dragoneye.wjjt.activity.EntrepreneurActivity">
+    <item android:id="@+id/menu_entrepreneur_create_project"
+          android:title="创建项目"
+          android:orderInCategory="100"
+          app:showAsAction="ifRoom"/>
+</menu>

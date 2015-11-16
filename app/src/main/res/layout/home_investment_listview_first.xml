@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    android:id="@+id/home_investment_list_view_root"
+    >
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="180dp"
+        android:id="@+id/home_investment_list_view_item_iv_logo"
+        android:src="@mipmap/icon_albums"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginTop="-20dp"
+        android:background="#82000000">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="卡西欧游戏机"
+            android:id="@+id/home_investment_list_view_item_tv_projectName"
+            android:textColor="#ffffffff"
+            android:textSize="12dp"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:gravity="center_vertical|center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="NEW"
+            android:id="@+id/home_investment_list_view_item_tv_new"
+            android:textColor="#ff79ff19"
+            android:textSize="15dp"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:gravity="center_vertical|center_horizontal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffffffff">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="这款 WESTERN BAR 是其中一款，它是以西部牛仔为主题的射击游戏；另外还有“Great Racer”以及“Space Attacker”款式."
+            android:id="@+id/home_investment_list_view_item_tv_summary"
+            android:textSize="13dp"
+            android:padding="8dp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/linearLayout17">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="第3/20期 众筹中"
+                    android:id="@+id/home_investment_list_view_item_tv_stageInfo"
+                    android:textSize="17dp"
+                    android:textColor="#ff767676"
+                    android:textIsSelectable="false"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_marginTop="3dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="@string/invest_project_invested_goal"
+                        android:id="@+id/home_investment_list_view_item_tv_targetFund"
+                        android:textSize="13dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="99￥"
+                        android:id="@+id/home_investment_list_view_item_tv_currentFund"
+                        android:textSize="20dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="筹款进度：100%"
+                android:id="@+id/home_investment_list_view_item_tv_progress"
+                android:textSize="10dp"
+                android:textColor="#ff767676"
+                android:textIsSelectable="false"
+                android:textStyle="bold"
+                android:layout_gravity="center|right"
+                android:paddingRight="7dp"
+                android:layout_below="@+id/linearLayout17"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:id="@+id/home_investment_list_view_item_pb_progress"
+            android:progressDrawable="@drawable/project_progressbar"
+            android:progress="50"/>
+
+    </LinearLayout>
+</LinearLayout>

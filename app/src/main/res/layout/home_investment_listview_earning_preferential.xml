@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/home_investment_listview_detail_late"
+    android:background="#99232323"
+    android:paddingLeft="7dp"
+    android:paddingRight="7dp">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/linearLayout23"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#ff1e1e1e">
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffffff">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="7dp"
+                android:paddingRight="7dp"
+                android:paddingBottom="5dp"
+                android:paddingTop="7dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/linearLayout15">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="XXXXXX  特惠项目"
+                        android:id="@+id/rush_success_tv_activity_name"
+                        android:textSize="17dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        android:layout_marginLeft="10dp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="120dp"
+            android:background="#ffffffff"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="#ff6e6e6e"></LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="抢到："
+                    android:id="@+id/textView22"
+                    android:textSize="15dp"
+                    android:textColor="#ff313131"
+                    android:textIsSelectable="false"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_gravity="left|bottom|center"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="999,999"
+                    android:id="@+id/rush_success_tv_earning_price"
+                    android:textSize="39dp"
+                    android:textColor="#ffdb475a"
+                    android:textIsSelectable="false"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_weight="1"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true" />
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:id="@+id/imageView7"
+                    android:src="@mipmap/icon_v_voucher"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/rush_success_tv_earning_price"
+                    android:layout_toEndOf="@+id/rush_success_tv_earning_price"
+                    android:visibility="invisible" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="确定"
+            android:id="@+id/rush_failure_tv_auto_close"
+            android:layout_gravity="center"
+            android:textSize="15dp"
+            android:background="@color/home_red"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ffffffff"
+            android:layout_below="@+id/linearLayout23"
+            android:layout_centerHorizontal="true"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

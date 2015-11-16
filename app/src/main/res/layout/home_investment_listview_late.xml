@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="7dp"
+    android:paddingTop="17dp"
+    android:paddingRight="7dp"
+    android:paddingBottom="17dp"
+    android:id="@+id/home_investment_listview_late">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="170dp"
+        android:id="@+id/imageView"
+        android:src="@mipmap/icon_albums"
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="果汁酒吧"
+        android:id="@+id/textView54"
+        android:layout_gravity="center|right"
+        android:background="#82000000"
+        android:layout_marginTop="-20dp"
+        android:textColor="#ffffffff"
+        android:textSize="12dp"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:gravity="center_vertical|center_horizontal" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffffff">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="7dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/linearLayout">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="已进入运营分红阶段"
+                    android:id="@+id/textView2"
+                    android:textSize="17dp"
+                    android:textColor="#ff767676"
+                    android:textIsSelectable="false"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="第3期分红："
+                    android:id="@+id/textView3"
+                    android:textSize="13dp"
+                    android:textColor="#ff767676"
+                    android:textIsSelectable="false"
+                    android:textStyle="bold"
+                    android:layout_marginTop="3dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="158￥"
+                    android:id="@+id/textView5"
+                    android:textSize="30dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="运营分红总计：10259￥"
+                android:id="@+id/textView11"
+                android:textSize="13dp"
+                android:textColor="#ff767676"
+                android:textIsSelectable="false"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_alignBottom="@+id/linearLayout"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:id="@+id/imageView3"
+            android:background="#fffeb008"
+            android:layout_marginTop="-5dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

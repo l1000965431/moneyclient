@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:id="@+id/home_investment_list_view_root">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <ImageView
+            android:layout_width="114dp"
+            android:layout_height="60dp"
+            android:id="@+id/imageView"
+            android:src="@mipmap/icon_albums"
+            android:scaleType="centerCrop"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#ff8d8d8d">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="卡西欧游戏机"
+                android:id="@+id/home_record_listview_tv_project_name"
+                android:textColor="#ffffffff"
+                android:textSize="20dp"
+                android:paddingLeft="7dp"
+                android:paddingRight="7dp"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="NEW"
+                android:id="@+id/home_record_listview_tv_new"
+                android:textColor="#ff79ff19"
+                android:textSize="15dp"
+                android:paddingLeft="7dp"
+                android:paddingRight="7dp"
+                android:gravity="center_vertical|center_horizontal" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffffffff"
+        android:id="@+id/home_record_invest_listview_ll_proportion">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="7dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/linearLayout17"
+                android:layout_marginTop="5dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="第3/20期"
+                        android:id="@+id/home_record_listview_tv_stageInfo"
+                        android:textSize="17dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        android:paddingLeft="7dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="众筹中"
+                        android:id="@+id/home_record_listview_tv_status"
+                        android:textSize="17dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        android:paddingLeft="7dp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_marginTop="3dp"
+                    android:paddingLeft="7dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="@string/invest_project_invested_goal"
+                        android:id="@+id/textView3"
+                        android:textSize="13dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="7dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="999万￥"
+                        android:id="@+id/home_record_listview_tv_targetFund"
+                        android:textSize="20dp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="点击查看收益概率"
+                    android:id="@+id/home_record_listview_tv_earning_proportion"
+                    android:background="#ff1a9cff"
+                    android:textColor="#ffffffff"
+                    android:textSize="13dp"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_gravity="left|center"
+                    android:layout_marginTop="5dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:id="@+id/linearLayout19">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/invest_project_invested_price"
+                    android:id="@+id/home_record_earning_tv_investPrice"
+                    android:textSize="13dp"
+                    android:textColor="#ff767676"
+                    android:textIsSelectable="false"
+                    android:textStyle="bold"
+                    android:layout_alignTop="@+id/linearLayout15"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/invest_project_invested_quantity"
+                    android:id="@+id/home_record_listview_tv_investStageNum"
+                    android:textSize="13dp"
+                    android:textColor="#ff767676"
+                    android:textIsSelectable="false"
+                    android:textStyle="bold"
+                    android:layout_alignTop="@+id/linearLayout15"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/invest_project_invested_installments"
+                    android:id="@+id/home_record_listview_tv_totalPrice"
+                    android:textSize="13dp"
+                    android:textColor="#ff767676"
+                    android:textIsSelectable="false"
+                    android:textStyle="bold"
+                    android:layout_below="@+id/home_record_earning_tv_investPrice"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/home_record_listview_tv_orderDate"
+                    android:textSize="13dp"
+                    android:textColor="#ff767676"
+                    android:textIsSelectable="false"
+                    android:textStyle="bold"
+                    android:layout_alignTop="@+id/linearLayout15"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="筹款进度：100%"
+                android:id="@+id/invest_record_list_view_tv_progress"
+                android:textSize="10dp"
+                android:textColor="#ff767676"
+                android:textIsSelectable="false"
+                android:textStyle="bold"
+                android:layout_gravity="center|right"
+                android:paddingRight="7dp"
+                android:layout_alignBottom="@+id/linearLayout17"
+                android:layout_alignRight="@+id/linearLayout19"
+                android:layout_alignEnd="@+id/linearLayout19" />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:id="@+id/invest_record_list_view_item_progressbar"
+            android:progress="50"
+            android:progressDrawable="@drawable/project_progressbar"/>
+
+    </LinearLayout>
+</LinearLayout>

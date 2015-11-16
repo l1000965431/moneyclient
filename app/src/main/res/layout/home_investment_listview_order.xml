@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/home_investment_listview_detail_late">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#ff49bfff"
+                android:paddingBottom="20dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:visibility="visible"
+                        android:paddingTop="30dp">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:paddingLeft="30dp"
+                            android:layout_marginTop="17dp" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="入资总金额："
+                                android:id="@+id/textView26"
+                                android:textSize="15dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="25dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="00"
+                                android:id="@+id/invest_confirm_tv_totalPrice"
+                                android:textSize="17dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="20dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:paddingLeft="30dp"
+                            android:layout_marginTop="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="购买期数："
+                                android:id="@+id/textView19"
+                                android:textSize="15dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="40dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="00"
+                                android:id="@+id/invest_confirm_tv_stageNum"
+                                android:textSize="17dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="20dp" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:id="@+id/invest_confirm_ll_vTicketPanel">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginLeft="45dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="V券抵金选择："
+                                android:id="@+id/textView35"
+                                android:textSize="15dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical" />
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:id="@+id/invest_confirm_iv_vTicketSub"
+                                android:layout_gravity="center"
+                                android:src="@mipmap/icon_less"
+                                android:tint="#ff63595f"
+                                android:layout_marginLeft="15dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="7/1"
+                                android:id="@+id/invest_confirm_tv_vTicketNum"
+                                android:textSize="17dp"
+                                android:textColor="#ffffffff"
+                                android:textIsSelectable="false"
+                                android:layout_gravity="center"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="20dp" />
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:id="@+id/invest_confirm_iv_vTicketadd"
+                                android:layout_gravity="center"
+                                android:src="@mipmap/icon_add"
+                                android:layout_marginLeft="30dp"
+                                android:tint="#ff63595f" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="70dp"
+                        android:layout_marginTop="30dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="回报几率与金额："
+                            android:id="@+id/textView14"
+                            android:textSize="13dp"
+                            android:textColor="#ff221d0d"
+                            android:textIsSelectable="false"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="7dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="70dp"
+                        android:id="@+id/invset_confirm_ll_earnProbability_root"
+                        android:layout_marginTop="5dp">
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="确定"
+                android:id="@+id/invest_confirm_tv_confirm"
+                android:layout_gravity="center"
+                android:textSize="15dp"
+                android:background="@color/home_red"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="#ffffffff"/>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 主界面底部按钮选中颜色 -->
+    <color name="home_bottom_button_selected">#ffd013</color>
+    <color name="home_bottom_button_unselected">#ecdbd9</color>
+
+    <color name="home_investment_top_button_selected">#fff0a219</color>
+    <color name="home_investment_top_button_unselected">#ffb0b0b0</color>
+
+    <!-- 项目进度条底色 -->
+    <color name="project_progress_bar_background">#ffffdb90</color>
+    <color name="project_progress_bar_progress">#1aff25</color>
+
+    <!-- ProgressActionBarActivity 刷新控件颜色 -->
+    <color name="progress_action_bar_progress">#ffffffff</color>
+    <!-- 界面标题栏红色标示 -->
+    <color name="home_red">#ffda233d</color>
+</resources>

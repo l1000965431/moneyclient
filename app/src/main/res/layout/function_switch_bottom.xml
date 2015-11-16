@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent"
+    android:gravity="bottom"
+    android:id="@+id/function_switch_bottom">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="网络连接异常,请检查您的网络连接"
+        android:id="@+id/function_switch_bottom_tv_network_error"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="#ff4d393a"
+        android:textColor="#ffffffff"
+        android:textSize="15dp" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/function_switch_bottom_button_layout"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/function_switch_bottom_button_layout">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ffda233d"
+            android:layout_weight="1"
+            android:id="@+id/function_switch_bottom_button_investment"
+            android:paddingTop="2dp">
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:id="@+id/function_switch_bottom_button_investment_red"
+                android:src="@mipmap/icon_point"
+                android:layout_gravity="center|right"
+                android:tint="#ff79ff19"
+                android:scaleType="fitXY"
+                android:layout_marginRight="22dp"
+                android:layout_marginBottom="-10dp"
+                android:visibility="invisible"/>
+
+            <ImageView
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:id="@+id/function_switch_bottom_button_investment_imageView"
+                android:src="@mipmap/button_investment"
+                android:layout_gravity="center"
+                android:tint="@color/home_bottom_button_selected"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="项目"
+                android:id="@+id/function_switch_bottom_button_investment_textView"
+                android:layout_gravity="center"
+                android:textSize="10dp"
+                android:textColor="@color/home_bottom_button_selected"
+                android:paddingBottom="3dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ffda233d"
+            android:layout_weight="1"
+            android:id="@+id/function_switch_bottom_button_record"
+            android:paddingTop="2dp">
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:id="@+id/function_switch_bottom_button_record_red"
+                android:src="@mipmap/icon_point"
+                android:layout_gravity="center|right"
+                android:tint="#ff79ff19"
+                android:scaleType="fitXY"
+                android:layout_marginRight="22dp"
+                android:layout_marginBottom="-10dp"
+                android:visibility="invisible"/>
+
+            <ImageView
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:id="@+id/function_switch_bottom_button_record_imageView"
+                android:src="@mipmap/button_record"
+                android:layout_gravity="center"
+                android:tint="@color/home_bottom_button_unselected"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="收益"
+                android:id="@+id/function_switch_bottom_button_record_textView"
+                android:layout_gravity="center"
+                android:textSize="10dp"
+                android:textColor="@color/home_bottom_button_unselected"
+                android:paddingBottom="3dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ffda233d"
+            android:layout_weight="1"
+            android:id="@+id/function_switch_bottom_button_me"
+            android:paddingTop="2dp">
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:id="@+id/function_switch_bottom_button_me_red"
+                android:src="@mipmap/icon_point"
+                android:layout_gravity="center|right"
+                android:tint="#ff79ff19"
+                android:scaleType="fitXY"
+                android:layout_marginRight="22dp"
+                android:layout_marginBottom="-10dp"
+                android:visibility="invisible"/>
+
+            <ImageView
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:id="@+id/function_switch_bottom_button_me_imageView"
+                android:src="@mipmap/button_me"
+                android:layout_gravity="center"
+                android:tint="@color/home_bottom_button_unselected"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="我"
+                android:id="@+id/function_switch_bottom_button_me_textView"
+                android:layout_gravity="center"
+                android:textSize="10dp"
+                android:textColor="@color/home_bottom_button_unselected"
+                android:paddingBottom="3dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_above="@+id/function_switch_bottom_button_layout"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/background_with_shadow">
+    </LinearLayout>
+</RelativeLayout>

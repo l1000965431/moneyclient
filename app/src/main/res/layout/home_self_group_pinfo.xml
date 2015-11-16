@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:RoundCornerImageView="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:baselineAligned="false"
+              android:id="@+id/home_self_group_pinfo"
+              android:orientation="vertical"
+              android:background="#ffdfdfdf">
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="120dp"
+        android:background="#fff9c273"
+        android:id="@+id/home_self_group_pinfo_p">
+
+        <!--<ImageButton-->
+            <!--android:layout_width="96dp"-->
+            <!--android:layout_height="96dp"-->
+            <!--android:id="@+id/home_self_group_pinfo_bgw_group"-->
+            <!--android:src="@mipmap/portrait_309"-->
+            <!--android:layout_gravity="left|center_vertical"-->
+            <!--android:background="#00ffffff"-->
+            <!--android:scaleType="fitXY"-->
+            <!--android:tint="#ffffffff"-->
+            <!--android:layout_marginLeft="50dp" />-->
+
+        <com.dragoneye.wjjt.view.RoundCornerImageView
+            android:layout_width="93dp"
+            android:layout_height="93dp"
+            android:id="@+id/home_self_group_pinfo_imageButton1_group"
+            android:layout_gravity="left|center_vertical"
+            android:background="#00ffffff"
+            android:scaleType="fitXY"
+            android:layout_marginLeft="52dp"
+            android:src="@mipmap/icon_headportrait"/>
+
+        <ImageView
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:id="@+id/imageView24"
+            android:layout_gravity="left|center_vertical"
+            android:src="@mipmap/icon_editor"
+            android:layout_marginTop="32dp"
+            android:layout_marginLeft="145dp" />
+        <!--<com.happysky.self.demo.view.RoundCornerImageView-->
+            <!--android:layout_width="93dp"-->
+            <!--android:layout_height="93dp"-->
+            <!--android:id="@+id/home_self_group_pinfo_imageButton1_group"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:background="#00ffffff"-->
+            <!--RoundCornerImageView:type="round"-->
+            <!--RoundCornerImageView:borderRadius="5dp"-->
+            <!--android:scaleType="fitXY" />-->
+
+
+    </FrameLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_pinfo_linearLayout1"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffffffff"
+        android:paddingRight="10dp"
+        android:paddingLeft="20dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="昵称"
+            android:id="@+id/home_self_group_pinfo_linearLayout1_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="name"
+            android:id="@+id/home_self_group_pinfo_linearLayout1_num"
+            android:layout_row="0"
+            android:textColor="#7f000000"
+            android:textSize="12dp"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_pinfo_linearLayout2"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffdfdfdf"
+        android:paddingRight="10dp"
+        android:paddingLeft="20dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="账号"
+            android:id="@+id/home_self_group_pinfo_linearLayout2_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15201016731"
+            android:id="@+id/home_self_group_pinfo_linearLayout2_num"
+            android:layout_row="0"
+            android:textColor="#7f000000"
+            android:textSize="12dp"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_pinfo_linearLayout3"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffffffff"
+        android:paddingRight="10dp"
+        android:paddingLeft="20dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的地址"
+            android:id="@+id/home_self_group_pinfo_lineaLayout3_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="中国"
+            android:id="@+id/home_self_group_pinfo_linearLayout3_num"
+            android:layout_row="0"
+            android:textColor="#7f000000"
+            android:textSize="12dp"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="20dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_pinfo_linearLayout4"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ff281b20"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="详细信息"
+            android:id="@+id/home_self_group_pinfo_linearLayout4_textView"
+            android:textColor="#90fff4ff"
+            android:textSize="12dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_pinfo_linearLayout5"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffdfdfdf"
+        android:paddingRight="10dp"
+        android:paddingLeft="20dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="性别"
+            android:id="@+id/home_self_group_pinfo_linearLayout5_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="男"
+            android:id="@+id/home_self_group_pinfo_linearLayout5_num"
+            android:layout_row="0"
+            android:textColor="#7f000000"
+            android:textSize="12dp"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:measureWithLargestChild="false"
+        android:id="@+id/home_self_group_pinfo_linearLayout6"
+        android:columnCount="10"
+        android:rowCount="10"
+        android:touchscreenBlocksFocus="false"
+        android:background="#ffffffff"
+        android:paddingRight="10dp"
+        android:paddingLeft="20dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="地区"
+            android:id="@+id/home_self_group_pinfo_linearLayout6_textView"
+            android:textColor="#ff332b38"
+            android:textSize="17dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="中国"
+            android:id="@+id/home_self_group_pinfo_linearLayout6_num"
+            android:layout_row="0"
+            android:textColor="#7f000000"
+            android:textSize="12dp"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>
