@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+       <bean id="MemCachService" class="com.money.memcach.MemCachService" >
+              <property name="shareJedisPool" ref="shardedJedisPool"/>
+       </bean>
+
+
+       <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+              <!--<property name="maxActive" value="${redis.pool.maxActive}"/>-->
+              <property name="maxIdle"   value="${redis.pool.maxIdle}" />
+              <!--<property name="maxWait"   value="${redis.pool.maxWait}"/>-->
+              <property name="minEvictableIdleTimeMillis" value="300000"/>
+              <property name="numTestsPerEvictionRun" value="3"/>
+              <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+              <!--<property name="whenExhaustedAction" value="1"/>-->
+       </bean>
+
+       <bean id = "shardedJedisPool" class = "redis.clients.jedis.ShardedJedisPool">
+              <constructor-arg index="0" ref="jedisPoolConfig"/>
+              <constructor-arg index="1">
+                     <list>
+                            <bean class="redis.clients.jedis.JedisShardInfo">
+                                   <constructor-arg index="0" value="${redis.host}"/>
+                                   <constructor-arg index="1" value="${redis.port}" type="int"/>
+                                   <constructor-arg index="2" value="${redis.timeout}" type="int"/>
+                                   <!--<property name="password" value="${redis.password}"/> -->
+                            </bean>
+                     </list>
+              </constructor-arg>
+       </bean>
+
+</beans>

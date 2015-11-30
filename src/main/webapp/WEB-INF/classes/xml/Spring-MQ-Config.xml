@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="InsertOrderListener" class="com.money.MoneyServerMQ.MQListener.InsertOrderListener">
+        <property name="messageTopic" value="MoneyServer_Order_Insert"/>
+    </bean>
+
+    <bean id="ActivityBuyListener" class="com.money.MoneyServerMQ.MQListener.ActivityBuyListener">
+        <property name="messageTopic" value="MoneyServer_Buy_Listener"/>
+    </bean>
+
+    <bean id="LotteryListener" class="com.money.MoneyServerMQ.MQListener.LotteryListener">
+        <property name="messageTopic" value="MoneyServer_Lottery_Listener"/>
+    </bean>
+
+    <bean id="SomeFarmListener" class="com.money.MoneyServerMQ.MQListener.SomeFarmListener">
+        <property name="messageTopic" value="MoneyServer_SomeFarm_Listener"/>
+    </bean>
+    <bean id="WalletListener" class="com.money.MoneyServerMQ.MQListener.WalletListener">
+        <property name="messageTopic" value="MoneyServer_RechargeWallet_Listener"/>
+    </bean>
+    <bean id="PushListener" class="com.money.MoneyServerMQ.MQListener.PushListener">
+        <property name="messageTopic" value="MoneyServer_PushListener_Listener"/>
+    </bean>
+    <bean id="StartInstallmentActivityListener"
+          class="com.money.MoneyServerMQ.MQListener.StartInstallmentActivityListener">
+        <property name="messageTopic" value="MoneyServer_Installment_Listener"/>
+    </bean>
+    <bean id="StartInstallmentActivityTestListener"
+          class="com.money.MoneyServerMQ.MQListener.StartInstallmentActivityTestListener">
+        <property name="messageTopic" value="MoneyServer_InstallmentTest_Listener"/>
+    </bean>
+    <bean id="LotteryPushList" class="com.money.MoneyServerMQ.MQListener.LotteryListPushListener">
+        <property name="messageTopic" value="MoneyServer_LotteryPushLis_Listener"/>
+    </bean>
+    <bean id="TransListener" class="com.money.MoneyServerMQ.MQListener.TransListener">
+        <property name="messageTopic" value="MoneyServer_Transfer_Listener"/>
+    </bean>
+    <bean id="InsertInviteCodeListener" class="com.money.MoneyServerMQ.MQListener.InsertInviteCodeListener">
+        <property name="messageTopic" value="MoneyServer_InsertInviteCode_Listener"/>
+    </bean>
+    <bean id="LotteryActivityPreferentialListener"
+          class="com.money.MoneyServerMQ.MQListener.LotteryActivityPreferentialListener">
+        <property name="messageTopic" value="MoneyServer_LotteryActivityPreferentialListener_Listener"/>
+    </bean>
+    <bean id="JoinActivityPreferentialListener"
+          class="com.money.MoneyServerMQ.MQListener.JoinActivityPreferentialListener">
+        <property name="messageTopic" value="MoneyServer_JoinActivityPreferentialListener_Listener"/>
+    </bean>
+    <bean id="PushCustomMessageListener"
+          class="com.money.MoneyServerMQ.MQListener.PushCustomMessageListener">
+        <property name="messageTopic" value="MoneyServer_PushCustomMessageListener_Listener"/>
+    </bean>
+
+
+   <!-- <bean id="InsertOrderListener" class="com.money.MoneyServerMQ.MQListener.InsertOrderListener">
+        <property name="messageTopic" value="MoneyServer_Order_Insert_liveQ"/>
+    </bean>
+
+    <bean id="ActivityBuyListener" class="com.money.MoneyServerMQ.MQListener.ActivityBuyListener">
+        <property name="messageTopic" value="MoneyServer_Buy_Listener_liveQ"/>
+    </bean>
+
+    <bean id="LotteryListener" class="com.money.MoneyServerMQ.MQListener.LotteryListener">
+        <property name="messageTopic" value="MoneyServer_Lottery_Listener_liveQ"/>
+    </bean>
+
+    <bean id="SomeFarmListener" class="com.money.MoneyServerMQ.MQListener.SomeFarmListener">
+        <property name="messageTopic" value="MoneyServer_SomeFarm_Listener_liveQ"/>
+    </bean>
+    <bean id="WalletListener" class="com.money.MoneyServerMQ.MQListener.WalletListener">
+        <property name="messageTopic" value="MoneyServer_RechargeWallet_Listener_liveQ"/>
+    </bean>
+    <bean id="PushListener" class="com.money.MoneyServerMQ.MQListener.PushListener">
+        <property name="messageTopic" value="MoneyServer_PushListener_Listener_liveQ"/>
+    </bean>
+    <bean id="StartInstallmentActivityListener"
+          class="com.money.MoneyServerMQ.MQListener.StartInstallmentActivityListener">
+        <property name="messageTopic" value="MoneyServer_Installment_Listener_liveQ"/>
+    </bean>
+    <bean id="LotteryPushList" class="com.money.MoneyServerMQ.MQListener.LotteryListPushListener">
+        <property name="messageTopic" value="MoneyServer_LotteryPushLis_Listener_liveQ"/>
+    </bean>
+    <bean id="TransListener" class="com.money.MoneyServerMQ.MQListener.TransListener">
+        <property name="messageTopic" value="MoneyServer_Transfer_Listener_liveQ"/>
+    </bean>
+    <bean id="InsertInviteCodeListener" class="com.money.MoneyServerMQ.MQListener.InsertInviteCodeListener">
+        <property name="messageTopic" value="MoneyServer_InsertInviteCode_Listener_liveQ"/>
+    </bean>
+    <bean id="LotteryActivityPreferentialListener"
+          class="com.money.MoneyServerMQ.MQListener.LotteryActivityPreferentialListener">
+        <property name="messageTopic" value="MoneyServer_LotteryActivityPreferentialListener_Listener_liveQ"/>
+    </bean>
+    <bean id="JoinActivityPreferentialListener"
+          class="com.money.MoneyServerMQ.MQListener.JoinActivityPreferentialListener">
+        <property name="messageTopic" value="MoneyServer_JoinActivityPreferentialListener_Listener_liveQ"/>
+    </bean>
+    <bean id="PushCustomMessageListener"
+          class="com.money.MoneyServerMQ.MQListener.PushCustomMessageListener">
+        <property name="messageTopic" value="MoneyServer_PushCustomMessageListener_Listener_liveQ"/>
+    </bean>-->
+
+    <bean id="MoneySeverMQManager" class="com.money.MoneyServerMQ.MoneyServerMQManager">
+        <constructor-arg>
+            <list>
+
+                <ref bean="InsertOrderListener"/>
+                <ref bean="ActivityBuyListener"/>
+                <ref bean="LotteryListener"/>
+                <ref bean="SomeFarmListener"/>
+                <ref bean="WalletListener"/>
+                <ref bean="PushListener"/>
+                <ref bean="StartInstallmentActivityListener"/>
+                <ref bean="LotteryPushList"/>
+                <ref bean="TransListener"/>
+                <ref bean="InsertInviteCodeListener"/>
+                <ref bean="LotteryActivityPreferentialListener"/>
+                <ref bean="JoinActivityPreferentialListener"/>
+                <ref bean="PushCustomMessageListener"/>
+                <!--<ref bean="StartInstallmentActivityTestListener"/>-->
+            </list>
+        </constructor-arg>
+    </bean>
+</beans>
