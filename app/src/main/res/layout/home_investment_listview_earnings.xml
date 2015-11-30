@@ -23,7 +23,7 @@
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#ff8d8d8d">
+            android:background="#ffd4d4d4">
 
             <TextView
                 android:layout_width="wrap_content"
