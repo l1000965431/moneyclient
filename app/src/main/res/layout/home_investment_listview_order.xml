@@ -52,7 +52,7 @@
                                 android:textIsSelectable="false"
                                 android:layout_gravity="center"
                                 android:gravity="center_vertical"
-                                android:layout_marginLeft="25dp" />
+                                android:layout_marginLeft="30dp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -87,14 +87,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="购买期数选择："
+                                android:text="预购期数选择："
                                 android:id="@+id/textView35"
                                 android:textSize="15dp"
                                 android:textColor="#ffffffff"
                                 android:textIsSelectable="false"
                                 android:layout_gravity="center"
-                                android:gravity="center_vertical"
-                                android:layout_marginLeft="-5dp" />
+                                android:gravity="center_vertical" />
 
                             <ImageView
                                 android:layout_width="30dp"
@@ -109,7 +108,7 @@
                                 android:layout_width="30dp"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="0"
+                                android:text="1"
                                 android:id="@+id/invest_confirm_tv_vTicketNum"
                                 android:textSize="17dp"
                                 android:textColor="#ffffffff"
@@ -145,7 +144,8 @@
                                 android:textColor="#ffffffff"
                                 android:textIsSelectable="false"
                                 android:layout_gravity="center"
-                                android:gravity="center_vertical" />
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="5dp" />
 
                             <ImageView
                                 android:layout_width="30dp"

@@ -143,7 +143,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="去领投（领投资金为：200万￥）"
+                        android:text="去领投"
                         android:id="@+id/invest_project_tv_leadInvestInfo"
                         android:textSize="18dp"
                         android:textColor="#ff2a2a2a"
@@ -165,62 +165,23 @@
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:paddingBottom="20dp"
+                    android:layout_height="50dp"
                     android:background="#ffefefef"
-                    android:id="@+id/investment_ll_leadPanel">
+                    android:id="@+id/investment_ll_leadPanel"
+                    android:layout_gravity="center">
 
-                    <LinearLayout
-                        android:orientation="horizontal"
+                    <TextView
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:paddingLeft="30dp"
-                        android:layout_marginTop="20dp" >
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="该项目领投资金为：200万￥"
+                        android:id="@+id/textView20"
+                        android:textSize="17dp"
+                        android:textColor="#ff646464"
+                        android:textIsSelectable="false"
+                        android:layout_gravity="center"
+                        android:gravity="center_vertical|center_horizontal" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="购买期数选择："
-                            android:id="@+id/textView20"
-                            android:textSize="15dp"
-                            android:textColor="#ff2a2a2a"
-                            android:textIsSelectable="false"
-                            android:layout_gravity="center"
-                            android:gravity="center_vertical"
-                            android:layout_marginLeft="20dp" />
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:id="@+id/invest_project_iv_leadSubstract"
-                            android:layout_gravity="center"
-                            android:src="@mipmap/icon_less"
-                            android:layout_marginLeft="20dp"
-                            android:tint="#ff63595f" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="7/1"
-                            android:id="@+id/invest_project_tv_leadStage"
-                            android:textSize="17dp"
-                            android:textColor="#ff2a2a2a"
-                            android:textIsSelectable="false"
-                            android:layout_gravity="center"
-                            android:gravity="center_vertical"
-                            android:layout_marginLeft="20dp" />
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:id="@+id/invest_project_iv_leadAdd"
-                            android:layout_gravity="center"
-                            android:src="@mipmap/icon_add"
-                            android:layout_marginLeft="30dp"
-                            android:tint="#ff63595f" />
-                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
