@@ -53,7 +53,7 @@
     <string name="invest_project_no_invested_price">您尚未入资</string>
     <string name="invest_project_select_invest_price">点击此处选择入资金额:</string>
     <string name="invest_project_project_progress">筹款进度:%d%%</string>
-    <string name="invest_project_lead_invest_info">去领投(领投资金为: %s)</string>
+    <string name="invest_project_lead_invest_info">该项目领投资金为：%s</string>
     
     <!-- 货币单位 -->
     <string name="monetary_unit_rmb">元</string>
@@ -80,6 +80,7 @@
     <string name="title_activity_progress_action_bar">ProgressActionBarActivity</string>
     <string name="title_activity_entrepreneur">微聚竞投</string>
     <string name="title_activity_agreement">用户服务协议</string>
+    <string name="title_activity_developer_agreement">创业者服务协议</string>
 
     <!-- 项目者，项目记录状态文字 -->
     <string name="home_investment_listview_developer_auditing">项目审核中（需要3到7个工作日）</string>

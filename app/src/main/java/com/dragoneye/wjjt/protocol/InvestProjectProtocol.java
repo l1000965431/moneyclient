@@ -34,6 +34,7 @@ public interface InvestProjectProtocol {
     int INVEST_RESULT_TICKET_SOLD_OUT = 1;
     int INVEST_RESULT_THIS_STAGE_NOT_ENOUGH = 3;
     int INVEST_RESULT_TICKET_USE_ERROR = 104;   // 微券花费错误
+    int INVEST_RESULT_FALLOW_PRICE_LEFT_NOT_ENOUGH = 106; // 领投金额剩余不足
 
     /*****************************************************************************************/
 

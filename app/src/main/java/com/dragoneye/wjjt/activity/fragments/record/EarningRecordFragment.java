@@ -324,6 +324,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                 viewHolder.tvStageIndex = (TextView)convertView.findViewById(R.id.home_record_earning_tv_stageIndex);
                 viewHolder.tvNew = (TextView)convertView.findViewById(R.id.home_record_earning_tv_new);
                 viewHolder.tvEarningType = (TextView)convertView.findViewById(R.id.home_record_earning_tv_earningType);
+                viewHolder.vLLTop = convertView.findViewById(R.id.honm_record_earning_ll_top);
 
                 convertView.setTag(viewHolder);
             }else{
@@ -385,6 +386,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
             TextView tvEarningPrice;
             TextView tvEarningType;
             TextView tvNew;
+            View vLLTop;
         }
     }
 }

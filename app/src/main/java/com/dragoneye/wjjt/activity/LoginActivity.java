@@ -1,5 +1,6 @@
 package com.dragoneye.wjjt.activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -30,7 +31,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.message.ALIAS_TYPE;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UmengRegistrar;
+import com.umeng.update.UmengDialogButtonListener;
 import com.umeng.update.UmengUpdateAgent;
+import com.umeng.update.UmengUpdateListener;
+import com.umeng.update.UpdateResponse;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -53,6 +57,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private String mLoginUserId;
     private String mLoginUserPassword;
+    private boolean mIsAutoLogin = false;
 
     ProgressDialog mProgressDialog;
 
@@ -67,6 +72,24 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         initData();
         InitPush();
         UmengUpdateAgent.update(this);
+        UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {
+            @Override
+            public void onUpdateReturned(int i, UpdateResponse updateResponse) {
+                // 有更新则弹出更新对话框，否则自动登录
+                if(i == 0){
+                    UmengUpdateAgent.showUpdateDialog(LoginActivity.this, updateResponse);
+                }else{
+                    if(mIsAutoLogin && mETUserId.getText().length() > 0 && mETUserPassword.getText().length() > 0){
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                onLogin();
+                            }
+                        }, 300);
+                    }
+                }
+            }
+        });
     }
 
     private void initView(){
@@ -86,6 +109,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         mETUserPassword.setText(getLastLoginUserPassword());
 
         mProgressDialog = new ProgressDialog(this);
+
+        mIsAutoLogin = getIntent().getBooleanExtra("isAutoLogin", false);
+
+
     }
 
     private void initData(){
@@ -322,8 +349,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         Log.d("InitPush", device_token);
     }
 
-    public static void CallLoginActivity(Context context){
+    public static void CallLoginActivity(Context context, boolean mIsAutoLogin){
         Intent intent = new Intent(context, LoginActivity.class);
+        intent.putExtra("isAutoLogin", mIsAutoLogin);
         context.startActivity(intent);
     }
 }

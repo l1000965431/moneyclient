@@ -226,13 +226,11 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                                         ArrayList<EarningModel> brEarningModels = new ArrayList<>();
                                         for( int i = 0; i < brEarnings.length(); i++ ){
                                             JSONObject object1 = brEarnings.getJSONObject(i);
-                                            int earningType = object1.getInt("srEarningType");
-                                            if( earningType == 1 ){
-                                                EarningModel earningModel = new EarningModel();
-                                                earningModel.setNum( brEarnings.getJSONObject(i).getInt("srEarningNum"));
-                                                earningModel.setPrice(brEarnings.getJSONObject(i).getInt("srEarningPrice"));
-                                                brEarningModels.add(earningModel);
-                                            }
+                                            EarningModel earningModel = new EarningModel();
+                                            earningModel.setNum(brEarnings.getJSONObject(i).getInt("num"));
+                                            earningModel.setPrice(brEarnings.getJSONObject(i).getInt("earningPrice"));
+                                            brEarningModels.add(earningModel);
+
                                         }
                                         showBrProportion(orderModel, brEarningModels);
                                     }
@@ -369,6 +367,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 orderModel.setAdvanceNum(object.getInt("AdvanceNum"));
                 orderModel.setOrderStartAdvance(object.getInt("OrderStartAndvance"));
                 orderModel.setOrderLines(object.getInt("orderLines"));
+                orderModel.setVirtualSecurities(object.getInt("VirtualSecurities"));
                 orderModel.setPurchaseType(object.getInt("purchaseType"));
                 orderModel.setId(object.getString("Id"));
                 String dateString = object.getString("orderDate");
@@ -482,6 +481,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 viewHolder.llProportion = (LinearLayout)convertView.findViewById(R.id.home_record_invest_listview_ll_proportion);
                 viewHolder.llProportion.setOnClickListener(InvestRecordFragment.this);
                 viewHolder.tvNew = (TextView)convertView.findViewById(R.id.home_record_listview_tv_new);
+                viewHolder.vLLTop = convertView.findViewById(R.id.honm_record_invest_ll_top);
 
                 convertView.setTag(viewHolder);
             }else{
@@ -508,7 +508,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 viewHolder.tvInvestStageNum.setText("购买期数：1");
             }
 
-            viewHolder.tvInvestTotalPrice.setText(String.format("总计：%s", ToolMaster.convertToPriceString(orderModel.getOrderLines())));
+            viewHolder.tvInvestTotalPrice.setText(String.format("总计：%s", ToolMaster.convertToPriceString(orderModel.getOrderLines() + orderModel.getVirtualSecurities())));
             viewHolder.tvEarningProportion.setTag(orderModel);
             viewHolder.llProportion.setTag(orderModel);
             viewHolder.tvTargetFund.setText(ToolMaster.convertToPriceString(orderModel.getTargetFund()));
@@ -532,7 +532,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             }catch (JSONException e){
                 e.printStackTrace();
             }
-            viewHolder.ivLogo.setOnClickListener(new View.OnClickListener() {
+            viewHolder.vLLTop.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ArrayList<String> img = new ArrayList<>();
@@ -578,6 +578,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             TextView tvProgress;
             TextView tvOrderDate;
             LinearLayout llProportion;
+            View vLLTop;
         }
     }
 }

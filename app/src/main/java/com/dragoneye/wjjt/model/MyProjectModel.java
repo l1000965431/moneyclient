@@ -1,6 +1,7 @@
 package com.dragoneye.wjjt.model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -75,7 +76,7 @@ public class MyProjectModel implements Serializable{
     /**
      *  项目提交时间
      */
-    Date createDate;
+    String createDate;
 
     /**
      * 项目名称
@@ -288,11 +289,22 @@ public class MyProjectModel implements Serializable{
         this.auditorId = auditorId;
     }
 
-    public Date getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public Date getFormatCreateDate(String format){
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        Date date = new Date();
+        try {
+            date = sdf.parse(format);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 

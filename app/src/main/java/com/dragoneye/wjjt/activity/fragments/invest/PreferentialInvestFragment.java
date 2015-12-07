@@ -118,7 +118,9 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                     @Override
                     public void run() {
                         PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_PREFERENTIAL_ACTIVITY);
-                        getTopButton().setIsHaveNew(false);
+                        if(getTopButton() != null){
+                            getTopButton().setIsHaveNew(false);
+                        }
                         mLoadingMoreProxy.reset();
                         mCurPageIndex = -1;
                         handler.post(getWalletBalance_r);

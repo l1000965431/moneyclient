@@ -38,8 +38,8 @@
                             android:orientation="horizontal"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:paddingLeft="30dp"
-                            android:layout_marginTop="17dp" >
+                            android:layout_marginTop="17dp" android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -51,8 +51,8 @@
                                 android:textColor="#ffffffff"
                                 android:textIsSelectable="false"
                                 android:layout_gravity="center"
-                                android:gravity="center_vertical"
-                                android:layout_marginLeft="30dp" />
+                                android:gravity="center_vertical|center_horizontal"
+                                />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -64,8 +64,8 @@
                                 android:textColor="#ffffffff"
                                 android:textIsSelectable="false"
                                 android:layout_gravity="center"
-                                android:gravity="center_vertical"
-                                android:layout_marginLeft="20dp" />
+                                android:gravity="center_vertical|center_horizontal"
+                                />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -73,15 +73,14 @@
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:id="@+id/invest_confirm_ll_vTicketPanel">
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:layout_marginTop="40dp"
-                            android:layout_marginLeft="45dp">
+                            android:id="@+id/invest_confirm_ll_vStagePanel" android:gravity="center_horizontal">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -98,41 +97,40 @@
                             <ImageView
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:id="@+id/invest_confirm_iv_vTicketSub"
+                                android:id="@+id/invest_confirm_iv_vStageSub"
                                 android:layout_gravity="center"
                                 android:src="@mipmap/icon_less"
                                 android:tint="#ff63595f"
-                                android:layout_marginLeft="15dp" />
+                                android:layout_marginLeft="15dp" android:layout_marginRight="10dp"/>
 
                             <TextView
-                                android:layout_width="30dp"
+                                android:layout_width="60dp"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:text="1"
-                                android:id="@+id/invest_confirm_tv_vTicketNum"
+                                android:id="@+id/invest_confirm_tv_vStageNum"
                                 android:textSize="17dp"
                                 android:textColor="#ffffffff"
                                 android:textIsSelectable="false"
                                 android:layout_gravity="center"
-                                android:gravity="center_vertical"
-                                android:layout_marginLeft="20dp" />
+                                android:gravity="center_vertical|center_horizontal"
+                                />
 
                             <ImageView
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:id="@+id/invest_confirm_iv_vTicketadd"
+                                android:id="@+id/invest_confirm_iv_vStageAdd"
                                 android:layout_gravity="center"
                                 android:src="@mipmap/icon_add"
-                                android:layout_marginLeft="30dp"
-                                android:tint="#ff63595f" />
+                                android:tint="#ff63595f" android:layout_marginLeft="10dp"/>
                         </LinearLayout>
 
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:layout_marginLeft="45dp"
-                            android:layout_marginTop="10dp">
+                            android:layout_marginTop="10dp" android:id="@+id/invest_confirm_ll_vTicketPanel"
+                            android:gravity="center_horizontal">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -150,32 +148,32 @@
                             <ImageView
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:id="@+id/imageView10"
+                                android:id="@+id/invest_confirm_iv_vTicketSub"
                                 android:layout_gravity="center"
                                 android:src="@mipmap/icon_less"
                                 android:tint="#ff63595f"
-                                android:layout_marginLeft="15dp" />
+                                android:layout_marginLeft="15dp" android:layout_marginRight="10dp"/>
 
                             <TextView
-                                android:layout_width="30dp"
+                                android:layout_width="60dp"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:text="0/9"
-                                android:id="@+id/textView43"
+                                android:id="@+id/invest_confirm_tv_vTicketNum"
                                 android:textSize="17dp"
                                 android:textColor="#ffffffff"
                                 android:textIsSelectable="false"
                                 android:layout_gravity="center"
-                                android:gravity="center_vertical"
-                                android:layout_marginLeft="20dp" />
+                                android:gravity="center_vertical|center_horizontal"
+                                />
 
                             <ImageView
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:id="@+id/imageView15"
+                                android:id="@+id/invest_confirm_iv_vTicketAdd"
                                 android:layout_gravity="center"
                                 android:src="@mipmap/icon_add"
-                                android:layout_marginLeft="30dp"
+                                android:layout_marginLeft="10dp"
                                 android:tint="#ff63595f" />
                         </LinearLayout>
                     </LinearLayout>

@@ -46,7 +46,7 @@ public class ToolMaster {
     }
 
     public static String convertRMBPriceString(int price){
-        return String.valueOf(price) + "   元";
+        return String.valueOf(price) + " 元";
     }
 
     /**

@@ -38,6 +38,7 @@ public class NoticeActivity extends BaseActivity {
     ListView mListView;
     NoticeAdapter mAdapter;
     List<MessageBoxItem> mData = new ArrayList<>();
+    TextView mTVNoContent;
 
     public static void CallActivity(Activity activity){
         Intent intent = new Intent(activity, NoticeActivity.class);
@@ -49,11 +50,19 @@ public class NoticeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.common_listview);
 
+        mTVNoContent = (TextView)findViewById(R.id.common_listview_tv_no_content);
+        mListView = (ListView)findViewById(R.id.common_listview_listView);
+
         final MessageBoxItemDao dao = MyDaoMaster.getDaoSession().getMessageBoxItemDao();
         QueryBuilder queryBuilder = dao.queryBuilder();
         queryBuilder.build();
 
         mData.addAll(queryBuilder.list());
+
+        if(mData.size() == 0){
+            mTVNoContent.setVisibility(View.VISIBLE);
+            mListView.setVisibility(View.GONE);
+        }
 
         Collections.sort(mData, new Comparator<MessageBoxItem>() {
             @Override
@@ -62,7 +71,7 @@ public class NoticeActivity extends BaseActivity {
             }
         });
 
-        mListView = (ListView)findViewById(R.id.common_listview_listView);
+
         mAdapter = new NoticeAdapter(this, mData);
         mListView.setAdapter(mAdapter);
         mListView.setDividerHeight(0);

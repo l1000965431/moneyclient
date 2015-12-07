@@ -88,7 +88,9 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
                     @Override
                     public void run() {
                         PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_NORMAL_ACTIVITY);
-                        getTopButton().setIsHaveNew(false);
+                        if(getTopButton() != null){
+                            getTopButton().setIsHaveNew(false);
+                        }
                         mLoadingMoreProxy.reset();
                         mCurPageIndex = -1;
                         handler.post(updateInvestmentList_r);

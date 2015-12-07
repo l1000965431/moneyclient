@@ -81,6 +81,16 @@ public class OrderModel {
 
     private String id;
 
+    public int getVirtualSecurities() {
+        return virtualSecurities;
+    }
+
+    public void setVirtualSecurities(int virtualSecurities) {
+        this.virtualSecurities = virtualSecurities;
+    }
+
+    private int virtualSecurities;
+
 
     public int getOrderState() {
         return orderState;

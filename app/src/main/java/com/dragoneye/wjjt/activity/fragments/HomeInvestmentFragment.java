@@ -165,9 +165,24 @@ public class HomeInvestmentFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if(mCurrentSelectButton == mNormalButton){
-            mNormalInvestFragment.onActivityResult(requestCode, resultCode, data);
+            if(mNormalInvestFragment != null){
+                mNormalInvestFragment.onActivityResult(requestCode, resultCode, data);
+            }
         }else if(mCurrentSelectButton == mPreferentialButton){
-            mPreferentialInvestFragment.onActivityResult(requestCode, resultCode, data);
+            if(mPreferentialInvestFragment != null){
+                mPreferentialInvestFragment.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(mNormalInvestFragment != null){
+            mNormalInvestFragment.setTopButton(mNormalButton);
+        }
+        if(mPreferentialInvestFragment != null){
+            mPreferentialInvestFragment.setTopButton(mPreferentialButton);
         }
     }
 

@@ -19,14 +19,14 @@ public class AgreementActivity extends BaseActivity {
     public static void OpenAgreement(Activity activity){
         Intent intent = new Intent(activity, AgreementActivity.class);
         intent.putExtra("url", HttpUrlConfig.URL_AGREEMENT);
-        intent.putExtra("title", R.string.title_activity_agreement);
+        intent.putExtra("title", activity.getString(R.string.title_activity_agreement));
         activity.startActivity(intent);
     }
 
     public static void OpenDevStuff(Activity activity){
         Intent intent = new Intent(activity, AgreementActivity.class);
         intent.putExtra("url", HttpUrlConfig.URL_DEV_STUFF);
-        intent.putExtra("title", R.string.title_activity_agreement);
+        intent.putExtra("title", activity.getString(R.string.title_activity_developer_agreement));
         activity.startActivity(intent);
     }
 
