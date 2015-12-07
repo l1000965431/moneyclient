@@ -2,38 +2,30 @@ package com.dragoneye.wjjt.activity;
 
 import android.app.ProgressDialog;
 import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
-import com.dragoneye.wjjt.activity.base.BaseActivity;
-import com.dragoneye.wjjt.application.MyApplication;
+import com.dragoneye.wjjt.activity.base.TimeCounterActivity;
 import com.dragoneye.wjjt.config.HttpUrlConfig;
 import com.dragoneye.wjjt.config.PreferencesConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
-import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.DESCoder;
 import com.dragoneye.wjjt.tool.InputChecker;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 
 import org.apache.http.Header;
-import org.w3c.dom.Text;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 
-public class RetrievePasswordActivity extends BaseActivity implements View.OnClickListener{
+public class RetrievePasswordActivity extends TimeCounterActivity implements View.OnClickListener{
 
     private EditText mETUserId;
     private EditText mETNewPassword;
@@ -45,35 +37,9 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
     private String mPhoneNumber;
     ProgressDialog progressDialog;
 
-    private static final int MESSAGE_TICK = 1;
-    private static final int SEND_CODE_INTERVAL = 60;
+    private static final int SEND_CODE_INTERVAL = 60000;
 
-    private static class MyHandler extends Handler {
-        private final WeakReference<RetrievePasswordActivity> mRef;
-
-        public MyHandler(RetrievePasswordActivity ref){
-            mRef = new WeakReference<>(ref);
-        }
-
-        @Override
-        public void handleMessage(Message msg){
-            switch (msg.what){
-                case MESSAGE_TICK:
-                    mRef.get().tick--;
-                    if( mRef.get().tick < 0 ){
-                        mRef.get().mTVSendCode.setText("发送验证码");
-                        mRef.get().mTVSendCode.setOnClickListener(mRef.get());
-                        mRef.get().mTVSendCode.setBackgroundDrawable(mRef.get().getResources().getDrawable(R.drawable.bg_rounded10blue));
-                    }else {
-                        mRef.get().mTVSendCode.setText(mRef.get().tick + "秒后再次发送");
-                        mRef.get().handler.sendMessageDelayed(mRef.get().handler.obtainMessage(MESSAGE_TICK), 1000);
-                    }
-                    break;
-            }
-        }
-    }
-
-    private MyHandler handler = new MyHandler(this);
+    private Handler handler = new Handler();
     private int tick = 0;
 
     @Override
@@ -93,6 +59,12 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
         progressDialog = new ProgressDialog(this);
 
         initSMS();
+
+        initCounter(PreferencesConfig.TIME_COUNTER_SEND_CODE_ACTIVITY, 1000);
+        continueCount(SEND_CODE_INTERVAL);
+        if(getMillisLeft() > 0){
+            setSendCodeButtonEnabled(false, getMillisLeft() / 1000);
+        }
     }
 
     @Override
@@ -112,15 +84,37 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
             UIHelper.toast(this, "请输入一个正确的手机号码！");
             return;
         }
-        onSendCodeSuccess();
+        startCount(SEND_CODE_INTERVAL);
+        setSendCodeButtonEnabled(false, SEND_CODE_INTERVAL / 1000);
         SMSSDK.getVerificationCode("86", mETUserId.getText().toString());
     }
 
-    private void onSendCodeSuccess(){
-        mTVSendCode.setOnClickListener(null);
-        mTVSendCode.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_rounded12));
-        tick = SEND_CODE_INTERVAL;
-        handler.sendMessage(handler.obtainMessage(MESSAGE_TICK));
+    @Override
+    protected void onTick(long millisLeft){
+        super.onTick(millisLeft);
+        setSendCodeButtonTickText(millisLeft / 1000);
+    }
+
+    @Override
+    protected void onCountFinished(){
+        super.onCountFinished();
+        setSendCodeButtonEnabled(true, 0);
+    }
+
+    private void setSendCodeButtonEnabled(boolean enabled, long sec){
+        if(enabled){
+            mTVSendCode.setText("发送验证码");
+            mTVSendCode.setOnClickListener(this);
+            mTVSendCode.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_rounded10blue));
+        }else {
+            setSendCodeButtonTickText(sec);
+            mTVSendCode.setOnClickListener(null);
+            mTVSendCode.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_rounded12));
+        }
+    }
+
+    private void setSendCodeButtonTickText(long sec){
+        mTVSendCode.setText(sec + "秒后再次发送");
     }
 
     private void onConfirmChange(){
@@ -129,7 +123,6 @@ public class RetrievePasswordActivity extends BaseActivity implements View.OnCli
         }
 
         SMSSDK.submitVerificationCode("86", mETUserId.getText().toString(), mETCode.getText().toString());
-//        handler.post(confirmChange_r);
     }
 
     Runnable confirmChange_r = new Runnable() {

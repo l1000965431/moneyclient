@@ -313,12 +313,12 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
             HttpClient.atomicPost(getActivity(), GetProjectListProtocol.URL_GET_ORDER_LIST, httpParams, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onPosting() {
-                    refreshableView.finishRefreshing();
+                    refreshableView.finishRefreshing(RefreshableView.REFRESH_RESULT_SUCCESS);
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    refreshableView.finishRefreshing();
+                    refreshableView.finishRefreshing(RefreshableView.REFRESH_RESULT_FAILED);
                     if (mLoadingMoreProxy.isLoadingMore()) {
                         mLoadingMoreProxy.setLoadingFailed();
                     }
@@ -326,7 +326,6 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
-                    refreshableView.finishRefreshing();
                     if(s.compareTo("LANDFAILED") == 0){
                         ((MyApplication) getActivity().getApplication()).reLogin(getActivity());
                         return;
@@ -350,7 +349,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                         mInvestedProjects.addAll(orderModels);
                         mAdapter.notifyDataSetChanged();
                     }
-
+                    refreshableView.finishRefreshing(mInvestedProjects.size() > 0 ? RefreshableView.REFRESH_RESULT_SUCCESS : RefreshableView.REFRESH_RESULT_NO_CONTENT);
                 }
             });
         }

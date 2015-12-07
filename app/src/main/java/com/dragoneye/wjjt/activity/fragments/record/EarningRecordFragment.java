@@ -182,7 +182,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
 
             HttpClient.atomicPost(getActivity(), HttpUrlConfig.URL_ROOT + "ActivityController/getActivityEarnings", params, new HttpClient.MyHttpHandler() {
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    refreshableView.finishRefreshing();
+                    refreshableView.finishRefreshing(RefreshableView.REFRESH_RESULT_FAILED);
                     if (mLoadingMoreProxy.isLoadingMore()) {
                         mLoadingMoreProxy.setLoadingFailed();
                     }
@@ -190,7 +190,6 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
-                    refreshableView.finishRefreshing();
                     if(s.compareTo("LANDFAILED") == 0){
                         ((MyApplication) getActivity().getApplication()).reLogin(getActivity());
                         return;
@@ -213,6 +212,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                         mEarningProjects.addAll(earningModels);
                         mAdapter.notifyDataSetChanged();
                     }
+                    refreshableView.finishRefreshing(mEarningProjects.size() > 0 ? RefreshableView.REFRESH_RESULT_SUCCESS : RefreshableView.REFRESH_RESULT_NO_CONTENT);
                 }
             });
         }

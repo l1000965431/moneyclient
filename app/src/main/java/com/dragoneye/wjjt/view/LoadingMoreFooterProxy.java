@@ -1,6 +1,7 @@
 package com.dragoneye.wjjt.view;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -21,6 +22,7 @@ public class LoadingMoreFooterProxy {
     private Boolean mIsLoadingMore;
     private Boolean mIsNoMore;
     private OnLoadingMoreListener onLoadingMoreListener;
+    private Handler handler = new Handler();
 
     public LoadingMoreFooterProxy(Context context, AbsListView listView){
         mListView = listView;
@@ -100,7 +102,12 @@ public class LoadingMoreFooterProxy {
     public void reset(){
         mIsLoadingMore = false;
         mIsNoMore = false;
-        mFooter.setVisibility(View.INVISIBLE);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                mFooter.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     public interface OnLoadingMoreListener {

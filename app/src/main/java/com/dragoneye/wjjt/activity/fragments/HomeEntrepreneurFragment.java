@@ -120,7 +120,7 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
             HttpClient.atomicPost(getActivity(), GetMyProjectListProtocol.URL_GET_MY_PROJECT_LIST, params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    refreshableView.finishRefreshing();
+                    refreshableView.finishRefreshing(RefreshableView.REFRESH_RESULT_FAILED);
                     if (mLoadingMoreProxy.isLoadingMore()) {
                         mLoadingMoreProxy.setLoadingFailed();
                     }
@@ -128,7 +128,6 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
-                    refreshableView.finishRefreshing();
                     ArrayList<MyProjectModel> detailModels = jsonToProjectList(s);
                     mCurPageIndex += 1;
                     if ( mLoadingMoreProxy.isLoadingMore() ) {
@@ -145,6 +144,7 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
                         mProjectList.addAll(detailModels);
                         mAdapter.notifyDataSetChanged();
                     }
+                    refreshableView.finishRefreshing(mProjectList.size() > 0 ? RefreshableView.REFRESH_RESULT_SUCCESS : RefreshableView.REFRESH_RESULT_NO_CONTENT);
                 }
             });
         }

@@ -69,5 +69,5 @@ public interface PreferencesConfig {
      */
     String TIME_COUNTER_ID = "TIME_COUNTER_ID";
 
-    int REGISTER_ACTIVITY_TIME_COUNTER = 1;
+    int TIME_COUNTER_SEND_CODE_ACTIVITY = 1;
 }
