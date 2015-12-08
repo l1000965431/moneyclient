@@ -5,6 +5,15 @@
     android:orientation="vertical"
     android:id="@+id/fragment_login">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView10"
+        android:src="@mipmap/ic_launcher"
+        android:layout_above="@+id/fragment_login_Enter_account"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="52dp" />
+
     <EditText
         android:layout_width="300dp"
         android:layout_height="50dp"
@@ -16,10 +25,8 @@
         android:background="@drawable/bg_rounded10"
         android:backgroundTint="#ffffffff"
         android:gravity="center_vertical|center_horizontal"
-        android:layout_above="@+id/fragment_login_Enter_password"
-        android:layout_alignLeft="@+id/fragment_login_Enter_password"
-        android:layout_alignStart="@+id/fragment_login_Enter_password"
-        android:layout_marginBottom="5dp" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="300dp"
@@ -32,20 +39,21 @@
         android:background="@drawable/bg_rounded10"
         android:backgroundTint="#ffffffff"
         android:gravity="center_vertical|center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:layout_above="@+id/fragment_login_button"
-        android:layout_centerHorizontal="true"
-        android:inputType="textPassword"/>
+        android:inputType="textPassword"
+        android:layout_below="@+id/fragment_login_Enter_account"
+        android:layout_alignLeft="@+id/fragment_login_Enter_account"
+        android:layout_alignStart="@+id/fragment_login_Enter_account"
+        android:layout_marginTop="7dp" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/fragment_login_button"
+        android:layout_below="@+id/fragment_login_Enter_password"
         android:layout_alignRight="@+id/fragment_login_Enter_password"
         android:layout_alignEnd="@+id/fragment_login_Enter_password"
-        android:layout_marginBottom="20dp"
-        android:layout_centerVertical="true">
+        android:layout_marginTop="12dp">
 
         <TextView
             android:layout_width="90dp"
@@ -129,7 +137,7 @@
         android:paddingLeft="7dp"
         android:layout_gravity="center"
         android:textStyle="bold"
-        android:paddingBottom="20dp"
+        android:paddingBottom="17dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
