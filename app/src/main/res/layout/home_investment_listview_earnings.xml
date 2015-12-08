@@ -10,7 +10,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent" android:id="@+id/honm_record_earning_ll_top">
 
         <ImageView
             android:layout_width="114dp"

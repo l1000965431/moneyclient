@@ -118,7 +118,9 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                     @Override
                     public void run() {
                         PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_PREFERENTIAL_ACTIVITY);
-                        getTopButton().setIsHaveNew(false);
+                        if(getTopButton() != null){
+                            getTopButton().setIsHaveNew(false);
+                        }
                         mLoadingMoreProxy.reset();
                         mCurPageIndex = -1;
                         handler.post(getWalletBalance_r);
@@ -242,7 +244,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
             HttpClient.atomicPost(getActivity(), HttpUrlConfig.URL_ROOT + "User/getUserSetInfo", params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    refreshableView.finishRefreshing();
+                    refreshableView.finishRefreshing(RefreshableView.REFRESH_RESULT_FAILED);
                     if (mLoadingMoreProxy.isLoadingMore()) {
                         mLoadingMoreProxy.setLoadingFailed();
                     }
@@ -250,7 +252,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
-                    refreshableView.finishRefreshing();
+                    refreshableView.finishRefreshing(RefreshableView.REFRESH_RESULT_SUCCESS);
                     if (s == null) {
                         UIHelper.toast(getActivity(), getString(R.string.http_server_exception));
                         return;
@@ -412,12 +414,12 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                     params, new HttpClient.MyHttpHandler() {
                         @Override
                         public void onPosting() {
-                            refreshableView.finishRefreshing();
+                            refreshableView.finishRefreshing(RefreshableView.REFRESH_RESULT_SUCCESS);
                         }
 
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            refreshableView.finishRefreshing();
+                            refreshableView.finishRefreshing(RefreshableView.REFRESH_RESULT_FAILED);
                             if (mLoadingMoreProxy.isLoadingMore()) {
                                 mLoadingMoreProxy.setLoadingFailed();
                             }
@@ -425,7 +427,6 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
 
                         @Override
                         public void onSuccess(int i, Header[] headers, String s) {
-                            refreshableView.finishRefreshing();
                             ArrayList<PreferentialModel> detailModels = jsonToProjectList(s);
                             addToRecord(detailModels);
                             mCurPageIndex += 1;
@@ -434,6 +435,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                             } else {
                                 reloadProjectList(detailModels);
                             }
+                            refreshableView.finishRefreshing(mData.size() > 0 ? RefreshableView.REFRESH_RESULT_SUCCESS : RefreshableView.REFRESH_RESULT_NO_CONTENT);
                         }
                     });
 

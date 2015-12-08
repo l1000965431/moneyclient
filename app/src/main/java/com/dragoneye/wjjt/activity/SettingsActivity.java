@@ -16,6 +16,7 @@ import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.HttpUrlConfig;
 import com.dragoneye.wjjt.http.HttpClient;
 import com.dragoneye.wjjt.http.HttpParams;
+import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.CurrentUser;
 
@@ -74,6 +75,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         mTVAlipayBind = (TextView)findViewById(R.id.home_self_group_instal_tv_alipay_bind);
 
+        if(((MyApplication)getApplication()).getCurrentUser(this).getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR) {
+            mLLWxBind.setVisibility(View.GONE);
+            mTVAlipayBind.setVisibility(View.GONE);
+        }
         progressDialog = new ProgressDialog(this);
     }
 
@@ -216,7 +221,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         mIsAlipayBind = false;
                     }else {
                         mIsAlipayBind = true;
-                        finishLoading(true);
+//                        finishLoading(true);
                     }
                 }
             });

@@ -19,4 +19,14 @@ public class PreferencesHelper {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getBoolean(key, false);
     }
+
+    public static long getTimeCounterOriginMillis(Context context, String key){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getLong(key, 0);
+    }
+
+    public static void setTimeCounterOriginMillis(Context context, String key, Long sec){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        preferences.edit().putLong(key, sec).apply();
+    }
 }

@@ -66,7 +66,7 @@ public class UserInfoActivity extends ImageSelectedActivity implements View.OnCl
         mTVSexuality = (TextView)findViewById(R.id.home_self_group_pinfo_linearLayout5_num);
         mIBPortrait = (RoundCornerImageView)findViewById(R.id.home_self_group_pinfo_imageButton1_group);
         mIBPortrait.setOnClickListener(this);
-//        mIBPortrait.setShowBorderline(true);
+        mIBPortrait.setShowBorderline(true);
         String userPortrait = ((MyApplication)getApplication()).getCurrentUser(this).getUserHeadPortrait();
         if( userPortrait != null && userPortrait.length() > 0 ){
             DisplayImageOptions options = new DisplayImageOptions.Builder()

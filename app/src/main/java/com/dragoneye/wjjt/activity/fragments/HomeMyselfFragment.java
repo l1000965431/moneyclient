@@ -48,6 +48,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -315,17 +316,34 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
             @Override
             public void onSuccess(int i, Header[] headers, String s) {
                 progressDialog.dismiss();
-                int exp = 0;
+                int result = 0;
                 try{
-                    exp = Integer.parseInt(s);
+                    result = Integer.parseInt(s);
                 }catch (Exception e){
                     e.printStackTrace();
                     UIHelper.toast(getActivity(), "服务器繁忙，请稍后再试");
                 }
-                if(exp == -1){
+                if(result == -1){
                     UIHelper.toast(getActivity(), "推荐人ID不正确，请输入正确的推荐人ID");
                 }else {
-                    UIHelper.toast(getActivity(), "填写成功");
+
+                    String toast = "填写成功";
+                    String jsonString = HttpClient.getValueFromHeader(headers, "UserAddNum");
+                    try{
+                        JSONArray array = new JSONArray(jsonString);
+                        int exp = array.getInt(0);
+                        int vTicket = array.getInt(1);
+                        if( exp > 0 ){
+                            toast += String.format("，获得%d经验", exp);
+                        }
+                        if( vTicket > 0 ){
+                            toast += String.format("，获得%d微券", vTicket);
+                        }
+                        toast += "。";
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                    UIHelper.toast(getActivity(), toast);
                     mLLInviteCodeLayout.setVisibility(View.GONE);
                 }
             }
@@ -353,7 +371,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                 onChangePortrait();
                 break;
             case R.id.home_self_group_dev_stuff:    // 开发者注意事项
-                DeveloperAttentionActivity.CallActivity(getActivity());
+                AgreementActivity.OpenDevStuff(getActivity());
                 break;
             case R.id.home_self_group_linearLayout_micro_ticket:
                 onMicroTicket();
@@ -390,6 +408,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
             Intent intent = new Intent(getActivity(), UserInfoActivity.class);
             startActivity(intent);
         }else {
+            UIHelper.toast(getActivity(), "您的资料尚未完善，请先完善详细资料。");
             Intent intent = new Intent(getActivity(), ImproveUserInfoActivity.class);
             startActivity(intent);
         }
@@ -408,7 +427,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                         onShare();
                     }
                 })
-                .setMessage("分享微聚竞投给你的朋友，可获得V券（V券可用来提高入资的额度，增加返金几率）。")
+                .setMessage("分享微聚竞投给你的朋友，可获得V券（在单期购买时可以用于抵现）。")
                 .create();
         alertDialog.show();
     }
@@ -428,14 +447,15 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
         if(file.exists()){
             oks.setImagePath(file.getPath());
         }else {
-            Bitmap bitmap = BitmapFactory.decodeResource(getActivity().getResources(), R.mipmap.ic_launcher);
+            Bitmap bitmap = BitmapFactory.decodeResource(getActivity().getResources(), R.mipmap.share_ic_launcher);
             file = ToolMaster.SavePicInLocal(bitmap, path );
             if( file != null && file.exists() ){
                 oks.setImagePath(file.getPath());
             }
         }
 
-        oks.setUrl("https://www.baidu.com/");
+        String param = "?invitecode=" + userBase.getUserInviteCode() + "&name=" + userBase.getUserName();
+        oks.setUrl("http://115.29.111.0/Longyan/wx/index.html" + param);
 //            // url仅在微信（包括好友和朋友圈）中使用
 //            oks.setUrl("http://sharesdk.cn");
 //            // comment是我对这条分享的评论，仅在人人网和QQ空间使用
@@ -443,7 +463,9 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
 //            // site是分享此内容的网站名称，仅在QQ空间使用
 //            oks.setSite(getString(R.string.app_name));
 //            // siteUrl是分享此内容的网站地址，仅在QQ空间使用
-//            oks.setSiteUrl("http://sharesdk.cn");
+            oks.setTitleUrl("http://115.29.111.0/Longyan/wx/index.html" + param);
+
+        oks.setSilent(true);
 
 //        oks.setImageUrl("http://7xjewm.com1.z0.glb.clouddn.com/ic_launcher.png");
 

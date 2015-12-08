@@ -63,4 +63,11 @@ public interface PreferencesConfig {
 
     String SHARESDKAPPKEY = "98bbea40c2d7";
     String SHARESDKAPPSECRET = "79b44d7eba1b2d29fc660b450a004e12";
+
+    /**
+     *  短信验证计时ID
+     */
+    String TIME_COUNTER_ID = "TIME_COUNTER_ID";
+
+    int TIME_COUNTER_SEND_CODE_ACTIVITY = 1;
 }

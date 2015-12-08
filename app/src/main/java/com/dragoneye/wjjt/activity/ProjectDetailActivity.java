@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -305,17 +306,32 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
     }
 
     private void onTopButton(int id){
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View dialog = inflater.inflate(R.layout.layout_project_detail_message_box, null);
+
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setView(dialog)
+                .create();
+
+        final TextView content = (TextView)dialog.findViewById(R.id.layout_project_detail_message_box_tv_content);
+        content.setText("");
+        final View confirm = dialog.findViewById(R.id.layout_project_detail_message_box_tv_confirm);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
 
         switch (id){
             case R.id.project_detail_tv_marketAnalyze:
-                alertDialog.setMessage(mMarketAnalyze);
+                content.setText(mMarketAnalyze);
                 break;
             case R.id.project_detail_tv_profitMode:
-                alertDialog.setMessage(mProfitMode);
+                content.setText(mProfitMode);
                 break;
             case R.id.project_detail_tv_teamIntroduction:
-                alertDialog.setMessage(mTeamIntroduction);
+                content.setText(mTeamIntroduction);
                 break;
         }
 

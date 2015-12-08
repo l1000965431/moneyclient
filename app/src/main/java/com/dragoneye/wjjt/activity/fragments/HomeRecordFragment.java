@@ -52,6 +52,17 @@ public class HomeRecordFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        if(mEarningRecordFragment != null){
+            mEarningRecordFragment.setTopButton(mEarningButton);
+        }
+        if(mInvestRecordFragment != null){
+            mInvestRecordFragment.setTopButton(mInvestButton);
+        }
+    }
+
+    @Override
     public void onNewMessage(String messageType){
         switch (messageType){
             case PreferencesConfig.IS_HAVE_NEW_INVEST_MESSAGE:

@@ -151,7 +151,7 @@ public class MyApplication extends Application {
 
     public void reLogin(Context context){
         setUserOutOfDate(context);
-        LoginActivity.CallLoginActivity(context);
+        LoginActivity.CallLoginActivity(context, false);
         exit();
     }
 

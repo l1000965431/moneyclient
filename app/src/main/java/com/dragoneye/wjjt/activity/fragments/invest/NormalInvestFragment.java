@@ -88,7 +88,9 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
                     @Override
                     public void run() {
                         PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_NORMAL_ACTIVITY);
-                        getTopButton().setIsHaveNew(false);
+                        if(getTopButton() != null){
+                            getTopButton().setIsHaveNew(false);
+                        }
                         mLoadingMoreProxy.reset();
                         mCurPageIndex = -1;
                         handler.post(updateInvestmentList_r);
@@ -174,12 +176,12 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
             HttpClient.atomicPost(getActivity(), GetProjectListProtocol.URL_GET_PROJECT_LIST, params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onPosting() {
-                    refreshableView.finishRefreshing();
+                    refreshableView.finishRefreshing(RefreshableView.REFRESH_RESULT_SUCCESS);
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    refreshableView.finishRefreshing();
+                    refreshableView.finishRefreshing(RefreshableView.REFRESH_RESULT_FAILED);
                     if (mLoadingMoreProxy.isLoadingMore()) {
                         mLoadingMoreProxy.setLoadingFailed();
                     }
@@ -187,7 +189,6 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
-                    refreshableView.finishRefreshing();
                     ArrayList<ProjectDetailModel> detailModels = jsonToProjectList(s);
                     addToRecord(detailModels);
                     mCurPageIndex += 1;
@@ -196,6 +197,7 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
                     } else {
                         reloadProjectList(detailModels);
                     }
+                    refreshableView.finishRefreshing(mProjectList.size() > 0 ? RefreshableView.REFRESH_RESULT_SUCCESS : RefreshableView.REFRESH_RESULT_NO_CONTENT);
                 }
             });
         }

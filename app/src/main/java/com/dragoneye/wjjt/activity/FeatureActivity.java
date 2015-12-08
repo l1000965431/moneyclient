@@ -33,8 +33,7 @@ public class FeatureActivity extends DotViewPagerActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FeatureActivity.this, LoginActivity.class);
-                startActivity(intent);
+                LoginActivity.CallLoginActivity(FeatureActivity.this, true);
                 PreferenceManager.getDefaultSharedPreferences(FeatureActivity.this).edit().putBoolean(
                         PreferencesConfig.IS_SHOWED_FEATURE, true
                 ).apply();

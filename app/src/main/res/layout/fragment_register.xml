@@ -146,7 +146,7 @@
         <RadioButton
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="项目者"
+            android:text="创业者"
             android:id="@+id/fragment_register_Classification_Fundraising"
             android:layout_gravity="center"
             android:layout_weight="1"

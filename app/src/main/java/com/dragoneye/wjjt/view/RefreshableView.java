@@ -95,6 +95,23 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 	private View header;
 
 	/**
+	 *  刷新结果显示View
+	 */
+	private View resultHeader;
+
+	/**
+	 *  刷新结果文字
+	 */
+	private TextView tvRefreshResult;
+
+	/**
+	 *  刷新结果代码
+	 */
+	public static final int REFRESH_RESULT_SUCCESS = 0;
+	public static final int REFRESH_RESULT_NO_CONTENT = 1;
+	public static final int REFRESH_RESULT_FAILED = 2;
+
+	/**
 	 * 需要去下拉刷新的ListView
 	 */
 	private AbsListView listView;
@@ -195,6 +212,8 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 		super(context, attrs);
 		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		header = LayoutInflater.from(context).inflate(R.layout.custom_view_pull_to_refresh, null, true);
+		resultHeader = LayoutInflater.from(context).inflate(R.layout.custom_view_pull_to_refresh_result, null, true);
+		tvRefreshResult = (TextView)resultHeader.findViewById(R.id.custom_view_pull_to_refresh_result_tv_content);
 		progressBar = (ProgressBar) header.findViewById(R.id.progress_bar);
 		arrow = (ImageView) header.findViewById(R.id.arrow);
 		description = (TextView) header.findViewById(R.id.description);
@@ -204,6 +223,8 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 		refreshUpdatedAtValue();
 		setOrientation(VERTICAL);
 		addView(header, 0);
+		addView(resultHeader, 1);
+		resultHeader.setVisibility(GONE);
 	}
 
 	/**
@@ -219,7 +240,7 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 			scrollY = getScrollY();
 			scrollX = getScrollX();
 
-			listView = (AbsListView) getChildAt(1);
+			listView = (AbsListView) getChildAt(2);
 			listView.setOnTouchListener(this);
 			loadOnce = true;
 		}
@@ -266,6 +287,7 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 				if (currentStatus == STATUS_RELEASE_TO_REFRESH) {
 					// 松手时如果是释放立即刷新状态，就去调用正在刷新的任务
 					new RefreshingTask().execute();
+					resultHeader.setVisibility(GONE);
 				} else if (currentStatus == STATUS_PULL_TO_REFRESH) {
 					// 松手时如果是下拉状态，就去调用隐藏下拉头的任务
 					new HideHeaderTask().execute();
@@ -304,10 +326,23 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 	/**
 	 * 当所有的刷新逻辑完成后，记录调用一下，否则你的ListView将一直处于正在刷新状态。
 	 */
-	public void finishRefreshing() {
+	public void finishRefreshing(int resultCode) {
 		currentStatus = STATUS_REFRESH_FINISHED;
 		preferences.edit().putLong(PreferencesConfig.REFRESH_VIEW_UPDATE_AT + mId, System.currentTimeMillis()).commit();
 		new HideHeaderTask().execute();
+		switch (resultCode){
+			case REFRESH_RESULT_SUCCESS:
+				resultHeader.setVisibility(GONE);
+				break;
+			case REFRESH_RESULT_FAILED:
+				resultHeader.setVisibility(VISIBLE);
+				tvRefreshResult.setText("刷新失败");
+				break;
+			case REFRESH_RESULT_NO_CONTENT:
+				resultHeader.setVisibility(VISIBLE);
+				tvRefreshResult.setText("暂无内容");
+				break;
+		}
 	}
 
 	/**
@@ -536,6 +571,7 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
 	}
 
 	public void doRefreshImmediately(){
+		resultHeader.setVisibility(GONE);
 		new RefreshingTask().execute();
 	}
 

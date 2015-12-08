@@ -48,15 +48,15 @@ public class LogoActivity extends BaseActivity {
     Runnable startNextActivity_r = new Runnable() {
         @Override
         public void run() {
-            if(preferences.getBoolean(PreferencesConfig.IS_SHOWED_FEATURE, false)){
+//            if(preferences.getBoolean(PreferencesConfig.IS_SHOWED_FEATURE, false)){
                 if(!((MyApplication)getApplication()).isUserOutOfDate(LogoActivity.this)){
                     MainActivity.CallMainActivity(LogoActivity.this);
                 }else {
-                    LoginActivity.CallLoginActivity(LogoActivity.this);
+                    LoginActivity.CallLoginActivity(LogoActivity.this, true);
                 }
-            }else {
-                FeatureActivity.CallFeatureActivity(LogoActivity.this);
-            }
+//            }else {
+//                FeatureActivity.CallFeatureActivity(LogoActivity.this);
+//            }
             finish();
         }
     };

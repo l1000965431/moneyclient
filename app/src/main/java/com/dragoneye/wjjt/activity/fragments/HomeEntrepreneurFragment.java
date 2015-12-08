@@ -33,6 +33,7 @@ import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.model.MyProjectModel;
 import com.dragoneye.wjjt.protocol.GetMyProjectListProtocol;
 import com.dragoneye.wjjt.tool.ToolMaster;
+import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.view.LoadingMoreFooterProxy;
 import com.dragoneye.wjjt.view.RefreshableView;
 import com.google.gson.reflect.TypeToken;
@@ -41,6 +42,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,7 +120,7 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
             HttpClient.atomicPost(getActivity(), GetMyProjectListProtocol.URL_GET_MY_PROJECT_LIST, params, new HttpClient.MyHttpHandler() {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    refreshableView.finishRefreshing();
+                    refreshableView.finishRefreshing(RefreshableView.REFRESH_RESULT_FAILED);
                     if (mLoadingMoreProxy.isLoadingMore()) {
                         mLoadingMoreProxy.setLoadingFailed();
                     }
@@ -126,7 +128,6 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
 
                 @Override
                 public void onSuccess(int i, Header[] headers, String s) {
-                    refreshableView.finishRefreshing();
                     ArrayList<MyProjectModel> detailModels = jsonToProjectList(s);
                     mCurPageIndex += 1;
                     if ( mLoadingMoreProxy.isLoadingMore() ) {
@@ -143,13 +144,14 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
                         mProjectList.addAll(detailModels);
                         mAdapter.notifyDataSetChanged();
                     }
+                    refreshableView.finishRefreshing(mProjectList.size() > 0 ? RefreshableView.REFRESH_RESULT_SUCCESS : RefreshableView.REFRESH_RESULT_NO_CONTENT);
                 }
             });
         }
     };
 
     private ArrayList<MyProjectModel> jsonToProjectList(String json){
-        ArrayList<MyProjectModel> projectDetailModels = new ArrayList<>();
+        ArrayList<MyProjectModel> projectDetailModels = new ArrayList<MyProjectModel>();
         try{
             ArrayList<MyProjectModel> list = ToolMaster.gsonInstance().fromJson(json, new TypeToken<ArrayList<MyProjectModel>>(){}.getType());
             projectDetailModels.addAll(list);
@@ -179,7 +181,7 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
         }
         ProjectDetailActivity.CallProjectDetailActivityFullInfo(getActivity(), project.getName(), img, project.getTargetFund(), 0, project.getMarketAnalysis(),
                 project.getProfitMode(), project.getTeamIntroduce(), project.getSummary(), project.getAddress(), project.getActivityIntroduce(),
-                project.getCreateDate(), project.getCategory());
+                project.getFormatCreateDate("yyyy-MM-dd HH:mm:ss"), project.getCategory());
     }
 
     @Override
@@ -273,6 +275,11 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
             viewHolder.tvName.setText(project.getName());
 
             try{
+//                if(project.getImageUrl() == null)
+//                {
+//                    UIHelper.toast(getActivity(), "aaa");
+//                    return convertView;
+//                }
                 JSONArray jsonArray = new JSONArray(project.getImageUrl());
                 if( jsonArray.length() > 0 ){
                     String url = jsonArray.getString(0);
