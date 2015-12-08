@@ -9,7 +9,12 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" android:id="@+id/honm_record_invest_ll_top">
+        android:layout_height="fill_parent" android:id="@+id/honm_record_invest_ll_top"
+        android:background="#ffffffff">
+
+        android:layout_height="fill_parent"
+        android:background="#ffffffff">
+
 
         <ImageView
             android:layout_width="114dp"
@@ -22,7 +27,7 @@
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#ffd4d4d4">
+            android:background="@mipmap/label_bg1">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -34,7 +39,8 @@
                 android:textSize="20dp"
                 android:paddingLeft="7dp"
                 android:paddingRight="7dp"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+                android:layout_marginBottom="7dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -46,7 +52,8 @@
                 android:textSize="15dp"
                 android:paddingLeft="7dp"
                 android:paddingRight="7dp"
-                android:gravity="center_vertical|center_horizontal" />
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_marginBottom="7dp" />
         </LinearLayout>
     </LinearLayout>
 
