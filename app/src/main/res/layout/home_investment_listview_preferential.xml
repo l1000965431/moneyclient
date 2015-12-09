@@ -113,12 +113,6 @@
                         android:layout_gravity="center"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:id="@+id/imageView11"
-                        android:src="@mipmap/icon_money"
-                        android:layout_gravity="center" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -150,7 +144,20 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="：999999"
+                        android:text="："
+                        android:id="@+id/textView20"
+                        android:textSize="17dp"
+                        android:textColor="#ff767676"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        android:layout_gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="999999"
                         android:id="@+id/home_invest_preferential_listview_item_tv_exp"
                         android:textSize="17dp"
                         android:textColor="#ffff2346"
@@ -246,7 +253,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:id="@+id/home_invest_preferential_listview_item_iv_shake"
-                android:src="@mipmap/icon_shaking"
+                android:src="@mipmap/icon_clock"
                 android:scaleType="fitEnd"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/textView42"
@@ -260,7 +267,7 @@
                 android:textColor="#ffffffff"
                 android:textIsSelectable="false"
                 android:textStyle="bold"
-                android:text="特惠开始啦！！！"
+                android:text="特惠开始啦！点此进入"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_gravity="center"
                 android:layout_centerVertical="true"
