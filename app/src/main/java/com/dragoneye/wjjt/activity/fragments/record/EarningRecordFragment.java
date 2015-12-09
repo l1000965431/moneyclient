@@ -372,6 +372,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                     break;
                 case MyEarningModel.EARNING_TYPE_PREFERENTIAL:
                     viewHolder.tvEarningType.setText("(参与特惠项目)");
+                    viewHolder.tvStageIndex.setText("特惠项目");
                     break;
             }
 

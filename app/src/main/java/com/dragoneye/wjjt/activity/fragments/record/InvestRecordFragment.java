@@ -464,7 +464,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                 viewHolder = new ViewHolder();
 
                 convertView = mInflater.inflate(R.layout.home_investment_listview, parent, false);
-                viewHolder.ivLogo = (ImageView)convertView.findViewById(R.id.imageView);
+                viewHolder.ivLogo = (ImageView)convertView.findViewById(R.id.home_record_invest_iv_logo);
                 viewHolder.tvProjectName = (TextView)convertView.findViewById(R.id.home_record_listview_tv_project_name);
                 viewHolder.tvInvestAmount = (TextView)convertView.findViewById(R.id.home_record_earning_tv_investPrice);
                 viewHolder.tvInvestStageNum = (TextView)convertView.findViewById(R.id.home_record_listview_tv_investStageNum);

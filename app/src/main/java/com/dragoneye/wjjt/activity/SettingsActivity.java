@@ -75,10 +75,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         mTVAlipayBind = (TextView)findViewById(R.id.home_self_group_instal_tv_alipay_bind);
 
-        if(((MyApplication)getApplication()).getCurrentUser(this).getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR) {
+//        if(((MyApplication)getApplication()).getCurrentUser(this).getUserType() == UserProtocol.PROTOCOL_USER_TYPE_ENTREPRENEUR) {
             mLLWxBind.setVisibility(View.GONE);
-            mTVAlipayBind.setVisibility(View.GONE);
-        }
+            mLLAlipayBind.setVisibility(View.GONE);
+//        }
         progressDialog = new ProgressDialog(this);
     }
 

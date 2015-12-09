@@ -354,7 +354,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         final View confirmButton = dialog.findViewById(R.id.rush_failure_tv_auto_close);
 
 
-        tvEarningPrice.setText(String.valueOf(price));
+        tvEarningPrice.setText(ToolMaster.convertRMBPriceString(price));
         tvProjectName.setText(preferentialModel.getName());
 
         mRushResultAlertDialog = new AlertDialog.Builder(getActivity())
@@ -547,6 +547,9 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if( position >= mData.size() ){
+            return;
+        }
         PreferentialModel preferentialModel = (PreferentialModel)mListView.getItemAtPosition(position);
 //        if(preferentialModel.getState() != PreferentialModel.STATE_START){
 //            return;
@@ -707,7 +710,7 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
             Date date = preferentialModel.getDate();
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
-            viewHolder.tvMonth.setText(String.valueOf(calendar.get(Calendar.MONTH)));
+            viewHolder.tvMonth.setText(String.valueOf(calendar.get(Calendar.MONTH) + 1));
             viewHolder.tvDay.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
             viewHolder.tvHour.setText(String.format("%d:00", calendar.get(Calendar.HOUR_OF_DAY)));
 

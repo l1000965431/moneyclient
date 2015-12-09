@@ -2,14 +2,12 @@ package com.dragoneye.wjjt.activity;
 
 import android.app.ProgressDialog;
 import android.os.Handler;
-import android.os.Message;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.dragoneye.wjjt.R;
-import com.dragoneye.wjjt.activity.base.BaseActivity;
 import com.dragoneye.wjjt.activity.base.TimeCounterActivity;
 import com.dragoneye.wjjt.application.MyApplication;
 import com.dragoneye.wjjt.config.PreferencesConfig;
@@ -19,11 +17,9 @@ import com.dragoneye.wjjt.protocol.UserProtocol;
 import com.dragoneye.wjjt.tool.DESCoder;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
-import com.dragoneye.wjjt.user.CurrentUser;
 
 import org.apache.http.Header;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
