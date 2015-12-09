@@ -171,6 +171,9 @@ public class HomeEntrepreneurFragment extends BaseFragment implements View.OnCli
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+        if( position >= mProjectList.size() ){
+            return;
+        }
         MyProjectModel project = (MyProjectModel) mListView.getItemAtPosition(position);
 
         ArrayList<String> img = new ArrayList<>();
