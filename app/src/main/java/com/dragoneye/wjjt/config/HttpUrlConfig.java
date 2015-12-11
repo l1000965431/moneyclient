@@ -5,10 +5,10 @@ package com.dragoneye.wjjt.config;
  * Created by Guohong on 15-7-11.
  */
 public interface HttpUrlConfig {
-//    String URL_ROOT = "http://115.29.111.0/Longyan/";
+    String URL_ROOT = "http://115.29.111.0/Longyan/";
 
 
-    String URL_ROOT = "http://192.168.199.243:8080/";
+//    String URL_ROOT = "http://192.168.199.243:8080/";
 //
     String URL_AGREEMENT = URL_ROOT + "project/protocol.jsp";
     String URL_DEV_STUFF = URL_ROOT + "project/developerProtocol.jsp";

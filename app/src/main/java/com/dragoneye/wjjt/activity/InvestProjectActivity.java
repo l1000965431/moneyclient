@@ -653,14 +653,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         if( isLeadInvest() ){
             mSelectedLeadStageNum = 1;
             tvStageInfo.setText(String.format("%d/%d", mSelectedLeadStageNum, mLeadStageLeft));
-            flInvestPriceNum = mSelectedLeadStageNum * mLeadInvestPrice;
-            tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum));
+            tvTotalPrice.setText(ToolMaster.convertRMBPriceString(mSelectedLeadStageNum * mLeadInvestPrice));
             flInvestType = InvestProjectProtocol.INVEST_TYPE_LEAD;
         }else {
             mSelectedFallowStageNum = 1;
             tvStageInfo.setText(String.format("%d/%d", mSelectedFallowStageNum, mFallowStageLeft));
-            flInvestPriceNum = mSelectedFallowStageNum * fallowInvestPrice;
-            tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum));
+            tvTotalPrice.setText(ToolMaster.convertRMBPriceString(mSelectedFallowStageNum * fallowInvestPrice));
             flInvestType = InvestProjectProtocol.INVEST_TYPE_FALLOW;
         }
         vStageSub.setOnClickListener(new View.OnClickListener() {
@@ -670,8 +668,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                     if( mSelectedLeadStageNum > 1 ){
                         mSelectedLeadStageNum--;
                         tvStageInfo.setText(String.format("%d/%d", mSelectedLeadStageNum, mLeadStageLeft));
-                        flInvestPriceNum = mSelectedLeadStageNum * mLeadInvestPrice;
-                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum));
+                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(mSelectedLeadStageNum * mLeadInvestPrice));
                     }
                 }else {
                     if( mSelectedFallowStageNum > 1 ){
@@ -682,8 +679,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                             tvVTicket.setText(String.format("%d/%d", mSelectedVTicketNum, mVTicketMaxUse));
                         }
                         tvStageInfo.setText(String.format("%d/%d", mSelectedFallowStageNum, mFallowStageLeft));
-                        flInvestPriceNum = mSelectedFallowStageNum * fallowInvestPrice;
-                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum  - mSelectedVTicketNum));
+                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(mSelectedFallowStageNum * fallowInvestPrice  - mSelectedVTicketNum));
 
                     }
                 }
@@ -697,15 +693,13 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                     if( mSelectedLeadStageNum < mLeadStageLeft ){
                         mSelectedLeadStageNum++;
                         tvStageInfo.setText(String.format("%d/%d", mSelectedLeadStageNum, mLeadStageLeft));
-                        flInvestPriceNum = mSelectedLeadStageNum * mLeadInvestPrice;
-                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum));
+                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(mSelectedLeadStageNum * mLeadInvestPrice));
                     }
                 }else {
                     if( mSelectedFallowStageNum < mFallowStageLeft ){
                         mSelectedFallowStageNum++;
                         tvStageInfo.setText(String.format("%d/%d", mSelectedFallowStageNum, mFallowStageLeft));
-                        flInvestPriceNum = mSelectedFallowStageNum * fallowInvestPrice;
-                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum));
+                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(mSelectedFallowStageNum * fallowInvestPrice));
                         llVTicketPanel.setVisibility(View.GONE);
                         mSelectedVTicketNum = 0;
                     }
@@ -717,8 +711,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             llVTicketPanel.setVisibility(View.GONE);
         }else {
             mVTicketMaxUseTemp = mVTicketMaxUse;
-            if(mVTicketMaxUseTemp > getFallowPriceNum() - 1){
-                mVTicketMaxUseTemp = getFallowPriceNum() - 1;
+            if(mVTicketMaxUseTemp > fallowInvestPrice - 1){
+                mVTicketMaxUseTemp = fallowInvestPrice - 1;
             }
 
             if(mVTicketMaxUseTemp >= 1){
@@ -773,10 +767,10 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             public void onClick(View v) {
                 if( isLeadInvest() ){
                     flInvestStageNum = mSelectedLeadStageNum;
-                    flInvestPriceNum = mLeadInvestPrice * mSelectedLeadStageNum;
+                    flInvestPriceNum = mLeadInvestPrice;
                 }else {
                     flInvestStageNum = mSelectedFallowStageNum;
-                    flInvestPriceNum = getFallowPriceNum() * mSelectedFallowStageNum;
+                    flInvestPriceNum = fallowInvestPrice;
                 }
 
                 onInvest(flInvestType, flInvestStageNum, flInvestPriceNum, 1, mSelectedVTicketNum);
@@ -1034,7 +1028,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
 
             }
             ProjectDetailActivity.CallProjectDetailActivity(this, mProjectDetailModel.getActivityId(), mProjectDetailModel.getName(),
-                    img, mProjectDetailModel.getTargetFund(), mProjectDetailModel.getCurrentFund());
+                    img, mProjectDetailModel.getTargetFund(), mProjectDetailModel.getCurrentFund(), true);
             return true;
         }
 

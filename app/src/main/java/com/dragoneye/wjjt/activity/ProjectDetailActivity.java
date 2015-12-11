@@ -50,13 +50,14 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
 
     Handler handler = new Handler();
 
-    public static void CallProjectDetailActivity(Context context, String activityId, String name ,ArrayList<String> imageUrl, int targetFund, int currentFund){
+    public static void CallProjectDetailActivity(Context context, String activityId, String name ,ArrayList<String> imageUrl, int targetFund, int currentFund, boolean isShowProgress){
         Intent intent = new Intent(context, ProjectDetailActivity.class);
         intent.putExtra("activityId", activityId);
         intent.putExtra("name", name);
         intent.putStringArrayListExtra("imageUrl", imageUrl);
         intent.putExtra("targetFund", targetFund);
         intent.putExtra("currentFund", currentFund);
+        intent.putExtra("isShowProgress", isShowProgress);
         context.startActivity(intent);
     }
 
@@ -92,6 +93,7 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
     private String mCategory;
 
     private boolean isFullInfo;
+    private boolean isShowProgress;
     private String mName;
     private String mSummary;
     private String mAddress;
@@ -116,6 +118,8 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
         }else {
             mActivityId = intent.getStringExtra("activityId");
         }
+
+        isShowProgress = intent.getBooleanExtra("isShowProgress", true);
     }
 
 
@@ -191,6 +195,9 @@ public class ProjectDetailActivity extends DotViewPagerActivity implements View.
         mTVCategory = (TextView)findViewById(R.id.project_detail_tv_category);
         mTVCreateDate = (TextView)findViewById(R.id.project_detail_tv_createDate);
 
+        if(!isShowProgress){
+            mProgressBar.setVisibility(View.GONE);
+        }
         int percent = (int)((float)mCurrentFund / mTargetFund * 100 + 0.5f);
         mProgressBar.setProgress(percent);
         mTextViewProjectProgress.setText(String.format("筹款进度: %d%%", percent));

@@ -38,6 +38,17 @@ public class LoadingMoreFooterProxy {
             ((GridViewWithHeaderAndFooter)listView).addFooterView(mFooter);
         }
 
+        mFooter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                setIsLoadingMore();
+                if( onLoadingMoreListener != null ){
+                    onLoadingMoreListener.onLoadingMore();
+                }
+            }
+        });
+
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
