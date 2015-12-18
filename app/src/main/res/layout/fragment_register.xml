@@ -27,7 +27,8 @@
             android:backgroundTint="#ffffffff"
             android:gravity="center_vertical|center_horizontal"
             android:maxLength="11"
-            android:inputType="number"/>
+            android:inputType="number"
+            android:singleLine="true" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -52,7 +53,8 @@
                 android:layout_above="@+id/change_password_et_newPassword"
                 android:layout_alignLeft="@+id/fragment_login_account"
                 android:layout_alignStart="@+id/fragment_login_account"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"
+                android:singleLine="true" />
 
             <TextView
                 android:layout_width="100dp"
@@ -84,7 +86,8 @@
             android:layout_alignLeft="@+id/fragment_login_account"
             android:layout_alignStart="@+id/fragment_login_account"
             android:layout_marginTop="7dp"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:singleLine="true" />
 
         <EditText
             android:layout_width="300dp"
@@ -100,7 +103,8 @@
             android:layout_above="@+id/fragment_login_buttonlogin"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:singleLine="true" />
 
         <EditText
             android:layout_width="300dp"
@@ -117,7 +121,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:maxLength="10"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:singleLine="true" />
 
     </LinearLayout>
 

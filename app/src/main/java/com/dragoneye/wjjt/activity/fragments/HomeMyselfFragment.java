@@ -371,7 +371,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                 onChangePortrait();
                 break;
             case R.id.home_self_group_dev_stuff:    // 开发者注意事项
-                AgreementActivity.OpenDevStuff(getActivity());
+                DeveloperAttentionActivity.CallActivity(getActivity());
                 break;
             case R.id.home_self_group_linearLayout_micro_ticket:
                 onMicroTicket();

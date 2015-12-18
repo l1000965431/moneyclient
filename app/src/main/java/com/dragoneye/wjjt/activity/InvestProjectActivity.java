@@ -749,6 +749,9 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             });
         }
 
+        // 当前版本隐藏
+        llVTicketPanel.setVisibility(View.GONE);
+
         // 更新收益信息
         List<TextView> list;
         list = flInvestType == InvestProjectProtocol.INVEST_TYPE_LEAD ? getBrProportionTextView(flInvestStageNum)
@@ -822,7 +825,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     }
 
     private void onInvest(int investType, final int investStageNum, final int investPriceNum, int messageType, int ticketUse){
-        mProgressDialog.setMessage("正在提交");
+        mProgressDialog.setMessage("正在提交, 请耐心等待");
+        mProgressDialog.setCancelable(false);
         mProgressDialog.show();
         HttpParams params = new HttpParams();
 
@@ -920,7 +924,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
 
                             }
                         })
-                        .setMessage(String.format("当前期已售空，将从第%d期开始购买", mProjectDetailModel.getTotalStage() - mLeadStageLeft + 1))
+                        .setMessage(String.format("当前期已售空，将从第%d期开始购买",
+                                mProjectDetailModel.getTotalStage() - mLeadStageLeft + 1))
                         .create();
                 alertDialog.show();
 

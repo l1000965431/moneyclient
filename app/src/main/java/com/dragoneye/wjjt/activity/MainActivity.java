@@ -78,7 +78,7 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
     private MenuItem mMessageBoxMenuItem;
     private TextView mTVNetworkError;
 
-    private BaseFragment currentFragement, investFragment, recordFragment, myselfFragment;
+    private BaseFragment currentFragment, investFragment, recordFragment, myselfFragment;
 
     private static class MyHandler extends Handler {
         private final WeakReference<MainActivity> mRef;
@@ -209,8 +209,8 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
                     }
                     break;
             }
-            if(currentFragement != null){
-                currentFragement.onNewMessage(messageType);
+            if(currentFragment != null){
+                currentFragment.onNewMessage(messageType);
             }
         }
     };
@@ -366,15 +366,15 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
             switch (id) {
                 case TAB_INVESTMENT:
                     investFragment = new HomeInvestmentFragment();
-                    currentFragement = investFragment;
+                    currentFragment = investFragment;
                     return investFragment;
                 case TAB_RECORD:
                     recordFragment = new HomeRecordFragment();
-                    currentFragement = recordFragment;
+                    currentFragment = recordFragment;
                     return recordFragment;
                 case TAB_MYSELF:
                     myselfFragment = new HomeMyselfFragment();
-                    currentFragement = myselfFragment;
+                    currentFragment = myselfFragment;
                     return myselfFragment;
 
             }
