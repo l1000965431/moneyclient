@@ -265,7 +265,11 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         String strProgress = getString(R.string.project_list_item_progress) + "%" + progress;
         mTextViewProjectProgress.setText(strProgress);
         mProgressBar.setProgress(progress);
+    }
 
+    @Override
+    public void onResume(){
+        super.onResume();
         handler.post(getWalletBalance_r);
         setStartLoading();
     }
