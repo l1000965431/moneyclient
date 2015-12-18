@@ -110,6 +110,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     int flInvestStageNum;
     int flInvestPriceNum;
 
+    private String mUrlToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -513,6 +515,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                         return;
                     }
 
+                    mUrlToken = HttpClient.getValueFromHeader(headers, "UrlToken");
                     try{
                         JSONArray array = new JSONArray(s);
                         mFallowInvestTicketLeft = array.getInt(0);
@@ -838,6 +841,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         params.put("MessageType", messageType);
         params.put("token", ((MyApplication)getApplication()).getToken(InvestProjectActivity.this));
         params.put("VirtualSecurities", ticketUse);
+        params.put("UrlToken", mUrlToken);
 
         HttpClient.atomicPost(this, InvestProjectProtocol.URL_INVEST_PROJECT, params, new HttpClient.MyHttpHandler() {
             @Override
