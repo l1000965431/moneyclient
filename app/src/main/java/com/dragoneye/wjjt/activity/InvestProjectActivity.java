@@ -894,7 +894,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                                 startActivity(intent);
                             }
                         })
-                        .setNegativeButton("否", null)
+                        .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
                         .create();
                 alertDialog.show();
                 break;
@@ -911,7 +916,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                                 ChargeActivity.CallActivity(InvestProjectActivity.this);
                             }
                         })
-                        .setNegativeButton("否", null)
+                        .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
                         .create();
                 alertDialog.show();
                 break;
