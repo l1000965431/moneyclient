@@ -38,7 +38,7 @@
         android:id="@+id/activity_loading_tv_retry"
         android:gravity="center_vertical|center_horizontal"
         android:textColor="#ffffffff"
-        android:background="@drawable/bg_rounded10blue"
+        android:background="@drawable/button_11"
         />
 
 </LinearLayout>

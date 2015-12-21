@@ -5,15 +5,6 @@
     android:orientation="vertical"
     android:id="@+id/fragment_login">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView10"
-        android:src="@mipmap/ic_launcher"
-        android:layout_above="@+id/fragment_login_Enter_account"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="52dp" />
-
     <EditText
         android:layout_width="300dp"
         android:layout_height="50dp"
@@ -25,8 +16,9 @@
         android:background="@drawable/bg_rounded10"
         android:backgroundTint="#ffffffff"
         android:gravity="center_vertical|center_horizontal"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_above="@+id/fragment_login_Enter_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp" />
 
     <EditText
         android:layout_width="300dp"
@@ -40,30 +32,28 @@
         android:backgroundTint="#ffffffff"
         android:gravity="center_vertical|center_horizontal"
         android:inputType="textPassword"
-        android:layout_below="@+id/fragment_login_Enter_account"
-        android:layout_alignLeft="@+id/fragment_login_Enter_account"
-        android:layout_alignStart="@+id/fragment_login_Enter_account"
-        android:layout_marginTop="7dp" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/fragment_login_button"
+        android:layout_marginTop="20dp"
         android:layout_below="@+id/fragment_login_Enter_password"
         android:layout_alignRight="@+id/fragment_login_Enter_password"
-        android:layout_alignEnd="@+id/fragment_login_Enter_password"
-        android:layout_marginTop="12dp">
+        android:layout_alignEnd="@+id/fragment_login_Enter_password">
 
         <TextView
             android:layout_width="90dp"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="注册"
             android:id="@+id/fragment_login_button_Register"
             android:layout_gravity="center"
             android:textSize="15dp"
-            android:background="@drawable/bg_rounded10blue"
+            android:background="@drawable/button_11"
             android:gravity="center_vertical|center_horizontal"
             android:textColor="#ffffffff"
             android:layout_marginRight="20dp"
@@ -71,12 +61,12 @@
 
         <TextView
             android:layout_width="90dp"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="登录"
             android:id="@+id/fragment_login_button_login"
             android:textSize="15dp"
-            android:background="@drawable/bg_rounded10blue"
+            android:background="@drawable/button_11"
             android:gravity="center_vertical|center_horizontal"
             android:textColor="#ffffffff"
             android:layout_marginRight="10dp"
@@ -104,7 +94,7 @@
         android:text="使用条款和隐私政策"
         android:id="@+id/fragment_login_button_agreement"
         android:textColor="#ff1a4b5f"
-        android:textSize="17dp"
+        android:textSize="12dp"
         android:paddingRight="3dp"
         android:paddingLeft="7dp"
         android:layout_gravity="center"
@@ -118,7 +108,7 @@
         android:text="北京龙眼科技有限公司 版权所有"
         android:id="@+id/textView11"
         android:textColor="#ff332b38"
-        android:textSize="12dp"
+        android:textSize="9dp"
         android:paddingRight="3dp"
         android:paddingLeft="7dp"
         android:layout_gravity="center"
@@ -132,7 +122,7 @@
         android:text="Copyrightⓒ2015"
         android:id="@+id/textView12"
         android:textColor="#ff332b38"
-        android:textSize="12dp"
+        android:textSize="9dp"
         android:paddingRight="3dp"
         android:paddingLeft="7dp"
         android:layout_gravity="center"
