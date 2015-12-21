@@ -75,13 +75,13 @@
                 android:src="@mipmap/icon_shaking"
                 android:scaleType="fitEnd"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/textView72"
-                android:layout_toStartOf="@+id/textView72" />
+                android:layout_toLeftOf="@+id/home_investment_listview_detail_preferential_tv_shake"
+                android:layout_toStartOf="@+id/home_investment_listview_detail_preferential_tv_shake" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView72"
+                android:id="@+id/home_investment_listview_detail_preferential_tv_shake"
                 android:textSize="13dp"
                 android:textColor="#ffffffff"
                 android:textIsSelectable="false"

@@ -110,6 +110,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     int flInvestStageNum;
     int flInvestPriceNum;
 
+    private String mUrlToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -263,7 +265,11 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         String strProgress = getString(R.string.project_list_item_progress) + "%" + progress;
         mTextViewProjectProgress.setText(strProgress);
         mProgressBar.setProgress(progress);
+    }
 
+    @Override
+    public void onResume(){
+        super.onResume();
         handler.post(getWalletBalance_r);
         setStartLoading();
     }
@@ -513,6 +519,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                         return;
                     }
 
+                    mUrlToken = HttpClient.getValueFromHeader(headers, "UrlToken");
                     try{
                         JSONArray array = new JSONArray(s);
                         mFallowInvestTicketLeft = array.getInt(0);
@@ -653,14 +660,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         if( isLeadInvest() ){
             mSelectedLeadStageNum = 1;
             tvStageInfo.setText(String.format("%d/%d", mSelectedLeadStageNum, mLeadStageLeft));
-            flInvestPriceNum = mSelectedLeadStageNum * mLeadInvestPrice;
-            tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum));
+            tvTotalPrice.setText(ToolMaster.convertRMBPriceString(mSelectedLeadStageNum * mLeadInvestPrice));
             flInvestType = InvestProjectProtocol.INVEST_TYPE_LEAD;
         }else {
             mSelectedFallowStageNum = 1;
             tvStageInfo.setText(String.format("%d/%d", mSelectedFallowStageNum, mFallowStageLeft));
-            flInvestPriceNum = mSelectedFallowStageNum * fallowInvestPrice;
-            tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum));
+            tvTotalPrice.setText(ToolMaster.convertRMBPriceString(mSelectedFallowStageNum * fallowInvestPrice));
             flInvestType = InvestProjectProtocol.INVEST_TYPE_FALLOW;
         }
         vStageSub.setOnClickListener(new View.OnClickListener() {
@@ -670,8 +675,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                     if( mSelectedLeadStageNum > 1 ){
                         mSelectedLeadStageNum--;
                         tvStageInfo.setText(String.format("%d/%d", mSelectedLeadStageNum, mLeadStageLeft));
-                        flInvestPriceNum = mSelectedLeadStageNum * mLeadInvestPrice;
-                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum));
+                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(mSelectedLeadStageNum * mLeadInvestPrice));
                     }
                 }else {
                     if( mSelectedFallowStageNum > 1 ){
@@ -682,8 +686,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                             tvVTicket.setText(String.format("%d/%d", mSelectedVTicketNum, mVTicketMaxUse));
                         }
                         tvStageInfo.setText(String.format("%d/%d", mSelectedFallowStageNum, mFallowStageLeft));
-                        flInvestPriceNum = mSelectedFallowStageNum * fallowInvestPrice;
-                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum  - mSelectedVTicketNum));
+                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(mSelectedFallowStageNum * fallowInvestPrice  - mSelectedVTicketNum));
 
                     }
                 }
@@ -697,15 +700,13 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                     if( mSelectedLeadStageNum < mLeadStageLeft ){
                         mSelectedLeadStageNum++;
                         tvStageInfo.setText(String.format("%d/%d", mSelectedLeadStageNum, mLeadStageLeft));
-                        flInvestPriceNum = mSelectedLeadStageNum * mLeadInvestPrice;
-                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum));
+                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(mSelectedLeadStageNum * mLeadInvestPrice));
                     }
                 }else {
                     if( mSelectedFallowStageNum < mFallowStageLeft ){
                         mSelectedFallowStageNum++;
                         tvStageInfo.setText(String.format("%d/%d", mSelectedFallowStageNum, mFallowStageLeft));
-                        flInvestPriceNum = mSelectedFallowStageNum * fallowInvestPrice;
-                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(flInvestPriceNum));
+                        tvTotalPrice.setText(ToolMaster.convertRMBPriceString(mSelectedFallowStageNum * fallowInvestPrice));
                         llVTicketPanel.setVisibility(View.GONE);
                         mSelectedVTicketNum = 0;
                     }
@@ -717,8 +718,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             llVTicketPanel.setVisibility(View.GONE);
         }else {
             mVTicketMaxUseTemp = mVTicketMaxUse;
-            if(mVTicketMaxUseTemp > getFallowPriceNum() - 1){
-                mVTicketMaxUseTemp = getFallowPriceNum() - 1;
+            if(mVTicketMaxUseTemp > fallowInvestPrice - 1){
+                mVTicketMaxUseTemp = fallowInvestPrice - 1;
             }
 
             if(mVTicketMaxUseTemp >= 1){
@@ -755,6 +756,9 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             });
         }
 
+        // 当前版本隐藏
+        llVTicketPanel.setVisibility(View.GONE);
+
         // 更新收益信息
         List<TextView> list;
         list = flInvestType == InvestProjectProtocol.INVEST_TYPE_LEAD ? getBrProportionTextView(flInvestStageNum)
@@ -773,10 +777,10 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
             public void onClick(View v) {
                 if( isLeadInvest() ){
                     flInvestStageNum = mSelectedLeadStageNum;
-                    flInvestPriceNum = mLeadInvestPrice * mSelectedLeadStageNum;
+                    flInvestPriceNum = mLeadInvestPrice;
                 }else {
                     flInvestStageNum = mSelectedFallowStageNum;
-                    flInvestPriceNum = getFallowPriceNum() * mSelectedFallowStageNum;
+                    flInvestPriceNum = fallowInvestPrice;
                 }
 
                 onInvest(flInvestType, flInvestStageNum, flInvestPriceNum, 1, mSelectedVTicketNum);
@@ -828,7 +832,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
     }
 
     private void onInvest(int investType, final int investStageNum, final int investPriceNum, int messageType, int ticketUse){
-        mProgressDialog.setMessage("正在提交");
+        mProgressDialog.setMessage("正在提交, 请耐心等待");
+        mProgressDialog.setCancelable(false);
         mProgressDialog.show();
         HttpParams params = new HttpParams();
 
@@ -840,6 +845,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
         params.put("MessageType", messageType);
         params.put("token", ((MyApplication)getApplication()).getToken(InvestProjectActivity.this));
         params.put("VirtualSecurities", ticketUse);
+        params.put("UrlToken", mUrlToken);
 
         HttpClient.atomicPost(this, InvestProjectProtocol.URL_INVEST_PROJECT, params, new HttpClient.MyHttpHandler() {
             @Override
@@ -888,7 +894,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                                 startActivity(intent);
                             }
                         })
-                        .setNegativeButton("否", null)
+                        .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
                         .create();
                 alertDialog.show();
                 break;
@@ -905,7 +916,12 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
                                 ChargeActivity.CallActivity(InvestProjectActivity.this);
                             }
                         })
-                        .setNegativeButton("否", null)
+                        .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
                         .create();
                 alertDialog.show();
                 break;
@@ -926,7 +942,8 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
 
                             }
                         })
-                        .setMessage(String.format("当前期已售空，将从第%d期开始购买", mProjectDetailModel.getTotalStage() - mLeadStageLeft + 1))
+                        .setMessage(String.format("当前期已售空，将从第%d期开始购买",
+                                mProjectDetailModel.getTotalStage() - mLeadStageLeft + 1))
                         .create();
                 alertDialog.show();
 
@@ -1034,7 +1051,7 @@ public class InvestProjectActivity extends DotViewPagerActivity implements View.
 
             }
             ProjectDetailActivity.CallProjectDetailActivity(this, mProjectDetailModel.getActivityId(), mProjectDetailModel.getName(),
-                    img, mProjectDetailModel.getTargetFund(), mProjectDetailModel.getCurrentFund());
+                    img, mProjectDetailModel.getTargetFund(), mProjectDetailModel.getCurrentFund(), true);
             return true;
         }
 

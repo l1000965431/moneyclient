@@ -82,7 +82,9 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
                     @Override
                     public void run() {
                         PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_EARNING_MESSAGE);
-                        getTopButton().setIsHaveNew(false);
+                        if(getTopButton() != null){
+                            getTopButton().setIsHaveNew(false);
+                        }
                         mLoadingMoreProxy.reset();
                         mCurEarningRecordPageIndex = -1;
                         handler.post(onUpdateEarningList_r);
@@ -125,7 +127,7 @@ public class EarningRecordFragment extends BaseFragment implements AdapterView.O
 
         }
         ProjectDetailActivity.CallProjectDetailActivity(getActivity(), myEarningModel.getActivityId(), myEarningModel.getActivityName(), img,
-                1, 1);
+                1, 1, true);
     }
 
     @Override

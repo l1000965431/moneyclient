@@ -88,7 +88,9 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
                     @Override
                     public void run() {
                         PreferencesHelper.setIsHaveNewMessage(getActivity(), false, PreferencesConfig.IS_HAVE_NEW_INVEST_MESSAGE);
-                        getTopButton().setIsHaveNew(false);
+                        if(getTopButton() != null){
+                            getTopButton().setIsHaveNew(false);
+                        }
                         mLoadingMoreProxy.reset();
                         mCurInvestRecordPageIndex = -1;
                         handler.post(onUpdateOrderList_r);
@@ -543,7 +545,7 @@ public class InvestRecordFragment extends BaseFragment implements AdapterView.On
 
                     }
                     ProjectDetailActivity.CallProjectDetailActivity(getActivity(), orderModel.getActivityId(), orderModel.getActivityName(), img,
-                            orderModel.getTargetFund(), orderModel.getCurrentFund());
+                            orderModel.getTargetFund(), orderModel.getCurrentFund(), true);
                 }
             });
 

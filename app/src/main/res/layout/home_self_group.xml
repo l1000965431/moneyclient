@@ -109,7 +109,8 @@
                 android:id="@+id/home_self_group_linearLayout_micro_ticket"
                 android:background="#ffff9735"
                 android:paddingRight="10dp"
-                android:paddingLeft="40dp" >
+                android:paddingLeft="40dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="30dp"
@@ -312,7 +313,8 @@
                 android:id="@+id/home_self_group_ll_share"
                 android:background="#ffffffff"
                 android:paddingRight="10dp"
-                android:paddingLeft="40dp" >
+                android:paddingLeft="40dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="30dp"

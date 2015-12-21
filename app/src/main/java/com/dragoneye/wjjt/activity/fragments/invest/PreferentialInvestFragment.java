@@ -45,6 +45,7 @@ import com.dragoneye.wjjt.http.HttpParams;
 import com.dragoneye.wjjt.model.EarningModel;
 import com.dragoneye.wjjt.model.PreferentialModel;
 import com.dragoneye.wjjt.tool.PreferencesHelper;
+import com.dragoneye.wjjt.tool.ShakeListener;
 import com.dragoneye.wjjt.tool.ToolMaster;
 import com.dragoneye.wjjt.tool.UIHelper;
 import com.dragoneye.wjjt.user.UserBase;
@@ -91,6 +92,16 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
 
     SensorManager sensorManager = null;
     Vibrator vibrator = null;
+    // 速度阈值，当摇晃速度达到这值后产生作用
+    private static final int SPEED_SHRESHOLD = 3000;
+    // 两次检测的时间间隔
+    private static final int UPTATE_INTERVAL_TIME = 70;
+    // 手机上一个位置时重力感应坐标
+    private float lastX;
+    private float lastY;
+    private float lastZ;
+    // 上次检测时间
+    private long lastUpdateTime;
     private int mAutoCloseCount;
 
     PreferentialModel mCurSelectedModel;
@@ -151,6 +162,8 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
 
         sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         vibrator = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
+
+        List<Sensor> sensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
 
         mCurPageIndex = -1;
     }
@@ -286,8 +299,8 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         float[] values = event.values;
         if (sensorType == Sensor.TYPE_ACCELEROMETER)
         {
-            if ((Math.abs(values[0]) > 17 || Math.abs(values[1]) > 17 || Math
-                    .abs(values[2]) > 17))
+            if ((Math.abs(values[0]) > 14 || Math.abs(values[1]) > 14 || Math
+                    .abs(values[2]) > 14))
             {
                 if( mMainAlertDialog == null || !mMainAlertDialog.isShowing() )
                     return;
@@ -303,6 +316,10 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
     }
 
     private void startRush(final PreferentialModel preferentialModel){
+        if(!isConditionEnough(preferentialModel)){
+            return;
+        }
+
         mMainAlertDialog.dismiss();
         progressDialog.show();
         mIsWaittingResult = false;
@@ -330,9 +347,9 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                             String activityId = jsonObject.getString("ActivityId");
                             int earningPrice = jsonObject.getInt("Lines");
                             int priceLeft = jsonObject.getInt("RemainingBonus");
-                            if(earningPrice > 0){
+                            if (earningPrice > 0) {
                                 rushSuccess(earningPrice, preferentialModel);
-                            }else {
+                            } else {
                                 rushFailure(priceLeft, preferentialModel);
                             }
                         } catch (Exception e) {
@@ -545,6 +562,11 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         }
     }
 
+    // 是否有资格参加特惠项目
+    private boolean isConditionEnough(PreferentialModel preferentialModel){
+        return mExp >= preferentialModel.getExp();
+    }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if( position >= mData.size() ){
@@ -566,8 +588,15 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
         tvName.setText(preferentialModel.getName() + "  特惠项目");
 
         final ImageView ivShake = (ImageView)dialog.findViewById(R.id.home_investment_listview_detail_preferential_iv_shake);
-        Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
-        ivShake.startAnimation(shake);
+        final TextView tvShake = (TextView)dialog.findViewById(R.id.home_investment_listview_detail_preferential_tv_shake);
+        if( isConditionEnough(preferentialModel) ){
+            Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+            ivShake.startAnimation(shake);
+        }else {
+            ivShake.setVisibility(View.GONE);
+            tvShake.setText("经验值不足，无法参与该项目");
+        }
+
 
         final LinearLayout llEarningsRoot = (LinearLayout)dialog.findViewById(R.id.home_investment_listview_detail_preferential_ll_earnings_root);
         for(int i = 0; i < preferentialModel.getEarnings().size(); i++){
@@ -698,14 +727,17 @@ public class PreferentialInvestFragment extends BaseFragment implements View.OnC
                 @Override
                 public void onClick(View v) {
                     ProjectDetailActivity.CallProjectDetailActivity(getActivity(), preferentialModel.getActivityCompleteId(),
-                            preferentialModel.getName(), imageUrls, 0, 0);
+                            preferentialModel.getName(), imageUrls, 0, 0, false);
                 }
             });
 
             viewHolder.tvName.setText(preferentialModel.getName());
             viewHolder.tvSummary.setText(preferentialModel.getSummary());
-            viewHolder.tvBonusPool.setText(String.valueOf(preferentialModel.getBonusPool()));
+            viewHolder.tvBonusPool.setText(ToolMaster.convertRMBPriceString(preferentialModel.getBonusPool()));
             viewHolder.tvExp.setText(String.valueOf(preferentialModel.getExp()));
+//            if(mExp < preferentialModel.getExp()){
+//
+//            }
 
             Date date = preferentialModel.getDate();
             Calendar calendar = Calendar.getInstance();
