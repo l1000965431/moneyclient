@@ -609,6 +609,17 @@
                     android:tint="#7b000000" />
             </LinearLayout>
 
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="10dp"
+                android:orientation="horizontal"
+                android:id="@+id/linearLayout21"
+                android:background="#ff281b20"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp" >
+
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
