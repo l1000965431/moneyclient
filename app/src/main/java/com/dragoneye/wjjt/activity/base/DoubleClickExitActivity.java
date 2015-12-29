@@ -31,7 +31,7 @@ public class DoubleClickExitActivity extends BaseActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK
                 && event.getRepeatCount() == 0) {
             if( readyToExit ){
-                finish();
+                MyApplication.exit();
             }else {
                 readyToExit = true;
                 UIHelper.toast(this, "再按一次退出" + AppInfoManager.getApplicationName(this));

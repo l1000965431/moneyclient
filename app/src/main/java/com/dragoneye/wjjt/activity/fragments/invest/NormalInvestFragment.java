@@ -170,6 +170,7 @@ public class NormalInvestFragment extends BaseFragment implements View.OnClickLi
         @Override
         public void run() {
             HttpParams params = new HttpParams();
+            params.put("userId", ((MyApplication)getActivity().getApplication()).getCurrentUser(getActivity()).getUserId());
             params.put("pageIndex", mCurPageIndex + 1);
             params.put("numPerPage", 10);
 

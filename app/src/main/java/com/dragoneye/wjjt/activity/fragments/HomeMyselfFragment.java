@@ -288,7 +288,7 @@ public class HomeMyselfFragment extends BaseFragment implements View.OnClickList
                     if(isInvited){
                         mLLInviteCodeLayout.setVisibility(View.GONE);
                     }else {
-                        mLLInviteCodeLayout.setVisibility(View.VISIBLE);
+                        mLLInviteCodeLayout.setVisibility(View.GONE);
                     }
                 }
             });

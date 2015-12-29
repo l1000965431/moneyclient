@@ -203,7 +203,7 @@ public class MainActivity extends DoubleClickExitActivity implements View.OnClic
                 case PreferencesConfig.IS_HAVE_NEW_EARNING_MESSAGE:
                 case PreferencesConfig.IS_HAVE_NEW_INVEST_MESSAGE:
                     if(currentCheckedButton != recordButton){
-                        investButton.setShowDot(true);
+                        recordButton.setShowDot(true);
                     }else {
                         PreferencesHelper.setIsHaveNewMessage(MainActivity.this, false, PreferencesConfig.IS_HAVE_NEW_RECORDS);
                     }

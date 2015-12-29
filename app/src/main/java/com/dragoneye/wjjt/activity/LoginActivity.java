@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -104,6 +106,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
         mETUserId = (EditText)findViewById(R.id.fragment_login_Enter_account);
         mETUserPassword = (EditText)findViewById(R.id.fragment_login_Enter_password);
+        mETUserPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    onLogin();
+                }
+                return false;
+            }
+        });
 
         mETUserId.setText(getLastLoginUserId());
         mETUserPassword.setText(getLastLoginUserPassword());
@@ -159,14 +170,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 //        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //        startActivity(intent);
 //        finish();
-        if(false){
-            UserBase userBase = new UserBase();
-            userBase.setUserId("18511583205");
-            userBase.setUserType(UserProtocol.PROTOCOL_USER_TYPE_INVESTOR);
-            ((MyApplication) getApplication()).setCurrentUser(this, userBase);
-            MainActivity.CallMainActivity(this);
-            return;
-        }
+//        if(false){
+//            UserBase userBase = new UserBase();
+//            userBase.setUserId("18511583205");
+//            userBase.setUserType(UserProtocol.PROTOCOL_USER_TYPE_INVESTOR);
+//            ((MyApplication) getApplication()).setCurrentUser(this, userBase);
+//            MainActivity.CallMainActivity(this);
+//            return;
+//        }
 
 
         if( !checkUserInput() ){
