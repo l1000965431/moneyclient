@@ -304,7 +304,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="输入您的购买金额："
+                                android:text="输入您的投资金额："
                                 android:id="@+id/textView13"
                                 android:textSize="15dp"
                                 android:textColor="#ff2a2a2a"
